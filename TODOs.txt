@@ -8,6 +8,7 @@ CREST
   Pros: - adds authentification informations just before firing request, no one can possibly modify it after
   Cons: - What about the possibility of authentifying some methods and some not?
 * Finish JAX-RS integration
+see http://download.oracle.com/javaee/6/api/javax/ws/rs/core/UriBuilder.html
 * Proper testing for Deserializer per Method/MimeType
 DONE * @Consume, @ConsumeJson, @ConsumeXml annotations ?
 DONE @ConsumeJson(contentType="application/json") contentType would be optional and ends up in the Accept Header.

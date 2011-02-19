@@ -56,7 +56,7 @@ public class HttpRequest {
     public static final String HTTP_OPTIONS = "OPTIONS";
 
     private final String meth;
-    private final URI uri;
+    private final URL url;
     private final Long socketTimeout;
     private final Long connectionTimeout;
     private final String encoding;
@@ -64,9 +64,9 @@ public class HttpRequest {
     private final Map<String, String> queryParams;
     private final Map<String, Object> formParams;
 
-    private HttpRequest(String meth, URI uri, Long socketTimeout, Long connectionTimeout, String encoding, Map<String, String> headerParams, Map<String, String> queryParams, Map<String, Object> formParams) {
+    private HttpRequest(String meth, URL url, Long socketTimeout, Long connectionTimeout, String encoding, Map<String, String> headerParams, Map<String, String> queryParams, Map<String, Object> formParams) {
         this.meth = meth;
-        this.uri = uri;
+        this.url = url;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
         this.encoding = encoding;
@@ -79,13 +79,13 @@ public class HttpRequest {
         return meth;
     }
 
-    public URI getUri() {
-        return uri;
+    public URL getUrl() {
+        return url;
     }
 
     public String getUrlString(boolean includeQueryString) throws MalformedURLException, UnsupportedEncodingException {
-        if (!includeQueryString || queryParams.isEmpty()) return uri.toString();
-        return uri.toString() + "?" + Urls.buildQueryString(queryParams, encoding);
+        if (!includeQueryString || queryParams.isEmpty()) return url.toString();
+        return url.toString() + "?" + Urls.buildQueryString(queryParams, encoding);
     }
 
     public URL getUrl(boolean includeQueryString) throws MalformedURLException, UnsupportedEncodingException {
@@ -137,14 +137,15 @@ public class HttpRequest {
                 .append(meth, that.meth)
                 .append(queryParams, that.queryParams)
                 .append(socketTimeout, that.socketTimeout)
-                .append(uri, that.uri)
+                .append(url, that.url)
                 .equals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(uri)
+                .append(url)
+                .append(meth)
                 .append(socketTimeout)
                 .append(connectionTimeout)
                 .append(encoding)
@@ -157,7 +158,7 @@ public class HttpRequest {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("meth", meth)
-                .append("uri", uri)
+                .append("url", url)
                 .append("socketTimeout", socketTimeout)
                 .append("connectionTimeout", connectionTimeout)
                 .append("encoding", encoding)
@@ -216,7 +217,7 @@ public class HttpRequest {
         public HttpRequest build() throws URISyntaxException {
             return new HttpRequest(
                     meth,
-                    new URI(buildBaseUriString()),
+                    buildBaseUrl(),
                     socketTimeout,
                     connectionTimeout,
                     encoding,
@@ -226,7 +227,14 @@ public class HttpRequest {
             );
         }
 
-        private String buildBaseUriString() {
+        private URL buildBaseUrl() {
+            try {
+                return new URL(buildBaseUrlString());
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        private String buildBaseUrlString() {
             StringBuffer baseUri = new StringBuffer();
             Matcher m = SINGLE_PLACEHOLDER_PATTERN.matcher(this.baseUri);
             while (m.find()) {
@@ -280,7 +288,7 @@ public class HttpRequest {
          * @throws UnsupportedEncodingException not supported parameter encoding
          */
         public String getUrlString(boolean includeQueryString) throws UnsupportedEncodingException {
-            String uri = buildBaseUriString();
+            String uri = buildBaseUrlString();
             if (!includeQueryString || queryParams.isEmpty()) return uri;
             return uri + "?" + Urls.buildQueryString(queryParams, encoding);
         }
@@ -499,8 +507,8 @@ public class HttpRequest {
             return meth;
         }
 
-        public String getBaseUri() {
-            return buildBaseUriString();
+        public String getBaseUrl() {
+            return buildBaseUrlString();
         }
 
         public Map<String, String> getHeaderParams() {

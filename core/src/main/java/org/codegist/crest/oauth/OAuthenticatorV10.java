@@ -352,7 +352,7 @@ public class OAuthenticatorV10 implements OAuthenticator {
             sorted.addAll(params);
 
             String signMeth = String.valueOf(request.getMeth());
-            String signUri = constructRequestURL(request.getBaseUri());
+            String signUri = constructRequestURL(request.getBaseUrl());
             String signParams = encodeParams(sorted, "&", false);
 
             // format the signature content
