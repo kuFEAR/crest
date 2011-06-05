@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -22,14 +22,21 @@ package org.codegist.crest.google.serializer;
 
 import org.codegist.crest.google.model.LangPair;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.serializer.SerializerException;
+import org.codegist.crest.serializer.StringSerializer;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class LangPairSerializer implements Serializer<LangPair> {
+public class LangPairSerializer extends StringSerializer<LangPair> {
     private static final String FORMAT = "%s|%s";
 
-    public String serialize(LangPair value) {
+    public String serialize(LangPair value, Charset charset) throws SerializerException {
         return String.format(FORMAT, value.getFrom(), value.getTo());
     }
+
 }

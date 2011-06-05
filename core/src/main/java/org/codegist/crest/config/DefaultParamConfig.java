@@ -20,9 +20,14 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
+
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Default immutable in-memory implementation of {@link ParamConfig}
@@ -33,14 +38,17 @@ class DefaultParamConfig implements ParamConfig {
     private final String name;
     private final String defaultValue;
     private final String destination;
+    private final Map<String,Object> metadatas;
 
     DefaultParamConfig() {
-        this(DEFAULT_NAME, DEFAULT_VALUE, DEFAULT_DESTINATION);
+        this(DEFAULT_NAME, DEFAULT_VALUE, DEFAULT_DESTINATION, DEFAULT_METADATAS);
     }
-    DefaultParamConfig(String name, String defaultValue, String destination) {
+
+    DefaultParamConfig(String name, String defaultValue, String destination, Map<String,Object> metadatas) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.destination = destination;
+        this.metadatas = Maps.unmodifiable(metadatas, false);
     }
 
     public String getName() {
@@ -55,6 +63,9 @@ class DefaultParamConfig implements ParamConfig {
         return destination;
     }
 
+    public Map<String, Object> getMetaDatas() {
+        return metadatas;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -66,6 +77,7 @@ class DefaultParamConfig implements ParamConfig {
                 .append(name, that.name)
                 .append(defaultValue, that.defaultValue)
                 .append(destination, that.destination)
+                .append(metadatas, that.metadatas)
                 .equals();
     }
 
@@ -75,6 +87,7 @@ class DefaultParamConfig implements ParamConfig {
                 .append(name)
                 .append(defaultValue)
                 .append(destination)
+                .append(metadatas)
                 .hashCode();
     }
 
@@ -83,6 +96,7 @@ class DefaultParamConfig implements ParamConfig {
                 .append("name", name)
                 .append("defaultValue", defaultValue)
                 .append("destination", destination)
+                .append("metadatas", metadatas)
                 .toString();
     }
 }

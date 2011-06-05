@@ -23,7 +23,9 @@ package org.codegist.crest.config;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Interface configuration holder object.
@@ -41,26 +43,11 @@ import java.lang.reflect.Method;
 public interface InterfaceConfig {
 
     /**
-     * Default endpoint applied when non specified.
-     *
-     * @see InterfaceConfig#getEndPoint()
-     */
-    String DEFAULT_ENDPOINT = "";
-
-    /**
      * Default encoding applied when non specified.
      *
      * @see InterfaceConfig#getEncoding()
      */
     String DEFAULT_ENCODING = "UTF-8";
-
-    /**
-     * Bse service url fragment applied when non specified.
-     *
-     * @see org.codegist.crest.config.InterfaceConfig#getPath()
-     */
-    String DEFAULT_PATH = "";
-
 
     /**
      * Default request interceptor applied when non specified.
@@ -77,20 +64,6 @@ public interface InterfaceConfig {
      * @return the encoding of the interface
      */
     String getEncoding();
-
-    /**
-     * Server path (eg: http://www.my-end-point.com:8080)
-     *
-     * @return server's path
-     */
-    String getEndPoint();
-
-    /**
-     * Service base path (eg: /base/service/path). Full service path is then {@link InterfaceConfig#getEndPoint()} concatenated to this value.
-     *
-     * @return server's path
-     */
-    String getPath();
 
     /**
      * Global service request interceptor.
@@ -119,4 +92,6 @@ public interface InterfaceConfig {
      * @return The method config object for the given method, null if not found.
      */
     MethodConfig getMethodConfig(Method meth);
+
+    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

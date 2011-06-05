@@ -20,9 +20,11 @@
 
 package org.codegist.crest;
 
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -31,15 +33,10 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.InputStreamBody;
-import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -47,10 +44,11 @@ import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Objects;
 import org.codegist.common.log.Logger;
+import org.codegist.common.log.LoggingOutputStream;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ProxySelector;
 import java.util.*;
 
@@ -64,17 +62,33 @@ import java.util.*;
 public class HttpClientRestService implements RestService, Disposable {
 
     private static final Logger logger = Logger.getLogger(HttpClientRestService.class);
+    public static final String HTTP_CLIENT_PROP = HttpClientRestService.class.getName() + "#http-client";
     private final HttpClient http;
 
-    /**
-     * Construct a HttpClientRestService based on {@link org.apache.http.impl.client.DefaultHttpClient#DefaultHttpClient()}.
-     */
+
     public HttpClientRestService() {
         this(new DefaultHttpClient());
     }
 
+    /**
+     * Construct a HttpClientRestService based on {@link org.apache.http.impl.client.DefaultHttpClient#DefaultHttpClient()}.
+     */
     public HttpClientRestService(HttpClient http) {
+        this(toConfig(http));
+    }
+
+    public HttpClientRestService(Map<String, Object> customProperties) {
+        HttpClient http = (HttpClient) customProperties.get(HTTP_CLIENT_PROP);
+        if (http == null) {
+            http = new DefaultHttpClient();
+        }
         this.http = http;
+    }
+
+    static Map<String, Object> toConfig(HttpClient http) {
+        Map<String, Object> config = new HashMap<String, Object>();
+        config.put(HTTP_CLIENT_PROP, http);
+        return config;
     }
 
     public HttpResponse exec(HttpRequest httpRequest) throws HttpException {
@@ -102,10 +116,15 @@ public class HttpClientRestService implements RestService, Disposable {
                 if (res.getStatusCode() != HttpStatus.SC_OK) {
                     throw new HttpException(response.getStatusLine().getReasonPhrase(), res);
                 }
-            } else if (httpRequest.getMeth().equals("HEAD")) {
-                res = new HttpResponse(httpRequest, response.getStatusLine().getStatusCode(), toHeaders(response.getAllHeaders()));
+            } else if (httpRequest.getMeth().equals(HttpRequest.HTTP_HEAD)) {
+                res = new HttpResponse(httpRequest,
+                        response.getStatusLine().getStatusCode(),
+                        toHeaders(response.getAllHeaders()));
             } else {
-                throw new HttpException(response.getStatusLine().getReasonPhrase(), new HttpResponse(httpRequest, response.getStatusLine().getStatusCode(), toHeaders(response.getAllHeaders())));
+                throw new HttpException(response.getStatusLine().getReasonPhrase(),
+                        new HttpResponse(httpRequest,
+                                response.getStatusLine().getStatusCode(),
+                                toHeaders(response.getAllHeaders())));
             }
             logger.trace("HTTP Response %s", response);
             return res;
@@ -147,48 +166,12 @@ public class HttpClientRestService implements RestService, Disposable {
         return map;
     }
 
-    private static HttpUriRequest toHttpUriRequest(HttpRequest request) {
+    private HttpUriRequest toHttpUriRequest(HttpRequest request) {
         try {
-            String url = request.getUrlString(true);
+            String url = request.getUrl();
 
             Class<? extends HttpUriRequest> uriRequestClass = METH_MAP.containsKey(request.getMeth()) ? METH_MAP.get(request.getMeth()) : HttpGet.class;
             HttpUriRequest uriRequest = uriRequestClass.getConstructor(String.class).newInstance(url);
-
-            if (uriRequest instanceof HttpEntityEnclosingRequestBase) {
-                HttpEntityEnclosingRequestBase enclosingRequestBase = ((HttpEntityEnclosingRequestBase) uriRequest);
-                HttpEntity entity;
-                if (Params.isForUpload(request.getFormParams().values())) {
-                    MultipartEntity multipartEntity = new MultipartEntity();
-                    for (Map.Entry<String, Object> param : request.getFormParams().entrySet()) {
-                        ContentBody body;
-                        if (param.getValue() instanceof InputStream) {
-                            body = new InputStreamBody((InputStream) param.getValue(), param.getKey());
-                        } else if (param.getValue() instanceof File) {
-                            body = new FileBody((File) param.getValue());
-                        } else if (param.getValue() != null) {
-                            body = new StringBody(param.getValue().toString(), request.getEncodingAsCharset());
-                        } else {
-                            body = new StringBody(null);
-                        }
-                        multipartEntity.addPart(param.getKey(), body);
-                    }
-                    entity = multipartEntity;
-                } else {
-                    List<NameValuePair> params = new ArrayList<NameValuePair>(request.getFormParams().size());
-                    for (Map.Entry<String, Object> param : request.getFormParams().entrySet()) {
-                        params.add(new BasicNameValuePair(param.getKey(), param.getValue() != null ? param.getValue().toString() : null));
-                    }
-                    entity = new UrlEncodedFormEntity(params, request.getEncoding());
-                }
-
-                enclosingRequestBase.setEntity(entity);
-            }
-
-            if (request.getHeaderParams() != null && !request.getHeaderParams().isEmpty()) {
-                for (Map.Entry<String, String> header : request.getHeaderParams().entrySet()) {
-                    uriRequest.setHeader(header.getKey(), header.getValue());
-                }
-            }
 
             if (request.getConnectionTimeout() != null && request.getConnectionTimeout() >= 0) {
                 HttpConnectionParams.setConnectionTimeout(uriRequest.getParams(), request.getConnectionTimeout().intValue());
@@ -196,6 +179,14 @@ public class HttpClientRestService implements RestService, Disposable {
 
             if (request.getSocketTimeout() != null && request.getSocketTimeout() >= 0) {
                 HttpConnectionParams.setSoTimeout(uriRequest.getParams(), request.getSocketTimeout().intValue());
+            }
+
+            for (HttpParam param : request.getHeaderParams()) {
+                uriRequest.addHeader(param.getName(), param.getValue().asString());
+            }
+
+            if (uriRequest instanceof HttpEntityEnclosingRequestBase && request.hasEntity()) {
+                ((HttpEntityEnclosingRequestBase) uriRequest).setEntity(new HttpRequestHttpEntity(request));
             }
 
             return uriRequest;
@@ -206,10 +197,11 @@ public class HttpClientRestService implements RestService, Disposable {
         }
     }
 
-    public static RestService newRestService(Map<String,Object> customProperties) {
+    public static RestService newRestService(Map<String, Object> customProperties) {
         int concurrencyLevel = Objects.defaultIfNull((Integer) customProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), 1);
         return newRestService(concurrencyLevel, concurrencyLevel);
     }
+
     public static RestService newRestService(int maxConcurrentConnection, int maxConnectionPerRoute) {
         DefaultHttpClient httpClient;
         if (maxConcurrentConnection > 1 || maxConnectionPerRoute > 1) {
@@ -284,4 +276,35 @@ public class HttpClientRestService implements RestService, Disposable {
             }
         }
     }
+
+    private class HttpRequestHttpEntity extends AbstractHttpEntity {
+
+        private final HttpRequest request;
+
+        private HttpRequestHttpEntity(HttpRequest request) {
+            this.request = request;
+        }
+
+        public boolean isRepeatable() {
+            return false;
+        }
+
+        public long getContentLength() {
+            return -1;
+        }
+
+        public InputStream getContent() throws IOException, IllegalStateException {
+            throw new UnsupportedOperationException();
+        }
+
+        public void writeTo(OutputStream outstream) throws IOException {
+            OutputStream os = !logger.isTraceOn() ? outstream : new LoggingOutputStream(outstream, logger);
+            request.getEntityWriter().writeTo(request, os);
+        }
+
+        public boolean isStreaming() {
+            return true;
+        }
+    }
 }
+

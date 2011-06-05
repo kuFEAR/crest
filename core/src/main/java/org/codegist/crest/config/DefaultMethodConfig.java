@@ -20,14 +20,20 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
+import org.codegist.common.reflect.Annotations;
+import org.codegist.common.reflect.Methods;
+import org.codegist.crest.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Default immutable in-memory implementation of {@link org.codegist.crest.config.MethodConfig}
@@ -36,34 +42,38 @@ import java.lang.reflect.Method;
 class DefaultMethodConfig implements MethodConfig {
 
     private final Method method;
-    private final String path;
+    private final PathTemplate path;
     private final String httpMethod;
     private final Long socketTimeout;
     private final Long connectionTimeout;
+    private final EntityWriter entityWriter;
     private final RequestInterceptor requestInterceptor;
     private final ResponseHandler responseHandler;
     private final ErrorHandler errorHandler;
     private final RetryHandler retryHandler;
-    private final Deserializer deserializer;
-
+    private final Deserializer[] deserializers;
     private final ParamConfig[] extraParams;
     private final MethodParamConfig[] methodParamConfigs;
+    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultMethodConfig(Method method, String path, String httpMethod, Long socketTimeout, Long connectionTimeout, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer deserializer, MethodParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
+    DefaultMethodConfig(Method method, PathTemplate path, String httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, MethodParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
         this.method = method;
         this.path = path;
         this.httpMethod = httpMethod;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
+        this.entityWriter = entityWriter;
         this.requestInterceptor = requestInterceptor;
         this.responseHandler = responseHandler;
         this.errorHandler = errorHandler;
         this.retryHandler = retryHandler;
-        this.deserializer = deserializer;
+        this.deserializers = deserializers != null ? deserializers.clone() : null;
         this.methodParamConfigs = methodParamConfigs != null ? methodParamConfigs.clone() : null;
         this.extraParams = extraParams != null ? extraParams.clone() : null;
+        this.annotations = method != null ? Maps.unmodifiable(Annotations.toMap(method.getAnnotations())) : null;
     }
-    public String getPath() {
+
+    public PathTemplate getPathTemplate() {
         return path;
     }
 
@@ -87,6 +97,10 @@ class DefaultMethodConfig implements MethodConfig {
         return connectionTimeout;
     }
 
+    public EntityWriter getBodyWriter() {
+        return entityWriter;
+    }
+
     public RequestInterceptor getRequestInterceptor() {
         return requestInterceptor;
     }
@@ -99,8 +113,8 @@ class DefaultMethodConfig implements MethodConfig {
         return retryHandler;
     }
 
-    public Deserializer getDeserializer() {
-        return deserializer;
+    public Deserializer[] getDeserializers() {
+        return deserializers;
     }
 
     public MethodParamConfig getParamConfig(int index) {
@@ -115,6 +129,10 @@ class DefaultMethodConfig implements MethodConfig {
         return extraParams != null ? extraParams.clone() : null;
     }
 
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
+        return this.annotations;
+    }
+
     public String toString() {
         return new ToStringBuilder(this)
                 .append("path", path)
@@ -122,8 +140,10 @@ class DefaultMethodConfig implements MethodConfig {
                 .append("httpMethod", httpMethod)
                 .append("socketTimeout", socketTimeout)
                 .append("connectionTimeout", connectionTimeout)
+                .append("entityWriter", entityWriter)
                 .append("requestInterceptor", requestInterceptor)
                 .append("responseHandler", responseHandler)
+                .append("deserializers", deserializers)
                 .append("errorHandler", errorHandler)
                 .append("retryHandler", retryHandler)
                 .append("methodParamConfigs", methodParamConfigs)

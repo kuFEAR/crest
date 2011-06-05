@@ -20,11 +20,15 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.injector.Injector;
 import org.codegist.crest.serializer.Serializer;
+
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Default immutable in-memory implementation of {@link MethodParamConfig}
@@ -33,25 +37,31 @@ import org.codegist.crest.serializer.Serializer;
 class DefaultMethodParamConfig extends DefaultParamConfig implements MethodParamConfig {
 
     private final Serializer serializer;
-    private final Injector injector;
+    private final boolean encoded;
+    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultMethodParamConfig(ParamConfig base, Serializer serializer, Injector injector) {
-        this(base.getName(), base.getDefaultValue(), base.getDestination(), serializer, injector);
+    DefaultMethodParamConfig(ParamConfig base, Serializer serializer, boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
+        this(base.getName(), base.getDefaultValue(), base.getDestination(), base.getMetaDatas(), serializer, encoded, annotations);
     }
-    DefaultMethodParamConfig(String name, String defaultValue, String destination, Serializer serializer, Injector injector) {
-        super(name, defaultValue, destination);
+    
+    DefaultMethodParamConfig(String name, String defaultValue, String destination, Map<String,Object> metadatas, Serializer serializer, boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
+        super(name, defaultValue, destination, metadatas);
+        this.annotations = Maps.unmodifiable(annotations, false);
         this.serializer = serializer;
-        this.injector = injector;
+        this.encoded = encoded;
     }
 
     public Serializer getSerializer() {
         return serializer;
     }
 
-    public Injector getInjector() {
-        return injector;
+    public boolean isEncoded() {
+        return encoded;
     }
 
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
+        return annotations;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -60,9 +70,10 @@ class DefaultMethodParamConfig extends DefaultParamConfig implements MethodParam
         DefaultMethodParamConfig that = (DefaultMethodParamConfig) o;
 
         return new EqualsBuilder()
-                .appendSuper(true)
+                .appendSuper(super.equals(o))
                 .append(serializer, that.serializer)
-                .append(injector, that.injector)
+                .append(encoded, that.encoded)
+                .append(annotations, that.annotations)
                 .equals();
     }
 
@@ -71,7 +82,8 @@ class DefaultMethodParamConfig extends DefaultParamConfig implements MethodParam
         return new HashCodeBuilder()
                 .appendSuper(super.hashCode())
                 .append(serializer)
-                .append(injector)
+                .append(encoded)
+                .append(annotations)
                 .hashCode();
     }
 
@@ -81,7 +93,8 @@ class DefaultMethodParamConfig extends DefaultParamConfig implements MethodParam
                 .append("defaultValue", getDefaultValue())
                 .append("destination", getDestination())
                 .append("serializer", serializer)
-                .append("injector", injector)
+                .append("encoded", encoded)
+                .append("annotations", annotations)
                 .toString();
     }
 }

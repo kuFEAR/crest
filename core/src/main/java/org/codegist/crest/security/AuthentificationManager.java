@@ -20,7 +20,7 @@
 
 package org.codegist.crest.security;
 
-import org.codegist.common.lang.Pair;
+import org.codegist.crest.HttpParam;
 import org.codegist.crest.HttpRequest;
 
 /**
@@ -34,7 +34,7 @@ public interface AuthentificationManager {
      * @param request request to be signed
      * @param properties optional signing properties
      */
-    void sign(HttpRequest.Builder request, Pair<String,String>... properties);
+    void sign(HttpRequest.Builder request, HttpParam... properties);
 
     /**
      * Refresh the authentification information

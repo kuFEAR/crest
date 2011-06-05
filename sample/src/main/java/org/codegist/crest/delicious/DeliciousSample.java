@@ -24,9 +24,9 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.UrlEncodedFormEntityWriter;
 import org.codegist.crest.delicious.model.DeliciousModelFactory;
 import org.codegist.crest.delicious.model.Posts;
-import org.codegist.crest.delicious.model.Range;
 import org.codegist.crest.delicious.service.Delicious;
 
 import java.io.IOException;
@@ -55,9 +55,9 @@ public class DeliciousSample implements Runnable {
 
     public void run() {
         CRest crest = new CRestBuilder()
-                .deserializeXmlWithJaxb(DeliciousModelFactory.class)
+                .deserializeXmlWithJaxb()
                 .useHttpClientRestService()
-                .setListSerializerSeparator(" ")
+                .setProperty(CRestProperty.PARAM_COLLECTION_SEPARATOR," ")
                 .setBooleanSerializer("yes", "no")
                 .usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
                 .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
@@ -71,7 +71,7 @@ public class DeliciousSample implements Runnable {
 
         /* Use it! */
         boolean postDone = delicious.addPost("http://crest.codegist.org?rdm=" + new Date().getTime(), "that's my site");
-        Posts posts = delicious.getAllPosts("opensource", new Range(1, 15), new Date(), new Date(), false);
+        Posts posts = delicious.getAllPosts("opensource", 1, 15, new Date(), new Date(), false);
         boolean done = delicious.renameTag("os", "opensource");
 
         LOG.info("Add Post=" + postDone);

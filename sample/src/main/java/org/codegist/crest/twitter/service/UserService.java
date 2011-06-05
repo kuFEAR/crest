@@ -30,7 +30,7 @@ import org.codegist.crest.twitter.model.User;
 @EndPoint("http://api.twitter.com")
 @Path("/1/users")
 @HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
-@Consumes("application/json")
+//@Accepts("application/json")
 public interface UserService {
 
     @Path("/search.json")

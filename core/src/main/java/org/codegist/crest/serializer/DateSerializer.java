@@ -23,6 +23,7 @@ package org.codegist.crest.serializer;
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestProperty;
 
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,9 +32,9 @@ import java.util.Map;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class DateSerializer implements Serializer<Date> {
+public class DateSerializer extends StringSerializer<Date> {
 
-    public static final String DEFAULT_DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    public static final String DEFAULT_DATEFORMAT = "yyyy-MM-dd'T.xml'HH:mm:ssZ";
 
     private final DateFormat formatter;
     private final FormatType formatType;
@@ -41,9 +42,11 @@ public class DateSerializer implements Serializer<Date> {
     public DateSerializer() {
         this(DEFAULT_DATEFORMAT);
     }
+
     public DateSerializer(Map<String,Object> customProperties) {
         this(Strings.defaultIfBlank((String) customProperties.get(CRestProperty.SERIALIZER_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
     }
+    
     public DateSerializer(String dateFormat) {
         DateFormat formatter;
         FormatType formatType;
@@ -58,16 +61,17 @@ public class DateSerializer implements Serializer<Date> {
         this.formatType = formatType;
     }
 
-    public String serialize(Date value) {
+    public String serialize(Date value, Charset charset) throws SerializerException {
+        String serialized;
         if(formatter != null) {
              synchronized (formatter) {
-                 return formatter.format(value);
+                 serialized = formatter.format(value);
              }
         }else{
-            return String.valueOf(formatType.format(value));
+            serialized = String.valueOf(formatType.format(value));
         }
+        return serialized;
     }
-
 
     private enum FormatType {
         Millis(1),

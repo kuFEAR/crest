@@ -21,7 +21,6 @@
 package org.codegist.crest.handler;
 
 import org.codegist.crest.ResponseContext;
-import org.codegist.crest.serializer.Deserializer;
 
 /**
  * Default response handler that either marshall the response or return server raw response following the rules below :
@@ -36,17 +35,6 @@ public class DefaultResponseHandler implements ResponseHandler {
 
     public final Object handle(ResponseContext context) {
         if (context.getExpectedType().toString().equals("void")) return null;
-
-        Deserializer deserializer = context.getDeserializer();
-        if (deserializer != null) {
-            return deserializer.deserialize(context.getResponse().asReader(), context.getExpectedGenericType());
-        }else{
-            // if no marshaller has been set in the configuration, check that return type is String and return the response as string.
-            if (String.class.equals(context.getExpectedType())) {
-                return context.getResponse().asString();
-            } else {
-                throw new IllegalStateException("Method do no have a Deserializer and its return type is not a valid raw type.");
-            }
-        }
+        return context.deserialize();
     }
 }

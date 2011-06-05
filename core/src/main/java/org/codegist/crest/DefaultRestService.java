@@ -20,14 +20,15 @@
 
 package org.codegist.crest;
 
-import org.codegist.common.io.IOs;
-import org.codegist.common.lang.Randoms;
 import org.codegist.common.log.Logger;
+import org.codegist.common.log.LoggingOutputStream;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Simple RestService implementation based on JDK's {@link java.net.HttpURLConnection}.
@@ -37,7 +38,6 @@ import java.util.Map;
  */
 public class DefaultRestService implements RestService {
 
-    private final static String MULTIPART = "multipart/form-data; boundary=";
     private final static String USER_AGENT = "CodeGist-CRest Agent";
     private static final Logger logger = Logger.getLogger(DefaultRestService.class);
 
@@ -48,7 +48,7 @@ public class DefaultRestService implements RestService {
             connection = toHttpURLConnection(request);
             logger.debug("%4s %s", request.getMeth(), connection.getURL());
             logger.trace(request);
-            if (connection.getResponseCode() != 200) {
+            if (connection.getResponseCode() >= 400) {
                 throw new HttpException(connection.getResponseMessage(), new HttpResponse(request, connection.getResponseCode(), connection.getHeaderFields()));
             }
             HttpResponse response = new HttpResponse(request, connection.getResponseCode(), connection.getHeaderFields(), new HttpResourceImpl(connection));
@@ -68,89 +68,35 @@ public class DefaultRestService implements RestService {
     }
 
     static HttpURLConnection toHttpURLConnection(HttpRequest request) throws IOException {
-        URL url = request.getUrl(true);
+        String url = request.getUrl();
         HttpURLConnection con = newConnection(url, request.getMeth());
-
+        
         if (request.getConnectionTimeout() != null && request.getConnectionTimeout() >= 0)
             con.setConnectTimeout(request.getConnectionTimeout().intValue());
 
         if (request.getSocketTimeout() != null && request.getSocketTimeout() >= 0)
             con.setReadTimeout(request.getSocketTimeout().intValue());
 
-        if (request.getHeaderParams() != null) {
-            for (Map.Entry<String, String> header : request.getHeaderParams().entrySet()) {
-                con.setRequestProperty(header.getKey(), header.getValue());
-            }
+        for (HttpParam param: request.getHeaderParams()) {
+            con.addRequestProperty(param.getName(), param.getValue().asString());
         }
 
-        if (HttpRequest.HTTP_PUT.equals(request.getMeth()) || HttpRequest.HTTP_POST.equals(request.getMeth())) {
-            if (Params.isForUpload(request.getFormParams())) {
-                String boundary = Randoms.randomAlphaNumeric(16) + System.currentTimeMillis();
-                con.setRequestProperty("Content-Type", MULTIPART + boundary);
-                if (request.getFormParams() != null) {
-                    boundary = "--" + boundary;
-                    con.setDoOutput(true);
-                    OutputStream os = con.getOutputStream();
-                    DataOutputStream out = new DataOutputStream(os);
+        if(request.hasEntity()) {
+            con.setDoOutput(true);
+            OutputStream os = !logger.isTraceOn() ? con.getOutputStream() : new LoggingOutputStream(con.getOutputStream(), logger);
 
-                    for (Map.Entry<String, Object> param : request.getFormParams().entrySet()) {
-                        InputStream upload = null;
-                        String name = null;
-                        if (param.getValue() instanceof InputStream) {
-                            upload = (InputStream) param.getValue();
-                            name = param.getKey();
-                        } else if (param.getValue() instanceof File) {
-                            upload = new FileInputStream((File) param.getValue());
-                            name = ((File) param.getValue()).getName();
-                        }
-
-                        if (upload != null) {
-                            out.writeBytes(boundary + "\r\n");
-                            out.writeBytes("Content-Disposition: form-data; name=\"" + param.getKey() + "\"; filename=\"" + name + "\"\r\n");
-                            out.writeBytes("Content-Type: Content-Type: application/octet-stream\r\n\r\n");
-                            BufferedInputStream in = null;
-                            try {
-                                in = (BufferedInputStream) (upload instanceof BufferedInputStream ? upload : new BufferedInputStream(upload));
-                                IOs.copy(in, out);
-                                out.writeBytes("\r\n");
-                            } finally {
-                                IOs.close(in);
-                            }
-                        } else if (param.getValue() != null) {
-                            out.writeBytes(boundary + "\r\n");
-                            out.writeBytes("Content-Disposition: form-data; name=\"" + param.getKey() + "\"\r\n");
-                            out.writeBytes("Content-Type: text/plain; charset=" + request.getEncoding() + "\r\n\r\n");
-                            out.write(param.getValue().toString().getBytes(request.getEncoding()));
-                            out.writeBytes("\r\n");
-                        }
-                    }
-                    out.writeBytes(boundary + "--\r\n");
-                    out.writeBytes("\r\n");
-                }
-            } else {
-                byte[] data = new byte[0];
-                if (request.getFormParams() != null) {
-                    data = Params.encodeParams(request.getFormParams(), request.getEncoding()).getBytes(request.getEncoding());
-                }
-                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=" + request.getEncoding());
-                con.setRequestProperty("Content-Length", Integer.toString(data.length));
-                if (data.length > 0) {
-                    con.setDoOutput(true);
-                    OutputStream os = con.getOutputStream();
-                    DataOutputStream out = new DataOutputStream(os);
-                    out.write(data);
-                    os.flush();
-                    os.close();
-                }
-            }
+            DataOutputStream out = new DataOutputStream(os);
+            request.getEntityWriter().writeTo(request, out);
+            os.flush();
+            os.close();
         }
-
+                       
         return con;
     }
 
-    protected static HttpURLConnection newConnection(URL url, String method) throws IOException {
+    protected static HttpURLConnection newConnection(String url, String method) throws IOException {
         HttpURLConnection con;
-        con = (HttpURLConnection) url.openConnection();
+        con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestProperty("User-Agent", USER_AGENT);
         con.setRequestMethod(method);
         return con;

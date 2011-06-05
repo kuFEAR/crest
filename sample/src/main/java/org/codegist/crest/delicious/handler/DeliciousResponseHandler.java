@@ -35,10 +35,9 @@ import java.lang.reflect.Type;
 public class DeliciousResponseHandler implements ResponseHandler {
 
     public Object handle(ResponseContext responseContext) throws CRestException {
-        Deserializer deserializer = responseContext.getDeserializer();
         Type expectedType = responseContext.getExpectedGenericType();
         if(responseContext.getExpectedType().isPrimitive()) {
-            Result result = deserializer.deserialize(responseContext.getResponse().asReader(), Result.class);
+            Result result = responseContext.deserializeTo(Result.class, Result.class);
             // Delicious Result response format is not consistent
             boolean done =
                     "done".equalsIgnoreCase(result.getCode())
@@ -56,7 +55,7 @@ public class DeliciousResponseHandler implements ResponseHandler {
                 throw new IllegalStateException("Should not reach here");
             }
         } else {
-            return deserializer.deserialize(responseContext.getResponse().asReader(), expectedType);
+            return responseContext.deserialize();
         }
     }
 }

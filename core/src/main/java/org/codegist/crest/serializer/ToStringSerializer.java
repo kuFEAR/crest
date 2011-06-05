@@ -20,12 +20,14 @@
 
 package org.codegist.crest.serializer;
 
+import java.nio.charset.Charset;
+
 /**
  * Simple serializer that returns the toString() value of the given value or empty string if null.
  *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ToStringSerializer<T> implements Serializer<T> {
+public class ToStringSerializer<T> extends StringSerializer<T> {
 
     /**
      * Simple serializer that returns the toString() value of the given value or empty string if null.
@@ -33,8 +35,7 @@ public class ToStringSerializer<T> implements Serializer<T> {
      * @param value Context of the serialization
      * @return serialized value of param
      */
-
-    public String serialize(T value) {
+    public String serialize(T value, Charset charset) throws SerializerException {
         return value.toString();
     }
 }

@@ -29,13 +29,12 @@ import org.codegist.crest.google.model.SearchResult;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @EndPoint("http://ajax.googleapis.com")
-@Path("/ajax/services/search")
+@Path("ajax/services/search")
 @QueryParam(value = "v", defaultValue = "1.0")
 @ResponseHandler(GoogleResponseHandler.class)
-@Consumes("application/json")
 public interface SearchService {
 
-    @Path("/web")
+    @Path("web")
     SearchResult<Address> search(@QueryParam("q") String text);
 
 }

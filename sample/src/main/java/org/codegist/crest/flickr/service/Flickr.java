@@ -20,6 +20,7 @@
 
 package org.codegist.crest.flickr.service;
 
+import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.flickr.handler.FlickrResponseHandler;
 import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
@@ -41,9 +42,10 @@ import java.util.Date;
 @GlobalInterceptor(FlickrAuthInterceptor.class)
 @ResponseHandler(FlickrResponseHandler.class)
 @POST
-@Consumes("application/xml")
+//@Accepts("application/xml")
 public interface Flickr {
 
+    @EntityWriter(JsonEntityWriter.class)
     @Path("/rest")
     @QueryParam(value = "method", defaultValue = "flickr.galleries.create")
     Gallery newGallery(

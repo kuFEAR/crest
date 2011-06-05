@@ -23,12 +23,13 @@ package org.codegist.crest.serializer;
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestProperty;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class BooleanSerializer implements Serializer<Boolean> {
+public class BooleanSerializer extends StringSerializer<Boolean> {
 
     public static final String DEFAULT_TRUE = "true";
     public static final String DEFAULT_FALSE = "false";
@@ -49,8 +50,7 @@ public class BooleanSerializer implements Serializer<Boolean> {
         this.falseString = falseString;
     }
 
-
-    public String serialize(Boolean value) {
+    public String serialize(Boolean value, Charset charset) throws SerializerException {
         return value ? trueString : falseString;
     }
 }

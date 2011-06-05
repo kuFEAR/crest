@@ -20,7 +20,7 @@
 
 package org.codegist.crest.oauth;
 
-import org.codegist.common.lang.Pair;
+import org.codegist.crest.HttpParam;
 import org.codegist.crest.HttpRequest;
 
 
@@ -36,7 +36,7 @@ public interface OAuthenticator {
      * @param request request to be signed
      * @param extraAuthHeaders optional header to be added in the oauth authentification headers
      */
-    void sign(Token accessToken, HttpRequest.Builder request, Pair<String,String>... extraAuthHeaders);
+    void sign(Token accessToken, HttpRequest.Builder request, HttpParam... extraAuthHeaders);
 
     /**
      * Fires a get request token to the preconfigured url

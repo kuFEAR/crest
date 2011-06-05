@@ -23,20 +23,17 @@ package org.codegist.crest;
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.common.lang.Validate;
-import org.codegist.common.net.Urls;
+import org.codegist.crest.config.PathBuilder;
+import org.codegist.crest.config.PathTemplate;
+import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.serializer.UrlEncodedHttpParamSerializer;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -45,8 +42,10 @@ public class HttpRequest {
 
     public static final String DEST_QUERY = "query";
     public static final String DEST_PATH = "path";
+    public static final String DEST_MATRIX = "matrix";
     public static final String DEST_FORM = "form";
     public static final String DEST_HEADER = "header";
+    public static final String DEST_COOKIE = "cookie";
 
     public static final String HTTP_GET = "GET";
     public static final String HTTP_POST = "POST";
@@ -56,40 +55,37 @@ public class HttpRequest {
     public static final String HTTP_OPTIONS = "OPTIONS";
 
     private final String meth;
-    private final URL url;
+    private final String url;
     private final Long socketTimeout;
     private final Long connectionTimeout;
     private final String encoding;
-    private final Map<String, String> headerParams;
-    private final Map<String, String> queryParams;
-    private final Map<String, Object> formParams;
+    private final HttpParamMap headerParams;
+    private final HttpParamMap formParams;
+    private final EntityWriter entityWriter;
+    private final RequestContext requestContext;
 
-    private HttpRequest(String meth, URL url, Long socketTimeout, Long connectionTimeout, String encoding, Map<String, String> headerParams, Map<String, String> queryParams, Map<String, Object> formParams) {
+    private HttpRequest(RequestContext requestContext, String meth, String url, Long socketTimeout, Long connectionTimeout, String encoding, HttpParamMap headerParams, HttpParamMap formParams, EntityWriter entityWriter) {
+        this.requestContext = requestContext;
         this.meth = meth;
         this.url = url;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
         this.encoding = encoding;
-        this.headerParams = Collections.unmodifiableMap(headerParams);
-        this.queryParams = Collections.unmodifiableMap(queryParams);
-        this.formParams = Collections.unmodifiableMap(formParams);
+        this.headerParams = headerParams;
+        this.formParams = formParams;
+        this.entityWriter = entityWriter;
+    }
+
+    public boolean hasEntity(){
+        return HTTP_POST.equals(meth) || HTTP_PUT.equals(meth);
     }
 
     public String getMeth() {
         return meth;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
-    }
-
-    public String getUrlString(boolean includeQueryString) throws MalformedURLException, UnsupportedEncodingException {
-        if (!includeQueryString || queryParams.isEmpty()) return url.toString();
-        return url.toString() + "?" + Urls.buildQueryString(queryParams, encoding);
-    }
-
-    public URL getUrl(boolean includeQueryString) throws MalformedURLException, UnsupportedEncodingException {
-        return new URL(getUrlString(includeQueryString));
     }
 
     public Long getSocketTimeout() {
@@ -112,16 +108,31 @@ public class HttpRequest {
         }
     }
 
-    public Map<String, String> getHeaderParams() {
-        return headerParams;
+    public HttpParamMap getHeaderParamMap() {
+        return new HttpParamMap(headerParams);
     }
 
-    public Map<String, String> getQueryParams() {
-        return queryParams;
+    public List<HttpParam> getHeaderParams() {
+        HttpParamMap headers;
+        if(entityWriter != null){
+            headers = new HttpParamMap(entityWriter.getHeaders(this));
+        }else{
+            headers = new  HttpParamMap();
+        }
+        headers.setAll(headerParams);
+        return headers.allValues();
     }
 
-    public Map<String, Object> getFormParams() {
-        return formParams;
+    public HttpParamMap getFormParamMap() {
+        return new HttpParamMap(formParams);
+    }
+
+    public EntityWriter getEntityWriter() {
+        return entityWriter;
+    }
+
+    public RequestContext getRequestContext() {
+        return requestContext;
     }
 
     @Override
@@ -135,7 +146,6 @@ public class HttpRequest {
                 .append(encoding, that.encoding)
                 .append(headerParams, that.headerParams)
                 .append(meth, that.meth)
-                .append(queryParams, that.queryParams)
                 .append(socketTimeout, that.socketTimeout)
                 .append(url, that.url)
                 .equals();
@@ -150,7 +160,6 @@ public class HttpRequest {
                 .append(connectionTimeout)
                 .append(encoding)
                 .append(headerParams)
-                .append(queryParams)
                 .append(formParams)
                 .hashCode();
     }
@@ -163,8 +172,8 @@ public class HttpRequest {
                 .append("connectionTimeout", connectionTimeout)
                 .append("encoding", encoding)
                 .append("headerParams", headerParams)
-                .append("queryParams", queryParams)
                 .append("formParams", formParams)
+                .append("requestContext", requestContext)
                 .toString();
     }
 
@@ -178,133 +187,144 @@ public class HttpRequest {
      * <p>Will create an GET utf-8 HttpRequest object.
      */
     public static class Builder {
-        private static final Pattern SINGLE_PLACEHOLDER_PATTERN = Pattern.compile("[\\{]([^/]+)[\\})]");
-        static final String ENCODING = "utf-8";
+
+        
+        private static final String MATRIX_SEP = ";";
+        private static final String ENCODING = "UTF-8";
         static final String METH = HttpRequest.HTTP_GET;
+
+        private final PathBuilder pathBuilder;
+        private final String encoding;
+        private final Charset charset;
+        private final EntityWriter entityWriter;
+        private final HttpParamMap headerParams;
+        private final HttpParamMap matrixParams;
+        private final HttpParamMap queryParams;
+        private final HttpParamMap pathParams;
+        private final HttpParamMap formParams;
+        private final HttpParamMap cookieParams;
+        private final Serializer<HttpParam> cookieParamSerializer;
+        private final Serializer<List<HttpParam>> headerParamsSerializer;
+
         private String meth = METH;
-        private String baseUri;
         private Long socketTimeout = null;
         private Long connectionTimeout = null;
-        private String encoding = ENCODING;
-        private final LinkedHashMap<String, String> headerParams = new LinkedHashMap<String, String>();
-        private final LinkedHashMap<String, String> queryParams = new LinkedHashMap<String, String>();
-        private final LinkedHashMap<String, String> pathParams = new LinkedHashMap<String, String>();
-        private final LinkedHashMap<String, Object> formParams = new LinkedHashMap<String, Object>();
+        private RequestContext requestContext;
+
+        private Serializer<Map<String,List<HttpParam>>> matrixParamsSerializer;
+        private Serializer<Map<String,List<HttpParam>>> queryParamsSerializer;
+
+
 
         /**
          * Creates a GET request pointing to the given url
          *
-         * @param uriString Base url to use
          * @throws URISyntaxException Invalid url
-         * @see Builder#pointsTo(String)
          */
-        public Builder(String uriString) throws URISyntaxException {
-            pointsTo(uriString);
+        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter) throws UnsupportedEncodingException {
+            this(pathTemplate, entityWriter, ENCODING);
         }
 
         /**
          * Creates a GET request pointing to the given url
          *
-         * @param uriString Base url to use
-         * @param encoding  Url encoding
+         * @param encoding Url encoding
          * @throws URISyntaxException Invalid url
-         * @see Builder#pointsTo(String,String)
          */
-        public Builder(String uriString, String encoding) throws URISyntaxException {
-            pointsTo(uriString, encoding);
+        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter, String encoding) throws UnsupportedEncodingException {
+            this.pathBuilder = pathTemplate.getBuilder(encoding);
+            this.entityWriter = entityWriter;
+            this.encoding = encoding;
+            this.charset = Charset.forName(encoding);
+            this.headerParams = new HttpParamMap();
+            this.queryParams = new HttpParamMap();
+            this.matrixParams = new HttpParamMap();
+            this.pathParams = new HttpParamMap();
+            this.formParams = new HttpParamMap();
+            this.cookieParams = new HttpParamMap();
+
+            this.queryParamsSerializer = UrlEncodedHttpParamSerializer.createDefaultForMap("&");
+            this.matrixParamsSerializer = UrlEncodedHttpParamSerializer.createDefaultForMap(MATRIX_SEP);
+            this.cookieParamSerializer = UrlEncodedHttpParamSerializer.createSingleParamSerializer();
+            this.headerParamsSerializer = UrlEncodedHttpParamSerializer.createParamValuesSerializer(",");
+        }
+
+        /**
+         * Creates a GET request pointing to the given url
+         *
+         * @param url
+         * @throws URISyntaxException Invalid url
+         */
+        public Builder(String url, EntityWriter entityWriter) throws UnsupportedEncodingException {
+            this(url, entityWriter, ENCODING);
+        }
+
+        /**
+         * Creates a GET request pointing to the given url
+         *
+         * @param url
+         * @param encoding Url encoding
+         * @throws URISyntaxException Invalid url
+         */
+        public Builder(String url, EntityWriter entityWriter, String encoding) throws UnsupportedEncodingException {
+            this(new SimplePathTemplate(url), entityWriter, encoding);
         }
 
         public HttpRequest build() throws URISyntaxException {
             return new HttpRequest(
+                    requestContext,
                     meth,
-                    buildBaseUrl(),
+                    buildBaseUrlString(),
                     socketTimeout,
                     connectionTimeout,
                     encoding,
-                    headerParams,
-                    queryParams,
-                    formParams
+                    getHeaders(),
+                    formParams,
+                    entityWriter
             );
         }
 
-        private URL buildBaseUrl() {
-            try {
-                return new URL(buildBaseUrlString());
-            } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(e);
+        private HttpParamMap getHeaders() {
+            HttpParamMap merged = new HttpParamMap();
+
+            for(Map.Entry<String,List<HttpParam>> entry : headerParams.entrySet()){
+                String value = headerParamsSerializer.serialize(entry.getValue(), charset);
+                merged.set(new HttpParam(entry.getKey(), new StringValue(value), true));
             }
-        }
-        private String buildBaseUrlString() {
-            StringBuffer baseUri = new StringBuffer();
-            Matcher m = SINGLE_PLACEHOLDER_PATTERN.matcher(this.baseUri);
-            while (m.find()) {
-                String placeHolder = m.group(1);
-                if (!pathParams.containsKey(placeHolder)) {
-                    throw new IllegalStateException("Not all path parameters have been provided for base uri '" + this.baseUri + "'! Missing param: " + placeHolder);
+            if(!cookieParams.isEmpty()) {
+                for(HttpParam cookie : cookieParams.allValues()){
+                    merged.put(new HttpParam("Cookie", cookieParamSerializer.serialize(cookie, charset), true));
                 }
-                String value = pathParams.get(placeHolder);
-                m.appendReplacement(baseUri, value);
+//                merged.set(new HttpParam("Cookie", cookieParamsSerializer.serialize(cookieParams, charset), true));
             }
-            m.appendTail(baseUri);
-            return baseUri.toString();
+
+            return merged;
+        }
+        
+        private String buildBaseUrlString() {
+            for (HttpParam pathTemplate : pathParams.allValues()) {
+                pathBuilder.merge(pathTemplate.getName(), pathTemplate.getValue().asString(), pathTemplate.isEncoded());
+            }
+            String url = pathBuilder.build();
+            if (matrixParams.size() > 0) {  
+                    url += MATRIX_SEP + matrixParamsSerializer.serialize(matrixParams,charset);
+            }
+            if (queryParams.size() > 0) {
+                    url += "?" + queryParamsSerializer.serialize(queryParams,charset);
+            }
+            return url;
         }
 
-        /**
-         * Sets the url the request will point to using the default encoding (utf-8)
-         * <p>Can contains a predefined query string
-         *
-         * @param uriString Url the request will point to
-         * @return current builder
-         * @throws URISyntaxException If the uriString is not a valid URL
-         * @see Builder#pointsTo(String,String)
-         */
-        public Builder pointsTo(String uriString) throws URISyntaxException {
-            return pointsTo(uriString, encoding);
-        }
-
-        /**
-         * ²
-         * Sets the url the request will point to.
-         * <p>Can contains a predefined query string
-         * <p>This value can contain placeholders that points to method arguments. eg http://localhost:8080/my-path/{my-param-name}/{p2}.json
-         *
-         * @param uriString Url the request will point to - No query string allowed
-         * @param encoding  Request encoding
-         * @return current builder
-         * @throws URISyntaxException If the uriString is not a valid URL
-         */
-        public Builder pointsTo(String uriString, String encoding) throws URISyntaxException {
-            Validate.isTrue(!Urls.hasQueryString(uriString), "Given uri contains a query string:" + uriString);
-            this.baseUri = Urls.normalizeSlashes(uriString);
-            this.encoding = encoding;
+        public Builder mergeMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            this.matrixParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap(MATRIX_SEP, valueSeparator);
+            this.queryParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap("&", valueSeparator);
             return this;
         }
 
-        /**
-         * Return the current url include or not the query string
-         *
-         * @param includeQueryString Flag to indicate to include or not the query string
-         * @return the url as a string
-         * @throws UnsupportedEncodingException not supported parameter encoding
-         */
-        public String getUrlString(boolean includeQueryString) throws UnsupportedEncodingException {
-            String uri = buildBaseUrlString();
-            if (!includeQueryString || queryParams.isEmpty()) return uri;
-            return uri + "?" + Urls.buildQueryString(queryParams, encoding);
+        public Builder within(RequestContext requestContext){
+            this.requestContext = requestContext;
+            return this;
         }
-
-        /**
-         * Return the current url include or not the query string
-         *
-         * @param includeQueryString Flag to indicate to include or not the query string
-         * @return the url
-         * @throws MalformedURLException        invalid url
-         * @throws UnsupportedEncodingException not supported parameter encoding
-         */
-        public URL getUrl(boolean includeQueryString) throws MalformedURLException, UnsupportedEncodingException {
-            return new URL(getUrlString(includeQueryString));
-        }
-
 
         /**
          * @param timeout connection and socket timeout used for the resulting request.
@@ -348,31 +368,45 @@ public class HttpRequest {
          * @param value Header value
          * @return current builder
          */
-        public Builder addHeaderParam(String name, Object value) {
-            headerParams.put(name, value != null ? value.toString() : null);
+        public Builder addMatrixParam(String name, String value, Map<String,Object> metas, boolean encode) {
+            return addMatrixParam(name, new StringValue(value, metas), encode);
+        }
+        public Builder addMatrixParam(String name, String value, Map<String,Object> metas) {
+            return addMatrixParam(name, value, metas, false);
+        }
+        public Builder addMatrixParam(String name, Value value, boolean encode) {
+            matrixParams.put(new HttpParam(name, value, encode));
             return this;
+        }
+        public Builder addMatrixParam(String name, Value value) {
+            return addMatrixParam(name, value, false);
         }
 
         /**
-         * Sets the resulting request's headerParams to the given map
+         * Adds a request header to the resulting request's headerParams
          *
-         * @param headers request headerParams map
+         * @param name  Header name
+         * @param value Header value
          * @return current builder
          */
-        public Builder setHeaderParams(Map<String, String> headers) {
-            this.headerParams.clear();
-            return addHeaderParams(headers);
+        public Builder addHeaderParam(String name, String value, Map<String,Object> metas, boolean encode) {
+            return addHeaderParam(name, new StringValue(value, metas), encode);
         }
-
-        /**
-         * Adds the the given map to the resulting request's headerParams
-         *
-         * @param headers request headerParams map
-         * @return current builder
-         */
-        public Builder addHeaderParams(Map<String, String> headers) {
-            this.headerParams.putAll(headers);
+        public Builder addHeaderParam(String name, String value, Map<String,Object> metas) {
+            return addHeaderParam(name, value, metas, true);
+        }
+        public Builder addHeaderParam(String name, String value, boolean encode) {
+            return addHeaderParam(name, value, Collections.<String, Object>emptyMap(), encode);
+        }
+        public Builder addHeaderParam(String name, String value) {
+            return addHeaderParam(name, value, Collections.<String, Object>emptyMap(), true);
+        }
+        public Builder addHeaderParam(String name, Value value, boolean encode) {
+            headerParams.put(new HttpParam(name, value, encode));
             return this;
+        }
+        public Builder addHeaderParam(String name, Value value) {
+            return addHeaderParam(name, value, true);
         }
 
         /**
@@ -383,33 +417,18 @@ public class HttpRequest {
          * @param value path parameter value
          * @return current builder
          */
-        public Builder addPathParam(String name, String value) {
-            this.pathParams.put(name, value);
+        public Builder addPathParam(String name, String value, Map<String,Object> metas, boolean encode) {
+            return addPathParam(name, new StringValue(value,metas ), encode);
+        }
+        public Builder addPathParam(String name, String value, Map<String,Object> metas) {
+            return addPathParam(name, value, metas, false);
+        }
+        public Builder addPathParam(String name, Value value, boolean encode) {
+            this.pathParams.put(new HttpParam(name, value, encode));
             return this;
         }
-
-        /**
-         * Sets the resulting request's path parameters to the given map
-         * <p>Keys are the path template placeholders where the given values will be merged.
-         *
-         * @param params path parameters map
-         * @return current builder
-         */
-        public Builder setPathParams(Map<String, String> params) {
-            this.pathParams.clear();
-            return addPathParams(params);
-        }
-
-        /**
-         * Adds the given map to the resulting request's path parameters
-         * <p>Keys are the path template placeholders where the given values will be merged.
-         *
-         * @param params path parameters map
-         * @return current builder
-         */
-        public Builder addPathParams(Map<String, String> params) {
-            this.pathParams.putAll(params);
-            return this;
+        public Builder addPathParam(String name, Value value) {
+            return addPathParam(name, value, false);
         }
 
         /**
@@ -419,31 +438,24 @@ public class HttpRequest {
          * @param value query string parameter value or placeholder name
          * @return current builder
          */
+        public Builder addQueryParam(String name, String value, Map<String,Object> metas, boolean encoded) {
+            return addQueryParam(name, new StringValue(value, metas), encoded);
+        }
+        public Builder addQueryParam(String name, String value, Map<String,Object> metas) {
+            return addQueryParam(name, value, metas, false);
+        }
+        public Builder addQueryParam(String name, String value, boolean encoded) {
+            return addQueryParam(name, value, Collections.<String, Object>emptyMap(), encoded);
+        }
         public Builder addQueryParam(String name, String value) {
-            queryParams.put(name, value);
+            return addQueryParam(name, value, Collections.<String, Object>emptyMap(), false);
+        }
+        public Builder addQueryParam(String name, Value value, boolean encoded) {
+            queryParams.put(new HttpParam(name, value, encoded));
             return this;
         }
-
-        /**
-         * Sets the resulting request's query string parameters to the given map
-         *
-         * @param params query string parameters map
-         * @return current builder
-         */
-        public Builder setQueryParams(Map<String, String> params) {
-            this.queryParams.clear();
-            return addQueryParams(params);
-        }
-
-        /**
-         * Adds the given map to the resulting request's query string parameter
-         *
-         * @param params query string parameters map
-         * @return current builder
-         */
-        public Builder addQueryParams(Map<String, String> params) {
-            this.queryParams.putAll(params);
-            return this;
+        public Builder addQueryParam(String name, Value value) {
+            return addQueryParam(name, value, false);
         }
 
         /**
@@ -453,33 +465,47 @@ public class HttpRequest {
          * @param value query string parameter value
          * @return current builder
          */
-        public Builder addFormParam(String name, Object value) {
-            formParams.put(name, value);
+        public Builder addFormParam(String name, Value value, boolean encoded) {
+            formParams.put(new HttpParam(name, value, encoded));
             return this;
         }
-
-        /**
-         * Sets the resulting request's body to the given map
-         *
-         * @param params query string parameters map
-         * @return current builder
-         */
-        public Builder setFormParams(Map<String, Object> params) {
-            this.formParams.clear();
-            return addFormParams(params);
+        public Builder addFormParam(String name, Value value) {
+            return addFormParam(name, value, false);
+        }
+        public Builder addFormParam(String name, String value, Map<String,Object> metas) {
+            return addFormParam(name, new StringValue(value, metas), false);
+        }
+        public Builder addFormParam(String name, String value) {
+            return addFormParam(name, value, Collections.<String, Object>emptyMap());
         }
 
-        /**
-         * Adds the given map to the resulting request's body parameter
-         *
-         * @param params query string parameters map
-         * @return current builder
-         */
-        public Builder addFormParams(Map<String, Object> params) {
-            this.formParams.putAll(params);
+
+        public Builder addCookieParam(String name, String value, Map<String,Object> metas, boolean encoded) {
+            return addCookieParam(name, new StringValue(value, metas), encoded);
+        }
+        public Builder addCookieParam(String name, String value, Map<String,Object> metas) {
+            return addCookieParam(name, value, metas, false);
+        }
+        public Builder addCookieParam(String name, Value value, boolean encoded) {
+            cookieParams.put(new HttpParam(name, value, encoded));
             return this;
         }
+        public Builder addCookieParam(String name, Value value) {
+            return addCookieParam(name, value, false);
+        }
 
+
+        public Builder addParam(String name, String value, String dest, Map<String,Object> metas)  {
+            return addParam(name, new StringValue(value, metas), dest);
+        }
+        
+        public Builder addParam(String name, Value value, String dest) {
+            return addParam(name, value, dest, false);
+        }
+
+        public Builder addParam(String name, String value, String dest, Map<String,Object> metas, boolean encoded) {
+            return addParam(name, new StringValue(value, metas), dest, encoded);
+        }
         /**
          * Adds a parameter to the given destination in the final http request
          *
@@ -488,16 +514,20 @@ public class HttpRequest {
          * @param dest  parameter destination
          * @return current builder
          */
-        public Builder addParam(String name, Object value, String dest) {
+        public Builder addParam(String name, Value value, String dest, boolean encoded) {
             dest = dest.toLowerCase();
             if (DEST_QUERY.equals(dest)) {
-                return addQueryParam(name, value.toString());
+                return addQueryParam(name, value, encoded);
             } else if (DEST_PATH.equals(dest)) {
-                return addPathParam(name, value.toString());
+                return addPathParam(name, value, encoded);
             } else if (DEST_FORM.equals(dest)) {
-                return addFormParam(name, value);
+                return addFormParam(name, value, encoded);
             } else if (DEST_HEADER.equals(dest)) {
-                return addHeaderParam(name, value.toString());
+                return addHeaderParam(name, value, encoded);
+            } else if (DEST_COOKIE.equals(dest)) {
+                return addCookieParam(name, value, encoded);
+            } else if (DEST_MATRIX.equals(dest)) {
+                return addMatrixParam(name, value, encoded);
             } else {
                 throw new IllegalStateException("Unsupported destination ! (dest=" + dest + ")");
             }
@@ -511,19 +541,19 @@ public class HttpRequest {
             return buildBaseUrlString();
         }
 
-        public Map<String, String> getHeaderParams() {
+        public HttpParamMap getHeaderParams() {
             return headerParams;
         }
 
-        public Map<String, Object> getFormParams() {
+        public HttpParamMap getFormParams() {
             return formParams;
         }
 
-        public Map<String, String> getQueryParams() {
+        public HttpParamMap getQueryParams() {
             return queryParams;
         }
 
-        public Map<String, String> getPathParams() {
+        public HttpParamMap getPathParams() {
             return pathParams;
         }
 
@@ -538,5 +568,42 @@ public class HttpRequest {
         public String getEncoding() {
             return encoding;
         }
+
+        private static class SimplePathTemplate implements PathTemplate {
+            private final String path;
+
+            private SimplePathTemplate(String path) {
+                this.path = path;
+            }
+
+            public PathBuilder getBuilder(String encoding) {
+                return new SimplePathBuilder(path);
+            }
+
+            public String getUrlTemplate() {
+                return path;
+            }
+        }
+
+        private static class SimplePathBuilder implements PathBuilder {
+            private final String path;
+
+            private SimplePathBuilder(String path) {
+                this.path = path;
+            }
+
+            public PathBuilder merge(String templateName, String templateValue, boolean encoded) {
+                return this;
+            }
+
+            public String build() {
+                return path;
+            }
+        }
+
+
     }
+
+
 }
+

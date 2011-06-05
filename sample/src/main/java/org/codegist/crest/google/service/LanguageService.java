@@ -20,6 +20,7 @@
 
 package org.codegist.crest.google.service;
 
+import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.google.handler.GoogleResponseHandler;
 import org.codegist.crest.google.model.LangPair;
@@ -31,16 +32,15 @@ import org.codegist.crest.google.serializer.LangPairSerializer;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @EndPoint("http://ajax.googleapis.com")
-@Path("/ajax/services/language")
+@Path("ajax/services/language")
 @QueryParam(value = "v", defaultValue = "1.0")
 @ResponseHandler(GoogleResponseHandler.class)
-@Consumes("application/json")
 public interface LanguageService {
 
-    @Path("/detect")
+    @Path("detect")
     LanguageGuess detectLanguage(@QueryParam("q") String text);
 
-    @Path("/translate")
+    @Path("translate")
     Translation translate(
             @QueryParam("q") String text,
             @QueryParam("langpair") @Serializer(LangPairSerializer.class) LangPair langPair);

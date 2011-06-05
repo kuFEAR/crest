@@ -20,6 +20,7 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodParamConfig;
 
@@ -31,15 +32,15 @@ import java.lang.reflect.Method;
  * @see org.codegist.crest.interceptor.RequestInterceptor
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface RequestContext extends InterfaceContext {
+public interface RequestContext {
+
+    InterfaceConfig getInterfaceConfig();
 
     MethodConfig getMethodConfig();
 
     MethodParamConfig getParamConfig(int index);
 
-    Object getRawValue(int index);
-
-    String getSerializedValue(int index);
+    Object getValue(int index);
 
     int getArgCount();
 

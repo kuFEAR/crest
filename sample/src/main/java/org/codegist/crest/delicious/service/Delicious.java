@@ -33,7 +33,7 @@ import java.util.Date;
 @EndPoint("http://api.del.icio.us/v2")
 @RetryHandler(RefreshAuthentificationRetryHandler.class)
 @ResponseHandler(DeliciousResponseHandler.class)
-@Consumes("application/xml")
+//@Accepts("application/xml")
 public interface Delicious {
 
     @Path("/posts/delete")
@@ -88,7 +88,8 @@ public interface Delicious {
     @Path("/posts/all")
     Posts getAllPosts(
             @QueryParam("tag") String tag,
-            @QueryParam("range") Range resultRange,
+            @QueryParam("start") int start,
+            @QueryParam("results") int result,
             @QueryParam("fromdt") Date from,
             @QueryParam("todt") Date to,
             @QueryParam("meta") Boolean meta);

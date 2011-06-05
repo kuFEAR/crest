@@ -63,9 +63,11 @@ public class OverridingInterfaceConfigFactory implements InterfaceConfigFactory 
 
     public InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) throws ConfigFactoryException {
         InterfaceConfig configBase = baseFactory.newConfig(interfaze, context);
-        InterfaceConfig override = this.override;
+        InterfaceConfig override;
         if (overriderFactory != null) {
             override = overriderFactory.newConfig(interfaze, context);
+        }else{
+            override = this.override;
         }
         return Configs.override(configBase, override);
     }

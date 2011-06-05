@@ -28,6 +28,9 @@ import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.model.Uploader;
 import org.codegist.crest.flickr.service.Flickr;
+import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
+
+import java.util.HashMap;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -49,10 +52,13 @@ public class FlickrSample implements Runnable {
     public void run() {
         /* Get the factory */
         CRest crest = new CRestBuilder()
-                .deserializeXmlWithJaxb(FlickrModelFactory.class)
+                .deserializeXmlWithJaxb(new HashMap<String, Object>(){{
+                    put(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class);
+                }})
                 .useHttpClientRestService()
                 .setDateSerializerFormat("Seconds")
                 .setBooleanSerializer("1", "0")
+
                 .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
                 .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
                 .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
@@ -62,19 +68,22 @@ public class FlickrSample implements Runnable {
         Flickr flickr = crest.build(Flickr.class);
 
         /* Use it! */
-        long photoId = flickr.uploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
-        String ticketId = flickr.asyncUploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
-        Uploader upload = flickr.checkUploads(ticketId);
-        Gallery gallery = flickr.newGallery("My Gallery Title", "My Gallery Desc", photoId);
+        //long photoId = flickr.uploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
+//        String ticketId = flickr.asyncUploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
+//        Uploader upload = flickr.checkUploads(ticketId);
+        Gallery gallery = flickr.newGallery("My Gallery Title", "My Gallery Desc");
 
-        LOG.info("photoId=" + photoId);
-        LOG.info("ticketId=" + ticketId);
-        LOG.info("upload=" + upload);
+//        LOG.info("photoId=" + photoId);
+//        LOG.info("ticketId=" + ticketId);
+//        LOG.info("upload=" + upload);
         LOG.info("gallery=" + gallery);
     }
 
+
+
     public static void main(String[] args) {
-        new FlickrSample(args[0], args[1], args[2]).run();
+        //new FlickrSample(args[0], args[1], args[2]).run();
+        new FlickrSample("ae47a48c472296e024ecb97a6764ff02", "cf88a593c025386a","72157625399960176-77233f2f1c859335").run();
     }
 
 }

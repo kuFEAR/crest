@@ -49,6 +49,7 @@ public class GoogleServicesSample implements Runnable {
         LanguageGuess searchLanguageGuess = languageService.detectLanguage("Guess it!");
         Translation searchTranslation = languageService.translate("Translate me if you can!", new LangPair("en", "fr"));
         SearchResult<Address> searchResult = searchService.search("this is a google search");
+        
 
         LOG.info("search=" + searchResult);
         LOG.info("detectLanguage=" + searchLanguageGuess);

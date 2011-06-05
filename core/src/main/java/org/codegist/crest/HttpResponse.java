@@ -25,15 +25,11 @@ import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Strings;
 import org.codegist.common.lang.ToStringBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -41,19 +37,20 @@ import java.util.zip.GZIPInputStream;
  * <p>Response charset and mime type are retrieved on the Content-Type header.
  * <p>If no valid charset and mimetype are found, it defaults respectively with ISO-8859-1 and text/html
  * <p>If the response is GZipped, the Content-Encoding header must be set to gzip.
+ *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HttpResponse {
+
     private static final String DEFAULT_MIME_TYPE = "text/html";
     private static final Charset DEFAULT_CHARSET = Charset.forName("ISO-8859-1");
-    private static final Pattern CONTENT_TYPE_PARSER = Pattern.compile("^(?:([^;=]+)?\\s*;?\\s*charset=(.*+))|(?:([^;=]+)\\s*;?\\s*)$");
     private final HttpRequest request;
     private final InputStream inputStream;
-    private final Map<String, List<String>> headers;
     private final int statusCode;
     private final String contentEncoding;
-    private final String mimeType;
+    private final String contentType;
     private final Charset charset;
+    private final Map<String, List<String>> headers;
 
     private String responseString = null;
 
@@ -62,16 +59,14 @@ public class HttpResponse {
     }
 
     public HttpResponse(HttpRequest request, int statusCode, Map<String, List<String>> headers) {
-        this(request, statusCode, headers, null);
+        this(request, statusCode, headers, EMPTY_HTTP_RESOURCE);
     }
 
     /**
-     *
-     *
-     * @param request     The original request
-     * @param statusCode  the response status code
-     * @param headers     response headers.
-     * @param resource underlying http resource
+     * @param request    The original request
+     * @param statusCode the response status code
+     * @param headers    response headers.
+     * @param resource   underlying http resource
      */
     public HttpResponse(HttpRequest request, int statusCode, Map<String, List<String>> headers, HttpResource resource) {
         this.request = request;
@@ -88,39 +83,18 @@ public class HttpResponse {
         } else {
             this.inputStream = stream;
         }
-        String[] contentTypeGroups = Strings.extractGroups(CONTENT_TYPE_PARSER, getFirstHeaderFor(this.headers, "Content-Type"));
-        if (contentTypeGroups.length == 0) {
-            this.mimeType = DEFAULT_MIME_TYPE;
+        String[] contentTypes = extractContentTypeAndCharset(this.headers);
+        if (contentTypes.length == 0) {
+            this.contentType = DEFAULT_MIME_TYPE;
             this.charset = DEFAULT_CHARSET;
         } else {
-            this.mimeType = Strings.defaultIfBlank(contentTypeGroups[1], Strings.defaultIfBlank(contentTypeGroups[3], DEFAULT_MIME_TYPE));
-            this.charset = Charset.forName(Strings.defaultIfBlank(contentTypeGroups[2], DEFAULT_CHARSET.name()));
+            this.contentType = Strings.defaultIfBlank(contentTypes[0], DEFAULT_MIME_TYPE);
+            if (Strings.isNotBlank(contentTypes[1])) {
+                this.charset = Charset.forName(contentTypes[1]);
+            } else {
+                this.charset = DEFAULT_CHARSET;
+            }
         }
-    }
-
-    private static String getFirstHeaderFor(Map<String, List<String>> headers, String name) {
-        List<String> contentType = headers.get(name);
-        if (contentType == null || contentType.isEmpty()) return "";
-        return Strings.defaultIfBlank(contentType.get(0), "");
-    }
-
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    public Charset getCharset() {
-        return charset;
-    }
-
-    public String getContentEncoding() {
-        return contentEncoding;
-    }
-
-    /**
-     * @return The original request
-     */
-    public HttpRequest getRequest() {
-        return request;
     }
 
     /**
@@ -181,6 +155,26 @@ public class HttpResponse {
         return statusCode;
     }
 
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public String getContentEncoding() {
+        return contentEncoding;
+    }
+
+    /**
+     * @return The original request
+     */
+    public HttpRequest getRequest() {
+        return request;
+    }
+
     /**
      * Close the response.
      */
@@ -192,11 +186,45 @@ public class HttpResponse {
         return new ToStringBuilder(this)
                 .append("statusCode", statusCode)
                 .append("contentEncoding", contentEncoding)
-                .append("mimeType", mimeType)
+                .append("mimeType", contentType)
                 .append("charset", charset)
                 .append("headers", headers)
                 .append("request", request)
                 .toString();
     }
+
+
+    private static String[] extractContentTypeAndCharset(Map<String, List<String>> headers) {
+        String contentType = getFirstHeaderFor(headers, "Content-Type");
+        String[] contentTypes = contentType.split(";");
+        String[] res = new String[2];
+        if (contentTypes.length >= 1) {
+            res[0] = contentTypes[0];
+        }
+        if (contentTypes.length >= 2) {
+            if (contentTypes[1].contains("charset")) {
+                res[1] = contentTypes[1].split("=")[1];
+            }
+        }
+        return res;
+    }
+
+
+    private static String getFirstHeaderFor(Map<String, List<String>> headers, String name) {
+        List<String> contentType = headers.get(name);
+        if (contentType == null || contentType.isEmpty()) return "";
+        return Strings.defaultIfBlank(contentType.get(0), "");
+    }
+
+    private static final HttpResource EMPTY_HTTP_RESOURCE = new HttpResource () {
+        private final InputStream INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
+        public InputStream getContent() throws HttpException {
+            return INPUT_STREAM;
+        }
+
+        public void release() throws HttpException {
+
+        }
+    };
 }
 

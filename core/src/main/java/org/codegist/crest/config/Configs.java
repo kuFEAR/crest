@@ -20,10 +20,10 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.Objects;
-
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static org.codegist.common.lang.Objects.defaultIfNull;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -51,15 +51,13 @@ public final class Configs {
     public static InterfaceConfig override(InterfaceConfig base, InterfaceConfig overrides) {
         if(overrides == null) return base;
         Map<Method, MethodConfig> cache = new HashMap<Method, MethodConfig>();
-        for (Method method : Objects.defaultIfNull(overrides.getMethods(), base.getMethods())) {
+        for (Method method : defaultIfNull(overrides.getMethods(), base.getMethods())) {
             cache.put(method, override(base.getMethodConfig(method), overrides.getMethodConfig(method)));
         }
         return new DefaultInterfaceConfig(
-                Objects.defaultIfNull(overrides.getInterface(), base.getInterface()),
-                Objects.defaultIfNull(overrides.getEndPoint(), base.getEndPoint()),
-                Objects.defaultIfNull(overrides.getPath(), base.getPath()),
-                Objects.defaultIfNull(overrides.getEncoding(), base.getEncoding()),
-                Objects.defaultIfNull(overrides.getGlobalInterceptor(), base.getGlobalInterceptor()),
+                defaultIfNull(overrides.getInterface(), base.getInterface()),
+                defaultIfNull(overrides.getEncoding(), base.getEncoding()),
+                defaultIfNull(overrides.getGlobalInterceptor(), base.getGlobalInterceptor()),
                 cache
         );
     }
@@ -81,7 +79,7 @@ public final class Configs {
      */
     public static MethodConfig override(MethodConfig base, MethodConfig overrides) {
         if(overrides == null) return base;
-        MethodParamConfig[] pl = new MethodParamConfig[Objects.defaultIfNull(overrides.getParamCount(), base.getParamCount())];
+        MethodParamConfig[] pl = new MethodParamConfig[defaultIfNull(overrides.getParamCount(), base.getParamCount())];
         for (int i = 0; i < pl.length; i++) {
             pl[i] = override(base.getParamConfig(i), overrides.getParamConfig(i));
         }
@@ -109,21 +107,23 @@ public final class Configs {
         ParamConfig[] extras = overridden.toArray(new ParamConfig[overridden.size()]);
 
         return new DefaultMethodConfig(
-                Objects.defaultIfNull(overrides.getMethod(), base.getMethod()),
-                Objects.defaultIfNull(overrides.getPath(), base.getPath()),
-                Objects.defaultIfNull(overrides.getHttpMethod(), base.getHttpMethod()),
-                Objects.defaultIfNull(overrides.getSocketTimeout(), base.getSocketTimeout()),
-                Objects.defaultIfNull(overrides.getConnectionTimeout(), base.getConnectionTimeout()),
-                Objects.defaultIfNull(overrides.getRequestInterceptor(), base.getRequestInterceptor()),
-                Objects.defaultIfNull(overrides.getResponseHandler(), base.getResponseHandler()),
-                Objects.defaultIfNull(overrides.getErrorHandler(), base.getErrorHandler()),
-                Objects.defaultIfNull(overrides.getRetryHandler(), base.getRetryHandler()),
-                Objects.defaultIfNull(overrides.getDeserializer(), base.getDeserializer()),
+                defaultIfNull(overrides.getMethod(), base.getMethod()),
+                defaultIfNull(overrides.getPathTemplate(), base.getPathTemplate()),
+                defaultIfNull(overrides.getHttpMethod(), base.getHttpMethod()),
+                defaultIfNull(overrides.getSocketTimeout(), base.getSocketTimeout()),
+                defaultIfNull(overrides.getConnectionTimeout(), base.getConnectionTimeout()),
+                defaultIfNull(overrides.getBodyWriter(), base.getBodyWriter()),
+                defaultIfNull(overrides.getRequestInterceptor(), base.getRequestInterceptor()),
+                defaultIfNull(overrides.getResponseHandler(), base.getResponseHandler()),
+                defaultIfNull(overrides.getErrorHandler(), base.getErrorHandler()),
+                defaultIfNull(overrides.getRetryHandler(), base.getRetryHandler()),
+                defaultIfNull(overrides.getDeserializers(), base.getDeserializers()),
                 pl,
                 extras
         );
     }
 
+    // TODO REMOVE THAT MUST BE A MULTIMAP
     public static Map<String, ParamConfig> toMap(ParamConfig[] params){
         Map<String, ParamConfig> map = new LinkedHashMap<String, ParamConfig>();
         if(params == null) return map;
@@ -149,8 +149,9 @@ public final class Configs {
         if(overrides == null) return base;
         return new DefaultMethodParamConfig(
                 override((ParamConfig) base, (ParamConfig) overrides),
-                Objects.defaultIfNull(overrides.getSerializer(), base.getSerializer()),
-                Objects.defaultIfNull(overrides.getInjector(), base.getInjector())
+                defaultIfNull(overrides.getSerializer(), base.getSerializer()),
+                defaultIfNull(overrides.isEncoded(), base.isEncoded()),
+                defaultIfNull(overrides.getAnnotations(), base.getAnnotations())
         );
     }
 
@@ -169,22 +170,11 @@ public final class Configs {
     public static ParamConfig override(ParamConfig base, ParamConfig overrides) {
         if(overrides == null) return base;
         return new DefaultParamConfig(
-                Objects.defaultIfNull(overrides.getName(), base.getName()),
-                Objects.defaultIfNull(overrides.getDefaultValue(), base.getDefaultValue()),
-                Objects.defaultIfNull(overrides.getDestination(), base.getDestination())
+                defaultIfNull(overrides.getName(), base.getName()),
+                defaultIfNull(overrides.getDefaultValue(), base.getDefaultValue()),
+                defaultIfNull(overrides.getDestination(), base.getDestination()),
+                defaultIfNull(overrides.getMetaDatas(), base.getMetaDatas())
         );
-    }
-
-    @SuppressWarnings("unchecked")
-    static ConfigBuilders.MethodParamConfigBuilder injectAnnotatedConfig(ConfigBuilders.MethodParamConfigBuilder configMethod, Class<?> paramType) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        /* Params type specifics */
-        org.codegist.crest.annotate.Serializer serializer = paramType.getAnnotation(org.codegist.crest.annotate.Serializer.class);
-        org.codegist.crest.annotate.Injector injector = paramType.getAnnotation(org.codegist.crest.annotate.Injector.class);
-
-        if (serializer != null) configMethod.setSerializer(serializer.value());
-        if (injector != null) configMethod.setInjector(injector.value());
-
-        return configMethod;
     }
 }
 

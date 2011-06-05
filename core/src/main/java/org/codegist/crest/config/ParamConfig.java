@@ -22,6 +22,9 @@ package org.codegist.crest.config;
 
 import org.codegist.crest.HttpRequest;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 /**
  * Basic parameter configuration holder object for interface/method extra parameters. Extra parameters are added on top of the method arguments.
  * <p>Implementors must respect the following contract :
@@ -56,6 +59,9 @@ public interface ParamConfig {
      */
     String DEFAULT_NAME = "";
 
+    Map<String,Object> DEFAULT_METADATAS = null;
+
+
     /**
      * @return Parameter name to be used.
      */
@@ -70,4 +76,6 @@ public interface ParamConfig {
      * @return Destination of the argument value.
      */
     String getDestination();
+
+    Map<String, Object> getMetaDatas();
 }

@@ -20,9 +20,11 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.injector.DefaultInjector;
-import org.codegist.crest.injector.Injector;
 import org.codegist.crest.serializer.Serializer;
+
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Method's argument configuration holder object.
@@ -37,12 +39,6 @@ import org.codegist.crest.serializer.Serializer;
  */
 public interface MethodParamConfig extends ParamConfig {
 
-    /**
-     * Default injector applied when non specified.
-     *
-     * @see MethodParamConfig#getInjector()
-     */
-    Class<? extends Injector> DEFAULT_INJECTOR = DefaultInjector.class;
 
     /**
      * Default serializer applied when non specified.
@@ -52,21 +48,15 @@ public interface MethodParamConfig extends ParamConfig {
     Class<? extends Serializer> DEFAULT_SERIALIZER = null;
 
     /**
-     * The serializer used to transform this argument value in a string.
-     * <p>This serializer is meant to be used by the {@link org.codegist.crest.injector.Injector} set for this parameter.
-     * <p>{@link org.codegist.crest.injector.DefaultInjector} will merge the serialized value in the URL or Body.
-     * <p>If the object could not be serialized to a String, then a custom {@link org.codegist.crest.injector.Injector} can be specified.
+     * Default param encoded flag when non specified.
      *
-     * @return The serializer used to transform this argument value in a string
-     * @see org.codegist.crest.serializer.Serializer
-     * @see org.codegist.crest.injector.Injector
+     * @see MethodParamConfig#getSerializer()
      */
+    boolean DEFAULT_ENCODED = false;
+
     Serializer getSerializer();
 
-    /**
-     * <p>Should be used when the user wish to inject a parameter that is not serializable to a single String or when user specific rules applies (eg: parameter must be exploded in multiple values accross the request queryString and/or body content).
-     *
-     * @return The parameter request injector.
-     */
-    Injector getInjector();
+    boolean isEncoded();
+
+    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

@@ -20,24 +20,23 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.serializer.DeserializationManager;
 
 import java.lang.reflect.Type;
 
 /**
  * Default internal immutable implementation of ResponseContext
+ *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 class DefaultResponseContext implements ResponseContext {
 
     private final HttpResponse response;
     private final RequestContext context;
+    private final DeserializationManager deserializationManager;
 
-    public DefaultResponseContext(ResponseContext context) {
-        this(context.getRequestContext(), context.getResponse());
-    }
-
-    public DefaultResponseContext(RequestContext context, HttpResponse response) {
+    public DefaultResponseContext(DeserializationManager deserializationManager, RequestContext context, HttpResponse response) {
+        this.deserializationManager = deserializationManager;
         this.context = context;
         this.response = response;
     }
@@ -58,7 +57,18 @@ class DefaultResponseContext implements ResponseContext {
         return context;
     }
 
-    public Deserializer getDeserializer() {
-        return context.getMethodConfig().getDeserializer();
+    public <T> T deserialize() {
+        return this.<T>deserializeTo((Class<T>) getExpectedType(), getExpectedGenericType());
+    }
+    
+    public <T> T deserializeTo(Class<T> type, Type genericType) {
+        return deserializationManager.<T>deserializeTo(
+                type,
+                genericType,
+                response.asStream(),
+                response.getContentType(),
+                response.getCharset(),
+                context.getMethodConfig().getDeserializers()
+        );
     }
 }

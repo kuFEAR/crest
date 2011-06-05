@@ -22,9 +22,12 @@ package org.codegist.crest.config;
 
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
+import org.codegist.common.reflect.Annotations;
 import org.codegist.crest.interceptor.RequestInterceptor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -34,32 +37,21 @@ import java.util.Map;
 class DefaultInterfaceConfig implements InterfaceConfig {
 
     private final Class<?> interfaze;
-    private final String endPoint;
-    private final String path;
     private final String encoding;
     private final RequestInterceptor globalInterceptor;
-
     private final Map<Method, MethodConfig> cache;
+    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultInterfaceConfig(Class<?> interfaze, String endPoint, String path, String encoding, RequestInterceptor globalInterceptor, Map<Method, MethodConfig> cache) {
+    DefaultInterfaceConfig(Class<?> interfaze, String encoding, RequestInterceptor globalInterceptor, Map<Method, MethodConfig> cache) {
         this.interfaze = interfaze;
-        this.endPoint = endPoint;
-        this.path = path;
         this.encoding = encoding;
         this.globalInterceptor = globalInterceptor;
         this.cache = Maps.unmodifiable(cache);
+        this.annotations = interfaze != null ? Maps.unmodifiable(Annotations.toMap(interfaze.getAnnotations())) : null;
     }
 
     public Class<?> getInterface() {
         return interfaze;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     public String getEncoding() {
@@ -78,11 +70,13 @@ class DefaultInterfaceConfig implements InterfaceConfig {
         return cache != null ? cache.get(meth) : null;
     }
 
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
+        return annotations;
+    }
+
     public String toString() {
         return new ToStringBuilder(this)
                 .append("interface", interfaze)
-                .append("server", endPoint)
-                .append("path", path)
                 .append("encoding", encoding)
                 .append("globalInterceptor", globalInterceptor)
                 .append("cache", cache)

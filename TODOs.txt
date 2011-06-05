@@ -11,7 +11,7 @@ CREST
 see http://download.oracle.com/javaee/6/api/javax/ws/rs/core/UriBuilder.html
 * Proper testing for Deserializer per Method/MimeType
 DONE * @Consume, @ConsumeJson, @ConsumeXml annotations ?
-DONE @ConsumeJson(contentType="application/json") contentType would be optional and ends up in the Accept Header.
+DONE @ConsumeJson(accepts="application/json") accepts would be optional and ends up in the Accept Header.
 DONE ---> Deserializer per Method
 DONE ---> remove builder.expects...
 DONE ---> builder.consumesJson|Xml]() should have an optional default Accept Header value as well and specify. They should set the MethodConfig.DEFAULT_DESERIAIZER to XML or JSON etc... to default all methods to this
@@ -19,6 +19,12 @@ DONE ---> builder.deserializeXmlWithJaxb(...)
 DONE ---> builder.deserializeXmlWithSimpleXml(...)
 DONE ---> builder.deserializeMimeTypeWith(Deserializer)
 DONE ---> builder.use[Json|Xml]DeserializerFor(String mime)
+
+NEED TEST FOR
+- @Path
+- @Encoded
+- @Consume
+and everything else!
 
 
 

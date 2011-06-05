@@ -22,19 +22,20 @@ package org.codegist.crest;
 
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
-import org.codegist.common.lang.Strings;
+import org.codegist.common.lang.Objects;
 import org.codegist.common.reflect.ObjectMethodsAwareInvocationHandler;
-import org.codegist.crest.config.ConfigFactoryException;
-import org.codegist.crest.config.InterfaceConfig;
-import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
+import org.codegist.crest.config.*;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.serializer.DeserializationManager;
+import org.codegist.crest.serializer.Serializer;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Default CRest implementation based on {@link org.codegist.crest.CRestContext} interface data model.
@@ -71,14 +72,16 @@ public class DefaultCRest implements CRest, Disposable {
 
     class RestInterfacer<T> extends ObjectMethodsAwareInvocationHandler {
 
-        private final String pathFormat;
-        private final InterfaceContext interfaceContext;
+        private final InterfaceConfig interfaceConfig;
+        private final DeserializationManager deserializationManager;
+
+        private final String paramCollectionSeparator;
 
         private RestInterfacer(Class<T> interfaze) throws ConfigFactoryException {
-            InterfaceConfig config = context.getConfigFactory().newConfig(interfaze, context);
-            this.interfaceContext = new DefaultInterfaceContext(config, context.getProperties());
-            boolean addSlashes = !Boolean.FALSE.equals(context.getProperties().get(CRestProperty.CREST_URL_ADD_SLASHES));
-            pathFormat = addSlashes ? "%s/%s/%s" : "%s%s%s";
+            this.interfaceConfig = context.getConfigFactory().newConfig(interfaze, context);
+            this.deserializationManager = (DeserializationManager) context.getProperties().get(DeserializationManager.class.getName());
+
+            this.paramCollectionSeparator = (String) context.getProperties().get(CRestProperty.PARAM_COLLECTION_SEPARATOR);
         }
 
         @Override
@@ -91,8 +94,8 @@ public class DefaultCRest implements CRest, Disposable {
         }
 
         private Object doInvoke(Method method, Object[] args) throws Throwable {
-            MethodConfig mc = interfaceContext.getConfig().getMethodConfig(method);
-            RequestContext requestContext = new DefaultRequestContext(interfaceContext, method, args);
+            MethodConfig mc = interfaceConfig.getMethodConfig(method);
+            RequestContext requestContext = new DefaultRequestContext(interfaceConfig, method, args);
 
             int attemptCount = 0;
             ResponseContext responseContext;
@@ -107,12 +110,12 @@ public class DefaultCRest implements CRest, Disposable {
                     // doInvoke the request
                     HttpResponse response = restService.exec(request);
                     // wrap the response in response context
-                    responseContext = new DefaultResponseContext(requestContext, response);
+                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, response);
                 } catch (HttpException e) {
-                    responseContext = new DefaultResponseContext(requestContext, e.getResponse());
+                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, e.getResponse());
                     exception = e;
                 } catch (RuntimeException e) {
-                    responseContext = new DefaultResponseContext(requestContext, null);
+                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, null);
                     exception = e;
                 }
                 // loop until an exception has been thrown and the retry handle ask for retry
@@ -166,18 +169,21 @@ public class DefaultCRest implements CRest, Disposable {
          * @throws URISyntaxException
          */
         private HttpRequest buildRequest(RequestContext requestContext) throws Exception {
-            InterfaceConfig ic = requestContext.getConfig();
             MethodConfig mc = requestContext.getMethodConfig();
-            RequestInterceptor gi = ic.getGlobalInterceptor();
+            RequestInterceptor gi = interfaceConfig.getGlobalInterceptor();
             RequestInterceptor ri = mc.getRequestInterceptor();
+            String encoding = interfaceConfig.getEncoding();
 
             // Build base request
-
-            String fullpath = String.format(pathFormat, ic.getEndPoint(), Strings.defaultIfBlank(ic.getPath(), ""), mc.getPath());
-            HttpRequest.Builder builder = new HttpRequest.Builder(fullpath, ic.getEncoding())
+            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), interfaceConfig.getEncoding())
+                    .within(requestContext)
                     .using(mc.getHttpMethod())
                     .timeoutSocketAfter(mc.getSocketTimeout())
                     .timeoutConnectionAfter(mc.getConnectionTimeout());
+
+            if(paramCollectionSeparator != null) {
+                builder.mergeMultiValuedParam(paramCollectionSeparator);
+            }
 
             // Notify injectors (Global and method) before param injection
             gi.beforeParamsInjectionHandle(builder, requestContext);
@@ -188,15 +194,27 @@ public class DefaultCRest implements CRest, Disposable {
                 builder.addParam(
                         p.getName(),
                         p.getDefaultValue(),
-                        p.getDestination());
+                        p.getDestination(),
+                        p.getMetaDatas());
             }
 
-            int count = mc.getParamCount();
+            for (int i = 0; i < mc.getParamCount(); i++) {
+                MethodParamConfig paramConfig = mc.getParamConfig(i);
 
-            for (int i = 0; i < count; i++) {
-                // invoke configured parameter injectors
-                mc.getParamConfig(i).getInjector().inject(builder, new DefaultParamContext(requestContext, i));
+                Serializer serializer = paramConfig.getSerializer();
+                String defaultValue = paramConfig.getDefaultValue();
+                String destination = paramConfig.getDestination();
+                boolean encoded = paramConfig.isEncoded();
+                String name = paramConfig.getName();
+                Map<String,Object> metas = paramConfig.getMetaDatas();
+
+                Object value = requestContext.getValue(i);
+                Iterator iter = Objects.iterate(value);
+                while(iter.hasNext()){
+                    builder.addParam(name, new SerializableValue(iter.next(), defaultValue, serializer, encoding, metas), destination, encoded);
+                }
             }
+
 
             // Notify injectors (Global and method after param injection
             ri.afterParamsInjectionHandle(builder, requestContext);

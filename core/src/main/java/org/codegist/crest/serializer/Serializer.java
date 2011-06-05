@@ -20,6 +20,9 @@
 
 package org.codegist.crest.serializer;
 
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
 /**
  * Serializes are used to serialize a object to a single String.
  * <p> If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
@@ -38,6 +41,8 @@ public interface Serializer<T> {
      * @return serialized version of the argument
      * @throws NullPointerException when value is null
      */
-    String serialize(T value) throws NullPointerException;
+    void serialize(T value, OutputStream out, Charset charset) throws SerializerException;
+
+    String serialize(T value, Charset charset) throws SerializerException;
 
 }

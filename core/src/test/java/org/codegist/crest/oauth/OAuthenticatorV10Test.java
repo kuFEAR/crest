@@ -1,29 +1,31 @@
 /*
- * Copyright 2010 CodeGist.org
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- *
- * ===================================================================
- *
- * More information at http://www.codegist.org.
- */
+* Copyright 2010 CodeGist.org
+*
+*    Licensed under the Apache License, Version 2.0 (the "License");
+*    you may not use this file except in compliance with the License.
+*    You may obtain a copy of the License at
+*
+*        http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Unless required by applicable law or agreed to in writing, software
+*    distributed under the License is distributed on an "AS IS" BASIS,
+*    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*    See the License for the specific language governing permissions and
+*    limitations under the License.
+*
+* ===================================================================
+*
+* More information at http://www.codegist.org.
+*/
 
 package org.codegist.crest.oauth;
 
 import org.codegist.crest.HttpRequest;
 import org.codegist.crest.HttpResponse;
 import org.codegist.crest.RestService;
+import org.codegist.crest.UrlEncodedFormEntityWriter;
 import org.codegist.crest.oauth.OAuthenticatorV10.VariantProvider;
+import org.hamcrest.Description;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 
@@ -41,12 +43,13 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.*;
 
 /**
- * Test values are taken from <a href="http://oauth.net/core/1.0/">http://oauth.net/core/1.0/</a>
- *
- * @author Laurent Gilles (laurent.gilles@codegist.org)
- */
+* Test values are taken from <a href="http://oauth.net/core/1.0/">http://oauth.net/core/1.0/</a>
+*
+* @author Laurent Gilles (laurent.gilles@codegist.org)
+*/
 public class OAuthenticatorV10Test {
 
+    // TODO ADD TEST FOR MULTI-VALUED PARAMS
     private final String requestTokUrl = "http://127.0.0.1/request";
     private final String accessTokUrl = "http://127.0.0.1/access";
     private final String refreshTokUrl = "http://127.0.0.1/refresh";
@@ -86,6 +89,12 @@ public class OAuthenticatorV10Test {
         public boolean matches(Object req) {
             return control.equals(req);
         }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText(control.toString());
+        }
+
     }
     @Test
     public void testGetRequestTokenGET() throws IOException, URISyntaxException {
@@ -99,7 +108,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.getRequestToken();
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(requestTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(requestTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("GET")
                 .addQueryParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addQueryParam("oauth_signature_method","HMAC-SHA1")
@@ -122,7 +131,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.getRequestToken();
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(requestTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(requestTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("POST")
                 .addFormParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addFormParam("oauth_signature_method","HMAC-SHA1")
@@ -145,7 +154,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.getAccessToken(new Token("abc","cde"), "123");
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(accessTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(accessTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("GET")
                 .addQueryParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addQueryParam("oauth_signature_method","HMAC-SHA1")
@@ -169,7 +178,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.getAccessToken(new Token("abc","cde"), "123");
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(accessTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(accessTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("POST")
                 .addFormParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addFormParam("oauth_signature_method","HMAC-SHA1")
@@ -193,7 +202,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.refreshAccessToken(new Token("abc","cde", new HashMap<String, String>(){{put("extra","456");}}), "extra");
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(refreshTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(refreshTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("GET")
                 .addQueryParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addQueryParam("oauth_signature_method","HMAC-SHA1")
@@ -217,7 +226,7 @@ public class OAuthenticatorV10Test {
         when(restService.exec(any(HttpRequest.class))).thenReturn(response);
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
         oauth.refreshAccessToken(new Token("abc","cde", new HashMap<String, String>(){{put("extra","456");}}), "extra");
-        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(refreshTokUrl)
+        verify(restService).exec(argThat(new HttpRequestMatcher(new HttpRequest.Builder(refreshTokUrl, new UrlEncodedFormEntityWriter(config))
                 .using("POST")
                 .addFormParam("oauth_consumer_key","dpf43f3p2l4k3l03")
                 .addFormParam("oauth_signature_method","HMAC-SHA1")
@@ -244,10 +253,11 @@ public class OAuthenticatorV10Test {
      */
     @Test
     public void testAuthentificationHeaders() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
-        OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, new HashMap<String, Object>() {{
+        HashMap<String, Object> config = new HashMap<String, Object>() {{
             put(OAuthenticatorV10.CONFIG_OAUTH_PARAM_DEST, "header");
-        }}, variantProvider);
-        HttpRequest.Builder requestBuilder = new HttpRequest.Builder("http://photos.example.net/photos")
+        }};
+        OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
+        HttpRequest.Builder requestBuilder = new HttpRequest.Builder("http://photos.example.net/photos", new UrlEncodedFormEntityWriter(config))
                 .addQueryParam("file", "vacation.jpg")
                 .addQueryParam("size", "original");
 
@@ -256,10 +266,10 @@ public class OAuthenticatorV10Test {
 
 
         assertNotNull(request.getHeaderParams());
-        assertEquals(1, request.getHeaderParams().size());
-        assertNotNull(request.getHeaderParams().get("Authorization"));
-        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original", request.getUrlString(true));
-        assertEquals("OAuth oauth_consumer_key=\"dpf43f3p2l4k3l03\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1191242096\",oauth_nonce=\"kllo9940pd9333jh\",oauth_version=\"1.0\",oauth_token=\"nnch734d00sl2jdk\",oauth_signature=\"tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D\"", request.getHeaderParams().get("Authorization"));
+        assertEquals(2, request.getHeaderParams().size());
+        assertNotNull(request.getHeaderParamMap().get("Authorization"));
+        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original", request.getUrl());
+        assertEquals("OAuth oauth_consumer_key=\"dpf43f3p2l4k3l03\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1191242096\",oauth_nonce=\"kllo9940pd9333jh\",oauth_version=\"1.0\",oauth_token=\"nnch734d00sl2jdk\",oauth_signature=\"tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D\"", request.getHeaderParamMap().get("Authorization").get(0).getValue().asString());
     }
 
     /**
@@ -271,7 +281,7 @@ public class OAuthenticatorV10Test {
             put(OAuthenticatorV10.CONFIG_OAUTH_PARAM_DEST, "url");
         }};
         OAuthenticator oauth = new OAuthenticatorV10(restService, consumer, config, variantProvider);
-        HttpRequest.Builder requestBuilder = new HttpRequest.Builder("http://photos.example.net/photos")
+        HttpRequest.Builder requestBuilder = new HttpRequest.Builder("http://photos.example.net/photos", new UrlEncodedFormEntityWriter(config))
                 .addQueryParam("file", "vacation.jpg")
                 .addQueryParam("size", "original");
 
@@ -280,8 +290,8 @@ public class OAuthenticatorV10Test {
 
 
         assertNotNull(request.getHeaderParams());
-        assertEquals(0, request.getHeaderParams().size());
-        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_nonce=kllo9940pd9333jh&oauth_version=1.0&oauth_token=nnch734d00sl2jdk&oauth_signature=tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", request.getUrlString(true));
+        assertEquals(1, request.getHeaderParams().size());
+        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_nonce=kllo9940pd9333jh&oauth_version=1.0&oauth_token=nnch734d00sl2jdk&oauth_signature=tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", request.getUrl());
     }
 
 

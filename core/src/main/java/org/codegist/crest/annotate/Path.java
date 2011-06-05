@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  * @see org.codegist.crest.CRestBuilder#setConfigPlaceholder(String, String)
  * @see org.codegist.crest.config.MethodConfig#DEFAULT_PATH
- * @see org.codegist.crest.config.MethodConfig#getPath()
+ * @see org.codegist.crest.config.MethodConfig#getPathTemplate()
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

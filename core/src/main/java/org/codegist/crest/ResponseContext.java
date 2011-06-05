@@ -20,8 +20,6 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.serializer.Deserializer;
-
 import java.lang.reflect.Type;
 
 /**
@@ -33,8 +31,6 @@ import java.lang.reflect.Type;
  */
 public interface ResponseContext {
 
-    Deserializer getDeserializer();
-
     RequestContext getRequestContext();
 
     HttpResponse getResponse();
@@ -42,5 +38,9 @@ public interface ResponseContext {
     Type getExpectedGenericType();
 
     Class<?> getExpectedType();
+
+    <T> T deserialize();
+
+    <T> T deserializeTo(Class<T> type, Type genericType);
 
 }

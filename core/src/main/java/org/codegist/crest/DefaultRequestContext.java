@@ -20,9 +20,9 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodParamConfig;
-import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Method;
 
@@ -30,38 +30,36 @@ import java.lang.reflect.Method;
  * Default internal immutable implementation of RequestContext
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-class DefaultRequestContext extends DefaultInterfaceContext implements RequestContext {
+class DefaultRequestContext implements RequestContext {
 
+    private final InterfaceConfig interfaceConfig;
     private final Method method;
     private final Object[] args;
 
     public DefaultRequestContext(RequestContext context) {
-        this(context, context.getMethod(), context.getArgs());
+        this(context.getInterfaceConfig(), context.getMethod(), context.getArgs());
     }
 
-    public DefaultRequestContext(InterfaceContext context, Method method, Object[] args) {
-        super(context);
+    public DefaultRequestContext(InterfaceConfig interfaceConfig, Method method, Object[] args) {
+        this.interfaceConfig = interfaceConfig;
         this.method = method;
         this.args = args != null ? args.clone() : new Object[0];
     }
 
+    public InterfaceConfig getInterfaceConfig(){
+        return interfaceConfig;
+    }
+
     public MethodConfig getMethodConfig() {
-        return getConfig().getMethodConfig(method);
+        return interfaceConfig.getMethodConfig(method);
     }
 
     public MethodParamConfig getParamConfig(int index) {
         return getMethodConfig().getParamConfig(index);
     }
 
-    public Object getRawValue(int index) {
+    public Object getValue(int index) {
         return args[index];
-    }
-
-    public String getSerializedValue(int index) {
-        Object value = getRawValue(index);
-        if(value == null) return "";
-        Serializer serializer = getParamConfig(index).getSerializer();
-        return serializer.serialize(value);
     }
 
     public int getArgCount() {

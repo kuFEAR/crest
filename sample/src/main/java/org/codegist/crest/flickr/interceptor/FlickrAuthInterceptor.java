@@ -22,9 +22,7 @@ package org.codegist.crest.flickr.interceptor;
 
 import org.codegist.common.codec.Hex;
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.HttpRequest;
-import org.codegist.crest.Params;
-import org.codegist.crest.RequestContext;
+import org.codegist.crest.*;
 import org.codegist.crest.interceptor.RequestInterceptorAdapter;
 
 import java.security.MessageDigest;
@@ -50,9 +48,9 @@ public class FlickrAuthInterceptor extends RequestInterceptorAdapter {
         this.apiKey = (String) properties.get(API_KEY_PROP);
         this.authToken = (String) properties.get(AUTH_TOKEN_PROP);
 
-        Validate.notEmpty(this.appSecret, "App secret is required, please pass it in the properties (key=" + APP_SECRET_PROP + ")");
-        Validate.notEmpty(this.apiKey, "API key is required, please pass it in the properties (key=" + API_KEY_PROP + ")");
-        Validate.notEmpty(this.authToken, "Authentification token is required, please pass it in the properties (key=" + AUTH_TOKEN_PROP + ")");
+        Validate.notBlank(this.appSecret, "App secret is required, please pass it in the properties (key=" + APP_SECRET_PROP + ")");
+        Validate.notBlank(this.apiKey, "API key is required, please pass it in the properties (key=" + API_KEY_PROP + ")");
+        Validate.notBlank(this.authToken, "Authentification token is required, please pass it in the properties (key=" + AUTH_TOKEN_PROP + ")");
     }
 
     @Override
@@ -67,11 +65,17 @@ public class FlickrAuthInterceptor extends RequestInterceptorAdapter {
             builder.addQueryParam("auth_token", authToken);
         }
 
-        SortedMap<String, String> map = new TreeMap<String, String>(builder.getQueryParams());
+        SortedMap<String, String> map = new TreeMap<String, String>();
+        if (builder.getQueryParams() != null) {
+            for (HttpParam param : builder.getQueryParams().allValues()) {
+             //   if (Params.isForUpload(param.getValue())) continue;
+                map.put(param.getName(), param.getValue().asString());
+            }
+        }
         if (builder.getFormParams() != null) {
-            for (Map.Entry<String, Object> param : builder.getFormParams().entrySet()) {
-                if (Params.isForUpload(param.getValue())) continue;
-                map.put(param.getKey(), String.valueOf(param.getValue()));
+            for (HttpParam param : builder.getFormParams().allValues()) {
+             //   if (Params.isForUpload(param.getValue())) continue;
+                map.put(param.getName(), param.getValue().asString());
             }
         }
 

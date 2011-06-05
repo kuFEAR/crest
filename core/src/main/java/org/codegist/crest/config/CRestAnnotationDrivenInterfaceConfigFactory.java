@@ -22,6 +22,8 @@ package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Methods;
 import org.codegist.crest.CRestContext;
+import org.codegist.crest.HttpRequest;
+import org.codegist.crest.MultiParts;
 import org.codegist.crest.annotate.*;
 
 import java.lang.annotation.Annotation;
@@ -41,6 +43,7 @@ import java.util.*;
 public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
     private final boolean buildTemplates;
+    private final boolean modelPriority = false; // todo
 
     public CRestAnnotationDrivenInterfaceConfigFactory(boolean buildTemplates) {
         this.buildTemplates = buildTemplates;
@@ -50,6 +53,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
         this(false);
     }
 
+    // TODO handle @MultiPartParam(s)
     public InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) throws ConfigFactoryException {
         try {
             /* Interface specifics */
@@ -65,39 +69,44 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             ResponseHandler responseHandler = interfaze.getAnnotation(ResponseHandler.class);
             ErrorHandler errorHandler = interfaze.getAnnotation(ErrorHandler.class);
             RetryHandler retryHandler = interfaze.getAnnotation(RetryHandler.class);
-            Consumes consumes = interfaze.getAnnotation(Consumes.class);
+            Accepts accepts = interfaze.getAnnotation(Accepts.class);
+            ContentType contentType = interfaze.getAnnotation(ContentType.class);
             HttpMethod httpMethod = getHttpMethod(interfaze.getAnnotations(), interfaze.getAnnotation(HttpMethod.class));
+            EntityWriter entityWriter = interfaze.getAnnotation(EntityWriter.class);
             Set<ParamConfig> extraParams = getExtraParamConfigs(interfaze.getAnnotations());
 
             /* Params defaults */
             Serializer serializer = interfaze.getAnnotation(Serializer.class);
-            Injector injector = interfaze.getAnnotation(Injector.class);
+            Encoded encoded = interfaze.getAnnotation(Encoded.class);
 
-            ConfigBuilders.InterfaceConfigBuilder config = new ConfigBuilders.InterfaceConfigBuilder(interfaze, context.getProperties());
-            if (endPoint != null) config.setEndPoint(endPoint.value());
-            if (path != null) config.setPath(path.value());
+            InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, context.getProperties());
+            for (ParamConfig c : extraParams) {
+                config.addMethodsExtraParam(c.getName(), c.getDefaultValue(), c.getDestination(), c.getMetaDatas());
+            }
+
+            if (endPoint != null) config.setMethodsEndPoint(endPoint.value());
+            if (path != null) config.appendMethodsPath(path.value());
             if (encoding != null) config.setEncoding(encoding.value());
             if (globalInterceptor != null) config.setGlobalInterceptor(globalInterceptor.value());
-            if (extraParams != null) {
-                for (ParamConfig c : extraParams) {
-                    config.addMethodsExtraParam(c.getName(), c.getDefaultValue(), c.getDestination());
-                }
-            }
+
             if (socketTimeout != null) config.setMethodsSocketTimeout(socketTimeout.value());
             if (connectionTimeout != null) config.setMethodsConnectionTimeout(connectionTimeout.value());
             if (interceptor != null) config.setMethodsRequestInterceptor(interceptor.value());
             if (responseHandler != null) config.setMethodsResponseHandler(responseHandler.value());
             if (errorHandler != null) config.setMethodsErrorHandler(errorHandler.value());
             if (retryHandler != null) config.setMethodsRetryHandler(retryHandler.value());
-            if (consumes != null) config.setMethodsConsumes(consumes.value());
+            if (accepts != null) config.setMethodsAccepts(accepts.value());
+            if (contentType != null) config.setMethodsContentType(contentType.value());
             if (httpMethod != null) config.setMethodsHttpMethod(httpMethod.value());
+            if (entityWriter != null) config.setMethodsEntityWriter(entityWriter.value());
 
             if (serializer != null) config.setParamsSerializer(serializer.value());
-            if (injector != null) config.setParamsInjector(injector.value());
+            config.setParamsEncoded(encoded != null);
 
 
             for (Method meth : interfaze.getDeclaredMethods()) {
                 /* Methods specifics */
+                endPoint = meth.getAnnotation(EndPoint.class);
                 path = meth.getAnnotation(Path.class);
                 extraParams = getExtraParamConfigs(meth.getAnnotations());
                 socketTimeout = meth.getAnnotation(SocketTimeout.class);
@@ -106,55 +115,74 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 responseHandler = meth.getAnnotation(ResponseHandler.class);
                 errorHandler = meth.getAnnotation(ErrorHandler.class);
                 retryHandler = meth.getAnnotation(RetryHandler.class);
-                consumes = meth.getAnnotation(Consumes.class);
+                accepts = meth.getAnnotation(Accepts.class);
+                contentType = meth.getAnnotation(ContentType.class);
                 httpMethod = getHttpMethod(meth.getAnnotations(), meth.getAnnotation(HttpMethod.class));
+                entityWriter = meth.getAnnotation(EntityWriter.class);
 
                 /* Params defaults */
                 serializer = meth.getAnnotation(Serializer.class);
-                injector = meth.getAnnotation(Injector.class);
+                encoded = meth.getAnnotation(Encoded.class);
 
-                ConfigBuilders.MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
-
-                if (extraParams != null) {
-                    for (ParamConfig c : extraParams) {
-                        methodConfigBuilder.startExtraParamConfig(c.getName())
-                                .setDefaultValue(c.getDefaultValue())
-                                .setDestination(c.getDestination())
-                                .endParamConfig();
-                    }
+                MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
+                for (ParamConfig c : extraParams) {
+                    methodConfigBuilder.addExtraParam(c.getName(), c.getDefaultValue(), c.getDestination(), c.getMetaDatas());
                 }
-                if (path != null) methodConfigBuilder.setPath(path.value());
+
+                if (endPoint != null) methodConfigBuilder.setEndPoint(endPoint.value());
+                if (path != null) methodConfigBuilder.appendPath(path.value());
                 if (socketTimeout != null) methodConfigBuilder.setSocketTimeout(socketTimeout.value());
                 if (connectionTimeout != null) methodConfigBuilder.setConnectionTimeout(connectionTimeout.value());
                 if (interceptor != null) methodConfigBuilder.setRequestInterceptor(interceptor.value());
                 if (responseHandler != null) methodConfigBuilder.setResponseHandler(responseHandler.value());
                 if (errorHandler != null) methodConfigBuilder.setErrorHandler(errorHandler.value());
                 if (retryHandler != null) methodConfigBuilder.setRetryHandler(retryHandler.value());
-                if (consumes != null) methodConfigBuilder.setConsumes(consumes.value());
+                if (accepts != null) methodConfigBuilder.setAccepts(accepts.value());
+                if (contentType != null) methodConfigBuilder.setContentType(contentType.value());
                 if (httpMethod != null) methodConfigBuilder.setHttpMethod(httpMethod.value());
+                if (entityWriter != null) methodConfigBuilder.setEntityWriter(entityWriter.value());
 
                 if (serializer != null) methodConfigBuilder.setParamsSerializer(serializer.value());
-                if (injector != null) methodConfigBuilder.setParamsInjector(injector.value());
+                methodConfigBuilder.setParamsEncoded(encoded != null);
 
                 for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
+                    Class<?> pType = meth.getParameterTypes()[i];
                     Map<Class<? extends Annotation>, Annotation> paramAnnotations = Methods.getParamsAnnotation(meth, i);
-                    //Class<? extends RequestInjector> typeInjector = RequestInjectors.getAnnotatedInjectorFor(meth.getParameterTypes()[i]);
-                    ConfigBuilders.MethodParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
-
-                    // Injects user type annotated config.
-                    Configs.injectAnnotatedConfig(methodParamConfigBuilder, meth.getParameterTypes()[i]);
+                    MethodParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
 
                     /* Params specifics - Override user annotated config */
                     serializer = (Serializer) paramAnnotations.get(Serializer.class);
-                    injector = (Injector) paramAnnotations.get(Injector.class);
+                    encoded = (Encoded) paramAnnotations.get(Encoded.class);
 
-                    if (serializer != null) methodParamConfigBuilder.setSerializer(serializer.value());
-                    if (injector != null) methodParamConfigBuilder.setInjector(injector.value());
+                    Serializer pSerializer = pType.getAnnotation(Serializer.class);
+                    Encoded pEncoded = pType.getAnnotation(Encoded.class);
+                    ParamConfig lowConfig = getFirstExtraParamConfig(modelPriority ? paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]) : pType.getAnnotations());
+                    ParamConfig highConfig = getFirstExtraParamConfig(modelPriority ? pType.getAnnotations() : paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
 
-                    ParamConfig pconfig = getFirstExtraParamConfig(paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
-                    methodParamConfigBuilder.setName(pconfig.getName());
-                    methodParamConfigBuilder.setDestination(pconfig.getDestination());
-                    methodParamConfigBuilder.setDefaultValue(pconfig.getDefaultValue());
+                    Serializer lowPrioritySerializer = modelPriority ? serializer : pSerializer;
+                    Serializer highPrioritySerializer = modelPriority ? pSerializer : serializer;
+                    boolean lowPriorityEncoded = (modelPriority ? encoded : pEncoded) != null;
+                    if(HttpRequest.DEST_HEADER.equals(lowConfig.getDestination()) || HttpRequest.DEST_COOKIE.equals(lowConfig.getDestination())) {
+                        lowPriorityEncoded = true;
+                    }
+                    boolean highPriorityEncoded =   (modelPriority ? pEncoded : encoded) != null;
+                    if(HttpRequest.DEST_HEADER.equals(highConfig.getDestination()) || HttpRequest.DEST_COOKIE.equals(highConfig.getDestination())) {
+                        highPriorityEncoded = true;
+                    }
+
+                    methodParamConfigBuilder.setEncoded(lowPriorityEncoded);
+                    if(lowConfig.getName() != null)  methodParamConfigBuilder.setName(lowConfig.getName());
+                    if(lowConfig.getDefaultValue() != null)  methodParamConfigBuilder.setDefaultValue(lowConfig.getDefaultValue());
+                    if(lowConfig.getDestination() != null)  methodParamConfigBuilder.setDestination(lowConfig.getDestination());
+                    if(lowConfig.getMetaDatas() != null && !lowConfig.getMetaDatas().isEmpty())  methodParamConfigBuilder.setMetaDatas(lowConfig.getMetaDatas());
+                    if (lowPrioritySerializer != null) methodParamConfigBuilder.setSerializer(lowPrioritySerializer.value());
+
+                    methodParamConfigBuilder.setEncoded(highPriorityEncoded);
+                    if(highConfig.getName() != null)  methodParamConfigBuilder.setName(highConfig.getName());
+                    if(highConfig.getDefaultValue() != null)  methodParamConfigBuilder.setDefaultValue(highConfig.getDefaultValue());
+                    if(highConfig.getDestination() != null)  methodParamConfigBuilder.setDestination(highConfig.getDestination());
+                    if(highConfig.getMetaDatas() != null && !highConfig.getMetaDatas().isEmpty())  methodParamConfigBuilder.setMetaDatas(highConfig.getMetaDatas());
+                    if (highPrioritySerializer != null) methodParamConfigBuilder.setSerializer(highPrioritySerializer.value());
 
                     methodParamConfigBuilder.endParamConfig();
                 }
@@ -162,7 +190,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 methodConfigBuilder.endMethodConfig();
             }
 
-            return config.build(buildTemplates, true);
+            return config.build(true, buildTemplates);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -173,7 +201,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
 
     private static ParamConfig getFirstExtraParamConfig(Annotation[] annotations) {
         Set<ParamConfig> config = getExtraParamConfigs(annotations);
-        if (config.isEmpty()) return new DefaultParamConfig(null, null, null);
+        if (config.isEmpty()) return new DefaultParamConfig(null, null, null, null);
         return config.iterator().next();// get the first
     }
 
@@ -189,6 +217,12 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 params.addAll(getParam(((QueryParams) a).value()));
             } else if (a instanceof HeaderParams) {
                 params.addAll(getParam(((HeaderParams) a).value()));
+            } else if (a instanceof CookieParams) {
+                params.addAll(getParam(((CookieParams) a).value()));
+            } else if (a instanceof MatrixParams) {
+                params.addAll(getParam(((MatrixParams) a).value()));
+            }else if (a instanceof MultiPartParams) {
+                params.addAll(getParam(((MultiPartParams) a).value()));
             }
         }
         return params;
@@ -200,7 +234,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
         for (Annotation a : annotations) {
             Param param = a.annotationType().getAnnotation(Param.class);
             if (param != null) {
-                String dest = param.value(), name = null, defaultValue = null;
+                String dest = param.value(), name, defaultValue;
+                Map<String,Object> metadatas = new HashMap<String,Object>();
                 if (a instanceof QueryParam) {
                     name = ((QueryParam) a).value();
                     defaultValue = ((QueryParam) a).defaultValue();
@@ -213,10 +248,21 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 } else if (a instanceof HeaderParam) {
                     name = ((HeaderParam) a).value();
                     defaultValue = ((HeaderParam) a).defaultValue();
+                } else if (a instanceof MatrixParam) {
+                    name = ((MatrixParam) a).value();
+                    defaultValue = ((MatrixParam) a).defaultValue();
+                } else if (a instanceof CookieParam) {
+                    name = ((CookieParam) a).value();
+                    defaultValue = ((CookieParam) a).defaultValue();
+                } else if (a instanceof MultiPartParam) {
+                    MultiPartParam p = (MultiPartParam) a;
+                    name = p.value();
+                    defaultValue = p.defaultValue();
+                    MultiParts.putIfNotBlank(metadatas, p.contentType(), p.fileName());
                 } else {
                     throw new IllegalArgumentException("Unsupported param annotation:" + a);
                 }
-                params.add(new DefaultParamConfig(name, defaultValue, dest));
+                params.add(new DefaultParamConfig(name, defaultValue, dest, metadatas));
             }
         }
         return params;

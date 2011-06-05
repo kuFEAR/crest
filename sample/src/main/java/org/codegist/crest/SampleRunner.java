@@ -34,6 +34,7 @@ public class SampleRunner {
 
     private static final Logger LOG = Logger.getLogger(SampleRunner.class);
 
+
     /**
      * expected args:
      * <p>[0] delicious.consumerKey
@@ -56,17 +57,18 @@ public class SampleRunner {
         int i = 0;
         Runnable[] samples = {
                 new DeliciousSample(args[i++], args[i++], args[i++], args[i++], args[i++]),
-                new FlickrSample(args[i++], args[i++], args[i++]),
                 new TwitterSample(args[i++], args[i++], args[i++], args[i++]),
+                new FlickrSample(args[i++], args[i++], args[i++]),
                 new GoogleServicesSample()
         };
-        for (Runnable sample : samples) {
-            LOG.info("Running " + sample.getClass().getSimpleName());
-            try {
-                sample.run();
-            } catch (Throwable e) {
-                LOG.error(e);
-            }
-        }
+        samples[3].run();
+//        for (Runnable sample : samples) {
+//            LOG.info("Running " + sample.getClass().getSimpleName());
+//            try {
+//                sample.run();
+//            } catch (Throwable e) {
+//                LOG.error(e);
+//            }
+//        }
     }
 }

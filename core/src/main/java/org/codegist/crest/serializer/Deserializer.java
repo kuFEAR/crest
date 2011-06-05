@@ -20,14 +20,15 @@
 
 package org.codegist.crest.serializer;
 
-import java.io.Reader;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public interface Deserializer {
 
-    <T> T deserialize(Reader reader, Type type) throws DeserializerException;
+    <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws DeserializerException;
 
 }

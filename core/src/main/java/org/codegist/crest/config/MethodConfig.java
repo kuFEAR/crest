@@ -20,13 +20,17 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.EntityWriter;
 import org.codegist.crest.HttpRequest;
+import org.codegist.crest.UrlEncodedFormEntityWriter;
 import org.codegist.crest.handler.*;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Method configuration holder object.
@@ -59,7 +63,7 @@ public interface MethodConfig {
     /**
      * Default url fragment applied when non specified.
      *
-     * @see MethodConfig#getPath()
+     * @see MethodConfig#getPathTemplate()
      */
     String DEFAULT_PATH = "";
 
@@ -108,9 +112,11 @@ public interface MethodConfig {
     /**
      * Default response deserializer applied when non specified.
      *
-     * @see org.codegist.crest.config.MethodConfig#getDeserializer()
+     * @see org.codegist.crest.config.MethodConfig#getDeserializers()
      */
-    Class<? extends Deserializer> DEFAULT_DESERIALIZER = null;
+    Class<? extends Deserializer>[] DEFAULT_DESERIALIZERS = null;
+
+    Class<? extends EntityWriter> DEFAULT_BODY_WRITER = null;
 
     /*##############################################################################*/
 
@@ -131,21 +137,19 @@ public interface MethodConfig {
 
     RetryHandler getRetryHandler();
 
-    Deserializer getDeserializer();
+    Deserializer[] getDeserializers();
 
     /**
      * URL fragment specific to this methods.
-     * <p> Doesn't contains the server part.
-     * <p> Full url is {@link InterfaceConfig#getEndPoint()} + {@link InterfaceConfig#getPath()} + {@link MethodConfig#getPath()}
      * <p>This value can contain placeholders that points to method arguments. For a path as /my-path/{2}/{0}/{2}.json?my-param={1}, any {n} placeholder will be replaced with the serialized parameter found at the respective method argument index when using the default parameter injector.
      *
      * @return the method url fragment
-     * @see InterfaceConfig#getEndPoint()
-     * @see InterfaceConfig#getPath()
      */
-    String getPath();
+    PathTemplate getPathTemplate();
 
     String getHttpMethod();
+
+    EntityWriter getBodyWriter();
 
     /**
      * Return the method's extra static parameter list
@@ -165,4 +169,6 @@ public interface MethodConfig {
      * @return The param count.
      */
     Integer getParamCount();
+
+    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

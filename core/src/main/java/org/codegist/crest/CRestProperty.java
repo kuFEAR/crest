@@ -46,11 +46,22 @@ public interface CRestProperty {
      */
     String CREST_CONCURRENCY_LEVEL = "crest.config.concurrency.level";
 
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String PARAM_COLLECTION_SEPARATOR = null;
+
     /*********************************************************
      *********************************************************
      ****** Serializer properties 
      *********************************************************
      *********************************************************/
+
+    String SERIALIZER_XML_WRAPPER_ELEMENT_NAME = "serializer.xml.wrapper.element-name";
 
     /**
      * format the date with the given date format.
@@ -60,14 +71,6 @@ public interface CRestProperty {
      */
     String SERIALIZER_DATE_FORMAT = "serializer.date.format";
 
-    /**
-     * override the default item separator (comma).
-     * <p>Expects a String.
-     *
-     * @see org.codegist.crest.serializer.Serializer
-     * @see org.codegist.crest.InterfaceContext#getProperties()
-     */
-    String SERIALIZER_LIST_SEPARATOR = "serializer.array.separator";
 
     /**
      * override the default boolean TRUE value ("true").
@@ -200,14 +203,6 @@ public interface CRestProperty {
     String CONFIG_INTERFACE_DEFAULT_ENCODING = "config.interface.default.encoding";
 
     /**
-     * override the default end point {@link org.codegist.crest.config.InterfaceConfig#DEFAULT_ENDPOINT}.
-     * <p>Expects a string.
-     *
-     * @see org.codegist.crest.InterfaceContext#getProperties()
-     */
-    String CONFIG_INTERFACE_DEFAULT_ENDPOINT = "config.interface.default.end-point";
-
-    /**
      * override the default path {@link org.codegist.crest.config.InterfaceConfig#DEFAULT_PATH}.
      * <p>Expects a string.
      *
@@ -256,6 +251,14 @@ public interface CRestProperty {
     String CONFIG_METHOD_DEFAULT_PATH = "config.method.default.path";
 
     /**
+     * override the default end point {@link org.codegist.crest.config.InterfaceConfig#DEFAULT_ENDPOINT}.
+     * <p>Expects a string.
+     *
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String CONFIG_METHOD_DEFAULT_ENDPOINT = "config.method.default.end-point";
+
+    /**
      * override the default http method {@link org.codegist.crest.config.MethodConfig#DEFAULT_HTTP_METHOD}.
      * <p>Expects a String
      *
@@ -301,10 +304,11 @@ public interface CRestProperty {
     String CONFIG_METHOD_DEFAULT_RETRY_HANDLER = "config.method.default.retry-handler";
 
     /**
-     * override the default method response deserializer {@link org.codegist.crest.config.MethodConfig#DEFAULT_DESERIALIZER}.
+     * override the default method response deserializer {@link org.codegist.crest.config.MethodConfig#DEFAULT_DESERIALIZERS}.
      */
-    String CONFIG_METHOD_DEFAULT_DESERIALIZER = "config.method.default.deserializer";
+    String CONFIG_METHOD_DEFAULT_DESERIALIZERS = "config.method.default.deserializer";
 
+    String CONFIG_PARAM_DEFAULT_BODY_WRITER = "config.method.default.body-write";
 
     /*********************************************************
      *********************************************************
@@ -320,6 +324,8 @@ public interface CRestProperty {
      */
     String CONFIG_PARAM_DEFAULT_DESTINATION = "config.param.default.destination";
 
+    String CONFIG_PARAM_DEFAULT_METAS = "config.param.default.metas";
+
     /**
      * override the default param value {@link org.codegist.crest.config.MethodParamConfig#DEFAULT_VALUE}.
      * <p>Expects a String.
@@ -328,14 +334,6 @@ public interface CRestProperty {
      */
     String CONFIG_PARAM_DEFAULT_VALUE = "config.param.default.value";
 
-    /**
-     * override the default injector {@link org.codegist.crest.config.MethodParamConfig#DEFAULT_INJECTOR}.
-     * <p>Expects an instance of {@link org.codegist.crest.injector.Injector}.
-     *
-     * @see org.codegist.crest.injector.Injector
-     * @see org.codegist.crest.InterfaceContext#getProperties()
-     */
-    String CONFIG_PARAM_DEFAULT_INJECTOR = "config.param.default.injector";
 
     /**
      * override the default serializer {@link org.codegist.crest.config.MethodParamConfig#DEFAULT_SERIALIZER}.
@@ -345,6 +343,14 @@ public interface CRestProperty {
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
     String CONFIG_PARAM_DEFAULT_SERIALIZER = "config.param.default.serializer";
+
+    /**
+     * override the default encoded {@link org.codegist.crest.config.MethodParamConfig#DEFAULT_ENCODED}.
+     * <p>Expects a boolean value.
+     *
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String CONFIG_PARAM_DEFAULT_ENCODED = "config.param.default.encoded";
 
     /**
      * override the default name {@link org.codegist.crest.config.MethodParamConfig#DEFAULT_NAME}.

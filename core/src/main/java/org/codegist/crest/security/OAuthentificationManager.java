@@ -20,8 +20,8 @@
 
 package org.codegist.crest.security;
 
-import org.codegist.common.lang.Pair;
 import org.codegist.common.lang.Validate;
+import org.codegist.crest.HttpParam;
 import org.codegist.crest.HttpRequest;
 import org.codegist.crest.oauth.OAuthenticator;
 import org.codegist.crest.oauth.Token;
@@ -43,7 +43,7 @@ public class OAuthentificationManager implements AuthentificationManager {
         this.accessToken = accessToken;
     }
 
-    public void sign(HttpRequest.Builder request, Pair<String,String>... properties) {
+    public void sign(HttpRequest.Builder request, HttpParam... properties) {
         oauth.sign(accessToken, request, properties);
     }
 
