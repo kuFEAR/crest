@@ -53,7 +53,52 @@ public interface CRestProperty {
      * @see org.codegist.crest.serializer.Serializer
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String PARAM_COLLECTION_SEPARATOR = null;
+    String QUERY_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.query.separator";
+
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String PATH_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.path.separator";
+
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String MATRIX_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.matrix.separator";
+
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String HEADER_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.header.separator";
+
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String COOKIE_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.cookie.separator";
+
+    /**
+     * override the default item separator (comma).
+     * <p>Expects a String.
+     *
+     * @see org.codegist.crest.serializer.Serializer
+     * @see org.codegist.crest.InterfaceContext#getProperties()
+     */
+    String FORM_PARAM_COLLECTION_SEPARATOR = "crest.config.collection.form.separator";
 
     /*********************************************************
      *********************************************************

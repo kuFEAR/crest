@@ -18,13 +18,13 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.method;
 
 import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
 
 @EndPoint(CRestSuite.ADDRESS)
-@Path("resource/option")
+@Path("method/option")
 @OPTIONS
 public interface Options {
 

@@ -726,7 +726,30 @@ public class CRestBuilder {
      * @see CRestProperty#URL_ENCODED_FORM_PARAM_COLLECTION_SEPARATOR
      */
     public CRestBuilder mergeMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.PARAM_COLLECTION_SEPARATOR, sep);
+        return mergeMatrixMultiValuedParam(sep)
+               .mergeQueryMultiValuedParam(sep)
+               .mergePathMultiValuedParam(sep)
+               .mergeFormMultiValuedParam(sep)
+               .mergeHeaderMultiValuedParam(sep)
+               .mergeCookieMultiValuedParam(sep);
+    }
+    public CRestBuilder mergeMatrixMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.MATRIX_PARAM_COLLECTION_SEPARATOR, sep);
+    }
+    public CRestBuilder mergeQueryMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.QUERY_PARAM_COLLECTION_SEPARATOR, sep);
+    }
+    public CRestBuilder mergePathMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.PATH_PARAM_COLLECTION_SEPARATOR, sep);
+    }
+    public CRestBuilder mergeFormMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.FORM_PARAM_COLLECTION_SEPARATOR, sep);
+    }
+    public CRestBuilder mergeHeaderMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.HEADER_PARAM_COLLECTION_SEPARATOR, sep);
+    }
+    public CRestBuilder mergeCookieMultiValuedParam(String sep) {
+        return setProperty(CRestProperty.COOKIE_PARAM_COLLECTION_SEPARATOR, sep);
     }
 
     /**

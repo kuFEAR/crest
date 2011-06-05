@@ -18,10 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.entity;
 
+import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
@@ -33,17 +33,15 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertEquals;
 
 //@Ignore
-public class EntityWritersTest extends BaseCRestTest {
-
-    private final EntityWriters toTest = crest.build(EntityWriters.class);
+public class EntityWritersTest extends BaseCRestTest<EntityWriters> {
 
     public EntityWritersTest(CRest crest) {
-        super(crest);
+        super(crest, EntityWriters.class);
     }
     
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
-        return data(bySerializers());
+        return crest(bySerializers());
     }
 
     @Test

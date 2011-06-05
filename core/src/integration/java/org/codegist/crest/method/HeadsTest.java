@@ -18,8 +18,9 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.method;
 
+import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
@@ -28,17 +29,15 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
-public class HeadsTest extends BaseCRestTest {
+public class HeadsTest extends BaseCRestTest<Heads> {
     
-    private final Heads toTest = crest.build(Heads.class);
-
     public HeadsTest(CRest crest) {
-        super(crest);
+        super(crest, Heads.class);
     }
 
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
-        return data(byRestServices());
+        return crest(byRestServices());
     }
 
     @Test

@@ -36,7 +36,7 @@ public class UrlEncodedFormEntityWriter implements EntityWriter {
     private final String multiValuedParamSeparator;
 
     public UrlEncodedFormEntityWriter(Map<String,Object> customProperties) {
-        this.multiValuedParamSeparator = (String) customProperties.get(CRestProperty.PARAM_COLLECTION_SEPARATOR);
+        this.multiValuedParamSeparator = (String) customProperties.get(CRestProperty.FORM_PARAM_COLLECTION_SEPARATOR);
 
     }
 

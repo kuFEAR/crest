@@ -20,9 +20,15 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.resources.*;
+import org.codegist.crest.collection.CollectionsDefaultTest;
+import org.codegist.crest.collection.CollectionsMergingTest;
+import org.codegist.crest.entity.EntityWritersTest;
+import org.codegist.crest.method.*;
 import org.codegist.crest.server.Server;
-import org.codegist.crest.server.stubs.*;
+import org.codegist.crest.server.stubs.collection.CollectionsDefaultStub;
+import org.codegist.crest.server.stubs.collection.CollectionsMergingStub;
+import org.codegist.crest.server.stubs.entity.EntityWritersStub;
+import org.codegist.crest.server.stubs.method.*;
 import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,7 +41,10 @@ import org.junit.runners.Suite;
         DeletesTest.class,
         OptionsTest.class,
         HeadsTest.class,
-        EntityWritersTest.class })
+        EntityWritersTest.class,
+        CollectionsDefaultTest.class,
+        CollectionsMergingTest.class
+        })
 public class CRestSuite {
 
     public static final String ADDRESS = "http://localhost:8080";
@@ -47,7 +56,9 @@ public class CRestSuite {
             new DeletesStub(),
             new OptionsStub(),
             new HeadsStub(),
-            new EntityWritersStub()
+            new EntityWritersStub(),
+            new CollectionsDefaultStub(),
+            new CollectionsMergingStub()
     );
 
 

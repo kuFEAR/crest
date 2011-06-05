@@ -40,11 +40,15 @@ public class CRestException extends RuntimeException {
         super(cause);
     }
 
-    static CRestException handle(Throwable e) {
+    static <T> T doThrow(Throwable e) {
         if (e instanceof CRestException) {
-            return (CRestException) e;
+            throw (CRestException) e;
+        } else if (e instanceof IllegalArgumentException) {
+            throw (IllegalArgumentException) e;
+        } else if (e instanceof IllegalStateException) {
+            throw (IllegalStateException) e;
         } else {
-            return new CRestException(e.getMessage(), e);
+            throw new CRestException(e.getMessage(), e);
         }
     }
 }

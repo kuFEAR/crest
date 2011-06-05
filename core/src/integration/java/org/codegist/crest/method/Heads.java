@@ -18,44 +18,47 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.method;
 
 import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
 
 @EndPoint(CRestSuite.ADDRESS)
-@Path("resource/delete")
-@DELETE
-public interface Deletes {
+@Path("method/head")
+@HEAD
+public interface Heads {
 
-    String delete();
+    @GET
+    String lastCall();
+
+    void head();
 
     @Path("query")
-    String deleteQuery(
+    void headQuery(
                 @QueryParam("q1") String q1,
                 @QueryParam("q2") int q2,
                 @QueryParam("q3") float[] q3);
 
     @Path("matrix")
-    String deleteMatrix(
+    void headMatrix(
                 @MatrixParam("m1") String m1,
                 @MatrixParam("m2") int m2,
                 @MatrixParam("m3") float[] m3);
 
     @Path("path/{p1}/{p2:\\d{4}}/{p3}")
-    String deletePath(
+    void headPath(
                 @PathParam("p1") String p1,
                 @PathParam("p2") int p2,
                 @PathParam("p3") float p3);
 
     @Path("header")
-    String deleteHeader(
+    void headHeader(
                 @HeaderParam("h1") String h1,
                 @HeaderParam("h2") int h2,
                 @HeaderParam("h3") float[] h3);
 
     @Path("cookie")
-    String deleteCookie(
+    void headCookie(
                 @CookieParam("c1") String c1,
                 @CookieParam("c2") int c2,
                 @CookieParam("c3") float[] c3);

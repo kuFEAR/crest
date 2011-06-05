@@ -18,38 +18,39 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.entity;
 
 import org.codegist.crest.CRestSuite;
 import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.MultiPartEntityWriter;
 import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EntityWriter;
 
 import java.io.File;
 import java.io.InputStream;
 
 
 @EndPoint(CRestSuite.ADDRESS)
-@Path("resource/post/entity-writer")
+@Path("entity")
 @POST
 public interface EntityWriters {
 
-    @Path("form/xml")
+    @Path("xml")
     @EntityWriter(XmlEntityWriter.class)
     String postFormAsXml(
                 @FormParam("f1") String q1,
                 @FormParam("f2") int q2,
                 @FormParam("f3") float[] q3);
 
-    @Path("form/json")
+    @Path("json")
     @EntityWriter(JsonEntityWriter.class)
     String postFormAsJson(
                 @FormParam("f1") String q1,
                 @FormParam("f2") int q2,
                 @FormParam("f3") float[] q3);
 
-    @Path("form/multipart")
+    @Path("multipart")
     @EntityWriter(MultiPartEntityWriter.class) // TODO make it an annotation (@MultiPartEntity @JsonEntity @XmlEntity)
     String multipart(
                 @MultiPartParam("p1") String q1,

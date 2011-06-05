@@ -18,50 +18,44 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.method;
 
 import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
 
 @EndPoint(CRestSuite.ADDRESS)
-@Path("resource/put")
-@PUT
-public interface Puts {
+@Path("method/delete")
+@DELETE
+public interface Deletes {
 
-    String put();
-
-    @Path("form")
-    String putForm(
-                @FormParam("f1") String q1,
-                @FormParam("f2") int q2,
-                @FormParam("f3") float[] q3);
+    String delete();
 
     @Path("query")
-    String putQuery(
+    String deleteQuery(
                 @QueryParam("q1") String q1,
                 @QueryParam("q2") int q2,
                 @QueryParam("q3") float[] q3);
 
     @Path("matrix")
-    String putMatrix(
+    String deleteMatrix(
                 @MatrixParam("m1") String m1,
                 @MatrixParam("m2") int m2,
                 @MatrixParam("m3") float[] m3);
 
     @Path("path/{p1}/{p2:\\d{4}}/{p3}")
-    String putPath(
+    String deletePath(
                 @PathParam("p1") String p1,
                 @PathParam("p2") int p2,
                 @PathParam("p3") float p3);
 
     @Path("header")
-    String putHeader(
+    String deleteHeader(
                 @HeaderParam("h1") String h1,
                 @HeaderParam("h2") int h2,
                 @HeaderParam("h3") float[] h3);
 
     @Path("cookie")
-    String putCookie(
+    String deleteCookie(
                 @CookieParam("c1") String c1,
                 @CookieParam("c2") int c2,
                 @CookieParam("c3") float[] c3);

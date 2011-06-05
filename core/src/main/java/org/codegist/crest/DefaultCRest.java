@@ -66,7 +66,7 @@ public class DefaultCRest implements CRest, Disposable {
         try {
             return (T) context.getProxyFactory().createProxy(interfaze.getClassLoader(), new RestInterfacer(interfaze), new Class[]{interfaze});
         } catch (Exception e) {
-            throw CRestException.handle(e);
+            return CRestException.<T>doThrow(e);
         }
     }
 
@@ -75,13 +75,22 @@ public class DefaultCRest implements CRest, Disposable {
         private final InterfaceConfig interfaceConfig;
         private final DeserializationManager deserializationManager;
 
-        private final String paramCollectionSeparator;
+        // TODO these should belong to another class, ei InterfaceConfig ?
+        private final String matrixParamCollectionSeparator;
+        private final String queryParamCollectionSeparator;
+        private final String pathParamCollectionSeparator;
+        private final String headerParamCollectionSeparator;
+        private final String cookieParamCollectionSeparator;
 
         private RestInterfacer(Class<T> interfaze) throws ConfigFactoryException {
             this.interfaceConfig = context.getConfigFactory().newConfig(interfaze, context);
             this.deserializationManager = (DeserializationManager) context.getProperties().get(DeserializationManager.class.getName());
 
-            this.paramCollectionSeparator = (String) context.getProperties().get(CRestProperty.PARAM_COLLECTION_SEPARATOR);
+            this.matrixParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.MATRIX_PARAM_COLLECTION_SEPARATOR);
+            this.queryParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.QUERY_PARAM_COLLECTION_SEPARATOR);
+            this.pathParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.PATH_PARAM_COLLECTION_SEPARATOR);
+            this.headerParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.HEADER_PARAM_COLLECTION_SEPARATOR);
+            this.cookieParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.COOKIE_PARAM_COLLECTION_SEPARATOR);
         }
 
         @Override
@@ -89,7 +98,7 @@ public class DefaultCRest implements CRest, Disposable {
             try {
                 return doInvoke(method, args);
             } catch (Throwable e) {
-                throw CRestException.handle(e);
+                return CRestException.doThrow(e);
             }
         }
 
@@ -179,11 +188,13 @@ public class DefaultCRest implements CRest, Disposable {
                     .within(requestContext)
                     .using(mc.getHttpMethod())
                     .timeoutSocketAfter(mc.getSocketTimeout())
-                    .timeoutConnectionAfter(mc.getConnectionTimeout());
+                    .timeoutConnectionAfter(mc.getConnectionTimeout())
+                    .mergeCookieMultiValuedParam(cookieParamCollectionSeparator)
+                    .mergeHeaderMultiValuedParam(headerParamCollectionSeparator)
+                    .mergeMatrixMultiValuedParam(matrixParamCollectionSeparator)
+                    .mergePathMultiValuedParam(pathParamCollectionSeparator)
+                    .mergeQueryMultiValuedParam(queryParamCollectionSeparator);
 
-            if(paramCollectionSeparator != null) {
-                builder.mergeMultiValuedParam(paramCollectionSeparator);
-            }
 
             // Notify injectors (Global and method) before param injection
             gi.beforeParamsInjectionHandle(builder, requestContext);

@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.server.stubs;
+package org.codegist.crest.server.stubs.entity;
 
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
@@ -34,18 +34,18 @@ import java.util.Arrays;
 import java.util.List;
 
 @Produces("text/html;charset=UTF-8")
-@Path("resource/post/entity-writer")
+@Path("entity")
 public class EntityWritersStub {
 
     @POST
-    @Path("form/xml")
+    @Path("xml")
     @Consumes("application/xml")
     public String postFormAsXml(InputStream msg) throws IOException {
         return IOs.toString(msg);
     }
 
     @POST
-    @Path("form/json")
+    @Path("json")
     @Consumes("application/json")
     public String postFormAsJson(InputStream msg) throws IOException {
         return IOs.toString(msg);
@@ -53,7 +53,7 @@ public class EntityWritersStub {
 
 
     @POST
-    @Path("form/multipart")
+    @Path("multipart")
     @Multipart
     public String multipart(MultipartBody msg) throws IOException {
         String s = "multipart";

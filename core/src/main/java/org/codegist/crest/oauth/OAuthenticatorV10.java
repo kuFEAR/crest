@@ -122,7 +122,7 @@ public class OAuthenticatorV10 implements OAuthenticator {
         else
             refreshAccessTokenMeth = HttpRequest.HTTP_POST;
 
-        String multiValuedParamSeparator = (String) customProperties.get(CRestProperty.PARAM_COLLECTION_SEPARATOR);
+        String multiValuedParamSeparator = (String) customProperties.get(CRestProperty.FORM_PARAM_COLLECTION_SEPARATOR); // TODO SHOULD USE PER TYPE (Header,Form,Query)
         if(multiValuedParamSeparator == null) {
             this.paramSerializerAmpNoQuote = UrlEncodedHttpParamSerializer.createDefaultForMap("&");
             this.paramSerializerComaQuote = UrlEncodedHttpParamSerializer.createDefaultForMap(",", false, true);

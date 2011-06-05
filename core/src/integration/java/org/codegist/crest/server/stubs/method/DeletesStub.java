@@ -18,76 +18,66 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.server.stubs;
+package org.codegist.crest.server.stubs.method;
 
 import javax.ws.rs.*;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-
-import javax.ws.rs.*;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.MatrixParam;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Cookie;
-
 import java.util.Arrays;
 import java.util.List;
 
 @Produces("text/html;charset=UTF-8")
-@Path("resource/get")
-public class GetsStub {
+@Path("method/delete")
+public class DeletesStub {
 
-    @GET
-    public String get(){
-        return "get";
+    @DELETE
+    public String delete(){
+        return "delete";
     }
 
-    @GET
+    @DELETE
     @Path("query")
-    public String getQuery(
+    public String deleteQuery(
                 @QueryParam("q1") String q1,
                 @QueryParam("q2") String q2,
                 @QueryParam("q3") Float[] q3){
-        return String.format("getQuery q1=%s q2=%s q3=%s", q1, q2, Arrays.toString(q3));
+        return String.format("deleteQuery q1=%s q2=%s q3=%s", q1, q2, Arrays.toString(q3));
     }
 
-    @GET
+    @DELETE
     @Path("matrix")
-    public String getMatrix(
+    public String deleteMatrix(
                 @MatrixParam("m1") String m1,
                 @MatrixParam("m2") String m2,
                 @MatrixParam("m3") Float[] m3){
-        return String.format("getMatrix m1=%s m2=%s m3=%s", m1, m2, Arrays.toString(m3));
+        return String.format("deleteMatrix m1=%s m2=%s m3=%s", m1, m2, Arrays.toString(m3));
     }
 
-    @GET
+    @DELETE
     @Path("path/{p1}/{p2:\\d{4}}/{p3}")
-    public String getPath(
+    public String deletePath(
                 @PathParam("p1") String p1,
                 @PathParam("p2") String p2,
                 @PathParam("p3") String p3){
-        return String.format("getPath p1=%s p2=%s p3=%s", p1, p2, p3);
+        return String.format("deletePath p1=%s p2=%s p3=%s", p1, p2, p3);
     }
 
-    @GET
+    @DELETE
     @Path("header")
-    public String getHeader(
+    public String deleteHeader(
                 @HeaderParam("h1") String h1,
                 @HeaderParam("h2") String h2,
                 @HeaderParam("h3") Float[] h3){    
-        return String.format("getHeader h1=%s h2=%s h3=%s", h1, h2, Arrays.toString(h3));
+        return String.format("deleteHeader h1=%s h2=%s h3=%s", h1, h2, Arrays.toString(h3));
     }
 
-    @GET
+    @DELETE
     @Path("cookie")
-    public String getCookie(
+    public String deleteCookie(
                 @HeaderParam("Cookie") List<Cookie> cookies,
                 @CookieParam("c1") String c1,
                 @CookieParam("c2") String c2,
                 @CookieParam("c3") String c3) {
-        return String.format("getCookie(header:%s) c1=%s c2=%s c3=%s" , cookies, c1, c2, c3);
+        return String.format("deleteCookie(header:%s) c1=%s c2=%s c3=%s" , cookies, c1, c2, c3);
     }
 
 

@@ -22,12 +22,15 @@ package org.codegist.crest;
 
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
+import org.codegist.common.lang.Strings;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.config.PathTemplate;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.UrlEncodedHttpParamSerializer;
 
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -203,8 +206,6 @@ public class HttpRequest {
         private final HttpParamMap pathParams;
         private final HttpParamMap formParams;
         private final HttpParamMap cookieParams;
-        private final Serializer<HttpParam> cookieParamSerializer;
-        private final Serializer<List<HttpParam>> headerParamsSerializer;
 
         private String meth = METH;
         private Long socketTimeout = null;
@@ -213,7 +214,10 @@ public class HttpRequest {
 
         private Serializer<Map<String,List<HttpParam>>> matrixParamsSerializer;
         private Serializer<Map<String,List<HttpParam>>> queryParamsSerializer;
-
+        private Serializer<List<HttpParam>> pathParamsSerializer;
+        private Serializer<List<HttpParam>> headerParamsSerializer;
+        private Serializer<HttpParam> cookieParamSerializer;
+        private Serializer<Map<String,List<HttpParam>>> cookieParamsSerializer;
 
 
         /**
@@ -245,8 +249,11 @@ public class HttpRequest {
 
             this.queryParamsSerializer = UrlEncodedHttpParamSerializer.createDefaultForMap("&");
             this.matrixParamsSerializer = UrlEncodedHttpParamSerializer.createDefaultForMap(MATRIX_SEP);
+            this.pathParamsSerializer = null;
+
             this.cookieParamSerializer = UrlEncodedHttpParamSerializer.createSingleParamSerializer();
             this.headerParamsSerializer = UrlEncodedHttpParamSerializer.createParamValuesSerializer(",");
+            this.cookieParamsSerializer = null;
         }
 
         /**
@@ -292,18 +299,30 @@ public class HttpRequest {
                 merged.set(new HttpParam(entry.getKey(), new StringValue(value), true));
             }
             if(!cookieParams.isEmpty()) {
-                for(HttpParam cookie : cookieParams.allValues()){
-                    merged.put(new HttpParam("Cookie", cookieParamSerializer.serialize(cookie, charset), true));
+                // TODO figure out a cleaner way to do it, no if statement
+                if(cookieParamsSerializer == null) {
+                    for(HttpParam cookie : cookieParams.allValues()){
+                        merged.put(new HttpParam("Cookie", cookieParamSerializer.serialize(cookie, charset), true));
+                    }
+                }else{
+                    merged.put(new HttpParam("Cookie", cookieParamsSerializer.serialize(cookieParams, charset), true));
                 }
-//                merged.set(new HttpParam("Cookie", cookieParamsSerializer.serialize(cookieParams, charset), true));
             }
 
             return merged;
         }
         
         private String buildBaseUrlString() {
-            for (HttpParam pathTemplate : pathParams.allValues()) {
-                pathBuilder.merge(pathTemplate.getName(), pathTemplate.getValue().asString(), pathTemplate.isEncoded());
+            // TODO figure out a cleaner way to do it, no if statement
+            if(pathParamsSerializer == null) {
+                for (HttpParam pathTemplate : pathParams.allValues()) {
+                    pathBuilder.merge(pathTemplate.getName(), pathTemplate.getValue().asString(), pathTemplate.isEncoded());
+                }
+            }else{
+                for (Map.Entry<String,List<HttpParam>> entry : pathParams.entrySet()) {
+                    String value = pathParamsSerializer.serialize(entry.getValue(), charset);
+                    pathBuilder.merge(entry.getKey(), value, true);
+                }
             }
             String url = pathBuilder.build();
             if (matrixParams.size() > 0) {  
@@ -315,9 +334,34 @@ public class HttpRequest {
             return url;
         }
 
-        public Builder mergeMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
-            this.matrixParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap(MATRIX_SEP, valueSeparator);
-            this.queryParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap("&", valueSeparator);
+        public Builder mergeMatrixMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            if(Strings.isNotBlank(valueSeparator)) {
+                this.matrixParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap(MATRIX_SEP, valueSeparator);
+            }
+            return this;
+        }
+        public Builder mergeQueryMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            if(Strings.isNotBlank(valueSeparator)) {
+                this.queryParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap("&", valueSeparator);
+            }
+            return this;
+        }
+        public Builder mergePathMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            if(Strings.isNotBlank(valueSeparator)) {
+                this.pathParamsSerializer = UrlEncodedHttpParamSerializer.createParamValuesSerializer(valueSeparator);
+            }
+            return this;
+        }
+        public Builder mergeHeaderMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            if(Strings.isNotBlank(valueSeparator)) {
+                this.headerParamsSerializer = UrlEncodedHttpParamSerializer.createParamValuesSerializer(valueSeparator);
+            }
+            return this;
+        }
+        public Builder mergeCookieMultiValuedParam(String valueSeparator) throws UnsupportedEncodingException {
+            if(Strings.isNotBlank(valueSeparator)) {
+                this.cookieParamsSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap(",", valueSeparator);
+            }
             return this;
         }
 

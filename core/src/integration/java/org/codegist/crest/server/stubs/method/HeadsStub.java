@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.server.stubs;
+package org.codegist.crest.server.stubs.method;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
@@ -26,58 +26,65 @@ import java.util.Arrays;
 import java.util.List;
 
 @Produces("text/html;charset=UTF-8")
-@Path("resource/option")
-public class OptionsStub {
+@Path("method/head")
+public class HeadsStub {
 
-    @OPTIONS
-    public String option(){
-        return "option";
+    private String lastCall;
+
+    @GET
+    public String lastCall(){
+        return lastCall;
+    }
+    
+    @HEAD
+    public void head(){
+        lastCall = "head";
     }
 
-    @OPTIONS
+    @HEAD
     @Path("query")
-    public String optionQuery(
+    public void headQuery(
                 @QueryParam("q1") String q1,
                 @QueryParam("q2") String q2,
                 @QueryParam("q3") Float[] q3){
-        return String.format("optionQuery q1=%s q2=%s q3=%s", q1, q2, Arrays.toString(q3));
+        lastCall = String.format("headQuery q1=%s q2=%s q3=%s", q1, q2, Arrays.toString(q3));
     }
 
-    @OPTIONS
+    @HEAD
     @Path("matrix")
-    public String optionMatrix(
+    public void headMatrix(
                 @MatrixParam("m1") String m1,
                 @MatrixParam("m2") String m2,
                 @MatrixParam("m3") Float[] m3){
-        return String.format("optionMatrix m1=%s m2=%s m3=%s", m1, m2, Arrays.toString(m3));
+        lastCall =  String.format("headMatrix m1=%s m2=%s m3=%s", m1, m2, Arrays.toString(m3));
     }
 
-    @OPTIONS
+    @HEAD
     @Path("path/{p1}/{p2:\\d{4}}/{p3}")
-    public String optionPath(
+    public void headPath(
                 @PathParam("p1") String p1,
                 @PathParam("p2") String p2,
                 @PathParam("p3") String p3){
-        return String.format("optionPath p1=%s p2=%s p3=%s", p1, p2, p3);
+        lastCall =  String.format("headPath p1=%s p2=%s p3=%s", p1, p2, p3);
     }
 
-    @OPTIONS
+    @HEAD
     @Path("header")
-    public String optionHeader(
+    public void headHeader(
                 @HeaderParam("h1") String h1,
                 @HeaderParam("h2") String h2,
                 @HeaderParam("h3") Float[] h3){    
-        return String.format("optionHeader h1=%s h2=%s h3=%s", h1, h2, Arrays.toString(h3));
+        lastCall =  String.format("headHeader h1=%s h2=%s h3=%s", h1, h2, Arrays.toString(h3));
     }
 
-    @OPTIONS
+    @HEAD
     @Path("cookie")
-    public String optionCookie(
+    public void headCookie(
                 @HeaderParam("Cookie") List<Cookie> cookies,
                 @CookieParam("c1") String c1,
                 @CookieParam("c2") String c2,
                 @CookieParam("c3") String c3) {
-        return String.format("optionCookie(header:%s) c1=%s c2=%s c3=%s" , cookies, c1, c2, c3);
+        lastCall =  String.format("headCookie(header:%s) c1=%s c2=%s c3=%s" , cookies, c1, c2, c3);
     }
 
 

@@ -41,7 +41,7 @@ public class Server {
         if(server != null) {
             throw new IllegalStateException("Server is already running");
         }
-        LOG.info("Starting server [address=%s, resources %s]", address, Arrays.toString(services));
+        LOG.info("Starting server [address=%s, test %s]", address, Arrays.toString(services));
         bean = new JAXRSServerFactoryBean();
         bean.setServiceBeans(Arrays.asList(services));
         bean.setAddress(address);
@@ -49,7 +49,7 @@ public class Server {
     }
 
     public void stop(){
-        LOG.info("Stoping server [address=%s, resources %s]", bean.getAddress(), bean.getResourceClasses());
+        LOG.info("Stoping server [address=%s, test %s]", bean.getAddress(), bean.getResourceClasses());
         server.stop();
         server.destroy();
         server = null;

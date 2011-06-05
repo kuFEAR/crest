@@ -18,10 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.resources;
+package org.codegist.crest.method;
 
+import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -30,17 +30,15 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 
 //@Ignore
-public class DeletesTest extends BaseCRestTest {
+public class DeletesTest extends BaseCRestTest<Deletes> {
     
-    private final Deletes toTest = crest.build(Deletes.class);
-
     public DeletesTest(CRest crest) {
-        super(crest);
+        super(crest, Deletes.class);
     }
 
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
-        return data(byRestServices());
+        return crest(byRestServices());
     }
 
     @Test
