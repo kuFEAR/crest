@@ -1,0 +1,18 @@
+<form-data>
+    <d>
+        <A valA="bbb">
+            <BB valB="ccc">
+                <AAA val="b1"/>
+            </BB>
+        </A>
+    </d>
+    <e>f</e>
+    <c>
+        <A valA="aaa">
+            <BB valB="bbb">
+                <AAA val="a1"/>
+            </BB>
+        </A>
+    </c>
+    <a>b</a>
+</form-data>

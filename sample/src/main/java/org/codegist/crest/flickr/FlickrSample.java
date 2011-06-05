@@ -81,9 +81,4 @@ public class FlickrSample implements Runnable {
 
 
 
-    public static void main(String[] args) {
-        //new FlickrSample(args[0], args[1], args[2]).run();
-        new FlickrSample("ae47a48c472296e024ecb97a6764ff02", "cf88a593c025386a","72157625399960176-77233f2f1c859335").run();
-    }
-
 }
