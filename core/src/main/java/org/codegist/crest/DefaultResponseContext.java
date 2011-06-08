@@ -20,8 +20,10 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.http.HttpResponse;
 import org.codegist.crest.serializer.DeserializationManager;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -57,11 +59,11 @@ class DefaultResponseContext implements ResponseContext {
         return context;
     }
 
-    public <T> T deserialize() {
+    public <T> T deserialize() throws IOException {
         return this.<T>deserializeTo((Class<T>) getExpectedType(), getExpectedGenericType());
     }
     
-    public <T> T deserializeTo(Class<T> type, Type genericType) {
+    public <T> T deserializeTo(Class<T> type, Type genericType) throws IOException {
         return deserializationManager.<T>deserializeTo(
                 type,
                 genericType,

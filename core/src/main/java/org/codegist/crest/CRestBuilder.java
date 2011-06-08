@@ -21,18 +21,13 @@
 package org.codegist.crest;
 
 import org.codegist.common.collect.Maps;
-import org.codegist.common.lang.Strings;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.*;
-import org.codegist.crest.interceptor.RequestInterceptor;
-import org.codegist.crest.oauth.OAuthenticator;
-import org.codegist.crest.oauth.OAuthenticatorV10;
-import org.codegist.crest.oauth.Token;
-import org.codegist.crest.security.AuthentificationManager;
-import org.codegist.crest.security.OAuthentificationManager;
-import org.codegist.crest.security.interceptor.AuthentificationInterceptor;
+import org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory;
+import org.codegist.crest.config.InterfaceConfigFactory;
+import org.codegist.crest.config.OverridingInterfaceConfigFactory;
+import org.codegist.crest.http.*;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jackson.JacksonSerializer;
@@ -87,7 +82,7 @@ public class CRestBuilder {
 
     private final static int RET_TYPE_JSON = 0;
     private final static int RET_TYPE_XML = 1;
-    private final static int RET_TYPE_CUSTOM = 2;
+//    private final static int RET_TYPE_CUSTOM = 2;
     private final static int RET_TYPE_RAW = 3;
 
     private final static int PROXY_TYPE_JDK = 0;
@@ -129,16 +124,14 @@ public class CRestBuilder {
     private final Set<String> plainTextMimes = new HashSet<String>(Arrays.asList(DEFAULT_PLAINTEXT_MIMETYPES));
     private final Set<String> xmlMimes = new HashSet<String>(Arrays.asList(DEFAULT_XML_MIMETYPES));
     private final Set<String> jsonMimes = new HashSet<String>(Arrays.asList(DEFAULT_JSON_MIMETYPES));
-    private String customMime;
 
     private InterfaceConfigFactory overridesFactory = null;
 
     private Map<String, Object> customProperties = new HashMap<String, Object>();
     private Map<String, String> placeholders = new HashMap<String, String>();
     private Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
-    private final Map<String, ParamConfig> extraParams = new HashMap<String, ParamConfig>();
 
-    private RestService restService;
+    private HttpChannelInitiator httpChannelInitiator;
 
     private boolean useHttpClient = false;
 
@@ -161,30 +154,30 @@ public class CRestBuilder {
         SerializerRegistry serializerRegistry = buildSerializerRegistry();
         Maps.putIfNotPresent(customProperties, SerializerRegistry.class.getName(), serializerRegistry);
 
-        RestService restService = buildRestService(deserializerRegistry);
-        Maps.putIfNotPresent(customProperties, RestService.class.getName(), restService);
+        HttpChannelInitiator httpChannelInitiator = buildHttpChannelInitiator();
+        HttpRequestExecutor httpRequestExecutor = new DefaultHttpRequestExecutor(httpChannelInitiator);
+        Maps.putIfNotPresent(customProperties, HttpRequestExecutor.class.getName(), httpRequestExecutor);
 
-        AuthentificationManager authentificationManager = buildAuthentificationManager(restService);
-        Maps.putIfNotPresent(customProperties, AuthentificationManager.class.getName(), authentificationManager);
+//        AuthentificationManager authentificationManager = buildAuthentificationManager(restService);
+//        Maps.putIfNotPresent(customProperties, AuthentificationManager.class.getName(), authentificationManager);
 
         InterfaceConfigFactory configFactory = buildInterfaceConfigFactory();
 
-        if (authentificationManager != null) {
-            RequestInterceptor authentificationInterceptor = new AuthentificationInterceptor(authentificationManager);
-            try {
-                configFactory = new OverridingInterfaceConfigFactory(configFactory, new InterfaceConfigBuilder()
-                        .setGlobalInterceptor(authentificationInterceptor)
-                        .buildTemplate());
-            } catch (Exception e) {
-                throw new CRestException(e);
-            }
-        }
+//        if (authentificationManager != null) {
+//            RequestInterceptor authentificationInterceptor = new AuthentificationInterceptor(authentificationManager);
+//            try {
+//                configFactory = new OverridingInterfaceConfigFactory(configFactory, new InterfaceConfigBuilder()
+//                        .setGlobalInterceptor(authentificationInterceptor)
+//                        .buildTemplate());
+//            } catch (Exception e) {
+//                throw new CRestException(e);
+//            }
+//        }
         Maps.putIfNotPresent(customProperties, InterfaceConfigFactory.class.getName(), configFactory);
 
         /* Put then in the properties. These are not part of the API */
         Maps.putIfNotPresent(customProperties, CRestProperty.SERIALIZER_CUSTOM_SERIALIZER_MAP, Maps.unmodifiable(serializersMap));
         Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_PLACEHOLDERS_MAP, Maps.unmodifiable(placeholders));
-        Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, this.extraParams.values().toArray(new ParamConfig[this.extraParams.size()]));
         Maps.putIfNotPresent(customProperties, CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME, xmlWrapperElementName);
 
         /* Defaults the deserializer for all methods */
@@ -195,26 +188,25 @@ public class CRestBuilder {
             case RET_TYPE_XML:
                 Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(DEFAULT_XML_ACCEPT_HEADER));
                 break;
-            case RET_TYPE_CUSTOM:
-                Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(customMime));
-                break;
+//            case RET_TYPE_CUSTOM:
+//                Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(customMime));
+//                break;
             case RET_TYPE_RAW:
                 break;
         }
 
-        return new DefaultCRestContext(restService, proxyFactory, configFactory, customProperties);
+        return new DefaultCRestContext(httpRequestExecutor, proxyFactory, configFactory, customProperties);
     }
 
-    private RestService buildRestService(DeserializerRegistry registry) {
-        if (restService == null) {
+    private HttpChannelInitiator buildHttpChannelInitiator() {
+        if (httpChannelInitiator == null) {
             if (useHttpClient) {
-                Maps.putIfNotPresent(customProperties, DeserializerRegistry.class.getName(), registry);
-                return HttpClientRestService.newRestService(customProperties);
+                return HttpClientHttpChannelInitiator.newHttpChannelInitiator(customProperties);
             } else {
-                return new DefaultRestService();
+                return new HttpURLConnectionHttpChannelInitiator();
             }
         } else {
-            return restService;
+            return httpChannelInitiator;
         }
     }
 
@@ -363,44 +355,32 @@ public class CRestBuilder {
     }
 
 
-    private AuthentificationManager buildAuthentificationManager(RestService restService) {
-        String consumerKey = (String) customProperties.get(OAUTH_CONSUMER_KEY);
-        String consumerSecret = (String) customProperties.get(OAUTH_CONSUMER_SECRET);
-        String accessTok = (String) customProperties.get(OAUTH_ACCESS_TOKEN);
-        String accessTokenSecret = (String) customProperties.get(OAUTH_ACCESS_TOKEN_SECRET);
-        Map<String, String> accessTokenExtras = (Map<String, String>) customProperties.get(OAUTH_ACCESS_TOKEN_EXTRAS);
+//    private AuthentificationManager buildAuthentificationManager(RestService restService) {
+//        String consumerKey = (String) customProperties.get(OAUTH_CONSUMER_KEY);
+//        String consumerSecret = (String) customProperties.get(OAUTH_CONSUMER_SECRET);
+//        String accessTok = (String) customProperties.get(OAUTH_ACCESS_TOKEN);
+//        String accessTokenSecret = (String) customProperties.get(OAUTH_ACCESS_TOKEN_SECRET);
+//        Map<String, String> accessTokenExtras = (Map<String, String>) customProperties.get(OAUTH_ACCESS_TOKEN_EXTRAS);
+//
+//        if (Strings.isBlank(consumerKey)
+//                || Strings.isBlank(consumerSecret)
+//                || Strings.isBlank(accessTok)
+//                || Strings.isBlank(accessTokenSecret)) return null;
+//
+//        Token consumerToken = new Token(consumerKey, consumerSecret);
+//        OAuthenticator authenticator = new OAuthenticatorV10(restService, consumerToken, customProperties);
+//        Token accessToken = new Token(accessTok, accessTokenSecret, accessTokenExtras);
+//
+//        return new OAuthentificationManager(authenticator, accessToken);
+//    }
 
-        if (Strings.isBlank(consumerKey)
-                || Strings.isBlank(consumerSecret)
-                || Strings.isBlank(accessTok)
-                || Strings.isBlank(accessTokenSecret)) return null;
-
-        Token consumerToken = new Token(consumerKey, consumerSecret);
-        OAuthenticator authenticator = new OAuthenticatorV10(restService, consumerToken, customProperties);
-        Token accessToken = new Token(accessTok, accessTokenSecret, accessTokenExtras);
-
-        return new OAuthentificationManager(authenticator, accessToken);
-    }
-
-    /**
-     * Resulting CRest instance's RestService will be a single threaded instance of {@link org.codegist.crest.HttpClientRestService}.
-     *
-     * @return current builder
-     * @see org.codegist.crest.HttpClientRestService
-     */
     public CRestBuilder useHttpClientRestService() {
         this.useHttpClient = true;
         return this;
     }
 
-    /**
-     * Overrides the rest service every services build with the resulting CRest instance will use.
-     *
-     * @param restService rest service instance
-     * @return current builder
-     */
-    public CRestBuilder setRestService(RestService restService) {
-        this.restService = restService;
+    public CRestBuilder setHttpChannelInitiator(HttpChannelInitiator httpChannelInitiator) {
+        this.httpChannelInitiator = httpChannelInitiator;
         return this;
     }
 
@@ -420,7 +400,6 @@ public class CRestBuilder {
      * @param name  property key
      * @param value property value
      * @return current builder
-     * @see InterfaceContext#getProperties()
      */
     public CRestBuilder setProperty(String name, Object value) {
         customProperties.put(name, value);
@@ -434,7 +413,6 @@ public class CRestBuilder {
      * @param type       Type to seralize
      * @param serializer Serializer
      * @return current builder
-     * @see InterfaceContext#getProperties()
      */
     public CRestBuilder setSerializer(Type type, Serializer serializer) {
         serializersMap.put(type, serializer);
@@ -446,7 +424,6 @@ public class CRestBuilder {
      *
      * @param customProperties properties map
      * @return current builder
-     * @see InterfaceContext#getProperties()
      */
     public CRestBuilder addProperties(Map<String, Object> customProperties) {
         this.customProperties.putAll(customProperties);
@@ -458,7 +435,6 @@ public class CRestBuilder {
      *
      * @param customProperties properties map
      * @return current builder
-     * @see InterfaceContext#getProperties()
      */
     public CRestBuilder setProperties(Map<String, Object> customProperties) {
         this.customProperties = customProperties;
@@ -541,93 +517,6 @@ public class CRestBuilder {
     public CRestBuilder overrideDefaultConfigWith(InterfaceConfigFactory overridesFactory) {
         this.overridesFactory = overridesFactory;
         return this;
-    }
-
-
-    public CRestBuilder consumes(String mimeType, Deserializer deserializer) {
-        return consumes(mimeType, deserializer, true);
-    }
-
-    public CRestBuilder consumes(String mimeType, Deserializer deserializer, boolean addAcceptHeader) {
-        this.retType = RET_TYPE_CUSTOM;
-        this.customMime = mimeType;
-        if (addAcceptHeader) {
-            addGlobalParam("Accept", mimeType, HttpRequest.DEST_HEADER, false);
-        }
-        return bindDeserializer(deserializer, mimeType);
-    }
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from JSON to user object model.
-     * <p>Interfaces given to the CRest instance can return any object type as long as the marshaller can unmarshall them. (requires jackson available in the classpath)
-     * <p>Adds a default Accept={@value CRestBuilder#DEFAULT_JSON_ACCEPT_HEADER} Header to all request
-     *
-     * @return current builder
-     */
-    public CRestBuilder consumesJson() {
-        return consumesJson(true);
-    }
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from JSON to user object model.
-     * <p>Interfaces given to the CRest instance can return any object type as long as the marshaller can unmarshall them. (requires jackson available in the classpath)
-     * <p>If withAcceptHeader  is true, a default Accept={@value CRestBuilder#DEFAULT_JSON_ACCEPT_HEADER} Header will be added to all request
-     *
-     * @param withAcceptHeader indicate to wether add or not the default accept header to all requests
-     * @return current builder
-     */
-    public CRestBuilder consumesJson(boolean withAcceptHeader) {
-        return consumesJson(withAcceptHeader ? DEFAULT_JSON_ACCEPT_HEADER : null);
-    }
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from JSON to user object model.
-     * <p>Interfaces given to the CRest instance can return any object type as long as the marshaller can unmarshall them. (requires jackson available in the classpath)
-     * <p>The given accept header will be used for all requests.
-     *
-     * @param acceptHeader accept header to add to all requests
-     * @return current builder
-     */
-    public CRestBuilder consumesJson(String acceptHeader) {
-        this.retType = RET_TYPE_JSON;
-        return addGlobalParam("Accept", acceptHeader, HttpRequest.DEST_HEADER, false);
-    }
-
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from XML to user object model.
-     * <p>Interface given to the CRest instance can return any object type as long as the marshaller can unmarshall them.
-     * <p>Adds a default Accept={@value CRestBuilder#DEFAULT_XML_ACCEPT_HEADER} Header to all request
-     *
-     * @return current builder
-     */
-    public CRestBuilder consumesXml() {
-        return consumesXml(true);
-    }
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from XML to user object model.
-     * <p>Interface given to the CRest instance can return any object type as long as the marshaller can unmarshall them.
-     * <p>If withAcceptHeader  is true, a default Accept={@value CRestBuilder#DEFAULT_XML_ACCEPT_HEADER} Header will be added to all request
-     *
-     * @param withAcceptHeader indicate to wether add or not the default accept header to all requests
-     * @return current builder
-     */
-    public CRestBuilder consumesXml(boolean withAcceptHeader) {
-        return consumesXml(withAcceptHeader ? DEFAULT_XML_ACCEPT_HEADER : null);
-    }
-
-    /**
-     * Resulting CRest instance will create interface instances that will auto marshall the response from XML to user object model.
-     * <p>Interface given to the CRest instance can return any object type as long as the marshaller can unmarshall them.
-     * <p>The given accept header will be used for all requests.
-     *
-     * @param acceptHeader accept header to add to all requests
-     * @return current builder
-     */
-    public CRestBuilder consumesXml(String acceptHeader) {
-        retType = RET_TYPE_XML;
-        return addGlobalParam("Accept", acceptHeader, HttpRequest.DEST_HEADER, false);
     }
 
 
@@ -717,40 +606,6 @@ public class CRestBuilder {
                 .setProperty(SERIALIZER_BOOLEAN_FALSE, falseSerialized);
     }
 
-    /**
-     * Sets the list separator for the list serializer
-     * <p>Shortcut to builder.setProperty(CRestProperty.SERIALIZER_LIST_SEPARATOR, sep)
-     *
-     * @param sep Separator string
-     * @return current builder
-     * @see CRestProperty#URL_ENCODED_FORM_PARAM_COLLECTION_SEPARATOR
-     */
-    public CRestBuilder mergeMultiValuedParam(String sep) {
-        return mergeMatrixMultiValuedParam(sep)
-               .mergeQueryMultiValuedParam(sep)
-               .mergePathMultiValuedParam(sep)
-               .mergeFormMultiValuedParam(sep)
-               .mergeHeaderMultiValuedParam(sep)
-               .mergeCookieMultiValuedParam(sep);
-    }
-    public CRestBuilder mergeMatrixMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.MATRIX_PARAM_COLLECTION_SEPARATOR, sep);
-    }
-    public CRestBuilder mergeQueryMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.QUERY_PARAM_COLLECTION_SEPARATOR, sep);
-    }
-    public CRestBuilder mergePathMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.PATH_PARAM_COLLECTION_SEPARATOR, sep);
-    }
-    public CRestBuilder mergeFormMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.FORM_PARAM_COLLECTION_SEPARATOR, sep);
-    }
-    public CRestBuilder mergeHeaderMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.HEADER_PARAM_COLLECTION_SEPARATOR, sep);
-    }
-    public CRestBuilder mergeCookieMultiValuedParam(String sep) {
-        return setProperty(CRestProperty.COOKIE_PARAM_COLLECTION_SEPARATOR, sep);
-    }
 
     /**
      * Sets a placeholder key/value that will be used to replace interface config eg:
@@ -774,71 +629,6 @@ public class CRestBuilder {
         placeholders.put(placeholder, value);
         return this;
     }
-
-
-    /**
-     * Adds a global form param every services build with the resulting CRest instance will have.
-     *
-     * @param name  Param name
-     * @param value Param value
-     * @return current builder
-     */
-    public CRestBuilder addGlobalFormParam(String name, String value) {
-        return addGlobalParam(name, value, HttpRequest.DEST_FORM);
-    }
-
-    /**
-     * Adds a global header param every services build with the resulting CRest instance will have.
-     *
-     * @param name  Param name
-     * @param value Param value
-     * @return current builder
-     */
-    public CRestBuilder addGlobalHeaderParam(String name, String value) {
-        return addGlobalParam(name, value, HttpRequest.DEST_HEADER);
-    }
-
-    /**
-     * Adds a global query param every services build with the resulting CRest instance will have.
-     *
-     * @param name  Param name
-     * @param value Param value
-     * @return current builder
-     */
-    public CRestBuilder addGlobalQueryParam(String name, String value) {
-        return addGlobalParam(name, value, HttpRequest.DEST_QUERY);
-    }
-
-    /**
-     * Adds a global path param every services build with the resulting CRest instance will have.
-     *
-     * @param name  Param name
-     * @param value Param value
-     * @return current builder
-     */
-    public CRestBuilder addGlobalPathParam(String name, String value) {
-        return addGlobalParam(name, value, HttpRequest.DEST_PATH);
-    }
-
-    private CRestBuilder addGlobalParam(String name, String value, String destination) {
-        return addGlobalParam(name, value, destination, true);
-    }
-
-    private CRestBuilder addGlobalParam(String name, String value, String destination, boolean addIfEmptyValue) {
-        if (Strings.isBlank(value) && !addIfEmptyValue) {
-            extraParams.remove(name);
-        } else {
-            ParamConfig param = (ParamConfig) new ParamConfigBuilder(customProperties)
-                    .setName(name)
-                    .setDefaultValue(value)
-                    .setDestination(destination)
-                    .build();
-            extraParams.put(name, param);
-        }
-
-        return this;
-    }
-
 
     public CRestBuilder bindJsonDeserializerWith(String... mimeTypes) {
         this.jsonMimes.addAll(Arrays.asList(mimeTypes));

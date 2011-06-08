@@ -22,13 +22,13 @@ package org.codegist.crest.serializer;
 
 import org.codegist.common.collect.Maps;
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org

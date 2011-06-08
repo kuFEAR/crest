@@ -21,9 +21,8 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.lang.Objects;
-import org.codegist.common.lang.Validate;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.serializer.*;
+import org.codegist.crest.serializer.DeserializerException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

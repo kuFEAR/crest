@@ -56,7 +56,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
         this.wrapperElementName = new QName(Strings.defaultIfBlank((String) config.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
-    public void serialize(Map<String, Object> value, OutputStream out, Charset charset) throws SerializerException {
+    public void serialize(Map<String, Object> value, Charset charset, OutputStream out) throws SerializerException {
         JAXBElement<JaxbHttpParam> object = JaxbHttpParamJAXBElement.create(wrapperElementName, value);
         jaxb.marshal(object, out, charset);
     }

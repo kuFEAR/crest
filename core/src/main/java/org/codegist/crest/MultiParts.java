@@ -22,6 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
+import org.codegist.crest.http.HttpParam;
 
 import java.util.Map;
 
@@ -45,12 +46,12 @@ public final class MultiParts {
         return (String) (paramConfig.getMetaDatas() == null ? null : paramConfig.getMetaDatas().get(FILENAME));
     }
 
-    public static String getContentType(Value value){
-        return (String) value.getMetaData(CONTENT_TYPE);
+    public static String getContentType(HttpParam param){
+        return (String) param.getConfig().getMetaDatas().get(CONTENT_TYPE);
     }
 
-    public static String getFileName(Value value){
-        return (String) value.getMetaData(FILENAME);
+    public static String getFileName(HttpParam param){
+        return (String) param.getConfig().getMetaDatas().get(FILENAME);
     }
 
     public static void putIfNotBlank(Map<String, Object> metadatas, String contentType, String fileName){

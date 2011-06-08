@@ -24,9 +24,9 @@ import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
+import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -38,16 +38,21 @@ class DefaultParamConfig implements ParamConfig {
     private final String name;
     private final String defaultValue;
     private final String destination;
+    private final String listSeparator;
     private final Map<String,Object> metadatas;
+    private final Serializer serializer;
+    private final Boolean encoded;
+    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultParamConfig() {
-        this(DEFAULT_NAME, DEFAULT_VALUE, DEFAULT_DESTINATION, DEFAULT_METADATAS);
-    }
 
-    DefaultParamConfig(String name, String defaultValue, String destination, Map<String,Object> metadatas) {
+    DefaultParamConfig(String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.destination = destination;
+        this.listSeparator = listSeparator;
+        this.serializer = serializer;
+        this.encoded = encoded;
+        this.annotations = Maps.unmodifiable(annotations, false);
         this.metadatas = Maps.unmodifiable(metadatas, false);
     }
 
@@ -63,8 +68,24 @@ class DefaultParamConfig implements ParamConfig {
         return destination;
     }
 
+    public String getListSeparator() {
+        return listSeparator;
+    }
+
     public Map<String, Object> getMetaDatas() {
         return metadatas;
+    }
+
+    public Serializer getSerializer() {
+        return serializer;
+    }
+
+    public Boolean isEncoded() {
+        return encoded;
+    }
+
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
+        return annotations;
     }
 
     @Override
@@ -77,7 +98,11 @@ class DefaultParamConfig implements ParamConfig {
                 .append(name, that.name)
                 .append(defaultValue, that.defaultValue)
                 .append(destination, that.destination)
+                .append(listSeparator, that.listSeparator)
                 .append(metadatas, that.metadatas)
+                .append(serializer, that.serializer)
+                .append(encoded, that.encoded)
+                .append(annotations, that.annotations)
                 .equals();
     }
 
@@ -87,7 +112,11 @@ class DefaultParamConfig implements ParamConfig {
                 .append(name)
                 .append(defaultValue)
                 .append(destination)
+                .append(listSeparator)
                 .append(metadatas)
+                .append(serializer)
+                .append(encoded)
+                .append(annotations)
                 .hashCode();
     }
 
@@ -96,7 +125,11 @@ class DefaultParamConfig implements ParamConfig {
                 .append("name", name)
                 .append("defaultValue", defaultValue)
                 .append("destination", destination)
+                .append("listSeparator", listSeparator)
                 .append("metadatas", metadatas)
+                .append("serializer", serializer)
+                .append("encoded", encoded)
+                .append("annotations", annotations)
                 .toString();
     }
 }

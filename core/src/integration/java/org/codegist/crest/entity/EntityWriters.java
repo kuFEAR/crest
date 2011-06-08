@@ -20,10 +20,7 @@
 
 package org.codegist.crest.entity;
 
-import org.codegist.crest.CRestSuite;
-import org.codegist.crest.JsonEntityWriter;
-import org.codegist.crest.MultiPartEntityWriter;
-import org.codegist.crest.XmlEntityWriter;
+import org.codegist.crest.*;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.annotate.EntityWriter;
 
@@ -31,7 +28,7 @@ import java.io.File;
 import java.io.InputStream;
 
 
-@EndPoint(CRestSuite.ADDRESS)
+@EndPoint(BaseCRestTest.ADDRESS)
 @Path("entity")
 @POST
 public interface EntityWriters {

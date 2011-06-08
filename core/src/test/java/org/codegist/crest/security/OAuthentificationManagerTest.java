@@ -21,7 +21,7 @@
 //package org.codegist.crest.security;
 //
 //import org.codegist.common.lang.Pair;
-//import org.codegist.crest.HttpRequest;
+//import org.codegist.crest.http.HttpRequest;
 //import org.codegist.crest.oauth.OAuthenticator;
 //import org.codegist.crest.oauth.Token;
 //import org.junit.Test;

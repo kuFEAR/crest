@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -38,44 +39,32 @@ import java.util.Map;
  */
 public interface ParamConfig {
 
-    /**
-     * Default destination applied when non specified.
-     *
-     * @see ParamConfig#getDestination()
-     */
     String DEFAULT_DESTINATION = HttpRequest.DEST_QUERY;
 
-    /**
-     * Default parameter value if not specified.
-     *
-     * @see ParamConfig#getDefaultValue()
-     */
     String DEFAULT_VALUE = "";
 
-    /**
-     * Default name applied when non specified.
-     *
-     * @see ParamConfig#getName()
-     */
     String DEFAULT_NAME = "";
 
     Map<String,Object> DEFAULT_METADATAS = null;
 
+    Class<? extends Serializer> DEFAULT_SERIALIZER = null;
 
-    /**
-     * @return Parameter name to be used.
-     */
+    boolean DEFAULT_ENCODED = false;
+
+
     String getName();
 
-    /**
-     * @return param default value
-     */
     String getDefaultValue();
 
-    /**
-     * @return Destination of the argument value.
-     */
     String getDestination();
 
+    String getListSeparator();
+
     Map<String, Object> getMetaDatas();
+
+    Serializer getSerializer();
+
+    Boolean isEncoded();
+
+    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

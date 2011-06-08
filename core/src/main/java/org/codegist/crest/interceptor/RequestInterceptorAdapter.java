@@ -20,8 +20,8 @@
 
 package org.codegist.crest.interceptor;
 
-import org.codegist.crest.HttpRequest;
 import org.codegist.crest.RequestContext;
+import org.codegist.crest.http.HttpRequest;
 
 /**
  * Simple {@link org.codegist.crest.interceptor.RequestInterceptor} adapter.

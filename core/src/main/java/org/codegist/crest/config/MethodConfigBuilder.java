@@ -1,16 +1,16 @@
 package org.codegist.crest.config;
 
-import org.codegist.common.collect.Arrays;
 import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
 import org.codegist.common.reflect.Methods;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.EntityWriter;
-import org.codegist.crest.HttpRequest;
 import org.codegist.crest.UrlEncodedFormEntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
+import org.codegist.crest.http.HttpMethod;
+import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.DeserializerRegistry;
@@ -29,13 +29,13 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
     private final Method method;
     private final InterfaceConfigBuilder parent;
     private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();// TODO MULTIMAP ?
-    private final MethodParamConfigBuilder[] methodParamConfigBuilders;
+    private final ParamConfigBuilder[] methodParamConfigBuilders;
     private final DeserializerRegistry deserializerRegistry;
     private final ArrayList<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
     private final boolean addSlashes;
 
-    private String meth;
+    private HttpMethod meth;
     private Long socketTimeout;
     private Long connectionTimeout;
     private RequestInterceptor requestInterceptor;
@@ -51,11 +51,11 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         this.parent = parent;
         this.method = method;
         this.addSlashes = !Boolean.FALSE.equals(getProperty(CRestProperty.CREST_URL_ADD_SLASHES));
-        this.methodParamConfigBuilders = new MethodParamConfigBuilder[method.getParameterTypes().length];
+        this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
 
         for (int i = 0; i < this.methodParamConfigBuilders.length; i++) {
             Map<Class<? extends Annotation>, Annotation> paramAnnotation = Methods.getParamsAnnotation(method, i);
-            this.methodParamConfigBuilders[i] = new MethodParamConfigBuilder(this, method.getParameterTypes()[i], method.getGenericParameterTypes()[i], paramAnnotation, customProperties);
+            this.methodParamConfigBuilders[i] = new ParamConfigBuilder(this, customProperties, method.getParameterTypes()[i], method.getGenericParameterTypes()[i], paramAnnotation);
         }
     }
 
@@ -63,7 +63,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
      * @inheritDoc
      */
     public MethodConfig build(boolean validateConfig, boolean isTemplate) {
-        MethodParamConfig[] pConfigMethod = new MethodParamConfig[methodParamConfigBuilders.length];
+        ParamConfig[] pConfigMethod = new ParamConfig[methodParamConfigBuilders.length];
         for (int i = 0; i < methodParamConfigBuilders.length; i++) {
             pConfigMethod[i] = this.methodParamConfigBuilders[i].build(validateConfig, isTemplate);
         }
@@ -79,7 +79,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
 
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
         String path = Urls.normalizeSlashes(addSlashes ? join("/", paths) : join("", paths));
-        String meth = this.meth;
+        HttpMethod meth = this.meth;
         Long socketTimeout = this.socketTimeout;
         Long connectionTimeout = this.connectionTimeout;
         RequestInterceptor requestInterceptor = this.requestInterceptor;
@@ -106,7 +106,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
             entityWriter = defaultIfUndefined(entityWriter, CRestProperty.CONFIG_PARAM_DEFAULT_BODY_WRITER, newInstance(MethodConfig.DEFAULT_BODY_WRITER));
             deserializers = defaultIfUndefined(deserializers, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, newInstance(MethodConfig.DEFAULT_DESERIALIZERS));
 
-            if(entityWriter == null && hasEntity(meth)) {
+            if(entityWriter == null && meth.hasEntity()) {
                 entityWriter = newInstance(UrlEncodedFormEntityWriter.class);
             }
         }
@@ -128,17 +128,13 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         );
     }
 
-    private boolean hasEntity(String meth){
-        return HttpRequest.HTTP_POST.equals(meth) || HttpRequest.HTTP_PUT.equals(meth);         
-    }
-
     public InterfaceConfigBuilder endMethodConfig() {
         return parent;
     }
 
     @Override
     public MethodConfigBuilder setIgnoreNullOrEmptyValues(boolean ignoreNullOrEmptyValues) {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
         }
         for (ParamConfigBuilder b : extraParamBuilders.values()) {
@@ -219,7 +215,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
                 .endParamConfig();
     }
 
-    public MethodParamConfigBuilder startParamConfig(int index) {
+    public ParamConfigBuilder startParamConfig(int index) {
         return methodParamConfigBuilders[index];
     }
 
@@ -245,7 +241,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
 
     public MethodConfigBuilder setHttpMethod(String meth) {
         if (ignore(meth)) return this;
-        this.meth = replacePlaceholders(meth);
+        this.meth = HttpMethod.valueOf(replacePlaceholders(meth));
         return this;
     }
 
@@ -370,36 +366,43 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
     /* PARAMS SETTINGS METHODS */
 
     public MethodConfigBuilder setParamsSerializer(Serializer paramSerializer) {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setSerializer(paramSerializer);
         }
         return this;
     }
 
     public MethodConfigBuilder setParamsSerializer(String paramSerializerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setSerializer(paramSerializerClassName);
         }
         return this;
     }
 
     public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer) throws IllegalAccessException, InstantiationException {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setSerializer(paramSerializer);
         }
         return this;
     }
 
     public MethodConfigBuilder setParamsName(String name) {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setName(name);
         }
         return this;
     }
 
     public MethodConfigBuilder setParamsEncoded(boolean encoded) {
-        for (MethodParamConfigBuilder b : methodParamConfigBuilders) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setEncoded(encoded);
+        }
+        return this;
+    }
+
+    public MethodConfigBuilder setParamsListSeparator(String listSeparator) {
+        for (ParamConfigBuilder b : methodParamConfigBuilders) {
+            b.setListSeparator(listSeparator);
         }
         return this;
     }

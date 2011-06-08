@@ -32,7 +32,7 @@ public class Server {
     private JAXRSServerFactoryBean bean;
 
     public static Server create(String address, Object... services) {
-        Server server = new Server();
+        final Server server = new Server();
         server.start(address, services);
         return server;
     }

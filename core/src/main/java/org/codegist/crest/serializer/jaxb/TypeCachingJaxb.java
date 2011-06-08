@@ -22,18 +22,15 @@ package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
 
-import javax.xml.bind.JAXBElement;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author laurent.gilles@codegist.org

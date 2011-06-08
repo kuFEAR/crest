@@ -22,7 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.MethodParamConfig;
+import org.codegist.crest.config.ParamConfig;
 
 import java.lang.reflect.Method;
 
@@ -38,7 +38,7 @@ public interface RequestContext {
 
     MethodConfig getMethodConfig();
 
-    MethodParamConfig getParamConfig(int index);
+    ParamConfig getParamConfig(int index);
 
     Object getValue(int index);
 

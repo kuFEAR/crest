@@ -23,6 +23,8 @@ package org.codegist.crest.handler;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.ResponseContext;
 
+import java.io.IOException;
+
 /**
  * Response handler is invoked for each request's as long as the interface doesn't specifically requested for the raw response (Reader or InputStream method return types.)
  * <p>Response handler role is to check for thridparties specific error formatted content in the response, and returns the expected return type for method calls.
@@ -33,6 +35,6 @@ import org.codegist.crest.ResponseContext;
  */
 public interface ResponseHandler {
 
-    Object handle(ResponseContext responseContext) throws CRestException;
+    Object handle(ResponseContext responseContext) throws CRestException, IOException;
 
 }

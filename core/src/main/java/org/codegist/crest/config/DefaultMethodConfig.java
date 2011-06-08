@@ -23,11 +23,11 @@ package org.codegist.crest.config;
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.reflect.Annotations;
-import org.codegist.common.reflect.Methods;
 import org.codegist.crest.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
+import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
@@ -43,7 +43,7 @@ class DefaultMethodConfig implements MethodConfig {
 
     private final Method method;
     private final PathTemplate path;
-    private final String httpMethod;
+    private final HttpMethod httpMethod;
     private final Long socketTimeout;
     private final Long connectionTimeout;
     private final EntityWriter entityWriter;
@@ -53,10 +53,10 @@ class DefaultMethodConfig implements MethodConfig {
     private final RetryHandler retryHandler;
     private final Deserializer[] deserializers;
     private final ParamConfig[] extraParams;
-    private final MethodParamConfig[] methodParamConfigs;
+    private final ParamConfig[] methodParamConfigs;
     private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultMethodConfig(Method method, PathTemplate path, String httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, MethodParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
+    DefaultMethodConfig(Method method, PathTemplate path, HttpMethod httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
         this.method = method;
         this.path = path;
         this.httpMethod = httpMethod;
@@ -85,7 +85,7 @@ class DefaultMethodConfig implements MethodConfig {
         return method;
     }
 
-    public String getHttpMethod() {
+    public HttpMethod getHttpMethod() {
         return httpMethod;
     }
 
@@ -117,7 +117,7 @@ class DefaultMethodConfig implements MethodConfig {
         return deserializers;
     }
 
-    public MethodParamConfig getParamConfig(int index) {
+    public ParamConfig getParamConfig(int index) {
         return methodParamConfigs != null && index < methodParamConfigs.length ? methodParamConfigs[index] : null;
     }
 

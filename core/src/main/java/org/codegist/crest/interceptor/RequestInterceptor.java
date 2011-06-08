@@ -20,8 +20,8 @@
 
 package org.codegist.crest.interceptor;
 
-import org.codegist.crest.HttpRequest;
 import org.codegist.crest.RequestContext;
+import org.codegist.crest.http.HttpRequest;
 
 /**
  * Interceptors are notified before and after the parameters have been added to the request.

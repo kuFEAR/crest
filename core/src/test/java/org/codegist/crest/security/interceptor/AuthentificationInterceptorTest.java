@@ -20,7 +20,7 @@
 //
 //package org.codegist.crest.security.interceptor;
 //
-//import org.codegist.crest.HttpRequest;
+//import org.codegist.crest.http.HttpRequest;
 //import org.codegist.crest.RequestContext;
 //import org.codegist.crest.security.AuthentificationManager;
 //import org.junit.Test;

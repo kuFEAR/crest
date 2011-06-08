@@ -21,8 +21,8 @@
 package org.codegist.crest.security.interceptor;
 
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.HttpRequest;
 import org.codegist.crest.RequestContext;
+import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptorAdapter;
 import org.codegist.crest.security.AuthentificationManager;
 

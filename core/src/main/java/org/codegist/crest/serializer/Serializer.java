@@ -41,7 +41,7 @@ public interface Serializer<T> {
      * @return serialized version of the argument
      * @throws NullPointerException when value is null
      */
-    void serialize(T value, OutputStream out, Charset charset) throws SerializerException;
+    void serialize(T value, Charset charset, OutputStream out) throws SerializerException;
 
     String serialize(T value, Charset charset) throws SerializerException;
 

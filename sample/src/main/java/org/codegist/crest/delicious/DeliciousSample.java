@@ -24,8 +24,6 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.UrlEncodedFormEntityWriter;
-import org.codegist.crest.delicious.model.DeliciousModelFactory;
 import org.codegist.crest.delicious.model.Posts;
 import org.codegist.crest.delicious.service.Delicious;
 

@@ -22,20 +22,24 @@ package org.codegist.crest;
 
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
-import org.codegist.common.lang.Objects;
 import org.codegist.common.reflect.ObjectMethodsAwareInvocationHandler;
-import org.codegist.crest.config.*;
+import org.codegist.crest.config.ConfigFactoryException;
+import org.codegist.crest.config.InterfaceConfig;
+import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.handler.RetryHandler;
+import org.codegist.crest.http.HttpException;
+import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.HttpRequestExecutor;
+import org.codegist.crest.http.HttpResponse;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.DeserializationManager;
-import org.codegist.crest.serializer.Serializer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Default CRest implementation based on {@link org.codegist.crest.CRestContext} interface data model.
@@ -75,22 +79,9 @@ public class DefaultCRest implements CRest, Disposable {
         private final InterfaceConfig interfaceConfig;
         private final DeserializationManager deserializationManager;
 
-        // TODO these should belong to another class, ei InterfaceConfig ?
-        private final String matrixParamCollectionSeparator;
-        private final String queryParamCollectionSeparator;
-        private final String pathParamCollectionSeparator;
-        private final String headerParamCollectionSeparator;
-        private final String cookieParamCollectionSeparator;
-
         private RestInterfacer(Class<T> interfaze) throws ConfigFactoryException {
             this.interfaceConfig = context.getConfigFactory().newConfig(interfaze, context);
             this.deserializationManager = (DeserializationManager) context.getProperties().get(DeserializationManager.class.getName());
-
-            this.matrixParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.MATRIX_PARAM_COLLECTION_SEPARATOR);
-            this.queryParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.QUERY_PARAM_COLLECTION_SEPARATOR);
-            this.pathParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.PATH_PARAM_COLLECTION_SEPARATOR);
-            this.headerParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.HEADER_PARAM_COLLECTION_SEPARATOR);
-            this.cookieParamCollectionSeparator = (String) context.getProperties().get(CRestProperty.COOKIE_PARAM_COLLECTION_SEPARATOR);
         }
 
         @Override
@@ -110,14 +101,14 @@ public class DefaultCRest implements CRest, Disposable {
             ResponseContext responseContext;
             Exception exception;
             RetryHandler retryHandler = mc.getRetryHandler();
-            RestService restService = context.getRestService();
+            HttpRequestExecutor httpRequestExecutor = context.getHttpRequestExecutor();
             do {
                 exception = null;
                 // build the request, can throw exception but that should not be part of the retry policy
                 HttpRequest request = buildRequest(requestContext);
                 try {
                     // doInvoke the request
-                    HttpResponse response = restService.exec(request);
+                    HttpResponse response = httpRequestExecutor.execute(request);
                     // wrap the response in response context
                     responseContext = new DefaultResponseContext(deserializationManager, requestContext, response);
                 } catch (HttpException e) {
@@ -145,7 +136,7 @@ public class DefaultCRest implements CRest, Disposable {
          * @param responseContext current response context
          * @return response
          */
-        private Object handle(ResponseContext responseContext) {
+        private Object handle(ResponseContext responseContext) throws IOException {
             boolean closeResponse = false;
             MethodConfig mc = responseContext.getRequestContext().getMethodConfig();
             HttpResponse response = responseContext.getResponse();
@@ -162,6 +153,9 @@ public class DefaultCRest implements CRest, Disposable {
                     return mc.getResponseHandler().handle(responseContext);
                 }
             } catch (RuntimeException e) {
+                closeResponse = true;
+                throw e;
+            } catch (IOException e) {
                 closeResponse = true;
                 throw e;
             } finally {
@@ -188,12 +182,7 @@ public class DefaultCRest implements CRest, Disposable {
                     .within(requestContext)
                     .using(mc.getHttpMethod())
                     .timeoutSocketAfter(mc.getSocketTimeout())
-                    .timeoutConnectionAfter(mc.getConnectionTimeout())
-                    .mergeCookieMultiValuedParam(cookieParamCollectionSeparator)
-                    .mergeHeaderMultiValuedParam(headerParamCollectionSeparator)
-                    .mergeMatrixMultiValuedParam(matrixParamCollectionSeparator)
-                    .mergePathMultiValuedParam(pathParamCollectionSeparator)
-                    .mergeQueryMultiValuedParam(queryParamCollectionSeparator);
+                    .timeoutConnectionAfter(mc.getConnectionTimeout());
 
 
             // Notify injectors (Global and method) before param injection
@@ -202,30 +191,12 @@ public class DefaultCRest implements CRest, Disposable {
 
             // Add default params
             for(ParamConfig p : mc.getExtraParams()){
-                builder.addParam(
-                        p.getName(),
-                        p.getDefaultValue(),
-                        p.getDestination(),
-                        p.getMetaDatas());
+                builder.addParam(p);
             }
 
             for (int i = 0; i < mc.getParamCount(); i++) {
-                MethodParamConfig paramConfig = mc.getParamConfig(i);
-
-                Serializer serializer = paramConfig.getSerializer();
-                String defaultValue = paramConfig.getDefaultValue();
-                String destination = paramConfig.getDestination();
-                boolean encoded = paramConfig.isEncoded();
-                String name = paramConfig.getName();
-                Map<String,Object> metas = paramConfig.getMetaDatas();
-
-                Object value = requestContext.getValue(i);
-                Iterator iter = Objects.iterate(value);
-                while(iter.hasNext()){
-                    builder.addParam(name, new SerializableValue(iter.next(), defaultValue, serializer, encoding, metas), destination, encoded);
-                }
+                builder.addParam(mc.getParamConfig(i), requestContext.getValue(i));
             }
-
 
             // Notify injectors (Global and method after param injection
             ri.afterParamsInjectionHandle(builder, requestContext);
@@ -237,6 +208,6 @@ public class DefaultCRest implements CRest, Disposable {
 
 
     public void dispose() {
-        Disposables.dispose(context.getRestService());
+        Disposables.dispose(context.getHttpRequestExecutor());
     }
 }

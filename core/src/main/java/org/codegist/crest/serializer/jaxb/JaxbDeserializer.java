@@ -23,8 +23,6 @@ package org.codegist.crest.serializer.jaxb;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.DeserializerException;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;

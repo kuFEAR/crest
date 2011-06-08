@@ -20,9 +20,6 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.serializer.Serializer;
-
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;

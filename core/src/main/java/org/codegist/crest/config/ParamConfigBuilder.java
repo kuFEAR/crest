@@ -1,9 +1,17 @@
 package org.codegist.crest.config;
 
+import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpParamProcessor;
+import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.serializer.SerializerRegistry;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -14,19 +22,34 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
 
     private final Map<String,Object> metas = new Hashtable<String, Object>();
 
+    private final Class<?> clazz;
+    private final Type genericType;
+    private final SerializerRegistry serializerRegistry;
+    private final Map<Class<? extends Annotation>, Annotation> paramAnnotation;
+
     private String name;
     private String defaultValue;
     private String dest;
+    private String listSeparator;
+    private Serializer serializer;
+    private boolean encoded;
 
-
-    // can we do without it ?
-    public ParamConfigBuilder(Map<String, Object> customProperties) {
-        this(null, customProperties);
+    private static final Map<String,String> SEPARATOR = new HashMap<String, String>();
+    static{
+        SEPARATOR.put(HttpRequest.DEST_COOKIE, ";");
+        SEPARATOR.put(HttpRequest.DEST_HEADER, ",");
     }
-    
+
     ParamConfigBuilder(MethodConfigBuilder parent, Map<String, Object> customProperties) {
+        this(parent, customProperties, String.class, String.class, Collections.<Class<? extends Annotation>, Annotation>emptyMap());
+    }
+    ParamConfigBuilder(MethodConfigBuilder parent, Map<String, Object> customProperties, Class<?> clazz, Type genericType, Map<Class<? extends Annotation>, Annotation> paramAnnotation) {
         super(customProperties);
         this.parent = parent;
+        this.clazz = clazz;
+        this.genericType = genericType;
+        this.paramAnnotation = paramAnnotation;
+        this.serializerRegistry = (SerializerRegistry) customProperties.get(SerializerRegistry.class.getName());
     }
 
     /**
@@ -37,21 +60,40 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         String name = this.name;
         String defaultValue = this.defaultValue;
         String dest = this.dest;
+        String listSeparator = this.listSeparator;
+        Serializer serializer = this.serializer;
+        boolean encoded = this.encoded;
+        HttpParamProcessor httpParamProcessor = null;
         Map<String,Object> metas = this.metas;
 
         if (!isTemplate) {
-            name = defaultIfUndefined(name, CRestProperty.CONFIG_PARAM_DEFAULT_NAME, MethodParamConfig.DEFAULT_NAME);
-            defaultValue = defaultIfUndefined(defaultValue, CRestProperty.CONFIG_PARAM_DEFAULT_VALUE, MethodParamConfig.DEFAULT_VALUE);
-            dest = defaultIfUndefined(dest, CRestProperty.CONFIG_PARAM_DEFAULT_DESTINATION, MethodParamConfig.DEFAULT_DESTINATION);
-            metas = defaultIfUndefined(metas, CRestProperty.CONFIG_PARAM_DEFAULT_METAS, MethodParamConfig.DEFAULT_METADATAS);
-
+            name = defaultIfUndefined(name, CRestProperty.CONFIG_PARAM_DEFAULT_NAME, ParamConfig.DEFAULT_NAME);
+            defaultValue = defaultIfUndefined(defaultValue, CRestProperty.CONFIG_PARAM_DEFAULT_VALUE, ParamConfig.DEFAULT_VALUE);
+            dest = defaultIfUndefined(dest, CRestProperty.CONFIG_PARAM_DEFAULT_DESTINATION, ParamConfig.DEFAULT_DESTINATION);
+            metas = defaultIfUndefined(metas, CRestProperty.CONFIG_PARAM_DEFAULT_METAS, ParamConfig.DEFAULT_METADATAS);
+            listSeparator = defaultIfUndefined(listSeparator, CRestProperty.CONFIG_PARAM_DEFAULT_LIST_SEPARATOR, null);
+            serializer = defaultIfUndefined(serializer, CRestProperty.CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(ParamConfig.DEFAULT_SERIALIZER));
+            encoded = defaultIfUndefined(encoded, CRestProperty.CONFIG_PARAM_DEFAULT_ENCODED, ParamConfig.DEFAULT_ENCODED);
+            if (serializer == null) {
+                State.notNull(serializerRegistry, "Can't lookup a serializer by type. Please provide a SerializerFactory");
+                // if null, then choose which serializer to apply using default rules
+                serializer = serializerRegistry.getForType(genericType);
+            }
         }
+
 
         if (validateConfig) {
             Validate.notBlank(name, "Parameter must have a name");
         }
 
-        return (T) new DefaultParamConfig(name, defaultValue, dest, metas);
+        return (T) new DefaultParamConfig(name,
+                defaultValue,
+                dest,
+                listSeparator,
+                metas,
+                serializer,
+                encoded,
+                paramAnnotation);
     }
 
     public MethodConfigBuilder endParamConfig() {
@@ -83,6 +125,17 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         return this;
     }
 
+    public ParamConfigBuilder setListSeparator(String listSeparator) {
+        if (ignore(listSeparator)) return this;
+        this.listSeparator = listSeparator;
+        return this;
+    }
+
+    public ParamConfigBuilder setEncoded(boolean encoded) {
+        this.encoded = encoded;
+        return this;
+    }
+
     public ParamConfigBuilder setMetaDatas(Map<String,Object> metadatas) {
         if (ignore(metadatas)) return this;
         this.metas.clear();
@@ -94,6 +147,41 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         if (ignore(name) && ignore(value)) return this;
         this.metas.clear();
         this.metas.put(name, value);
+        return this;
+    }
+
+
+    /**
+     * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
+     *
+     * @param serializerClassName the serializer classname to use for this argument
+     * @return current builder
+     */
+    public ParamConfigBuilder setSerializer(String serializerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        if (ignore(serializerClassName)) return this;
+        return setSerializer((Class<? extends Serializer>) Class.forName(replacePlaceholders(serializerClassName)));
+    }
+
+    /**
+     * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
+     *
+     * @param serializer the serializer to use for this argument
+     * @return current builder
+     */
+    public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) throws IllegalAccessException, InstantiationException {
+        if (ignore(serializer)) return this;
+        return setSerializer(newInstance(serializer));
+    }
+
+    /**
+     * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
+     *
+     * @param serializer the serializer to use for this argument
+     * @return current builder
+     */
+    public ParamConfigBuilder setSerializer(Serializer serializer) {
+        if (ignore(serializer)) return this;
+        this.serializer = serializer;
         return this;
     }
 

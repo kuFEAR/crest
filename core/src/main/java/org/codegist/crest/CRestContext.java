@@ -22,6 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
+import org.codegist.crest.http.HttpRequestExecutor;
 
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import java.util.Map;
  */
 public interface CRestContext {
 
-    RestService getRestService();
+    HttpRequestExecutor getHttpRequestExecutor();
 
     ProxyFactory getProxyFactory();
 

@@ -21,9 +21,8 @@
 package org.codegist.crest.config;
 
 import org.codegist.crest.EntityWriter;
-import org.codegist.crest.HttpRequest;
-import org.codegist.crest.UrlEncodedFormEntityWriter;
 import org.codegist.crest.handler.*;
+import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
@@ -79,7 +78,7 @@ public interface MethodConfig {
      *
      * @see MethodConfig#getHttpMethod()
      */
-    String DEFAULT_HTTP_METHOD = HttpRequest.HTTP_GET;
+    HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.GET;
 
     /**
      * Default response handler applied when non specified.
@@ -147,7 +146,7 @@ public interface MethodConfig {
      */
     PathTemplate getPathTemplate();
 
-    String getHttpMethod();
+    HttpMethod getHttpMethod();
 
     EntityWriter getBodyWriter();
 
@@ -163,7 +162,7 @@ public interface MethodConfig {
      * @param index
      * @return The param config object at the specified index, null if not found.
      */
-    MethodParamConfig getParamConfig(int index);
+    ParamConfig getParamConfig(int index);
 
     /**
      * @return The param count.

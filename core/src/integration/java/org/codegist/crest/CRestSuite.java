@@ -20,52 +20,28 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.collection.CollectionsDefaultTest;
-import org.codegist.crest.collection.CollectionsMergingTest;
 import org.codegist.crest.entity.EntityWritersTest;
-import org.codegist.crest.method.*;
+import org.codegist.crest.param.*;
 import org.codegist.crest.server.Server;
 import org.codegist.crest.server.stubs.collection.CollectionsDefaultStub;
 import org.codegist.crest.server.stubs.collection.CollectionsMergingStub;
 import org.codegist.crest.server.stubs.entity.EntityWritersStub;
-import org.codegist.crest.server.stubs.method.*;
+import org.codegist.crest.server.stubs.params.*;
 import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-        GetsTest.class ,
-        PostsTest.class,
-        PutsTest.class,
-        DeletesTest.class,
-        OptionsTest.class,
-        HeadsTest.class,
-        EntityWritersTest.class,
-        CollectionsDefaultTest.class,
-        CollectionsMergingTest.class
+        FormsTest.class ,
+        PathsTest.class,
+        QueriesTest.class,
+        CookiesTest.class,
+        MatrixesTest.class,
+        HeadersTest.class,
+        EntityWritersTest.class
         })
 public class CRestSuite {
-
-    public static final String ADDRESS = "http://localhost:8080";
-
-    private static final Server server = Server.create(ADDRESS,
-            new GetsStub(),
-            new PostsStub(),
-            new PutsStub(),
-            new DeletesStub(),
-            new OptionsStub(),
-            new HeadsStub(),
-            new EntityWritersStub(),
-            new CollectionsDefaultStub(),
-            new CollectionsMergingStub()
-    );
-
-
-    @AfterClass
-    public static void setup(){
-        server.stop();
-    }
 
 
    // public static void main(String[] args) { }

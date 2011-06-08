@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpRequest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 /**
  * If specified at method parameter level, indicates to inject it into the request query parameter.
  * <p>If specified at interface or method level, indicates to inject a default parameter into the request query parameter for all requests.
- * @see org.codegist.crest.HttpRequest.Builder#addQueryParam(String, String)  
+ * @see org.codegist.crest.http.HttpRequest.Builder#addQueryParam(String, String)
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -51,5 +51,4 @@ public @interface QueryParam {
      * @return parameter default value
      */
     String defaultValue() default "";
-
 }

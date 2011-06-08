@@ -23,16 +23,9 @@ package org.codegist.crest.serializer.simplexml;
 import org.codegist.common.collect.Maps;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-import org.simpleframework.xml.strategy.*;
-import org.simpleframework.xml.stream.InputNode;
-import org.simpleframework.xml.stream.NodeMap;
-import org.simpleframework.xml.stream.OutputNode;
-import org.simpleframework.xml.stream.Style;
 import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
-import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

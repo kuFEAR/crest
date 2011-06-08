@@ -21,13 +21,17 @@
 package org.codegist.crest;
 
 import org.codegist.common.lang.Validate;
+import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.Pair;
 import org.codegist.crest.serializer.Serializer;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -44,27 +48,48 @@ public class SerializingEntityWriter implements EntityWriter {
         this.contentType = contentType;
     }
 
-    public HttpParamMap getHeaders(HttpRequest request) {
-        HttpParamMap headers = new HttpParamMap();
-        headers.set(new HttpParam("Content-Type", contentType, true));
-        return headers;
+    public List<HttpParam> getHeaders(HttpRequest request) {
+        return asList(new HttpParam("Content-Type", contentType, HttpRequest.DEST_HEADER, true));
+    }
+
+    private void addTo(Map<String,Object> params, String name, Object singleValue){
+        Object existing = params.get(name);
+        if(existing == null) {
+            params.put(name, singleValue);
+        }else if(existing instanceof Collection) {
+            ((Collection) existing).add(singleValue);
+        }else if(existing != null) {
+            params.remove(name);
+            List<Object> newCollection = new ArrayList<Object>(2);
+            newCollection.add(existing);
+            newCollection.add(singleValue);
+            params.put(name, newCollection);
+        }
     }
 
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
         Map<String,Object> params = new LinkedHashMap<String,Object>();
-        for(Map.Entry<String, List<HttpParam>> entry : request.getFormParamMap().entrySet()){
-            String httpParamName = entry.getKey();
-            List<HttpParam> httpParams = entry.getValue();
-            if(httpParams.size() > 1) {
-                Object[] raws = new Object[httpParams.size()];
-                for(int i = 0; i < raws.length; i++){
-                    raws[i] = httpParams.get(i).getValue().getRaw();
-                }
-                params.put(httpParamName, raws);
-            }else if(httpParams.size() == 1) {
-                params.put(httpParamName, httpParams.get(0).getValue().getRaw());
+        for(HttpParam param : request.getFormParam()){
+            String name = param.getConfig().getName();
+            for(Object value : param.getValue()){
+                addTo(params, name, value);
             }
+
+//            for(Pair pair: process(param, request.getCharset(), false)){
+//
+//                List<HttpParam> httpParams = param.getValue();
+//                if(httpParams.size() > 1) {
+//                    Object[] raws = new Object[httpParams.size()];
+//                    for(int i = 0; i < raws.length; i++){
+//                        raws[i] = httpParams.get(i).getValue().getRaw();
+//                    }
+//                    params.put(httpParamName, raws);
+//                }else if(httpParams.size() == 1) {
+//                    params.put(httpParamName, httpParams.get(0).getValue().getRaw());
+//                }
+//            }
         }
-        serializer.serialize(params, outputStream, request.getEncodingAsCharset());
+
+        serializer.serialize(params, request.getCharset(), outputStream);
     }
 }

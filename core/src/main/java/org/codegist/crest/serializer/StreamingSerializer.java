@@ -31,7 +31,7 @@ public abstract class StreamingSerializer<V> implements Serializer<V> {
 
     public String serialize(V value, Charset charset) throws SerializerException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        serialize(value, out, charset);
+        serialize(value, charset, out);
         try {
             return out.toString(charset.toString());
         } catch (UnsupportedEncodingException e) {

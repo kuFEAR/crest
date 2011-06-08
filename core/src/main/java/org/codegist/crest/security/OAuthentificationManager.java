@@ -21,8 +21,8 @@
 package org.codegist.crest.security;
 
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.HttpParam;
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.oauth.OAuthenticator;
 import org.codegist.crest.oauth.Token;
 

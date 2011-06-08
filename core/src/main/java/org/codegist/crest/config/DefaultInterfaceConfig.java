@@ -27,7 +27,6 @@ import org.codegist.crest.interceptor.RequestInterceptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Map;
 
 /**

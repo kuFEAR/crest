@@ -23,6 +23,12 @@ package org.codegist.crest;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.entity.EntityWriters;
+import org.codegist.crest.server.Server;
+import org.codegist.crest.server.stubs.collection.CollectionsDefaultStub;
+import org.codegist.crest.server.stubs.collection.CollectionsMergingStub;
+import org.codegist.crest.server.stubs.entity.EntityWritersStub;
+import org.codegist.crest.server.stubs.params.*;
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -33,13 +39,47 @@ import java.util.Collection;
 public class BaseCRestTest<T> {
 
     protected static final String UTF8_VALUE = "123@#?&£{}abc";
-    protected static final String ISO_VALUE = "123@#?&{}abc";
 
     protected final T toTest;
 
     public BaseCRestTest(CRest crest, Class<T> service) {
         this.toTest = crest.build(service);
     }
+
+
+    public static final String ADDRESS = "http://localhost:8080";
+
+    private static final Server server = Server.create(ADDRESS,
+            new FormsStub(),
+            new PathsStub(),
+            new QueriesStub(),
+            new CookiesStub(),
+            new MatrixesStub(),
+            new HeadersStub(),
+            new EntityWritersStub(),
+            new CollectionsDefaultStub(),
+            new CollectionsMergingStub()
+    );
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                server.stop();
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public static CRestBuilder baseBuilder(){
         return new CRestBuilder()
@@ -52,39 +92,16 @@ public class BaseCRestTest<T> {
         };
     }
 
-    public static CRest[] byCollectionDefault(String service){
-        return  new CRest[]{
-                baseBuilder()
-                        .setConfigPlaceholder("service.path", service)
-                .build()
-        };
-    }
-    public static CRest[] byCollectionMerging(String service,
-                                              String matrixSeparator,
-                                              String pathSeparator,
-                                              String querySeparator,
-                                              String formSeparator,
-                                              String cookieSeparator,
-                                              String headerSeparator){
-        return  new CRest[]{
-                baseBuilder()
-                        .setConfigPlaceholder("service.path", service)
-                        .mergeMatrixMultiValuedParam(matrixSeparator)
-                        .mergePathMultiValuedParam(pathSeparator)
-                        .mergeQueryMultiValuedParam(querySeparator)
-                        .mergeFormMultiValuedParam(formSeparator)
-                        .mergeCookieMultiValuedParam(cookieSeparator)
-                        .mergeHeaderMultiValuedParam(headerSeparator)
-                .build()
-        };
-    }
-
     public static CRest[] byRestServices(){
+        return byRestServices(baseBuilder());
+    }
+    public static CRest[] byRestServices(CRestBuilder base){
         return  new CRest[]{
             /* HttpURLConnection based CRest */
-            baseBuilder().build(),
+            base
+            .build(),
             /* Apache HttpClient based CRest */
-            baseBuilder()
+            base
                     .useHttpClientRestService()
             .build(),
         };

@@ -21,7 +21,7 @@
 //package org.codegist.crest.config;
 //
 //import org.codegist.crest.CRestProperty;
-//import org.codegist.crest.HttpRequest;
+//import org.codegist.crest.http.HttpRequest;
 //import org.codegist.crest.Stubs;
 //import org.codegist.crest.TestUtils;
 //import org.codegist.crest.handler.ErrorHandler;

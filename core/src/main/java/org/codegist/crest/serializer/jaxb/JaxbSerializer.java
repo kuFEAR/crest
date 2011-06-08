@@ -20,13 +20,9 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.common.lang.Strings;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StreamingSerializer;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -44,7 +40,7 @@ public class JaxbSerializer<T> extends StreamingSerializer<T> {
         this.jaxb = JaxbFactory.create(config);
     }
 
-    public void serialize(T value, OutputStream out, Charset charset) throws SerializerException {
+    public void serialize(T value, Charset charset, OutputStream out) throws SerializerException {
         jaxb.marshal(value, out, charset);
     }
 }

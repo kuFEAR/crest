@@ -21,7 +21,7 @@
 package org.codegist.crest.twitter;
 
 import org.codegist.common.lang.Randoms;
-import org.codegist.crest.HttpException;
+import org.codegist.crest.http.HttpException;
 import org.codegist.crest.twitter.model.Status;
 import org.codegist.crest.twitter.service.StatusService;
 import org.junit.Ignore;

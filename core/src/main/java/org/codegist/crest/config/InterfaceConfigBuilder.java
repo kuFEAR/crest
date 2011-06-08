@@ -362,4 +362,11 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         }
         return this;
     }
+
+    public InterfaceConfigBuilder setParamsListSeparator(String separator) {
+        for (MethodConfigBuilder b : builderCache.values()) {
+            b.setParamsListSeparator(separator);
+        }
+        return this;
+    }
 }

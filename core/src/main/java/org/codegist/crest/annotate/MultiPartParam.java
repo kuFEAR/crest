@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpRequest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

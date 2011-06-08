@@ -22,16 +22,14 @@ package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.crest.serializer.DeserializerException;
 
-import javax.xml.bind.*;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org

@@ -79,7 +79,7 @@ public final class Configs {
      */
     public static MethodConfig override(MethodConfig base, MethodConfig overrides) {
         if(overrides == null) return base;
-        MethodParamConfig[] pl = new MethodParamConfig[defaultIfNull(overrides.getParamCount(), base.getParamCount())];
+        ParamConfig[] pl = new ParamConfig[defaultIfNull(overrides.getParamCount(), base.getParamCount())];
         for (int i = 0; i < pl.length; i++) {
             pl[i] = override(base.getParamConfig(i), overrides.getParamConfig(i));
         }
@@ -135,28 +135,6 @@ public final class Configs {
 
     /**
      * Overrides a config (overrides) with another one (base).
-     * <p>The override is a config template where nulls values are legals and will fallback to the base config. Base config must apply to the general contract of {@link MethodParamConfig}.
-     * <p>Any non-null values in override config will take priority over base config.
-     * <p>If dynamic flag is true, the returned config is a dynamic view over the two given config, thus the two configs can change over time and the resulting config will reflect the changes.
-     *
-     * @param base      Normal full configured config, respect the general contract of MethodParamConfig object
-     * @param overrides Config template, can hold null values, that plays as flag to indicate a fallback to the base config
-     * @return A view that gives priority of "overrides" non-null values object upon "base" object. Any changes at runtime will be reflected.
-     * @see MethodParamConfig
-     * @throws NullPointerException if any of the two configs are null
-     */
-    public static MethodParamConfig override(MethodParamConfig base, MethodParamConfig overrides) {
-        if(overrides == null) return base;
-        return new DefaultMethodParamConfig(
-                override((ParamConfig) base, (ParamConfig) overrides),
-                defaultIfNull(overrides.getSerializer(), base.getSerializer()),
-                defaultIfNull(overrides.isEncoded(), base.isEncoded()),
-                defaultIfNull(overrides.getAnnotations(), base.getAnnotations())
-        );
-    }
-
-    /**
-     * Overrides a config (overrides) with another one (base).
      * <p>The override is a config template where nulls values are legals and will fallback to the base config. Base config must apply to the general contract of {@link ParamConfig}.
      * <p>Any non-null values in override config will take priority over base config.
      * <p>If dynamic flag is true, the returned config is a dynamic view over the two given config, thus the two configs can change over time and the resulting config will reflect the changes.
@@ -173,7 +151,11 @@ public final class Configs {
                 defaultIfNull(overrides.getName(), base.getName()),
                 defaultIfNull(overrides.getDefaultValue(), base.getDefaultValue()),
                 defaultIfNull(overrides.getDestination(), base.getDestination()),
-                defaultIfNull(overrides.getMetaDatas(), base.getMetaDatas())
+                defaultIfNull(overrides.getListSeparator(), base.getListSeparator()),
+                defaultIfNull(overrides.getMetaDatas(), base.getMetaDatas()),
+                defaultIfNull(overrides.getSerializer(), base.getSerializer()),
+                defaultIfNull(overrides.isEncoded(), base.isEncoded()),
+                defaultIfNull(overrides.getAnnotations(), base.getAnnotations())
         );
     }
 }

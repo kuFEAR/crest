@@ -38,7 +38,7 @@ public class JacksonSerializer<T> extends StreamingSerializer<T> {
         this.jackson = JacksonProvider.createSerializer(config);
     }
 
-    public void serialize(Object value, OutputStream out, Charset charset) throws SerializerException {
+    public void serialize(Object value, Charset charset, OutputStream out) throws SerializerException {
         try {
             jackson.writeValue(out, value);
         } catch (IOException e) {

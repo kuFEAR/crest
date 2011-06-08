@@ -32,7 +32,6 @@ import org.simpleframework.xml.stream.OutputNode;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<Map<S
         this.rootElement = Strings.defaultIfBlank((String) cfg.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME);
     }
 
-    public void serialize(Map<String, Object>  map, OutputStream out, Charset charset) throws SerializerException {
+    public void serialize(Map<String, Object> map, Charset charset, OutputStream out) throws SerializerException {
         try {
             String prolog = "<?xml version=\"1.0\" encoding=\""+charset.toString()+"\" standalone=\"yes\"?>";
             OutputNode node = NodeBuilder.write(new OutputStreamWriter(out, charset), new Format(0, prolog));

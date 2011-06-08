@@ -23,6 +23,7 @@ package org.codegist.crest;
 import org.codegist.common.collect.Maps;
 import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
+import org.codegist.crest.http.HttpRequestExecutor;
 
 import java.util.Map;
 
@@ -31,24 +32,24 @@ import java.util.Map;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 class DefaultCRestContext implements CRestContext {
-    private final RestService restService;
+    private final HttpRequestExecutor httpRequestExecutor;
     private final ProxyFactory proxyFactory;
     private final InterfaceConfigFactory configFactory;
     private final Map<String, Object> customProperties;
 
     public DefaultCRestContext(CRestContext context) {
-        this(context.getRestService(), context.getProxyFactory(), context.getConfigFactory(), context.getProperties());
+        this(context.getHttpRequestExecutor(), context.getProxyFactory(), context.getConfigFactory(), context.getProperties());
     }
 
-    public DefaultCRestContext(RestService restService, ProxyFactory proxyFactory, InterfaceConfigFactory configFactory, Map<String, Object> customProperties) {
-        this.restService = restService;
+    public DefaultCRestContext(HttpRequestExecutor httpRequestExecutor, ProxyFactory proxyFactory, InterfaceConfigFactory configFactory, Map<String, Object> customProperties) {
+        this.httpRequestExecutor = httpRequestExecutor;
         this.proxyFactory = proxyFactory;
         this.configFactory = configFactory;
         this.customProperties = Maps.unmodifiable(customProperties);
     }
 
-    public RestService getRestService() {
-        return restService;
+    public HttpRequestExecutor getHttpRequestExecutor() {
+        return httpRequestExecutor;
     }
 
     public ProxyFactory getProxyFactory() {

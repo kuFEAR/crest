@@ -20,8 +20,8 @@
 
 package org.codegist.crest.oauth;
 
-import org.codegist.crest.HttpParam;
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.http.HttpRequest;
 
 
 /**

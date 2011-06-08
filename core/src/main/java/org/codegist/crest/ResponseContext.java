@@ -20,6 +20,9 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.http.HttpResponse;
+
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -39,8 +42,8 @@ public interface ResponseContext {
 
     Class<?> getExpectedType();
 
-    <T> T deserialize();
+    <T> T deserialize() throws IOException;
 
-    <T> T deserializeTo(Class<T> type, Type genericType);
+    <T> T deserializeTo(Class<T> type, Type genericType) throws IOException;
 
 }

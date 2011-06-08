@@ -22,9 +22,9 @@ package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Methods;
 import org.codegist.crest.CRestContext;
-import org.codegist.crest.HttpRequest;
 import org.codegist.crest.MultiParts;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.http.HttpRequest;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -73,15 +73,16 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             ContentType contentType = interfaze.getAnnotation(ContentType.class);
             HttpMethod httpMethod = getHttpMethod(interfaze.getAnnotations(), interfaze.getAnnotation(HttpMethod.class));
             EntityWriter entityWriter = interfaze.getAnnotation(EntityWriter.class);
-            Set<ParamConfig> extraParams = getExtraParamConfigs(interfaze.getAnnotations());
+            Set<ParamConfigHolder> extraParams = getExtraParamConfigs(interfaze.getAnnotations());
 
             /* Params defaults */
+            ListSeparator listSeparator = interfaze.getAnnotation(ListSeparator.class);
             Serializer serializer = interfaze.getAnnotation(Serializer.class);
             Encoded encoded = interfaze.getAnnotation(Encoded.class);
 
             InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, context.getProperties());
-            for (ParamConfig c : extraParams) {
-                config.addMethodsExtraParam(c.getName(), c.getDefaultValue(), c.getDestination(), c.getMetaDatas());
+            for (ParamConfigHolder c : extraParams) {
+                config.addMethodsExtraParam(c.name, c.defaultValue, c.destination, c.metadatas);
             }
 
             if (endPoint != null) config.setMethodsEndPoint(endPoint.value());
@@ -100,6 +101,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             if (httpMethod != null) config.setMethodsHttpMethod(httpMethod.value());
             if (entityWriter != null) config.setMethodsEntityWriter(entityWriter.value());
 
+            if (listSeparator != null) config.setParamsListSeparator(listSeparator.value());
             if (serializer != null) config.setParamsSerializer(serializer.value());
             config.setParamsEncoded(encoded != null);
 
@@ -121,12 +123,13 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 entityWriter = meth.getAnnotation(EntityWriter.class);
 
                 /* Params defaults */
+                listSeparator = meth.getAnnotation(ListSeparator.class);
                 serializer = meth.getAnnotation(Serializer.class);
                 encoded = meth.getAnnotation(Encoded.class);
 
                 MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
-                for (ParamConfig c : extraParams) {
-                    methodConfigBuilder.addExtraParam(c.getName(), c.getDefaultValue(), c.getDestination(), c.getMetaDatas());
+                for (ParamConfigHolder c : extraParams) {
+                    methodConfigBuilder.addExtraParam(c.name, c.defaultValue, c.destination, c.metadatas);
                 }
 
                 if (endPoint != null) methodConfigBuilder.setEndPoint(endPoint.value());
@@ -141,47 +144,65 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 if (contentType != null) methodConfigBuilder.setContentType(contentType.value());
                 if (httpMethod != null) methodConfigBuilder.setHttpMethod(httpMethod.value());
                 if (entityWriter != null) methodConfigBuilder.setEntityWriter(entityWriter.value());
+                if (entityWriter != null) methodConfigBuilder.setEntityWriter(entityWriter.value());
 
                 if (serializer != null) methodConfigBuilder.setParamsSerializer(serializer.value());
+                if(listSeparator !=null) methodConfigBuilder.setParamsListSeparator(listSeparator.value());
                 methodConfigBuilder.setParamsEncoded(encoded != null);
 
                 for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
                     Class<?> pType = meth.getParameterTypes()[i];
                     Map<Class<? extends Annotation>, Annotation> paramAnnotations = Methods.getParamsAnnotation(meth, i);
-                    MethodParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
+                    ParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
 
                     /* Params specifics - Override user annotated config */
                     serializer = (Serializer) paramAnnotations.get(Serializer.class);
                     encoded = (Encoded) paramAnnotations.get(Encoded.class);
+                    listSeparator = (ListSeparator) paramAnnotations.get(ListSeparator.class);
 
                     Serializer pSerializer = pType.getAnnotation(Serializer.class);
                     Encoded pEncoded = pType.getAnnotation(Encoded.class);
-                    ParamConfig lowConfig = getFirstExtraParamConfig(modelPriority ? paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]) : pType.getAnnotations());
-                    ParamConfig highConfig = getFirstExtraParamConfig(modelPriority ? pType.getAnnotations() : paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
+                    ListSeparator pListSeparator = pType.getAnnotation(ListSeparator.class);
+
+                    ParamConfigHolder lowConfig = getFirstExtraParamConfig(modelPriority ? paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]) : pType.getAnnotations());
+                    ParamConfigHolder highConfig = getFirstExtraParamConfig(modelPriority ? pType.getAnnotations() : paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
+
 
                     Serializer lowPrioritySerializer = modelPriority ? serializer : pSerializer;
                     Serializer highPrioritySerializer = modelPriority ? pSerializer : serializer;
-                    boolean lowPriorityEncoded = (modelPriority ? encoded : pEncoded) != null;
-                    if(HttpRequest.DEST_HEADER.equals(lowConfig.getDestination()) || HttpRequest.DEST_COOKIE.equals(lowConfig.getDestination())) {
+
+                    ListSeparator lowListSeparator = modelPriority ? listSeparator : pListSeparator;
+                    ListSeparator highListSeparator = modelPriority ? pListSeparator : listSeparator;
+
+                    Boolean lowPriorityEncoded;
+
+                    if(HttpRequest.DEST_HEADER.equals(lowConfig.destination) || HttpRequest.DEST_COOKIE.equals(lowConfig.destination)) {
                         lowPriorityEncoded = true;
-                    }
-                    boolean highPriorityEncoded =   (modelPriority ? pEncoded : encoded) != null;
-                    if(HttpRequest.DEST_HEADER.equals(highConfig.getDestination()) || HttpRequest.DEST_COOKIE.equals(highConfig.getDestination())) {
-                        highPriorityEncoded = true;
+                    }else{
+                        lowPriorityEncoded = (modelPriority ? encoded : pEncoded) != null ? true : null;
                     }
 
-                    methodParamConfigBuilder.setEncoded(lowPriorityEncoded);
-                    if(lowConfig.getName() != null)  methodParamConfigBuilder.setName(lowConfig.getName());
-                    if(lowConfig.getDefaultValue() != null)  methodParamConfigBuilder.setDefaultValue(lowConfig.getDefaultValue());
-                    if(lowConfig.getDestination() != null)  methodParamConfigBuilder.setDestination(lowConfig.getDestination());
-                    if(lowConfig.getMetaDatas() != null && !lowConfig.getMetaDatas().isEmpty())  methodParamConfigBuilder.setMetaDatas(lowConfig.getMetaDatas());
+                    Boolean highPriorityEncoded;
+                    if(HttpRequest.DEST_HEADER.equals(highConfig.destination) || HttpRequest.DEST_COOKIE.equals(highConfig.destination)) {
+                        highPriorityEncoded = true;
+                    }else{
+                        highPriorityEncoded = (modelPriority ? pEncoded : encoded) != null ? true : null;
+                    }
+
+                    if(lowPriorityEncoded != null) methodParamConfigBuilder.setEncoded(lowPriorityEncoded);
+                    if(lowConfig.name != null)  methodParamConfigBuilder.setName(lowConfig.name);
+                    if(lowConfig.defaultValue != null)  methodParamConfigBuilder.setDefaultValue(lowConfig.defaultValue);
+                    if(lowConfig.destination != null)  methodParamConfigBuilder.setDestination(lowConfig.destination);
+                    if(lowConfig.metadatas != null && !lowConfig.metadatas.isEmpty())  methodParamConfigBuilder.setMetaDatas(lowConfig.metadatas);
+                    if(lowListSeparator != null)  methodParamConfigBuilder.setListSeparator(lowListSeparator.value());
                     if (lowPrioritySerializer != null) methodParamConfigBuilder.setSerializer(lowPrioritySerializer.value());
 
-                    methodParamConfigBuilder.setEncoded(highPriorityEncoded);
-                    if(highConfig.getName() != null)  methodParamConfigBuilder.setName(highConfig.getName());
-                    if(highConfig.getDefaultValue() != null)  methodParamConfigBuilder.setDefaultValue(highConfig.getDefaultValue());
-                    if(highConfig.getDestination() != null)  methodParamConfigBuilder.setDestination(highConfig.getDestination());
-                    if(highConfig.getMetaDatas() != null && !highConfig.getMetaDatas().isEmpty())  methodParamConfigBuilder.setMetaDatas(highConfig.getMetaDatas());
+                    if(highPriorityEncoded != null) methodParamConfigBuilder.setEncoded(highPriorityEncoded);
+                    if(highConfig.name != null)  methodParamConfigBuilder.setName(highConfig.name);
+                    if(highConfig.defaultValue != null)  methodParamConfigBuilder.setDefaultValue(highConfig.defaultValue);
+                    if(highConfig.destination != null)  methodParamConfigBuilder.setDestination(highConfig.destination);
+                    if(highConfig.metadatas != null && !highConfig.metadatas.isEmpty())  methodParamConfigBuilder.setMetaDatas(highConfig.metadatas);
+                    if(highListSeparator != null)  methodParamConfigBuilder.setListSeparator(highListSeparator.value());
                     if (highPrioritySerializer != null) methodParamConfigBuilder.setSerializer(highPrioritySerializer.value());
 
                     methodParamConfigBuilder.endParamConfig();
@@ -199,14 +220,14 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
     }
 
 
-    private static ParamConfig getFirstExtraParamConfig(Annotation[] annotations) {
-        Set<ParamConfig> config = getExtraParamConfigs(annotations);
-        if (config.isEmpty()) return new DefaultParamConfig(null, null, null, null);
+    private static ParamConfigHolder getFirstExtraParamConfig(Annotation[] annotations) {
+        Set<ParamConfigHolder> config = getExtraParamConfigs(annotations);
+        if (config.isEmpty()) return new ParamConfigHolder(null, null, null, null);
         return config.iterator().next();// get the first
     }
 
-    private static Set<ParamConfig> getExtraParamConfigs(Annotation[] annotations) {
-        Set<ParamConfig> params = new LinkedHashSet<ParamConfig>(getParam(annotations));
+    private static Set<ParamConfigHolder> getExtraParamConfigs(Annotation[] annotations) {
+        Set<ParamConfigHolder> params = new LinkedHashSet<ParamConfigHolder>(getParam(annotations));
 
         for (Annotation a : annotations) {
             if (a instanceof FormParams) {
@@ -228,8 +249,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
         return params;
     }
 
-    private static List<ParamConfig> getParam(Annotation... annotations) {
-        List<ParamConfig> params = new ArrayList<ParamConfig>();
+    private static List<ParamConfigHolder> getParam(Annotation... annotations) {
+        List<ParamConfigHolder> params = new ArrayList<ParamConfigHolder>();
 
         for (Annotation a : annotations) {
             Param param = a.annotationType().getAnnotation(Param.class);
@@ -262,10 +283,24 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 } else {
                     throw new IllegalArgumentException("Unsupported param annotation:" + a);
                 }
-                params.add(new DefaultParamConfig(name, defaultValue, dest, metadatas));
+                params.add(new ParamConfigHolder(name, defaultValue, dest, metadatas));
             }
         }
         return params;
+    }
+
+    private static class ParamConfigHolder {
+        private final String name;
+        private final String defaultValue;
+        private final String destination;
+        private final Map<String,Object> metadatas;
+
+        private ParamConfigHolder(String name, String defaultValue, String destination, Map<String, Object> metadatas) {
+            this.name = name;
+            this.defaultValue = defaultValue;
+            this.destination = destination;
+            this.metadatas = metadatas;
+        }
     }
 
     private static HttpMethod getHttpMethod(Annotation[] annotations, HttpMethod def) {

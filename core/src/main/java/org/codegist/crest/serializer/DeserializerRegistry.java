@@ -20,11 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

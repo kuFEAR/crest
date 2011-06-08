@@ -20,42 +20,41 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.serializer.UrlEncodedHttpParamSerializer;
+import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.Pair;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.List;
-import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.codegist.crest.http.Encoders.encode;
+import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class UrlEncodedFormEntityWriter implements EntityWriter {
 
-    private final String multiValuedParamSeparator;
-
-    public UrlEncodedFormEntityWriter(Map<String,Object> customProperties) {
-        this.multiValuedParamSeparator = (String) customProperties.get(CRestProperty.FORM_PARAM_COLLECTION_SEPARATOR);
-
-    }
-
-    public HttpParamMap getHeaders(HttpRequest request) {
-        HttpParamMap headers = new HttpParamMap();
-        headers.put(new HttpParam("Content-Type", "application/x-www-form-urlencoded; charset=" + request.getEncoding(), true));
-        return headers;
+    public List<HttpParam> getHeaders(HttpRequest request) {
+        return asList(new HttpParam("Content-Type", "application/x-www-form-urlencoded; charset=" + request.getEncoding(), HttpRequest.DEST_HEADER, true));
     }
 
     public void writeTo(HttpRequest request, OutputStream out) throws IOException {
-        Serializer<Map<String, List<HttpParam>>> paramSerializer;
-
-        if(multiValuedParamSeparator == null) {
-            paramSerializer = UrlEncodedHttpParamSerializer.createDefaultForMap("&");
-        }else{
-            paramSerializer = UrlEncodedHttpParamSerializer.createCollectionMergingForMap("&", multiValuedParamSeparator);
+        PrintStream print = new PrintStream(out);
+        
+        boolean first = true;
+        for(HttpParam param : request.getFormParam()){
+            for(Pair encoded : process(param, request.getCharset())){
+                if(!first) {
+                    print.append("&");
+                }
+                print.append(encoded.getName()).append("=").append(encoded.getValue());
+                first = false;
+            }
         }
-
-        paramSerializer.serialize(request.getFormParamMap(), out, request.getEncodingAsCharset());
     }
 
 }

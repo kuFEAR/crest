@@ -22,6 +22,8 @@ package org.codegist.crest.handler;
 
 import org.codegist.crest.ResponseContext;
 
+import java.io.IOException;
+
 /**
  * Default response handler that either marshall the response or return server raw response following the rules below :
  * <p>- A method with a java.lang.String return type is considerer as expecting the raw server response only when no marshaller have been set in the custom properties. When conditions are met, the result will be the string representing the raw response.
@@ -33,7 +35,7 @@ import org.codegist.crest.ResponseContext;
  */
 public class DefaultResponseHandler implements ResponseHandler {
 
-    public final Object handle(ResponseContext context) {
+    public final Object handle(ResponseContext context) throws IOException {
         if (context.getExpectedType().toString().equals("void")) return null;
         return context.deserialize();
     }

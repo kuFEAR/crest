@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.HttpRequest;
+import org.codegist.crest.http.HttpRequest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 /**
  * <p>If specified at method parameter level, replace any method path template matching its name with it's value.
  * <p>If specified at interface or method level, replace any method path template matching its name with it's default value.
- * @see org.codegist.crest.HttpRequest.Builder#addPathParam(String, String)
+ * @see org.codegist.crest.http.HttpRequest.Builder#addPathParam(String, String)
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -51,5 +51,4 @@ public @interface PathParam {
      * @return parameter default value
      */
     String defaultValue() default "";
-
 }

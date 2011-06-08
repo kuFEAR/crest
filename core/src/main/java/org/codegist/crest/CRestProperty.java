@@ -369,6 +369,8 @@ public interface CRestProperty {
      */
     String CONFIG_PARAM_DEFAULT_DESTINATION = "config.param.default.destination";
 
+    String CONFIG_PARAM_DEFAULT_LIST_SEPARATOR = "config.param.default.list-separator";
+
     String CONFIG_PARAM_DEFAULT_METAS = "config.param.default.metas";
 
     /**

@@ -20,31 +20,16 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.HttpParamMap;
-import org.codegist.crest.serializer.jaxb.JaxbSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
-import org.codegist.crest.serializer.simplexml.SimpleXmlFactory;
-import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.Root;
-import org.simpleframework.xml.stream.NodeBuilder;
-import org.simpleframework.xml.stream.OutputNode;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.namespace.QName;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -77,13 +62,13 @@ public class Test {
 
 //
         System.out.println("JAXB");
-        jaxb.serialize(o, System.out, Charset.defaultCharset());
-        jaxb.serialize(o2, System.out, Charset.defaultCharset());
+        jaxb.serialize(o, Charset.defaultCharset(), System.out);
+        jaxb.serialize(o2, Charset.defaultCharset(), System.out);
 
         System.out.println("\n----");
         System.out.println("SIMPLEXML");
-        simpleXml.serialize(o, System.out, Charset.defaultCharset());
-        simpleXml.serialize(o2, System.out, Charset.defaultCharset());
+        simpleXml.serialize(o, Charset.defaultCharset(), System.out);
+        simpleXml.serialize(o2, Charset.defaultCharset(), System.out);
 
         System.out.println("");
 
