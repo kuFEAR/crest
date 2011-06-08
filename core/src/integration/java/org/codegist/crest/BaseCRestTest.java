@@ -24,8 +24,6 @@ import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.entity.EntityWriters;
 import org.codegist.crest.server.Server;
-import org.codegist.crest.server.stubs.collection.CollectionsDefaultStub;
-import org.codegist.crest.server.stubs.collection.CollectionsMergingStub;
 import org.codegist.crest.server.stubs.entity.EntityWritersStub;
 import org.codegist.crest.server.stubs.params.*;
 import org.junit.AfterClass;
@@ -56,9 +54,7 @@ public class BaseCRestTest<T> {
             new CookiesStub(),
             new MatrixesStub(),
             new HeadersStub(),
-            new EntityWritersStub(),
-            new CollectionsDefaultStub(),
-            new CollectionsMergingStub()
+            new EntityWritersStub()
     );
 
     static {
