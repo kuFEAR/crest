@@ -21,8 +21,8 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,11 +35,23 @@ import java.util.Set;
 @Path("params/query")
 @GET
 public interface Queries extends Params {
-
+ 
     String send(
             @QueryParam("p1") String p1,
-            @QueryParam("p2") int p2,
-            @QueryParam("p3") float[] p3);
+            @QueryParam("p2") int p2);
+
+    @Path("defaultValue")
+    String defaultValue(
+            @QueryParam(value="p1", defaultValue = "default-p1") String p1,
+            @QueryParam(value="p2", defaultValue = "123") Integer p2);
+
+    @QueryParam(value="p2", defaultValue = "p2-val")
+    @QueryParams({
+            @QueryParam(value="p1", defaultValue = "p1-val"),
+            @QueryParam(value="p3", defaultValue = "p3-val")
+    })
+    @Path("defaultParams")
+    String defaultParams(@QueryParam("p1") String p1);
 
     @Path("defaultLists")
     String defaultLists(

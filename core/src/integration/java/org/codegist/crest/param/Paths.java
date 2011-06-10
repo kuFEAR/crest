@@ -21,8 +21,8 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,16 +33,29 @@ import java.util.Set;
  */
 @EndPoint(BaseCRestTest.ADDRESS)
 @Path("params/path")
-
 @GET
 public interface Paths extends Params {
 
-    @Path("{p1}/{p2:\\d{4}}/{p3}")
+    @Path("pattern/{p1:val-\\d{4}-[a-z]+}")
+    String pattern(@PathParam("p1") String p1);
+
+    @Path("{p1}/{p2}")
     String send(
             @PathParam("p1") String p1,
-            @PathParam("p2") int p2,
-            @PathParam("p3") @ListSeparator("-") float[] p3);
+            @PathParam("p2") int p2);
 
+    @Path("defaultValue/{p1}/{p2}")
+    String defaultValue(
+            @PathParam(value="p1", defaultValue = "default-p1") String p1,
+            @PathParam(value="p2", defaultValue = "123") Integer p2);
+
+    @PathParam(value="p2", defaultValue = "p2-val")
+    @PathParams({
+            @PathParam(value="p1", defaultValue = "p1-val"),
+            @PathParam(value="p3", defaultValue = "p3-val")
+    })
+    @Path("defaultParams/{p1}/{p2}/{p3}/{p4}")
+    String defaultParams(@PathParam("p4") String p1);
 
     @Path("mergingLists/{p1}/{p2}/{p3}/{p4}")
     @ListSeparator("(def)")

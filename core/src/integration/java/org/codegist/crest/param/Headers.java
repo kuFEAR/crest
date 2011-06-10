@@ -21,8 +21,8 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,8 +38,20 @@ public interface Headers extends Params {
 
     String send(
             @HeaderParam("p1") String p1,
-            @HeaderParam("p2") int p2,
-            @HeaderParam("p3") float[] p3);
+            @HeaderParam("p2") int p2);
+
+    @Path("defaultValue")
+    String defaultValue(
+            @HeaderParam(value="p1", defaultValue = "default-p1") String p1,
+            @HeaderParam(value="p2", defaultValue = "123") Integer p2);   
+
+    @HeaderParam(value="p2", defaultValue = "p2-val")
+    @HeaderParams({
+            @HeaderParam(value="p1", defaultValue = "p1-val"),
+            @HeaderParam(value="p3", defaultValue = "p3-val")
+    })
+    @Path("defaultParams")
+    String defaultParams(@HeaderParam("p1") String p1);
 
     @Path("defaultLists")
     String defaultLists(

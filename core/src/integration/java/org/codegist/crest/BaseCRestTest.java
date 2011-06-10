@@ -20,13 +20,9 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.CRest;
-import org.codegist.crest.CRestBuilder;
-import org.codegist.crest.entity.EntityWriters;
 import org.codegist.crest.server.Server;
 import org.codegist.crest.server.stubs.entity.EntityWritersStub;
 import org.codegist.crest.server.stubs.params.*;
-import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -54,6 +50,7 @@ public class BaseCRestTest<T> {
             new CookiesStub(),
             new MatrixesStub(),
             new HeadersStub(),
+            new MultiPartsStub(),
             new EntityWritersStub()
     );
 

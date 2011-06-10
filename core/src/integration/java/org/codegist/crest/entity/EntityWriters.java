@@ -20,9 +20,11 @@
 
 package org.codegist.crest.entity;
 
-import org.codegist.crest.*;
+import org.codegist.crest.BaseCRestTest;
+import org.codegist.crest.JsonEntityWriter;
+import org.codegist.crest.MultiPartEntityWriter;
+import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.EntityWriter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -46,14 +48,5 @@ public interface EntityWriters {
                 @FormParam("f1") String q1,
                 @FormParam("f2") int q2,
                 @FormParam("f3") float[] q3);
-
-    @Path("multipart")
-    @EntityWriter(MultiPartEntityWriter.class) // TODO make it an annotation (@MultiPartEntity @JsonEntity @XmlEntity)
-    String multipart(
-                @MultiPartParam("p1") String q1,
-                @MultiPartParam(value="p2", contentType = "text/html", fileName = "my-file") int q2,
-                @MultiPartParam("p3") float[] q3,
-                @MultiPartParam("p4") InputStream in,
-                @MultiPartParam("p5") File file);
-
+    
 }

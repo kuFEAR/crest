@@ -30,7 +30,6 @@ import java.io.PrintStream;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.codegist.crest.http.Encoders.encode;
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**

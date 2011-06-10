@@ -20,8 +20,10 @@
 
 package org.codegist.crest.server.stubs.params;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,10 +34,17 @@ public class HeadersStub {
     @GET
     public String receive(
                 @HeaderParam("p1") String p1,
-                @HeaderParam("p2") String p2,
-                @HeaderParam("p3") Float[] p3){
-        return String.format("receive() p1=%s p2=%s p3=%s", p1, p2, Arrays.toString(p3));
-    }    
+                @HeaderParam("p2") String p2){
+        return String.format("receive() p1=%s p2=%s", p1, p2);
+    }
+
+    @GET
+    @Path("defaultValue")
+    public String defaultValue(
+                @HeaderParam("p1") String p1,
+                @HeaderParam("p2") Integer p2){
+        return String.format("defaultValue() p1=%s p2=%s", p1, p2);
+    }
 
     @GET
     @Path("defaultLists")
@@ -45,6 +54,15 @@ public class HeadersStub {
             @HeaderParam("p3") List<Integer> p3,
             @HeaderParam("p4") List<Long> p4){
         return String.format("defaultLists() p1=%s p2=%s p3=%s p4=%s" , p1, p2, p3, p4);
+    }            
+
+    @GET
+    @Path("defaultParams")
+    public String defaultParams(
+                @HeaderParam("p1") List<String> p1,
+                @HeaderParam("p2") String p2,
+                @HeaderParam("p3") String p3){
+        return String.format("defaultParams() p1=%s p2=%s p3=%s", p1, p2, p3);
     }
 
     @GET
@@ -68,8 +86,8 @@ public class HeadersStub {
     @GET
     @Path("preEncoded")
     public String preEncoded(
-            @HeaderParam("p1") @Encoded String p1,
-            @HeaderParam("p2") @Encoded List<String> p2){
+            @HeaderParam("p1") String p1,
+            @HeaderParam("p2") List<String> p2){
         return String.format("preEncoded() p1=%s p2=%s" , p1, p2);
     }
 

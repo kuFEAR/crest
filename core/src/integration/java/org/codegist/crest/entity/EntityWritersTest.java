@@ -59,28 +59,4 @@ public class EntityWritersTest extends BaseCRestTest<EntityWriters> {
         String actual = toTest.postFormAsJson(UTF8_VALUE, 1983, new float[]{1.2f,2.3f,3.4f});
         assertEquals("{\"f1\":\""+UTF8_VALUE+"\",\"f2\":1983,\"f3\":[1.2,2.3,3.4]}", actual);
     }
-
-    @Test
-    public void testMultipart() throws IOException {
-
-        InputStream is = new ByteArrayInputStream("hello".getBytes("UTF-8"));
-        File file = new File("textFile.txt");
-        file.deleteOnExit();
-
-        FileWriter fw = new FileWriter(file);
-        fw.write("that's my file");
-        fw.close();
-
-        String actual = toTest.multipart(UTF8_VALUE, 1983, new float[]{1.2f,2.3f,3.4f}, is, file);
-        assertEquals(
-                "multipart" +
-                "\n1(name=p1, content-type=text/plain;charset=UTF-8, value=123@#?&Â£{}abc, filename=null)" +  // TODO encoding fails, is that CXF fault ?
-                "\n2(name=p2, content-type=text/html;charset=UTF-8, value=1983, filename=my-file)" +
-                "\n3(name=p3, content-type=text/plain;charset=UTF-8, value=1.2, filename=null)" +
-                "\n4(name=p3, content-type=text/plain;charset=UTF-8, value=2.3, filename=null)" +
-                "\n5(name=p3, content-type=text/plain;charset=UTF-8, value=3.4, filename=null)" +
-                "\n6(name=p4, content-type=application/octet-stream, value=hello, filename=null)" +
-                "\n7(name=p5, content-type=application/octet-stream, value=that's my file, filename=textFile.txt)"
-                , actual);
-    }
 }

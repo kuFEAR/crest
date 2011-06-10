@@ -22,10 +22,7 @@ package org.codegist.crest.server.stubs.params;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Produces("text/html;charset=UTF-8")
 @Path("params/cookie")
@@ -35,9 +32,26 @@ public class CookiesStub {
     public String receive(
                 @HeaderParam("Cookie") List<Cookie> cookies,
                 @CookieParam("p1") String p1,
+                @CookieParam("p2") String p2) {
+        return String.format("receive(header:%s) p1=%s p2=%s" , cookies, p1, p2);
+    }
+
+    @GET
+    @Path("defaultValue")
+    public String defaultValue(
+                @CookieParam("p1") String p1,
+                @CookieParam("p2") Integer p2) {
+        return String.format("defaultValue() p1=%s p2=%s", p1, p2);
+    }
+
+    @GET
+    @Path("defaultParams")
+    public String defaultParams(
+                @HeaderParam("Cookie") List<Cookie> cookies,
+                @CookieParam("p1") String p1,
                 @CookieParam("p2") String p2,
-                @CookieParam("p3") String p3) {
-        return String.format("receive(header:%s) p1=%s p2=%s p3=%s" , cookies, p1, p2, p3);
+                @CookieParam("p3") String p3){
+        return String.format("defaultParams(header:%s) p1=%s p2=%s p3=%s", cookies, p1, p2, p3);
     }
 
     @GET
@@ -75,8 +89,8 @@ public class CookiesStub {
     @Path("preEncoded")
     public String preEncoded(
             @HeaderParam("Cookie") List<Cookie> cookies,
-            @CookieParam("p1") @Encoded String p1,
-            @CookieParam("p2") @Encoded String p2){
+            @CookieParam("p1") String p1,
+            @CookieParam("p2") String p2){
         return String.format("preEncoded(header:%s) p1=%s p2=%s" , cookies, p1, p2);
     }
 

@@ -18,23 +18,29 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.param.common;
 
-import org.codegist.crest.entity.EntityWritersTest;
-import org.codegist.crest.param.*;
-import org.codegist.crest.param.MultiParts;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-        FormsTest.class ,
-        PathsTest.class,
-        QueriesTest.class,
-        CookiesTest.class,
-        MatrixesTest.class,
-        HeadersTest.class,
-        MultiPartsTest.class,
-        EntityWritersTest.class
-        })
-public class CRestSuite {}
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public interface Params {
+
+    String send(String p1, int p2);
+
+    String defaultValue(String p1, Integer p2);
+    
+    String defaultParams(String p1);
+    
+    String defaultLists(String[] p1, boolean[] p2, List<Integer> p3, Set<Long> p4);
+
+    String mergingLists(String[] p1, boolean[] p2, List<Integer> p3, Set<Long> p4);
+
+    String encodings(String p1, Collection<String> p2);
+
+    String preEncoded(String p1, Collection<String> p2);
+
+}

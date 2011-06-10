@@ -21,7 +21,6 @@
 package org.codegist.crest.http;
 
 import org.codegist.common.io.IOs;
-import org.codegist.common.lang.Strings;
 import org.codegist.common.lang.ToStringBuilder;
 
 import java.io.*;

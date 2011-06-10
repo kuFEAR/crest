@@ -21,8 +21,8 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestSuite;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,8 +38,20 @@ public interface Forms extends Params {
 
     String send(
             @FormParam("p1") String p1,
-            @FormParam("p2") int p2,
-            @FormParam("p3") float[] p3);
+            @FormParam("p2") int p2);
+
+    @Path("defaultValue")
+    String defaultValue(
+            @FormParam(value="p1", defaultValue = "default-p1") String p1,
+            @FormParam(value="p2", defaultValue = "123") Integer p2);
+
+    @FormParam(value="p2", defaultValue = "p2-val")
+    @FormParams({
+            @FormParam(value="p1", defaultValue = "p1-val"),
+            @FormParam(value="p3", defaultValue = "p3-val")
+    })
+    @Path("defaultParams")
+    String defaultParams(@FormParam("p1") String p1);
 
     @Path("defaultLists")
     String defaultLists(

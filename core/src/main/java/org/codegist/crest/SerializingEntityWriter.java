@@ -23,7 +23,6 @@ package org.codegist.crest;
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
-import org.codegist.crest.http.Pair;
 import org.codegist.crest.serializer.Serializer;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ import java.io.OutputStream;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org

@@ -20,8 +20,10 @@
 
 package org.codegist.crest.server.stubs.params;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
+import javax.ws.rs.GET;
+import javax.ws.rs.MatrixParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,10 +34,17 @@ public class MatrixesStub {
     @GET
     public String receive(
                 @MatrixParam("p1") String p1,
-                @MatrixParam("p2") String p2,
-                @MatrixParam("p3") Float[] p3){
-        return String.format("receive() p1=%s p2=%s p3=%s", p1, p2, Arrays.toString(p3));
-    }    
+                @MatrixParam("p2") String p2){
+        return String.format("receive() p1=%s p2=%s", p1, p2);
+    }
+
+    @GET
+    @Path("defaultValue")
+    public String defaultValue(
+                @MatrixParam("p1") String p1,
+                @MatrixParam("p2") Integer p2){
+        return String.format("defaultValue() p1=%s p2=%s", p1, p2);
+    }
 
     @GET
     @Path("defaultLists")
@@ -45,7 +54,17 @@ public class MatrixesStub {
             @MatrixParam("p3") List<Integer> p3,
             @MatrixParam("p4") List<Long> p4){
         return String.format("defaultLists() p1=%s p2=%s p3=%s p4=%s" , p1, p2, p3, p4);
+    }  
+
+    @GET
+    @Path("defaultParams")
+    public String defaultParams(
+                @MatrixParam("p1") List<String> p1,
+                @MatrixParam("p2") String p2,
+                @MatrixParam("p3") String p3){
+        return String.format("defaultParams() p1=%s p2=%s p3=%s", p1, p2, p3);
     }
+
 
     @GET
     @Path("mergingLists")
@@ -68,8 +87,8 @@ public class MatrixesStub {
     @GET
     @Path("preEncoded")
     public String preEncoded(
-            @MatrixParam("p1") @Encoded String p1,
-            @MatrixParam("p2") @Encoded List<String> p2){
+            @MatrixParam("p1") String p1,
+            @MatrixParam("p2") List<String> p2){
         return String.format("preEncoded() p1=%s p2=%s" , p1, p2);
     }
 

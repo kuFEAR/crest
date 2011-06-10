@@ -20,25 +20,17 @@
 
 package org.codegist.crest.param;
 
-import org.codegist.common.collect.Arrays;
-import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
+import org.codegist.crest.param.common.CommonParamsTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
-import static java.util.Arrays.asList;
-import static org.codegist.common.net.Urls.encode;
-import static org.codegist.crest.param.BaseParams.assertSendsEquals;
 import static org.junit.Assert.assertEquals;
 
-public class PathsTest extends BaseCRestTest<Paths> {
+public class PathsTest extends CommonParamsTest<Paths> {
 
     public PathsTest(CRest crest) {
         super(crest, Paths.class);
@@ -50,68 +42,38 @@ public class PathsTest extends BaseCRestTest<Paths> {
     }
 
     @Test
-    public void testSend() {
-        float p31 = 1.2f, p32 = 2.3f, p33 = 3.4f;
-        String p1 = UTF8_VALUE;
-        int p2 = 1983;
-        float[] p3 = new float[]{p31, p32, p33};
-        String expectedP3 = Arrays.join("-", p31, p32, p33);
+    public void testPattern(){
+        String p1 = "val-1983-ab";
+        String actual = toTest.pattern(p1);
+        assertEquals("pattern() p1=" + p1, actual);
+    }
 
-        assertSendsEquals(toTest, p1, p2, p3, "", expectedP3);
+    @Test(expected = IllegalArgumentException.class)
+    public void testPatternInvalidValue(){
+        toTest.pattern("val-198-ab");
     }
 
     @Test
-    public void testMergingLists() {
-        String p1Sep = "(def)";
-        String p2Sep = "(p2)";
-        String p3Sep = "(p3)";
-        String p4Sep = "(p4)";
-        String p11 = "p1-val1", p12 = UTF8_VALUE;
-        boolean p21 = true, p22 = false;
-        Integer p31 = 31, p32 = 32;
-        Long p41 = 41l, p42 = 42l;
+    public void testDefaultParams(){
+        String actual = toTest.defaultParams("p4-val");
+        assertEquals("defaultParams() p1=p1-val p2=p2-val p3=p3-val p4=p4-val", actual);
+    }
 
-        String[] p1 = {p11, p12};
-        boolean[] p2 = {p21, p22};
-        List<Integer> p3 = asList(p31, p32);
-        Set<Long> p4 = new LinkedHashSet<Long>(asList(p41, p42));
-
-        String actual = toTest.mergingLists(p1,p2,p3,p4);
-
-        String expected = String.format("mergingLists() p1=%s%s%s p2=%s%s%s p3=%s%s%s p4=%s%s%s",
-                p11,p1Sep,p12,
-                p21,p2Sep,p22,
-                p31,p3Sep,p32,
-                p41,p4Sep,p42);
+    // Path interface has the list separator set
+    public void assertEncodings(String p1, String p21, String p22, String actual){
+        String expected = String.format("encodings() p1=%s p2=%s(p2)%s", p1, p21, p22);
+        assertEquals(expected, actual);
+    }
+    // Path interface has the list separator set
+    public void assertPreEncoded(String p1, String p21, String p22, String actual){
+        String expected = String.format("preEncoded() p1=%s p2=%s(p2)%s", p1, p21, p22);
         assertEquals(expected, actual);
     }
 
-    @Test
-    public void testEncodings() {
-        String p2Sep = "(p2)";
-        String p21 = "&";
-        String p22 = UTF8_VALUE;
-        String p1 = UTF8_VALUE;
-        Collection<String> p2 = asList(p21, p22);
-        String actual = toTest.encodings(p1, p2);
+    @Override
+    @Ignore("Path doesn't have default list behavior")
+    public void testDefaultLists() {
 
-        String expected = String.format("encodings() p1=%s p2=%s%s%s", p1, p21, p2Sep, p22);
-        assertEquals(expected, actual);
     }
-
-    @Test
-    public void testPreEncoded() throws UnsupportedEncodingException {
-        String p2Sep = "(p2)";
-        String p21 = encode("&", "utf-8");
-        String p22 = encode(UTF8_VALUE, "utf-8");
-        String p1 = encode(UTF8_VALUE, "utf-8");
-        Collection<String> p2 = asList(p21, p22);
-        String actual = toTest.preEncoded(p1, p2);
-
-        String expected = String.format("preEncoded() p1=%s p2=%s%s%s", p1, p21, p2Sep, p22);
-        assertEquals(expected, actual);
-    }
-
-
 }
 
