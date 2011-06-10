@@ -53,6 +53,37 @@ public class PathsTest extends CommonParamsTest<Paths> {
         toTest.pattern("val-198-ab");
     }
 
+
+    @Test
+    @Ignore("N/A")
+    public void testNulls() {
+    }
+
+    @Test
+    @Ignore("N/A")
+    public void testNullsInCollection() {
+    }
+
+    @Test
+    @Ignore("N/A")
+    public void testNullsInArray() {
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testNullsMerging() {
+        super.testNullsMerging();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testNullsMergingInCollection() {
+        super.testNullsMergingInCollection();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testNullsMergingInArray() {
+        super.testNullsMergingInArray();
+    }
+
     @Test
     public void testDefaultParams(){
         String actual = toTest.defaultParams("p4-val");

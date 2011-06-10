@@ -81,8 +81,10 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
                 first = false;
             }
             String cookie = sb.toString();
-            LOGGER.debug("Cookie %s ", cookie);
-            httpChannel.writeHeader("Cookie", cookie);
+            if(cookie.length() > 0) {
+                LOGGER.debug("Cookie %s ", cookie);
+                httpChannel.writeHeader("Cookie", cookie);
+            }
         }
 
         if(request.getMeth().hasEntity()) {

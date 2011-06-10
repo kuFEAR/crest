@@ -58,7 +58,19 @@ public interface Cookies extends Params {
             @CookieParam("p1") String[] p1,
             @CookieParam("p2") boolean[] p2,
             @CookieParam("p3") List<Integer> p3,
-            @CookieParam("p4") Set<Long> p4);
+            @CookieParam("p4") Set<Long> p4);    
+
+    @Path("nulls")
+    String nulls(
+            @CookieParam("p1") String p1,
+            @CookieParam("p2") Collection<String> p2,
+            @CookieParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @CookieParam("p1") String p1,
+            @CookieParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @CookieParam("p3") @ListSeparator("(p3)") String[] p3);
 
     @Path("mergingLists")
     @ListSeparator("(def)")

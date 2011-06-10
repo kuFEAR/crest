@@ -47,6 +47,24 @@ public class QueriesStub {
     }
 
     @GET
+    @Path("nulls")
+    public String nulls(
+                @QueryParam("p1") String p1,
+                @QueryParam("p2") String p2,
+                @QueryParam("p3") String p3){
+        return String.format("nulls() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @GET
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @QueryParam("p1") String p1,
+                @QueryParam("p2") String p2,
+                @QueryParam("p3") String p3){
+        return String.format("nullsMerging() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @GET
     @Path("defaultLists")
     public String defaultLists(
             @QueryParam("p1") List<String> p1,

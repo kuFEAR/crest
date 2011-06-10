@@ -66,6 +66,24 @@ public class FormsStub {
     }
 
     @POST
+    @Path("nulls")
+    public String nulls(
+                @FormParam("p1") String p1,
+                @FormParam("p2") String p2,
+                @FormParam("p3") String p3){
+        return String.format("nulls() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @POST
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @FormParam("p1") String p1,
+                @FormParam("p2") String p2,
+                @FormParam("p3") String p3){
+        return String.format("nullsMerging() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @POST
     @Path("mergingLists")
     public String mergingLists(
             @FormParam("p1") String p1,

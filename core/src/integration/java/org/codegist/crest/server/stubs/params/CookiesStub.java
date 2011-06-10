@@ -37,6 +37,26 @@ public class CookiesStub {
     }
 
     @GET
+    @Path("nulls")
+    public String nulls(
+                @HeaderParam("Cookie") List<Cookie> cookies,
+                @CookieParam("p1") String p1,
+                @CookieParam("p2") String p2,
+                @CookieParam("p3") String p3){
+        return String.format("nulls(header:%s) p1=%s p2=%s p3=%s", cookies, p1, p2, p3);
+    }
+
+    @GET
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @HeaderParam("Cookie") List<Cookie> cookies,
+                @CookieParam("p1") String p1,
+                @CookieParam("p2") String p2,
+                @CookieParam("p3") String p3){
+        return String.format("nullsMerging(header:%s) p1=%s p2=%s p3=%s", cookies, p1, p2, p3);
+    }
+
+    @GET
     @Path("defaultValue")
     public String defaultValue(
                 @CookieParam("p1") String p1,

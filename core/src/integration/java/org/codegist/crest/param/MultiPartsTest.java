@@ -29,6 +29,7 @@ import org.junit.runners.Parameterized;
 import java.io.*;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class MultiPartsTest extends CommonParamsTest<MultiParts> {
@@ -66,6 +67,21 @@ public class MultiPartsTest extends CommonParamsTest<MultiParts> {
                 "\n6(name=p4, content-type=application/octet-stream, value=hello, filename=null)" +
                 "\n7(name=p5, content-type=application/octet-stream, value=that's my file, filename=textFile.txt)"
                 , actual);
+    }
+
+    @Test
+    @Ignore("N/A")
+    public void testNullsMerging() {
+    }
+
+    @Test
+    @Ignore("N/A")
+    public void testNullsMergingInCollection() {
+    }
+
+    @Test
+    @Ignore("N/A")
+    public void testNullsMergingInArray() {
     }
 
     @Test

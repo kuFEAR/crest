@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.codegist.common.lang.Strings.isNotBlank;
 
 /**
@@ -54,6 +55,7 @@ public abstract class HttpParamProcessor {
             Collection<Pair> pairs = new ArrayList<Pair>();
             boolean isEncoded = !preEncodeIfNeeded || param.getConfig().isEncoded();
             for(Object value : param.getValue()){
+                if(value == null) continue;
                 String serializedValue = param.getConfig().getSerializer().serialize(value, charset);
                 pairs.add(new Pair(param.getConfig().getName(), serializedValue, charset, isEncoded));
             }
@@ -70,6 +72,7 @@ public abstract class HttpParamProcessor {
             boolean isEncoded = !preEncodeIfNeeded || param.getConfig().isEncoded();
             boolean first = true;
             for(Object value : param.getValue()){
+                if(value == null) continue;
                 String serializedValue = param.getConfig().getSerializer().serialize(value, charset);
                 if(!first) {
                     sb.append(separator);
@@ -78,7 +81,11 @@ public abstract class HttpParamProcessor {
                 first = false;
             }
 
-            return asList(new Pair(param.getConfig().getName(), sb.toString(), charset, isEncoded));
+            if(sb.length() == 0) {
+                return emptyList();
+            }else{
+                return asList(new Pair(param.getConfig().getName(), sb.toString(), charset, isEncoded));
+            }
         }
     };
 

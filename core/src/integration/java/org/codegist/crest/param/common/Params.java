@@ -31,6 +31,10 @@ public interface Params {
 
     String send(String p1, int p2);
 
+    String nulls(String p1, Collection<String> p2, String[] p3);
+
+    String nullsMerging(String p1,Collection<String> p2, String[] p3);
+
     String defaultValue(String p1, Integer p2);
     
     String defaultParams(String p1);

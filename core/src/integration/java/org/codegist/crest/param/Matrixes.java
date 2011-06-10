@@ -58,7 +58,19 @@ public interface Matrixes extends Params {
             @MatrixParam("p1") String[] p1,
             @MatrixParam("p2") boolean[] p2,
             @MatrixParam("p3") List<Integer> p3,
-            @MatrixParam("p4") Set<Long> p4);
+            @MatrixParam("p4") Set<Long> p4);     
+
+    @Path("nulls")
+    String nulls(
+            @MatrixParam("p1") String p1,
+            @MatrixParam("p2") Collection<String> p2,
+            @MatrixParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @MatrixParam("p1") String p1,
+            @MatrixParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @MatrixParam("p3") @ListSeparator("(p3)") String[] p3);
 
     @Path("mergingLists")
     @ListSeparator("(def)")

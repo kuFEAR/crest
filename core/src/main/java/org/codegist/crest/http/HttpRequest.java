@@ -221,6 +221,7 @@ public class HttpRequest {
         }       
         
         private Builder addHttpParam(List<HttpParam> params, ParamConfig paramConfig, Object value){
+            if(value == null && paramConfig.getDefaultValue() == null) return this;
             params.add(new HttpParam(paramConfig, Objects.asCollection(value)));
             return this;
         }

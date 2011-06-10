@@ -60,6 +60,18 @@ public interface Forms extends Params {
             @FormParam("p3") List<Integer> p3,
             @FormParam("p4") Set<Long> p4);
 
+    @Path("nulls")
+    String nulls(
+            @FormParam("p1") String p1,
+            @FormParam("p2") Collection<String> p2,
+            @FormParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @FormParam("p1") String p1,
+            @FormParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @FormParam("p3") @ListSeparator("(p3)") String[] p3);
+
     @Path("mergingLists")
     @ListSeparator("(def)")
     String mergingLists(

@@ -129,7 +129,7 @@ abstract class AbstractConfigBuilder<T> {
     }
 
     protected <T> T defaultIfUndefined(T value, String defProp, T def) {
-        if (def instanceof String) {
+        if (value instanceof String || def instanceof String) {
             String defs = Strings.defaultIfBlank((String) customProperties.get(defProp), (String) def);
             return (T) Strings.defaultIfBlank((String) value, defs);
         } else {

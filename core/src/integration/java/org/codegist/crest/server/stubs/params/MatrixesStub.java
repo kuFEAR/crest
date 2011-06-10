@@ -36,6 +36,24 @@ public class MatrixesStub {
                 @MatrixParam("p1") String p1,
                 @MatrixParam("p2") String p2){
         return String.format("receive() p1=%s p2=%s", p1, p2);
+    }       
+
+    @GET
+    @Path("nulls")
+    public String nulls(
+                @MatrixParam("p1") String p1,
+                @MatrixParam("p2") String p2,
+                @MatrixParam("p3") String p3){
+        return String.format("nulls() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @GET
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @MatrixParam("p1") String p1,
+                @MatrixParam("p2") String p2,
+                @MatrixParam("p3") String p3){
+        return String.format("nullsMerging() p1=%s p2=%s p3=%s", p1, p2, p3);
     }
 
     @GET

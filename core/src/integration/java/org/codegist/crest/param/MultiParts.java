@@ -75,6 +75,12 @@ public interface MultiParts extends Params {
             @MultiPartParam("p3") List<Integer> p3,
             @MultiPartParam("p4") Set<Long> p4);
 
+    @Path("nulls")
+    String nulls(
+            @MultiPartParam("p1") String p1,
+            @MultiPartParam("p2") Collection<String> p2,
+            @MultiPartParam("p3") String[] p3);
+
     @Path("encodings")
     String encodings(
             @MultiPartParam("p1") String p1,

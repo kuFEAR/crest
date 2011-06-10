@@ -64,12 +64,18 @@ public class MultiPartsStub {
     }
 
     @POST
+    @Path("nulls")
+    public String nulls(MultipartBody msg)throws UnsupportedEncodingException {
+        return toResonseString("nulls" , msg, "p1", "p2", "p3");
+    }
+
+    @POST
     @Path("defaultParams")
     public String defaultParams(MultipartBody msg)throws UnsupportedEncodingException {
         return toResonseString("defaultParams" , msg);
     }
 
-    private String toResonseString(String meth, MultipartBody msg) throws UnsupportedEncodingException {
+    private String toResonseString(String meth, MultipartBody msg, String... expecteds) throws UnsupportedEncodingException {
         Map<String,List<String>> values = new TreeMap<String, List<String>>();
 
         int i = 0, max =  msg.getAllAttachments().size() - 1;
@@ -91,17 +97,28 @@ public class MultiPartsStub {
         String s = meth + "() ";
         i = 0;
         max=values.size();
-        for(Map.Entry<String,List<String>> entry : values.entrySet()){
-            if(entry.getValue().size() == 1) {
-                s+= entry.getKey() + "=" + entry.getValue().get(0);
-            }else{
-                s+= entry.getKey() + "=" + entry.getValue();
-            }
+        if(values.isEmpty()) {
 
-            if(++i != max) {
-                s+= " ";
+            for(String expected : expecteds){
+                s += expected + "=null";
+                if(++i != expecteds.length) {
+                    s+= " ";
+                }
+            }
+        } else{
+            for(Map.Entry<String,List<String>> entry : values.entrySet()){
+                if(entry.getValue().size() == 1) {
+                    s+= entry.getKey() + "=" + entry.getValue().get(0);
+                }else{
+                    s+= entry.getKey() + "=" + entry.getValue();
+                }
+
+                if(++i != max) {
+                    s+= " ";
+                }
             }
         }
+
 
         return s;
     }

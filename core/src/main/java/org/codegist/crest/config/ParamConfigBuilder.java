@@ -63,7 +63,6 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         String listSeparator = this.listSeparator;
         Serializer serializer = this.serializer;
         boolean encoded = this.encoded;
-        HttpParamProcessor httpParamProcessor = null;
         Map<String,Object> metas = this.metas;
 
         if (!isTemplate) {

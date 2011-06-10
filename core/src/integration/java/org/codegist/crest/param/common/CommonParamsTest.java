@@ -57,6 +57,45 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
         assertEquals(expected, actual);
     }
 
+
+
+    @Test
+    public void testNulls(){
+        String actual = toTest.nulls(null, null, null);
+        assertEquals("nulls() p1=null p2=null p3=null", actual);
+    }
+
+    @Test
+    public void testNullsInCollection(){
+        String actual = toTest.nulls(null, asList((String)null,(String)null), null);
+        assertEquals("nulls() p1=null p2=null p3=null", actual);
+    }
+
+    @Test
+    public void testNullsInArray(){
+        String actual = toTest.nulls(null, null, new String[]{null,null});
+        assertEquals("nulls() p1=null p2=null p3=null", actual);
+    }
+
+    @Test
+    public void testNullsMerging(){
+        String actual = toTest.nullsMerging(null, null, null);
+        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+    }
+
+    @Test
+    public void testNullsMergingInCollection(){
+        String actual = toTest.nullsMerging(null, asList((String)null,(String)null), null);
+        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+    }
+
+    @Test
+    public void testNullsMergingInArray(){
+        String actual = toTest.nullsMerging(null, null, new String[]{null,null});
+        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+    }
+
+
     @Test
     public void testDefaultValue(){
         String actual = toTest.defaultValue(null, null);

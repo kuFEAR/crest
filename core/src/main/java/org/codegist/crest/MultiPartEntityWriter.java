@@ -47,11 +47,12 @@ public class MultiPartEntityWriter implements EntityWriter {
 
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
 
+        DataOutputStream out = new DataOutputStream(outputStream);
         if (!request.getFormParam().isEmpty()) {
-            DataOutputStream out = new DataOutputStream(outputStream);
-
+            
             for (HttpParam param: request.getFormParam()) {
                 for(Object value : param.getValue()){
+                    if(value == null) continue;
                     InputStream upload = null;
                     String fileName = null;
                     if (value instanceof InputStream) {
@@ -94,9 +95,9 @@ public class MultiPartEntityWriter implements EntityWriter {
                     out.writeBytes("\r\n");
                 }
             }
-            out.writeBytes(FULL_BOUNDARY + "--\r\n");
-            out.writeBytes("\r\n");
         }
+        out.writeBytes(FULL_BOUNDARY + "--\r\n");
+        out.writeBytes("\r\n");
     }
 
     

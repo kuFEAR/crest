@@ -60,6 +60,18 @@ public interface Queries extends Params {
             @QueryParam("p3") List<Integer> p3,
             @QueryParam("p4") Set<Long> p4);
 
+    @Path("nulls")
+    String nulls(
+            @QueryParam("p1") String p1,
+            @QueryParam("p2") Collection<String> p2,
+            @QueryParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @QueryParam("p1") String p1,
+            @QueryParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @QueryParam("p3") @ListSeparator("(p3)") String[] p3);
+
     @Path("mergingLists")
     @ListSeparator("(def)")
     String mergingLists(

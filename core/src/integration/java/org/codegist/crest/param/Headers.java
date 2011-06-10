@@ -58,7 +58,19 @@ public interface Headers extends Params {
             @HeaderParam("p1") String[] p1,
             @HeaderParam("p2") boolean[] p2,
             @HeaderParam("p3") List<Integer> p3,
-            @HeaderParam("p4") Set<Long> p4);
+            @HeaderParam("p4") Set<Long> p4);       
+
+    @Path("nulls")
+    String nulls(
+            @HeaderParam("p1") String p1,
+            @HeaderParam("p2") Collection<String> p2,
+            @HeaderParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @HeaderParam("p1") String p1,
+            @HeaderParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @HeaderParam("p3") @ListSeparator("(p3)") String[] p3);
 
     @Path("mergingLists")
     @ListSeparator("(def)")

@@ -57,6 +57,12 @@ public interface Paths extends Params {
     @Path("defaultParams/{p1}/{p2}/{p3}/{p4}")
     String defaultParams(@PathParam("p4") String p1);
 
+    @Path("nullsMerging/{p1}/{p2}/{p3}")
+    String nullsMerging(
+            @PathParam("p1") String p1,
+            @PathParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @PathParam("p3") @ListSeparator("(p3)") String[] p3);
+
     @Path("mergingLists/{p1}/{p2}/{p3}/{p4}")
     @ListSeparator("(def)")
     String mergingLists(

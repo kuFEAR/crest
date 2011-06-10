@@ -39,6 +39,24 @@ public class HeadersStub {
     }
 
     @GET
+    @Path("nulls")
+    public String nulls(
+                @HeaderParam("p1") String p1,
+                @HeaderParam("p2") String p2,
+                @HeaderParam("p3") String p3){
+        return String.format("nulls() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @GET
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @HeaderParam("p1") String p1,
+                @HeaderParam("p2") String p2,
+                @HeaderParam("p3") String p3){
+        return String.format("nullsMerging() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
+    @GET
     @Path("defaultValue")
     public String defaultValue(
                 @HeaderParam("p1") String p1,

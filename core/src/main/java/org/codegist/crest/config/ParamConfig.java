@@ -41,7 +41,7 @@ public interface ParamConfig {
 
     String DEFAULT_DESTINATION = HttpRequest.DEST_QUERY;
 
-    String DEFAULT_VALUE = "";
+    String DEFAULT_VALUE = null;
 
     String DEFAULT_NAME = "";
 

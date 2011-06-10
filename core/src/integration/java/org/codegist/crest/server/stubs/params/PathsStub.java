@@ -43,6 +43,16 @@ public class PathsStub {
         return String.format("receive() p1=%s p2=%s", p1, p2);
     }
 
+
+    @GET
+    @Path("nullsMerging")
+    public String nullsMerging(
+                @PathParam("p1") String p1,
+                @PathParam("p2") String p2,
+                @PathParam("p3") String p3){
+        return String.format("nullsMerging() p1=%s p2=%s p3=%s", p1, p2, p3);
+    }
+
     @GET
     @Path("defaultValue/{p1}/{p2}")
     public String defaultValue(
