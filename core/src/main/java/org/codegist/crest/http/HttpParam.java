@@ -29,8 +29,6 @@ import org.codegist.crest.config.StringParamConfig;
 
 import java.util.Collection;
 
-import static java.util.Arrays.asList;
-
 public class HttpParam {
 
     private final Collection<Object> value;

@@ -38,12 +38,11 @@ public abstract class HttpParamProcessor {
     public static Collection<Pair> process(HttpParam param, Charset charset){
         return process(param, charset, true);
     }
-
-    public static Collection<Pair> process(HttpParam param, Charset charset, boolean preEncodeIfNeeded){
+    public static Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded){
         if(isNotBlank(param.getConfig().getListSeparator())) {
-            return COLLECTION_MERGING_PROCESSOR.exec(param, charset, preEncodeIfNeeded);
+            return COLLECTION_MERGING_PROCESSOR.exec(param, charset, encodeIfNeeded);
         }else{
-            return DEFAULT_PROCESSOR.exec(param, charset, preEncodeIfNeeded);
+            return DEFAULT_PROCESSOR.exec(param, charset, encodeIfNeeded);
         }
     }
 
@@ -51,9 +50,9 @@ public abstract class HttpParamProcessor {
 
     private static final HttpParamProcessor DEFAULT_PROCESSOR = new HttpParamProcessor(){
         @Override
-        protected  Collection<Pair> exec(HttpParam param, Charset charset, boolean preEncodeIfNeeded) {
+        protected  Collection<Pair> exec(HttpParam param, Charset charset, boolean encodeIfNeeded) {
             Collection<Pair> pairs = new ArrayList<Pair>();
-            boolean isEncoded = !preEncodeIfNeeded || param.getConfig().isEncoded();
+            boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
             for(Object value : param.getValue()){
                 if(value == null) continue;
                 String serializedValue = param.getConfig().getSerializer().serialize(value, charset);
@@ -66,10 +65,10 @@ public abstract class HttpParamProcessor {
 
     private static final HttpParamProcessor COLLECTION_MERGING_PROCESSOR = new HttpParamProcessor(){
         @Override
-        protected  Collection<Pair> exec(HttpParam param, Charset charset, boolean preEncodeIfNeeded) {
+        protected  Collection<Pair> exec(HttpParam param, Charset charset, boolean encodeIfNeeded) {
             StringBuilder sb = new StringBuilder();
             String separator = param.getConfig().getListSeparator();
-            boolean isEncoded = !preEncodeIfNeeded || param.getConfig().isEncoded();
+            boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
             boolean first = true;
             for(Object value : param.getValue()){
                 if(value == null) continue;

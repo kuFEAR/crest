@@ -57,55 +57,68 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
         assertEquals(expected, actual);
     }
 
-
-
     @Test
     public void testNulls(){
         String actual = toTest.nulls(null, null, null);
-        assertEquals("nulls() p1=null p2=null p3=null", actual);
+        assertNulls(actual);
     }
 
     @Test
     public void testNullsInCollection(){
         String actual = toTest.nulls(null, asList((String)null,(String)null), null);
-        assertEquals("nulls() p1=null p2=null p3=null", actual);
+        assertNulls(actual);
     }
 
     @Test
     public void testNullsInArray(){
         String actual = toTest.nulls(null, null, new String[]{null,null});
+        assertNulls(actual);
+    }
+
+    public void assertNulls(String actual){
         assertEquals("nulls() p1=null p2=null p3=null", actual);
     }
+
 
     @Test
     public void testNullsMerging(){
         String actual = toTest.nullsMerging(null, null, null);
-        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+        assertNullsMerging(actual);
     }
 
     @Test
     public void testNullsMergingInCollection(){
         String actual = toTest.nullsMerging(null, asList((String)null,(String)null), null);
-        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+        assertNullsMerging(actual);
     }
 
     @Test
     public void testNullsMergingInArray(){
         String actual = toTest.nullsMerging(null, null, new String[]{null,null});
-        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+        assertNullsMerging(actual);
     }
 
+    public void assertNullsMerging(String actual){
+        assertEquals("nullsMerging() p1=null p2=null p3=null", actual);
+    }
 
     @Test
     public void testDefaultValue(){
         String actual = toTest.defaultValue(null, null);
-        assertEquals("defaultValue() p1=default-p1 p2=123", actual);
+        assertDefaultValue("default-p1", 123, actual);
+    }
+    public void assertDefaultValue(String defaultP1, int defaultP2, String actual){
+        assertEquals(format("defaultValue() p1=%s p2=%s", defaultP1, defaultP2), actual);
     }
 
     @Test
     public void testDefaultParams(){
-        String actual = toTest.defaultParams("p1");
-        assertEquals("defaultParams() p1=[p1-val, p1] p2=p2-val p3=p3-val", actual);
+        String p1 = "p1";
+        String actual = toTest.defaultParams(p1);
+        assertParamsValue("p1-val", p1, "p2-val","p3-val", actual);
+    }
+    public void assertParamsValue(String p11, String p12, String p2, String p3, String actual){
+        assertEquals(format("defaultParams() p1=[%s, %s] p2=%s p3=%s", p11, p12,p2,p3), actual);
     }
 
     @Test

@@ -148,6 +148,8 @@ public final class Configs {
     public static ParamConfig override(ParamConfig base, ParamConfig overrides) {
         if(overrides == null) return base;
         return new DefaultParamConfig(
+                defaultIfNull(overrides.getValueGenericType(), base.getValueGenericType()),
+                defaultIfNull(overrides.getValueClass(), base.getValueClass()),
                 defaultIfNull(overrides.getName(), base.getName()),
                 defaultIfNull(overrides.getDefaultValue(), base.getDefaultValue()),
                 defaultIfNull(overrides.getDestination(), base.getDestination()),

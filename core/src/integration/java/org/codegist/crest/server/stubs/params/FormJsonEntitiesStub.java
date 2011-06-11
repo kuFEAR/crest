@@ -18,11 +18,8 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.server.stubs.entity;
+package org.codegist.crest.server.stubs.params;
 
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.codegist.common.io.IOs;
 
 import javax.ws.rs.Consumes;
@@ -32,21 +29,16 @@ import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
 @Produces("text/html;charset=UTF-8")
-@Path("entity")
-public class EntityWritersStub {
+@Path("entity/json")
+@Consumes("application/json")
+public class FormJsonEntitiesStub {
 
     @POST
-    @Path("xml")
-    @Consumes("application/xml")
-    public String postFormAsXml(InputStream msg) throws IOException {
-        return IOs.toString(msg);
-    }
-
-    @POST
-    @Path("json")
-    @Consumes("application/json")
-    public String postFormAsJson(InputStream msg) throws IOException {
+    public String receive(InputStream msg) throws IOException {
         return IOs.toString(msg);
     }
 

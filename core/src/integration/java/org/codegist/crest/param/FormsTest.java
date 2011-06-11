@@ -22,14 +22,9 @@ package org.codegist.crest.param;
 
 import org.codegist.crest.CRest;
 import org.codegist.crest.param.common.CommonParamsTest;
-import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 public class FormsTest extends CommonParamsTest<Forms> {
 

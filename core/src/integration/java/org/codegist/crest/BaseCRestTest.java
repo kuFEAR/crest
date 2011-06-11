@@ -21,7 +21,6 @@
 package org.codegist.crest;
 
 import org.codegist.crest.server.Server;
-import org.codegist.crest.server.stubs.entity.EntityWritersStub;
 import org.codegist.crest.server.stubs.params.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -51,7 +50,8 @@ public class BaseCRestTest<T> {
             new MatrixesStub(),
             new HeadersStub(),
             new MultiPartsStub(),
-            new EntityWritersStub()
+            new FormXmlEntitiesStub(),
+            new FormJsonEntitiesStub()
     );
 
     static {
@@ -100,7 +100,7 @@ public class BaseCRestTest<T> {
         };
     }
 
-    public static CRest[] bySerializers(){
+    public static CRest[] byXmlSerializers(){
         return new CRest[]{
            /* Jaxb Serialization based CRest */
             baseBuilder()
@@ -111,6 +111,11 @@ public class BaseCRestTest<T> {
                     .serializeXmlWithSimpleXml()
             .build()
         };
+    }
+
+
+    public static CRest[] byJsonSerializers(){
+        return new CRest[]{baseBuilder().build()};
     }
 
     public static Collection<CRest[]> crest(CRest[]... crests) {

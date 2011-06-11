@@ -24,10 +24,15 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
-import javax.ws.rs.*;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Produces("text/html;charset=UTF-8")
 @Path("params/multipart")
@@ -64,9 +69,21 @@ public class MultiPartsStub {
     }
 
     @POST
+    @Path("mergingLists")
+    public String mergingLists(MultipartBody msg) throws UnsupportedEncodingException {
+        return toResonseString("mergingLists" , msg);
+    }
+
+    @POST
     @Path("nulls")
     public String nulls(MultipartBody msg)throws UnsupportedEncodingException {
         return toResonseString("nulls" , msg, "p1", "p2", "p3");
+    }
+
+    @POST
+    @Path("nullsMerging")
+    public String nullsMerging(MultipartBody msg)throws UnsupportedEncodingException {
+        return toResonseString("nullsMerging" , msg, "p1", "p2", "p3");
     }
 
     @POST
@@ -74,6 +91,19 @@ public class MultiPartsStub {
     public String defaultParams(MultipartBody msg)throws UnsupportedEncodingException {
         return toResonseString("defaultParams" , msg);
     }
+
+    @POST
+    @Path("encodings")
+    public String encodings(MultipartBody msg)throws UnsupportedEncodingException {
+        return toResonseString("encodings" , msg);
+    }
+
+    @POST
+    @Path("preEncoded")
+    public String preEncoded(MultipartBody msg)throws UnsupportedEncodingException {
+        return toResonseString("preEncoded" , msg);
+    }
+
 
     private String toResonseString(String meth, MultipartBody msg, String... expecteds) throws UnsupportedEncodingException {
         Map<String,List<String>> values = new TreeMap<String, List<String>>();

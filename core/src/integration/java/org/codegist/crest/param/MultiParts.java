@@ -67,6 +67,19 @@ public interface MultiParts extends Params {
     })
     @Path("defaultParams")
     String defaultParams(@MultiPartParam("p1") String p1);
+                    
+    @Path("nulls")
+    String nulls(
+            @MultiPartParam("p1") String p1,
+            @MultiPartParam("p2") Collection<String> p2,
+            @MultiPartParam("p3") String[] p3);
+
+    @Path("nullsMerging")
+    String nullsMerging(
+            @MultiPartParam("p1") String p1,
+            @MultiPartParam("p2") @ListSeparator("(p2)") Collection<String> p2,
+            @MultiPartParam("p3") @ListSeparator("(p3)") String[] p3);
+
 
     @Path("defaultLists")
     String defaultLists(
@@ -75,11 +88,13 @@ public interface MultiParts extends Params {
             @MultiPartParam("p3") List<Integer> p3,
             @MultiPartParam("p4") Set<Long> p4);
 
-    @Path("nulls")
-    String nulls(
-            @MultiPartParam("p1") String p1,
-            @MultiPartParam("p2") Collection<String> p2,
-            @MultiPartParam("p3") String[] p3);
+    @Path("mergingLists")
+    @ListSeparator("(def)")
+    String mergingLists(
+            @MultiPartParam("p1") String[] p1,
+            @MultiPartParam("p2") @ListSeparator("(p2)") boolean[] p2,
+            @MultiPartParam("p3") @ListSeparator("(p3)") List<Integer> p3,
+            @MultiPartParam("p4") @ListSeparator("(p4)") Set<Long> p4);
 
     @Path("encodings")
     String encodings(

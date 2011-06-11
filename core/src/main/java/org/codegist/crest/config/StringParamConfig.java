@@ -24,6 +24,7 @@ import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.ToStringSerializer;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 public class StringParamConfig implements ParamConfig {
@@ -39,6 +40,14 @@ public class StringParamConfig implements ParamConfig {
         this.value = value;
         this.destination = destination;
         this.encoded = encoded;
+    }
+
+    public Type getValueGenericType() {
+        return String.class;
+    }
+
+    public Class<?> getValueClass() {
+        return String.class;
     }
 
     public String getName() {

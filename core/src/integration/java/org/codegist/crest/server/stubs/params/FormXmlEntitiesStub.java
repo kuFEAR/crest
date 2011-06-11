@@ -18,22 +18,28 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.server.stubs.params;
 
-import org.codegist.crest.param.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.codegist.common.io.IOs;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-        FormsTest.class ,
-        PathsTest.class,
-        QueriesTest.class,
-        CookiesTest.class,
-        MatrixesTest.class,
-        HeadersTest.class,
-        MultiPartsTest.class,
-        FormJsonEntitiesTest.class,
-        FormXmlEntitiesTest.class
-        })
-public class CRestSuite {}
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+@Produces("text/html;charset=UTF-8")
+@Path("entity/xml")
+@Consumes("application/xml")
+public class FormXmlEntitiesStub {
+
+    @POST
+    public String receive(InputStream msg) throws IOException {
+        return IOs.toString(msg);
+    }
+
+}

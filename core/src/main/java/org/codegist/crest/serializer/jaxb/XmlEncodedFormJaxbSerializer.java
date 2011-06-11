@@ -132,7 +132,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
         }
 
         private boolean isPrimitive(Object value){
-            return (value instanceof String || value instanceof Number || value instanceof Boolean || value instanceof Date || value instanceof Character);
+            return (value.getClass().isPrimitive() || value instanceof String || value instanceof Date);
         }
         private String decapitalize(String name) {
             if (name == null || name.length() == 0) {

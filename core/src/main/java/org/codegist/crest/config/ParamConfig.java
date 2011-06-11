@@ -24,6 +24,7 @@ import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -53,6 +54,10 @@ public interface ParamConfig {
 
 
     String getName();
+
+    Type getValueGenericType();
+
+    Class<?> getValueClass();
 
     String getDefaultValue();
 

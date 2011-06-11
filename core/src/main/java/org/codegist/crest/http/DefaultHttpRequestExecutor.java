@@ -82,7 +82,7 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             }
             String cookie = sb.toString();
             if(cookie.length() > 0) {
-                LOGGER.debug("Cookie %s ", cookie);
+                LOGGER.debug("Cookie: %s ", cookie);
                 httpChannel.writeHeader("Cookie", cookie);
             }
         }

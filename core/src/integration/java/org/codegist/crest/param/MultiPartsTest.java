@@ -22,14 +22,15 @@ package org.codegist.crest.param;
 
 import org.codegist.crest.CRest;
 import org.codegist.crest.param.common.CommonParamsTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.io.*;
 import java.util.Collection;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.codegist.common.net.Urls.encode;
 import static org.junit.Assert.assertEquals;
 
 public class MultiPartsTest extends CommonParamsTest<MultiParts> {
@@ -47,7 +48,6 @@ public class MultiPartsTest extends CommonParamsTest<MultiParts> {
 
     @Test
     public void testMisc() throws IOException {
-
         InputStream is = new ByteArrayInputStream("hello".getBytes("UTF-8"));
         File file = new File("textFile.txt");
         file.deleteOnExit();
@@ -69,36 +69,9 @@ public class MultiPartsTest extends CommonParamsTest<MultiParts> {
                 , actual);
     }
 
-    @Test
-    @Ignore("N/A")
-    public void testNullsMerging() {
-    }
-
-    @Test
-    @Ignore("N/A")
-    public void testNullsMergingInCollection() {
-    }
-
-    @Test
-    @Ignore("N/A")
-    public void testNullsMergingInArray() {
-    }
-
-    @Test
-    @Ignore("N/A")
-    public void testMergingLists() {
-
-    }
-
-    @Test
-    @Ignore("N/A")
-    public void testEncodings() {
-
-    }
-
-    @Test
-    @Ignore("N/A")
-    public void testPreEncoded() throws UnsupportedEncodingException {
-
+    // Multiparts writes data as is comes without further encoding
+    public void assertPreEncoded(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
+        String expected = format("preEncoded() p1=%s p2=%s", encode(p1, "utf-8"), asList(encode(p21, "utf-8"), encode(p22, "utf-8")));
+        assertEquals(expected, actual);
     }
 }

@@ -27,6 +27,7 @@ import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -35,6 +36,8 @@ import java.util.Map;
  */
 class DefaultParamConfig implements ParamConfig {
 
+    private final Type genericType;
+    private final Class<?> clazz;
     private final String name;
     private final String defaultValue;
     private final String destination;
@@ -45,7 +48,9 @@ class DefaultParamConfig implements ParamConfig {
     private final Map<Class<? extends Annotation>, Annotation> annotations;
 
 
-    DefaultParamConfig(String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
+    DefaultParamConfig(Type type, Class<?> clazz, String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
+        this.genericType = type;
+        this.clazz = clazz;
         this.name = name;
         this.defaultValue = defaultValue;
         this.destination = destination;
@@ -54,6 +59,14 @@ class DefaultParamConfig implements ParamConfig {
         this.encoded = encoded;
         this.annotations = Maps.unmodifiable(annotations, false);
         this.metadatas = Maps.unmodifiable(metadatas, false);
+    }
+
+    public Type getValueGenericType() {
+        return genericType;
+    }
+
+    public Class<?> getValueClass() {
+        return clazz;
     }
 
     public String getName() {
@@ -95,6 +108,8 @@ class DefaultParamConfig implements ParamConfig {
         DefaultParamConfig that = (DefaultParamConfig) o;
 
         return new EqualsBuilder()
+                .append(clazz, that.clazz)
+                .append(genericType, that.genericType)
                 .append(name, that.name)
                 .append(defaultValue, that.defaultValue)
                 .append(destination, that.destination)
@@ -109,6 +124,8 @@ class DefaultParamConfig implements ParamConfig {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(clazz)
+                .append(genericType)
                 .append(name)
                 .append(defaultValue)
                 .append(destination)
@@ -122,6 +139,8 @@ class DefaultParamConfig implements ParamConfig {
 
     public String toString() {
         return new ToStringBuilder(this)
+                .append("clazz", clazz)
+                .append("genericType", genericType)
                 .append("name", name)
                 .append("defaultValue", defaultValue)
                 .append("destination", destination)

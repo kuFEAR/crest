@@ -3,17 +3,14 @@ package org.codegist.crest.config;
 import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.http.HttpParamProcessor;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.SerializerRegistry;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBuilder<T> {
@@ -64,6 +61,8 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         Serializer serializer = this.serializer;
         boolean encoded = this.encoded;
         Map<String,Object> metas = this.metas;
+        Class<?> clazz = this.clazz;
+        Type genericType = this.genericType;
 
         if (!isTemplate) {
             name = defaultIfUndefined(name, CRestProperty.CONFIG_PARAM_DEFAULT_NAME, ParamConfig.DEFAULT_NAME);
@@ -85,7 +84,20 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
             Validate.notBlank(name, "Parameter must have a name");
         }
 
-        return (T) new DefaultParamConfig(name,
+
+        // todo is that good enough?
+        if(clazz.isArray()) {
+            clazz = clazz.getComponentType();
+            genericType = clazz;
+        }else if(Collection.class.isAssignableFrom(clazz)){
+            genericType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
+            clazz = (Class<?>)genericType;
+        }
+
+        return (T) new DefaultParamConfig(
+                genericType,
+                clazz,
+                name,
                 defaultValue,
                 dest,
                 listSeparator,

@@ -24,7 +24,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.Arrays;
 import java.util.List;
 
 @Produces("text/html;charset=UTF-8")

@@ -24,13 +24,16 @@ import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Randoms;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.Pair;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.codegist.common.lang.Strings.defaultIfBlank;
 import static org.codegist.common.lang.Strings.isNotBlank;
+import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -49,35 +52,33 @@ public class MultiPartEntityWriter implements EntityWriter {
 
         DataOutputStream out = new DataOutputStream(outputStream);
         if (!request.getFormParam().isEmpty()) {
-            
+            Charset charset = request.getCharset();
+
             for (HttpParam param: request.getFormParam()) {
-                for(Object value : param.getValue()){
-                    if(value == null) continue;
-                    InputStream upload = null;
-                    String fileName = null;
-                    if (value instanceof InputStream) {
-                        upload = (InputStream) value;
-                    } else if (value instanceof File) {
-                        upload = new FileInputStream((File) value);
-                        fileName = ((File) value).getName();
-                    }else if(value == null) {
-                        continue;
-                    }
+                Class<?> paramClass = param.getConfig().getValueClass();
+                String partName = param.getConfig().getName();
+                String partContentType = MultiParts.getContentType(param);
+                String partFileName = MultiParts.getFileName(param);
 
-                    String customContentType = MultiParts.getContentType(param);
-                    fileName = defaultIfBlank(MultiParts.getFileName(param), fileName);
+                String partialPontentDiposition = FULL_BOUNDARY + "\r\nContent-Disposition: form-data; name=\"" + partName + "\"";
 
-                    out.writeBytes(FULL_BOUNDARY + "\r\n");
-                    out.writeBytes("Content-Disposition: form-data; name=\"" + param.getConfig().getName() + "\"");
+                if(paramClass.isAssignableFrom(File.class) || paramClass.isAssignableFrom(InputStream.class)) {
+                    String contentType = defaultIfBlank(partContentType, "application/octet-stream");
+                    for(Object value : param.getValue()){
+                        if(value == null) continue;
 
-                    if(isNotBlank(fileName)) {
-                        out.writeBytes("; filename=\"" + fileName + "\"\r\n");
-                    }else{
-                        out.writeBytes("\r\n");
-                    }
+                        InputStream upload = null;
+                        String fileName = partFileName;
 
-                    if(upload != null) {
-                        String contentType = defaultIfBlank(customContentType, "application/octet-stream");
+                        if (value instanceof InputStream) {
+                            upload = (InputStream) value;
+                        } else if (value instanceof File) {
+                            upload = new FileInputStream((File) value);
+                            fileName = defaultIfBlank(partFileName, ((File) value).getName());
+                        }
+
+                        out.writeBytes(partialPontentDiposition);
+                        out.writeBytes(isNotBlank(fileName) ? "; filename=\"" + fileName + "\"\r\n" : "\r\n");
                         out.writeBytes("Content-Type: " + contentType + "\r\n\r\n");
                         BufferedInputStream in = null;
                         try {
@@ -86,13 +87,17 @@ public class MultiPartEntityWriter implements EntityWriter {
                         } finally {
                             IOs.close(in);
                         }
-                    }else{
-                        String contentType = defaultIfBlank(customContentType, "text/plain");
-                        out.writeBytes("Content-Type: " + contentType + "; charset=" + request.getEncoding() + "\r\n\r\n");
-                        param.getConfig().getSerializer().serialize(value,request.getCharset(), out);
+                        out.writeBytes("\r\n");
                     }
-
-                    out.writeBytes("\r\n");
+                } else {
+                    String contentDisposition = partialPontentDiposition + (isNotBlank(partFileName) ? "; filename=\"" + partFileName + "\"\r\n" : "\r\n");
+                    String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset + "\r\n\r\n";
+                    for(Pair pair : process(param, charset, false)){
+                        out.writeBytes(contentDisposition);
+                        out.writeBytes(contentType);
+                        out.write(pair.getValue().getBytes(charset));
+                        out.writeBytes("\r\n");
+                    }
                 }
             }
         }
@@ -100,5 +105,5 @@ public class MultiPartEntityWriter implements EntityWriter {
         out.writeBytes("\r\n");
     }
 
-    
+
 }
