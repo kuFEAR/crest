@@ -135,16 +135,10 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         private final HttpClient client;
         private final HttpUriRequest request;
         private volatile org.apache.http.HttpResponse response;
-        private String defaultAccept;
-        private boolean hasAccept = false;
 
         private HttpClientHttpChannel(HttpClient client, HttpUriRequest request){
             this.request = request;
             this.client = client;
-        }
-
-        public void setDefaultAccept(String accept) throws IOException {
-            this.defaultAccept = accept;
         }
 
         public void setConnectionTimeout(int timeout) throws IOException {
@@ -156,12 +150,10 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         }
 
         public void setHeader(String name, String value) throws IOException  {
-            hasAccept = "Accept".equalsIgnoreCase(name);
             request.setHeader(name, value);
         }
 
         public void addHeader(String name, String value) throws IOException  {
-            hasAccept = "Accept".equalsIgnoreCase(name);
             request.addHeader(name, value);
         }
 
@@ -170,9 +162,6 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         }
 
         public int send()  throws IOException {
-            if(!hasAccept) {
-                request.setHeader("Accept", defaultAccept);
-            }
             response = client.execute(request);
             return response.getStatusLine().getStatusCode();
         }

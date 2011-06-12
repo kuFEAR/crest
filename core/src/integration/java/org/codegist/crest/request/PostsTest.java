@@ -60,13 +60,13 @@ public class PostsTest extends CommonRequestsTest<Posts> {
     @Test
     public void testAccept(){
         String actual = toTest.accept();
-        assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[*/*]", actual);
+        assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1, application/custom2]", actual);
     }
 
     @Test
     public void testContentType(){
         String actual = toTest.contentType();
-        assertEquals("contentType() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[*/*]", actual);
+        assertEquals("contentType() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 
 
@@ -76,11 +76,10 @@ public class PostsTest extends CommonRequestsTest<Posts> {
         assertEquals("xmlEntityWriter() content-type-header=[application/xml] accepts-header=[*/*]", actual);
     }
 
-    // todo is that what is expected ? EntityWriter content type's overrides @Produces's one
     @Test
     public void testXmlEntityWriterWithProduces(){
         String actual = toTest.xmlEntityWriterWithProduces();
-        assertEquals("xmlEntityWriterWithProduces() content-type-header=[application/xml] accepts-header=[*/*]", actual);
+        assertEquals("xmlEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class PostsTest extends CommonRequestsTest<Posts> {
     @Test
     public void testJsonEntityWriterWithProduces(){
         String actual = toTest.jsonEntityWriterWithProduces();
-        assertEquals("jsonEntityWriterWithProduces() content-type-header=[application/json] accepts-header=[*/*]", actual);
+        assertEquals("jsonEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 
 }

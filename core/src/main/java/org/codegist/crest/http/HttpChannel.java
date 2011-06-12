@@ -34,8 +34,6 @@ public interface HttpChannel extends Disposable {
 
     void setConnectionTimeout(int timeout) throws IOException;
 
-    void setDefaultAccept(String accept) throws IOException;
-
     void addHeader(String name, String value) throws IOException;
 
     void setHeader(String name, String value) throws IOException;

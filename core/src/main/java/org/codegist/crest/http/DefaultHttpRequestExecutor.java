@@ -45,6 +45,8 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
 
     public HttpResponse execute(HttpRequest request) throws IOException {
 
+        boolean hasContentType = false;
+        boolean hasAccept = false;
         Charset charset = request.getCharset();
         String url = getUrlFor(request);
 
@@ -52,8 +54,6 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         LOGGER.trace(request);
 
         HttpChannel httpChannel = channelInitiator.initiate(request.getMeth(), url);
-
-        httpChannel.setDefaultAccept("*/*");
 
         if(request.getConnectionTimeout() != null) {
             int timeout = request.getConnectionTimeout().intValue();
@@ -73,6 +73,12 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
                 String value = encoded.getValue();
                 LOGGER.debug("Header %s: %s ", name, value);
                 httpChannel.addHeader(name, value);
+
+                if(!hasContentType && "Content-Type".equals(name)) {
+                    hasContentType = true;
+                }else if(!hasAccept&& "Accept".equals(name)) {
+                    hasAccept = true;
+                }
             }
         }
 
@@ -93,13 +99,20 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             }
         }
 
+        if(!hasAccept) {
+            httpChannel.setHeader("Accept", "*/*");
+        }
+
         if(request.getMeth().hasEntity()) {
             String contentType = request.getEntityWriter().getContentType(request);
             if(isNotBlank(contentType)) {
-                LOGGER.debug("Entity Content-Type : %s", contentType);
-                httpChannel.setHeader("Content-Type", contentType);
+                if(!hasContentType) {
+                    LOGGER.debug("Entity Content-Type : %s", contentType);
+                    httpChannel.setHeader("Content-Type", contentType);
+                }else{
+                    LOGGER.debug("Entity Content-Type : %s (ignored as previously set)", contentType);
+                }
             }
-
             httpChannel.writeEntityWith(new HttpRequestEntityWriter(request, LOGGER));
         }
 

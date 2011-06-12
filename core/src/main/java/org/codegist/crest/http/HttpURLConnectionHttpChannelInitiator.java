@@ -45,17 +45,11 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
         private final HttpURLConnection con;
         private final boolean hasEntity;
         private volatile HttpEntityWriter httpEntityWriter;
-        private String defaultAccept;
-        private boolean hasAccept = false;
 
 
         private HttpURLConnectionHttpChannel(HttpURLConnection con, boolean hasEntity){
             this.con = con;
             this.hasEntity = hasEntity;
-        }
-
-        public void setDefaultAccept(String accept) throws IOException {
-            this.defaultAccept = accept;
         }
 
         public void setSocketTimeout(int timeout) throws IOException {
@@ -67,12 +61,10 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
         }
 
         public void setHeader(String name, String value) throws IOException {
-            this.hasAccept = "Accept".equals(name);
-            con.setRequestProperty(name, value);    
+            con.setRequestProperty(name, value);
         }
         
         public void addHeader(String name, String value) throws IOException {
-            this.hasAccept = "Accept".equals(name);
             con.addRequestProperty(name, value);
         }
 
@@ -81,9 +73,6 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
         }
 
         public int send() throws IOException {
-            if(!hasAccept) {
-                con.setRequestProperty("Accept", defaultAccept);
-            }
             con.setRequestProperty("Connection", "Keep-Alive");
             con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
             if(hasEntity) {
