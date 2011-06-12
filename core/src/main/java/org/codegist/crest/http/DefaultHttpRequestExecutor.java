@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static org.codegist.common.lang.Strings.isBlank;
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
@@ -46,8 +47,13 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
 
         Charset charset = request.getCharset();
         String url = getUrlFor(request);
+
         LOGGER.debug("Initiating HTTP Channel: %s %s", request.getMeth(), url);
+        LOGGER.trace(request);
+
         HttpChannel httpChannel = channelInitiator.initiate(request.getMeth(), url);
+
+        httpChannel.setDefaultAccept("*/*");
 
         if(request.getConnectionTimeout() != null) {
             int timeout = request.getConnectionTimeout().intValue();
@@ -66,7 +72,7 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
                 String name = encoded.getName();
                 String value = encoded.getValue();
                 LOGGER.debug("Header %s: %s ", name, value);
-                httpChannel.writeHeader(name, value);
+                httpChannel.addHeader(name, value);
             }
         }
 
@@ -83,18 +89,15 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             String cookie = sb.toString();
             if(cookie.length() > 0) {
                 LOGGER.debug("Cookie: %s ", cookie);
-                httpChannel.writeHeader("Cookie", cookie);
+                httpChannel.addHeader("Cookie", cookie);
             }
         }
 
         if(request.getMeth().hasEntity()) {
-            for(HttpParam header : request.getEntityWriter().getHeaders(request)){
-                for(Pair encoded : process(header, charset)){
-                    String name = encoded.getName();
-                    String value = encoded.getValue();
-                    LOGGER.debug("Header from entity writer %s: %s ", name, value);
-                    httpChannel.writeHeader(name, value);
-                }
+            String contentType = request.getEntityWriter().getContentType(request);
+            if(isNotBlank(contentType)) {
+                LOGGER.debug("Entity Content-Type : %s", contentType);
+                httpChannel.setHeader("Content-Type", contentType);
             }
 
             httpChannel.writeEntityWith(new HttpRequestEntityWriter(request, LOGGER));

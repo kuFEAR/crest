@@ -37,7 +37,7 @@ import static org.codegist.crest.http.HttpParamProcessor.process;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class SerializingEntityWriter implements EntityWriter {
+public class SerializingEntityWriter extends AbstractEntityWriter {
 
     private final Serializer<Map<String,Object>> serializer;
     private final String contentType;
@@ -49,8 +49,8 @@ public class SerializingEntityWriter implements EntityWriter {
         this.contentType = contentType;
     }
 
-    public List<HttpParam> getHeaders(HttpRequest request) {
-        return asList(new HttpParam("Content-Type", contentType, HttpRequest.DEST_HEADER, true));
+    public String getContentType(HttpRequest request) {
+        return contentType;
     }
 
     private void addTo(Map<String,Object> params, String name, Object singleValue){

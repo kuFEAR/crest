@@ -20,18 +20,18 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public abstract class AbstractEntityWriter implements EntityWriter {
 
-public interface EntityWriter {
-
-    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
-
-    String getContentType(HttpRequest request);
+    public String getContentType(HttpRequest request) {
+        return null;
+    }
 
 }

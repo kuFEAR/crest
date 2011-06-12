@@ -36,7 +36,7 @@ class HttpChannelHttpResource implements HttpResource {
     private final String contentType;
     private final boolean zipped;
 
-    HttpChannelHttpResource(HttpChannel channel) {
+    HttpChannelHttpResource(HttpChannel channel) throws IOException {
         this.channel = channel;
         ContentType ct = new ContentType(channel.readContentType());
         this.contentType = ct.mimeType;

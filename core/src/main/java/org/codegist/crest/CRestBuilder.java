@@ -41,6 +41,7 @@ import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.codegist.crest.CRestProperty.*;
 
 /**
@@ -121,9 +122,9 @@ public class CRestBuilder {
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
     private final Map<String, Object> xmlSerializerConfig = new HashMap<String, Object>();
     private final Map<String, Object> jsonSerializerConfig = new HashMap<String, Object>();
-    private final Set<String> plainTextMimes = new HashSet<String>(Arrays.asList(DEFAULT_PLAINTEXT_MIMETYPES));
-    private final Set<String> xmlMimes = new HashSet<String>(Arrays.asList(DEFAULT_XML_MIMETYPES));
-    private final Set<String> jsonMimes = new HashSet<String>(Arrays.asList(DEFAULT_JSON_MIMETYPES));
+    private final Set<String> plainTextMimes = new HashSet<String>(asList(DEFAULT_PLAINTEXT_MIMETYPES));
+    private final Set<String> xmlMimes = new HashSet<String>(asList(DEFAULT_XML_MIMETYPES));
+    private final Set<String> jsonMimes = new HashSet<String>(asList(DEFAULT_JSON_MIMETYPES));
 
     private InterfaceConfigFactory overridesFactory = null;
 
@@ -631,17 +632,17 @@ public class CRestBuilder {
     }
 
     public CRestBuilder bindJsonDeserializerWith(String... mimeTypes) {
-        this.jsonMimes.addAll(Arrays.asList(mimeTypes));
+        this.jsonMimes.addAll(asList(mimeTypes));
         return this;
     }
 
     public CRestBuilder bindXmlDeserializerWith(String... mimeTypes) {
-        this.xmlMimes.addAll(Arrays.asList(mimeTypes));
+        this.xmlMimes.addAll(asList(mimeTypes));
         return this;
     }
 
     public CRestBuilder bindPlainTextDeserializerWith(String... mimeTypes) {
-        this.plainTextMimes.addAll(Arrays.asList(mimeTypes));
+        this.plainTextMimes.addAll(asList(mimeTypes));
         return this;
     }
 

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface ContentType {
+public @interface Produces {
 
     /**
      * Overrides the default content type to send to the end service

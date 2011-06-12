@@ -287,17 +287,17 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
     }
 
 
-    public InterfaceConfigBuilder setMethodsAccepts(String... mimeType) {
+    public InterfaceConfigBuilder setMethodsConsumes(String... mimeType) {
         for (MethodConfigBuilder b : builderCache.values()) {
-            b.setAccepts(mimeType);
+            b.setConsumes(mimeType);
         }
         return this;
     }
 
 
-    public InterfaceConfigBuilder setMethodsContentType(String contentType) {
+    public InterfaceConfigBuilder setMethodsProduces(String contentType) {
         for (MethodConfigBuilder b : builderCache.values()) {
-            b.setContentType(contentType);
+            b.setProduces(contentType);
         }
         return this;
     }

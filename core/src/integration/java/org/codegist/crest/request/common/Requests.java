@@ -18,20 +18,17 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.request.common;
 
-import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.http.HttpRequest;
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public interface Requests {
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+    String raw();
 
+    String accept();
 
-public interface EntityWriter {
-
-    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
-
-    String getContentType(HttpRequest request);
+    String contentType();
 
 }

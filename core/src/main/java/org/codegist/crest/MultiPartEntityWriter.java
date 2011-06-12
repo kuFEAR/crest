@@ -38,14 +38,14 @@ import static org.codegist.crest.http.HttpParamProcessor.process;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class MultiPartEntityWriter implements EntityWriter {
+public class MultiPartEntityWriter extends AbstractEntityWriter {
 
     private final static String MULTIPART = "multipart/form-data; boundary=";
     private final static String BOUNDARY = Randoms.randomAlphaNumeric(24);
     private final static String FULL_BOUNDARY = "--" + BOUNDARY;
 
-    public List<HttpParam> getHeaders(HttpRequest request) {
-        return asList(new HttpParam("Content-Type", MULTIPART + BOUNDARY, HttpRequest.DEST_HEADER, true));
+    public String getContentType(HttpRequest request) {
+        return MULTIPART + BOUNDARY;
     }
 
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {

@@ -34,7 +34,11 @@ public interface HttpChannel extends Disposable {
 
     void setConnectionTimeout(int timeout) throws IOException;
 
-    void writeHeader(String name, String value) throws IOException;
+    void setDefaultAccept(String accept) throws IOException;
+
+    void addHeader(String name, String value) throws IOException;
+
+    void setHeader(String name, String value) throws IOException;
 
     void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException;
 
@@ -42,9 +46,7 @@ public interface HttpChannel extends Disposable {
 
     InputStream read() throws IOException;
 
-    String readContentType();
+    String readContentType()throws IOException;
 
-    String readContentEncoding();
-
-   
+    String readContentEncoding()throws IOException;
 }

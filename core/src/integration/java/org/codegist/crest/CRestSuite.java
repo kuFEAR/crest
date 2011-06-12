@@ -21,6 +21,8 @@
 package org.codegist.crest;
 
 import org.codegist.crest.param.*;
+import org.codegist.crest.request.GetsTest;
+import org.codegist.crest.request.PostsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -34,6 +36,8 @@ import org.junit.runners.Suite;
         HeadersTest.class,
         MultiPartsTest.class,
         FormJsonEntitiesTest.class,
-        FormXmlEntitiesTest.class
+        FormXmlEntitiesTest.class,
+        GetsTest.class,
+        PostsTest.class
         })
 public class CRestSuite {}

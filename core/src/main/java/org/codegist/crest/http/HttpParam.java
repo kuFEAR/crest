@@ -70,8 +70,8 @@ public class HttpParam {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("name", config.getName())
                 .append("value", value)
-                .append("config", config)
                 .toString();
     }
 }

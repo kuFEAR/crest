@@ -144,7 +144,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder setAccepts(String... mimeTypes) {
+    public MethodConfigBuilder setConsumes(String... mimeTypes) {
         if (ignore(mimeTypes)) return this;
         State.notNull(deserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
 
@@ -159,7 +159,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder setContentType(String contentType) {
+    public MethodConfigBuilder setProduces(String contentType) {
         if (ignore(contentType)) return this;
         return addExtraHeaderParam("Content-Type", replacePlaceholders(contentType));
     }
@@ -211,6 +211,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return startExtraParamConfig(name)
                 .setDefaultValue(defaultValue)
                 .setDestination(dest)
+                .setEncoded(true)
                 .setMetaDatas(metaDatas)
                 .endParamConfig();
     }

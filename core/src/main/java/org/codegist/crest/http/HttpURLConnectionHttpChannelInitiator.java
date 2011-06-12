@@ -35,7 +35,6 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
 
     public HttpChannel initiate(HttpMethod method, String url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-        con.setRequestProperty("User-Agent", HttpURLConnectionHttpChannel.USER_AGENT);
         con.setRequestMethod(method.name());
         return new HttpURLConnectionHttpChannel(con, method.hasEntity());
     }
@@ -43,17 +42,20 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
 
     private static class HttpURLConnectionHttpChannel implements HttpChannel {
 
-        private final static String USER_AGENT = "CodeGist-CRest Agent";
-        private static final Logger LOGGER = Logger.getLogger(HttpURLConnectionHttpChannel.class);
-
         private final HttpURLConnection con;
         private final boolean hasEntity;
         private volatile HttpEntityWriter httpEntityWriter;
+        private String defaultAccept;
+        private boolean hasAccept = false;
 
 
         private HttpURLConnectionHttpChannel(HttpURLConnection con, boolean hasEntity){
             this.con = con;
             this.hasEntity = hasEntity;
+        }
+
+        public void setDefaultAccept(String accept) throws IOException {
+            this.defaultAccept = accept;
         }
 
         public void setSocketTimeout(int timeout) throws IOException {
@@ -64,7 +66,13 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             con.setConnectTimeout(timeout);
         }
 
-        public void writeHeader(String name, String value) throws IOException {
+        public void setHeader(String name, String value) throws IOException {
+            this.hasAccept = "Accept".equals(name);
+            con.setRequestProperty(name, value);    
+        }
+        
+        public void addHeader(String name, String value) throws IOException {
+            this.hasAccept = "Accept".equals(name);
             con.addRequestProperty(name, value);
         }
 
@@ -73,6 +81,11 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
         }
 
         public int send() throws IOException {
+            if(!hasAccept) {
+                con.setRequestProperty("Accept", defaultAccept);
+            }
+            con.setRequestProperty("Connection", "Keep-Alive");
+            con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
             if(hasEntity) {
                 con.setDoOutput(true);
                 OutputStream os = con.getOutputStream();

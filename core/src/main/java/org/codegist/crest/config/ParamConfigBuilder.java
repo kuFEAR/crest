@@ -29,7 +29,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
     private String dest;
     private String listSeparator;
     private Serializer serializer;
-    private boolean encoded;
+    private Boolean encoded;
 
     private static final Map<String,String> SEPARATOR = new HashMap<String, String>();
     static{
@@ -59,7 +59,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         String dest = this.dest;
         String listSeparator = this.listSeparator;
         Serializer serializer = this.serializer;
-        boolean encoded = this.encoded;
+        Boolean encoded = this.encoded;
         Map<String,Object> metas = this.metas;
         Class<?> clazz = this.clazz;
         Type genericType = this.genericType;
@@ -142,7 +142,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         return this;
     }
 
-    public ParamConfigBuilder setEncoded(boolean encoded) {
+    public ParamConfigBuilder setEncoded(Boolean encoded) {
         this.encoded = encoded;
         return this;
     }

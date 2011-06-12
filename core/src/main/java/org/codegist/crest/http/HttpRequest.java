@@ -21,6 +21,7 @@
 package org.codegist.crest.http;
 
 import org.codegist.common.lang.Objects;
+import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.EntityWriter;
 import org.codegist.crest.RequestContext;
 import org.codegist.crest.config.ParamConfig;
@@ -61,7 +62,6 @@ public class HttpRequest {
     private final List<HttpParam> pathParams;
     private final List<HttpParam> cookieParams;
     private final List<HttpParam> formParam;
-
 
     public HttpRequest(HttpMethod meth, PathBuilder pathBuilder, Long socketTimeout, Long connectionTimeout, String encoding, Charset charset, EntityWriter entityWriter, RequestContext requestContext, List<HttpParam> headerParams, List<HttpParam> matrixParams, List<HttpParam> queryParams, List<HttpParam> pathParams, List<HttpParam> cookieParams, List<HttpParam> formParam) {
         this.meth = meth;
@@ -360,12 +360,27 @@ public class HttpRequest {
                 return path;
             }
         }
-
-        
-
-        
     }
 
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("meth", meth)
+                .append("charset", charset)
+                .append("headerParams", headerParams)
+                .append("matrixParams", matrixParams)
+                .append("queryParams", queryParams)
+                .append("pathParams", pathParams)
+                .append("cookieParams", cookieParams)
+                .append("formParam", formParam)
+                .append("socketTimeout", socketTimeout)
+                .append("connectionTimeout", connectionTimeout)
+                .append("pathBuilder", pathBuilder)
+                .append("entityWriter", entityWriter)
+                .append("requestContext", requestContext)
+                .toString();
+    }
 
 }
 

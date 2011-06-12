@@ -35,10 +35,10 @@ import static org.codegist.crest.http.HttpParamProcessor.process;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class UrlEncodedFormEntityWriter implements EntityWriter {
+public class UrlEncodedFormEntityWriter extends AbstractEntityWriter {
 
-    public List<HttpParam> getHeaders(HttpRequest request) {
-        return asList(new HttpParam("Content-Type", "application/x-www-form-urlencoded; charset=" + request.getEncoding(), HttpRequest.DEST_HEADER, true));
+    public String getContentType(HttpRequest request) {
+        return "application/x-www-form-urlencoded; charset=" + request.getEncoding();
     }
 
     public void writeTo(HttpRequest request, OutputStream out) throws IOException {

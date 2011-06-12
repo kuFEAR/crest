@@ -69,8 +69,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             ResponseHandler responseHandler = interfaze.getAnnotation(ResponseHandler.class);
             ErrorHandler errorHandler = interfaze.getAnnotation(ErrorHandler.class);
             RetryHandler retryHandler = interfaze.getAnnotation(RetryHandler.class);
-            Accepts accepts = interfaze.getAnnotation(Accepts.class);
-            ContentType contentType = interfaze.getAnnotation(ContentType.class);
+            Consumes consumes = interfaze.getAnnotation(Consumes.class);
+            Produces produces = interfaze.getAnnotation(Produces.class);
             HttpMethod httpMethod = getHttpMethod(interfaze.getAnnotations(), interfaze.getAnnotation(HttpMethod.class));
             EntityWriter entityWriter = interfaze.getAnnotation(EntityWriter.class);
             Set<ParamConfigHolder> extraParams = getExtraParamConfigs(interfaze.getAnnotations());
@@ -96,8 +96,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             if (responseHandler != null) config.setMethodsResponseHandler(responseHandler.value());
             if (errorHandler != null) config.setMethodsErrorHandler(errorHandler.value());
             if (retryHandler != null) config.setMethodsRetryHandler(retryHandler.value());
-            if (accepts != null) config.setMethodsAccepts(accepts.value());
-            if (contentType != null) config.setMethodsContentType(contentType.value());
+            if (consumes != null) config.setMethodsConsumes(consumes.value());
+            if (produces != null) config.setMethodsProduces(produces.value());
             if (httpMethod != null) config.setMethodsHttpMethod(httpMethod.value());
             if (entityWriter != null) config.setMethodsEntityWriter(entityWriter.value());
 
@@ -117,8 +117,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 responseHandler = meth.getAnnotation(ResponseHandler.class);
                 errorHandler = meth.getAnnotation(ErrorHandler.class);
                 retryHandler = meth.getAnnotation(RetryHandler.class);
-                accepts = meth.getAnnotation(Accepts.class);
-                contentType = meth.getAnnotation(ContentType.class);
+                consumes = meth.getAnnotation(Consumes.class);
+                produces = meth.getAnnotation(Produces.class);
                 httpMethod = getHttpMethod(meth.getAnnotations(), meth.getAnnotation(HttpMethod.class));
                 entityWriter = meth.getAnnotation(EntityWriter.class);
 
@@ -140,8 +140,8 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 if (responseHandler != null) methodConfigBuilder.setResponseHandler(responseHandler.value());
                 if (errorHandler != null) methodConfigBuilder.setErrorHandler(errorHandler.value());
                 if (retryHandler != null) methodConfigBuilder.setRetryHandler(retryHandler.value());
-                if (accepts != null) methodConfigBuilder.setAccepts(accepts.value());
-                if (contentType != null) methodConfigBuilder.setContentType(contentType.value());
+                if (consumes != null) methodConfigBuilder.setConsumes(consumes.value());
+                if (produces != null) methodConfigBuilder.setProduces(produces.value());
                 if (httpMethod != null) methodConfigBuilder.setHttpMethod(httpMethod.value());
                 if (entityWriter != null) methodConfigBuilder.setEntityWriter(entityWriter.value());
                 if (entityWriter != null) methodConfigBuilder.setEntityWriter(entityWriter.value());
