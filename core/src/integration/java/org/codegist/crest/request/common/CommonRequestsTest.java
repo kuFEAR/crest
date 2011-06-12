@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class CommonRequestsTest<T extends Requests>  extends BaseCRestTest<T> {
+public abstract class CommonRequestsTest<T extends Requests>  extends BaseCRestTest<T> {
 
     public CommonRequestsTest(CRest crest, Class<T> service) {
         super(crest, service);
@@ -49,4 +49,13 @@ public class CommonRequestsTest<T extends Requests>  extends BaseCRestTest<T> {
             .build(),
         };
     }
+
+    @Test
+    public abstract void testRaw();
+
+    @Test
+    public abstract void testAccept();
+
+    @Test
+    public abstract void testContentType();
 }
