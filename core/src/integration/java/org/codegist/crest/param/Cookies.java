@@ -25,6 +25,7 @@ import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,11 @@ public interface Cookies extends Params {
     String send(
             @CookieParam("p1") String p1,
             @CookieParam("p2") int p2);
+
+    @Path("dates")
+    String dates(
+            @CookieParam("p1") Date p1,
+            @CookieParam("p2") Date... p2);
 
     @Path("defaultValue")
     String defaultValue(

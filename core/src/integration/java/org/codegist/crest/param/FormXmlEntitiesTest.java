@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
 import static org.codegist.common.net.Urls.encode;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -46,6 +47,17 @@ public class FormXmlEntitiesTest extends CommonParamsTest<FormXmlEntities> {
         return crest(byXmlSerializers());
     }
 
+
+
+    public void assertDates(String p1, String p21, String p22, String actual){
+        StringBuilder expected = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+        expected.append("<form-data>");
+        expected.append("<p1>").append(p1).append("</p1>");
+        expected.append("<p2>").append(p21).append("</p2>");
+        expected.append("<p2>").append(p22).append("</p2>");
+        expected.append("</form-data>");
+        assertXMLEqual(expected.toString(), actual);
+    }
 
     @Override
     public void assertSend(String p1, int p2, String actual) {

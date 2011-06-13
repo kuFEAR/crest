@@ -25,6 +25,7 @@ import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +39,12 @@ public interface Headers extends Params {
 
     String send(
             @HeaderParam("p1") String p1,
-            @HeaderParam("p2") int p2);
+            @HeaderParam("p2") int p2); 
+
+    @Path("dates")
+    String dates(
+            @HeaderParam("p1") Date p1,
+            @HeaderParam("p2") Date... p2);
 
     @Path("defaultValue")
     String defaultValue(

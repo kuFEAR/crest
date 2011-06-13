@@ -21,6 +21,7 @@
 package org.codegist.crest.param.common;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,8 @@ import java.util.Set;
 public interface Params {
 
     String send(String p1, int p2);
+
+    String dates(Date p1, Date... p2);
 
     String nulls(String p1, Collection<String> p2, String[] p3);
 

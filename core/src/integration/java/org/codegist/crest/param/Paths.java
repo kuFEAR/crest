@@ -25,6 +25,7 @@ import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.Params;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,11 @@ public interface Paths extends Params {
     String send(
             @PathParam("p1") String p1,
             @PathParam("p2") int p2);
+
+    @Path("dates/{p1}/{p2}")
+    String dates(
+            @PathParam("p1") Date p1,
+            @PathParam("p2") @ListSeparator("(p2)") Date... p2);
 
     @Path("defaultValue/{p1}/{p2}")
     String defaultValue(

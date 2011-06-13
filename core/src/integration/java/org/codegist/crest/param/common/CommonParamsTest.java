@@ -25,10 +25,10 @@ import org.codegist.crest.CRest;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -54,6 +54,22 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
     }
     public void assertSend(String p1, int p2, String actual){
         String expected = format("receive() p1=%s p2=%s", p1, p2);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testDates() throws ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ssZ");
+        DateFormat expected = new SimpleDateFormat(DATE_FORMAT);
+        Date p1 = format.parse("1969/07/20T02:56:00+0000");
+        Date p21 = format.parse("1983/03/13T00:35:00+0100");
+        Date p22 = format.parse("2010/10/31T13:56:21-0700");
+
+        String actual = toTest.dates(p1, p21, p22);
+        assertDates(expected.format(p1), expected.format(p21), expected.format(p22), actual);
+    }
+    public void assertDates(String p1, String p21, String p22, String actual){
+        String expected = format("dates() p1=%s p2=%s", p1, asList(p21,p22));
         assertEquals(expected, actual);
     }
 

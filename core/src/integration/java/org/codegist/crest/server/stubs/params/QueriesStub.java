@@ -38,6 +38,14 @@ public class QueriesStub {
     }
 
     @GET
+    @Path("dates")
+    public String dates(
+                @QueryParam("p1") String p1,
+                @QueryParam("p2") List<String> p2){
+        return String.format("dates() p1=%s p2=%s", p1, p2);
+    }
+
+    @GET
     @Path("defaultValue")
     public String defaultValue(
                 @QueryParam("p1") String p1,

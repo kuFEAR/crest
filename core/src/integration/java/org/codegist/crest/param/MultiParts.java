@@ -28,6 +28,7 @@ import org.codegist.crest.param.common.Params;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +54,13 @@ public interface MultiParts extends Params {
 
     String send(
             @MultiPartParam("p1") String p1,
-            @MultiPartParam("p2") int p2);
+            @MultiPartParam("p2") int p2);        
+
+    @Path("dates")
+    String dates(
+            @MultiPartParam("p1") Date p1,
+            @MultiPartParam("p2") Date... p2);
+
 
     @Path("defaultValue")
     String defaultValue(

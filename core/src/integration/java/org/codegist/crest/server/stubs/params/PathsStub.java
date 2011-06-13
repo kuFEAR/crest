@@ -24,6 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Produces("text/html;charset=UTF-8")
 @Path("params/path")
@@ -41,6 +42,14 @@ public class PathsStub {
                 @PathParam("p1") String p1,
                 @PathParam("p2") Long p2){
         return String.format("receive() p1=%s p2=%s", p1, p2);
+    }
+
+    @GET
+    @Path("dates/{p1}/{p2}")
+    public String dates(
+                @PathParam("p1") String p1,
+                @PathParam("p2") List<String> p2){
+        return String.format("dates() p1=%s p2=%s", p1, p2);
     }
 
 

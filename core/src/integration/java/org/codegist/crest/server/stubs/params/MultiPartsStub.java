@@ -52,60 +52,66 @@ public class MultiPartsStub {
     }
 
     @POST
+    @Path("dates")
+    public String dates(MultipartBody msg) throws UnsupportedEncodingException {
+        return toResponseString("dates", msg);
+    }
+
+    @POST
     public String receive(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("receive" , msg);
+        return toResponseString("receive" , msg);
     }
 
     @POST
     @Path("defaultValue")
     public String defaultValue(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("defaultValue" , msg);
+        return toResponseString("defaultValue" , msg);
     }
 
     @POST
     @Path("defaultLists")
     public String defaultLists(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("defaultLists" , msg);
+        return toResponseString("defaultLists" , msg);
     }
 
     @POST
     @Path("mergingLists")
     public String mergingLists(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResonseString("mergingLists" , msg);
+        return toResponseString("mergingLists" , msg);
     }
 
     @POST
     @Path("nulls")
     public String nulls(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("nulls" , msg, "p1", "p2", "p3");
+        return toResponseString("nulls" , msg, "p1", "p2", "p3");
     }
 
     @POST
     @Path("nullsMerging")
     public String nullsMerging(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("nullsMerging" , msg, "p1", "p2", "p3");
+        return toResponseString("nullsMerging" , msg, "p1", "p2", "p3");
     }
 
     @POST
     @Path("defaultParams")
     public String defaultParams(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("defaultParams" , msg);
+        return toResponseString("defaultParams" , msg);
     }
 
     @POST
     @Path("encodings")
     public String encodings(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("encodings" , msg);
+        return toResponseString("encodings" , msg);
     }
 
     @POST
     @Path("preEncoded")
     public String preEncoded(MultipartBody msg)throws UnsupportedEncodingException {
-        return toResonseString("preEncoded" , msg);
+        return toResponseString("preEncoded" , msg);
     }
 
 
-    private String toResonseString(String meth, MultipartBody msg, String... expecteds) throws UnsupportedEncodingException {
+    private String toResponseString(String meth, MultipartBody msg, String... expecteds) throws UnsupportedEncodingException {
         Map<String,List<String>> values = new TreeMap<String, List<String>>();
 
         int i = 0, max =  msg.getAllAttachments().size() - 1;

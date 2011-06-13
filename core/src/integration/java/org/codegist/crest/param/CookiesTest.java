@@ -32,6 +32,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.junit.Assert.assertEquals;
@@ -45,6 +46,11 @@ public class CookiesTest extends CommonParamsTest<Cookies> {
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
         return crest(byRestServices());
+    }
+
+    public void assertDates(String p1, String p21, String p22, String actual){
+        String expected = format("dates(header:[p1=%s, p2=%s, p2=%s]) p1=%s p2=%s", p1, p21,p22, p1, p22);
+        assertEquals(expected, actual);
     }
 
     @Test

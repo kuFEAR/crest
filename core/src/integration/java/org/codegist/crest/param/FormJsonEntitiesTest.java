@@ -27,6 +27,7 @@ import org.junit.runners.Parameterized;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import static java.lang.String.format;
 import static org.codegist.common.net.Urls.encode;
 import static org.junit.Assert.assertEquals;
 
@@ -44,6 +45,15 @@ public class FormJsonEntitiesTest extends CommonParamsTest<FormJsonEntities> {
         return crest(byJsonSerializers());
     }
 
+
+    public void assertDates(String p1, String p21, String p22, String actual){
+        StringBuilder expected = new StringBuilder();
+        expected.append("{");
+        expected.append("\"p1\":\"").append(p1).append("\",");
+        expected.append("\"p2\":[\"").append(p21).append("\",\"").append(p22).append("\"]");
+        expected.append("}");
+        assertEquals(expected.toString(), actual);
+    }
 
     @Override
     public void assertSend(String p1, int p2, String actual) {

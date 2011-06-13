@@ -38,6 +38,14 @@ public class FormsStub {
     }
 
     @POST
+    @Path("dates")
+    public String dates(
+                @FormParam("p1") String p1,
+                @FormParam("p2") List<String> p2){
+        return String.format("dates() p1=%s p2=%s", p1, p2);
+    }
+
+    @POST
     @Path("defaultValue")
     public String defaultValue(
                 @FormParam("p1") String p1,

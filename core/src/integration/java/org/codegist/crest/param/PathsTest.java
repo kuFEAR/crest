@@ -28,6 +28,8 @@ import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
+import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class PathsTest extends CommonParamsTest<Paths> {
@@ -51,6 +53,11 @@ public class PathsTest extends CommonParamsTest<Paths> {
     @Test(expected = IllegalArgumentException.class)
     public void testPatternInvalidValue(){
         toTest.pattern("val-198-ab");
+    }
+
+    public void assertDates(String p1, String p21, String p22, String actual){
+        String expected = format("dates() p1=%s p2=[%s]", p1, p21 +"(p2)"+ p22);
+        assertEquals(expected, actual);
     }
 
 

@@ -32,6 +32,7 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class BaseCRestTest<T> {
 
+    public static final String DATE_FORMAT = "dd/MM/yyyy @ HH:mm:ssZ";
     protected static final String UTF8_VALUE = "123@#?&£{}abc";
 
     protected final T toTest;
@@ -83,6 +84,7 @@ public class BaseCRestTest<T> {
 
     public static CRestBuilder baseBuilder(){
         return new CRestBuilder()
+            .setDateSerializerFormat(DATE_FORMAT)
             .bindPlainTextDeserializerWith("text/html");
     }
 

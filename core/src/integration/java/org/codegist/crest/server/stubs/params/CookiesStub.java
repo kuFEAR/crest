@@ -37,6 +37,15 @@ public class CookiesStub {
     }
 
     @GET
+    @Path("dates")
+    public String dates(
+                @HeaderParam("Cookie") List<Cookie> cookies,
+                @CookieParam("p1") String p1,
+                @CookieParam("p2") String p2) {
+        return String.format("dates(header:%s) p1=%s p2=%s" , cookies, p1, p2);
+    }
+
+    @GET
     @Path("nulls")
     public String nulls(
                 @HeaderParam("Cookie") List<Cookie> cookies,
