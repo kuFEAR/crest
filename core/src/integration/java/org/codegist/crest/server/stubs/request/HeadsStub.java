@@ -30,34 +30,42 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/get")
-public class GetsStub {
+@Path("request/head")
+public class HeadsStub {
+
+    private String lastRequest;
 
     @GET
-    public String raw(
+    public String last(){
+        return lastRequest;
+    }
+
+
+    @HEAD
+    public void raw(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-         return asResponse("raw", contentTypes, accepts);
+         lastRequest = asResponse("raw", contentTypes, accepts);
     }
 
-    @GET
+    @HEAD
     @Produces("application/custom1")
     @Path("accept")
-    public String accept(
+    public void accept(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("accept", contentTypes, accepts);
+        lastRequest = asResponse("accept", contentTypes, accepts);
     }
 
-    @GET
+    @HEAD
     @Path("content-type")
-    public String contentType(
+    public void contentType(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("contentType", contentTypes, accepts);
+        lastRequest = asResponse("contentType", contentTypes, accepts);
     }
 
     private static String asResponse(String from, List<String> contentTypes, List<String> accepts){

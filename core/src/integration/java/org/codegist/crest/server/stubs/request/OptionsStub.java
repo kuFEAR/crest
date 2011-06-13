@@ -30,10 +30,10 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/get")
-public class GetsStub {
+@Path("request/option")
+public class OptionsStub {
 
-    @GET
+    @OPTIONS
     public String raw(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
@@ -41,7 +41,7 @@ public class GetsStub {
          return asResponse("raw", contentTypes, accepts);
     }
 
-    @GET
+    @OPTIONS
     @Produces("application/custom1")
     @Path("accept")
     public String accept(
@@ -51,7 +51,7 @@ public class GetsStub {
         return asResponse("accept", contentTypes, accepts);
     }
 
-    @GET
+    @OPTIONS
     @Path("content-type")
     public String contentType(
             @HeaderParam("Content-Type") List<String> contentTypes,

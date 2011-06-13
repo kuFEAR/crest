@@ -29,9 +29,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public abstract class CommonRequestsTest<T extends Requests>  extends BaseCRestTest<T> {
+public abstract class CommonEntityRequestsTest<T extends EntityRequests>  extends CommonRequestsTest<T> {
 
-    public CommonRequestsTest(CRest crest, Class<T> service) {
+    public CommonEntityRequestsTest(CRest crest, Class<T> service) {
         super(crest, service);
     }
 
@@ -50,31 +50,48 @@ public abstract class CommonRequestsTest<T extends Requests>  extends BaseCRestT
         };
     }
 
+
     @Test
     public void testRaw(){
         String actual = toTest.raw();
-        assertRaw(actual);
-    }
-
-    public static void assertRaw(String actual){
-        assertEquals("raw() content-type-header=[] accepts-header=[*/*]", actual);
+        assertEquals("raw() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[*/*]", actual);
     }
 
     @Test
     public void testAccept(){
         String actual = toTest.accept();
-        assertAccept(actual);
-    }
-    public static void assertAccept(String actual){
-        assertEquals("accept() content-type-header=[] accepts-header=[application/custom1, application/custom2]", actual);
+        assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1, application/custom2]", actual);
     }
 
     @Test
     public void testContentType(){
         String actual = toTest.contentType();
-        assertContentType(actual);
-    }
-    public static void assertContentType(String actual) {
         assertEquals("contentType() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
+
+
+    @Test
+    public void testXmlEntityWriter(){
+        String actual = toTest.xmlEntityWriter();
+        assertEquals("xmlEntityWriter() content-type-header=[application/xml] accepts-header=[*/*]", actual);
+    }
+
+    @Test
+    public void testXmlEntityWriterWithProduces(){
+        String actual = toTest.xmlEntityWriterWithProduces();
+        assertEquals("xmlEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
+    }
+
+    @Test
+    public void testJsonEntityWriter(){
+        String actual = toTest.jsonEntityWriter();
+        assertEquals("jsonEntityWriter() content-type-header=[application/json] accepts-header=[*/*]", actual);
+    }
+
+    @Test
+    public void testJsonEntityWriterWithProduces(){
+        String actual = toTest.jsonEntityWriterWithProduces();
+        assertEquals("jsonEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
+    }
+
 }

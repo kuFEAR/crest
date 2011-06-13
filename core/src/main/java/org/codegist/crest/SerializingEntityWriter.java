@@ -31,13 +31,12 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class SerializingEntityWriter extends AbstractEntityWriter {
+public class SerializingEntityWriter implements EntityWriter {
 
     private final Serializer<Map<String,Object>> serializer;
     private final String contentType;

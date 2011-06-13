@@ -20,10 +20,8 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
 import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -34,15 +32,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class GetsTest extends CommonRequestsTest<Gets> {
+public class DeletesTest extends CommonRequestsTest<Deletes> {
 
-    public GetsTest(CRest crest) {
-        super(crest, Gets.class);
+    public DeletesTest(CRest crest) {
+        super(crest, Deletes.class);
     }
 
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
     }
-
 }

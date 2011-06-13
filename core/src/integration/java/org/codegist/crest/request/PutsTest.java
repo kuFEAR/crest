@@ -20,10 +20,9 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
+import org.codegist.crest.request.common.CommonEntityRequestsTest;
 import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -34,15 +33,17 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class GetsTest extends CommonRequestsTest<Gets> {
+//@Ignore
+public class PutsTest extends CommonEntityRequestsTest<Puts> {
 
-    public GetsTest(CRest crest) {
-        super(crest, Gets.class);
+    public PutsTest(CRest crest) {
+        super(crest, Puts.class);
     }
 
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
     }
+
 
 }

@@ -30,10 +30,10 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/get")
-public class GetsStub {
+@Path("request/put")
+public class PutsStub {
 
-    @GET
+    @PUT
     public String raw(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
@@ -41,7 +41,7 @@ public class GetsStub {
          return asResponse("raw", contentTypes, accepts);
     }
 
-    @GET
+    @PUT
     @Produces("application/custom1")
     @Path("accept")
     public String accept(
@@ -51,13 +51,52 @@ public class GetsStub {
         return asResponse("accept", contentTypes, accepts);
     }
 
-    @GET
+    @PUT
     @Path("content-type")
     public String contentType(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
         return asResponse("contentType", contentTypes, accepts);
+    }
+
+
+    @PUT
+    @Path("entity-writer/xml")
+    public String xmlEntityWriter(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ){
+        return asResponse("xmlEntityWriter", contentTypes, accepts);
+    }
+
+    @PUT
+    @Path("entity-writer/xml/produces")
+    @Produces("application/custom")
+    public String xmlEntityWriterWithProduces(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ){
+        return asResponse("xmlEntityWriterWithProduces", contentTypes, accepts);
+    }
+
+    @PUT
+    @Path("entity-writer/json")
+    public String jsonEntityWriter(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ){
+        return asResponse("jsonEntityWriter", contentTypes, accepts);
+    }
+
+    @PUT
+    @Path("entity-writer/json/produces")
+    @Produces("application/custom")
+    public String jsonEntityWriterWithProduces(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ){
+        return asResponse("jsonEntityWriterWithProduces", contentTypes, accepts);
     }
 
     private static String asResponse(String from, List<String> contentTypes, List<String> accepts){

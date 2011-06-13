@@ -21,6 +21,7 @@
 package org.codegist.crest.http;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -40,6 +41,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.codegist.common.io.EmptyInputStream;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Objects;
 import org.codegist.common.log.Logger;
@@ -167,7 +169,9 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         }
 
         public InputStream read() throws IOException  {
-            return response.getEntity().getContent();
+            HttpEntity entity = response.getEntity();
+            InputStream stream = entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
+            return stream;
         }
 
         public String readContentType() {

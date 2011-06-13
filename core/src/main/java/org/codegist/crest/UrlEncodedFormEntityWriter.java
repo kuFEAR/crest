@@ -27,15 +27,13 @@ import org.codegist.crest.http.Pair;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class UrlEncodedFormEntityWriter extends AbstractEntityWriter {
+public class UrlEncodedFormEntityWriter implements EntityWriter {
 
     public String getContentType(HttpRequest request) {
         return "application/x-www-form-urlencoded; charset=" + request.getEncoding();

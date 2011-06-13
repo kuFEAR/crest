@@ -18,20 +18,25 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.request;
 
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.CRest;
+import org.codegist.crest.request.common.CommonRequestsTest;
+import org.junit.runners.Parameterized;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.util.Collection;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public abstract class AbstractEntityWriter implements EntityWriter {
+public class OptionsTest extends CommonRequestsTest<Options> {
 
-    public String getContentType(HttpRequest request) {
-        return null;
+    public OptionsTest(CRest crest) {
+        super(crest, Options.class);
     }
 
+    @Parameterized.Parameters
+    public static Collection<CRest[]> getData() {
+        return crest(byRestServicesAndCustomContentTypes());
+    }
 }

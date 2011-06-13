@@ -28,9 +28,7 @@ import org.codegist.crest.http.Pair;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.codegist.common.lang.Strings.defaultIfBlank;
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
@@ -38,7 +36,7 @@ import static org.codegist.crest.http.HttpParamProcessor.process;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class MultiPartEntityWriter extends AbstractEntityWriter {
+public class MultiPartEntityWriter implements EntityWriter {
 
     private final static String MULTIPART = "multipart/form-data; boundary=";
     private final static String BOUNDARY = Randoms.randomAlphaNumeric(24);

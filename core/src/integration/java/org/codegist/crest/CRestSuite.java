@@ -21,23 +21,13 @@
 package org.codegist.crest;
 
 import org.codegist.crest.param.*;
-import org.codegist.crest.request.GetsTest;
-import org.codegist.crest.request.PostsTest;
+import org.codegist.crest.request.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-        FormsTest.class ,
-        PathsTest.class,
-        QueriesTest.class,
-        CookiesTest.class,
-        MatrixesTest.class,
-        HeadersTest.class,
-        MultiPartsTest.class,
-        FormJsonEntitiesTest.class,
-        FormXmlEntitiesTest.class,
-        GetsTest.class,
-        PostsTest.class
+        ParamsSuite.class,
+        RequestsSuite.class
         })
 public class CRestSuite {}

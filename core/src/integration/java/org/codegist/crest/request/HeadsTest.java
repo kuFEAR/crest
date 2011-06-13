@@ -23,26 +23,46 @@ package org.codegist.crest.request;
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
 import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.codegist.crest.request.common.CommonRequestsTest.*;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class GetsTest extends CommonRequestsTest<Gets> {
+public class HeadsTest extends BaseCRestTest<Heads> {
 
-    public GetsTest(CRest crest) {
-        super(crest, Gets.class);
+    public HeadsTest(CRest crest) {
+        super(crest, Heads.class);
     }
 
     @Parameterized.Parameters
     public static Collection<CRest[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
+    }
+
+    @Test
+    public void testRaw(){
+        toTest.raw();
+        String actual = toTest.last();
+        assertRaw(actual);
+    }
+
+    @Test
+    public void testAccept(){
+        toTest.accept();
+        String actual = toTest.last();
+        assertAccept(actual);
+    }
+
+    @Test
+    public void testContentType(){
+        toTest.contentType();
+        String actual = toTest.last();
+        assertContentType(actual);
     }
 
 }

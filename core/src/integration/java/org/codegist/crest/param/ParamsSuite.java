@@ -18,31 +18,27 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.request;
+package org.codegist.crest.param;
 
-import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
-import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
+import org.codegist.crest.request.RequestsSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-public class GetsTest extends CommonRequestsTest<Gets> {
 
-    public GetsTest(CRest crest) {
-        super(crest, Gets.class);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
-        return crest(byRestServicesAndCustomContentTypes());
-    }
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+        FormsTest.class ,
+        PathsTest.class,
+        QueriesTest.class,
+        CookiesTest.class,
+        MatrixesTest.class,
+        HeadersTest.class,
+        MultiPartsTest.class,
+        FormJsonEntitiesTest.class,
+        FormXmlEntitiesTest.class
+        })
+public class ParamsSuite {
 }

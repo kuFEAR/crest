@@ -21,28 +21,26 @@
 package org.codegist.crest.request;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
-import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
+import org.codegist.crest.annotate.*;
+import org.codegist.crest.request.common.Requests;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class GetsTest extends CommonRequestsTest<Gets> {
 
-    public GetsTest(CRest crest) {
-        super(crest, Gets.class);
-    }
+@EndPoint(BaseCRestTest.ADDRESS)
+@Path("request/option")
+@OPTIONS
+public interface Options extends Requests {
 
-    @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
-        return crest(byRestServicesAndCustomContentTypes());
-    }
+    String raw();
+
+    @Path("accept")
+    @Consumes({"application/custom1","application/custom2"})
+    String accept();
+
+    @Path("content-type")
+    @Produces("application/custom")
+    String contentType();
 
 }

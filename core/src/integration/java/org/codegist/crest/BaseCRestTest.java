@@ -22,8 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.crest.server.Server;
 import org.codegist.crest.server.stubs.params.*;
-import org.codegist.crest.server.stubs.request.GetsStub;
-import org.codegist.crest.server.stubs.request.PostsStub;
+import org.codegist.crest.server.stubs.request.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -55,7 +54,11 @@ public class BaseCRestTest<T> {
             new FormXmlEntitiesStub(),
             new FormJsonEntitiesStub(),
             new GetsStub(),
-            new PostsStub()
+            new PostsStub(),
+            new PutsStub(),
+            new DeletesStub(),
+            new HeadsStub(),
+            new OptionsStub()
     );
 
     static {
