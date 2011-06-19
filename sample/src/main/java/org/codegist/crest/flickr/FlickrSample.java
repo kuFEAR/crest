@@ -26,7 +26,6 @@ import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
-import org.codegist.crest.flickr.model.Uploader;
 import org.codegist.crest.flickr.service.Flickr;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 
@@ -56,8 +55,8 @@ public class FlickrSample implements Runnable {
                     put(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class);
                 }})
                 .useHttpClientRestService()
-                .setDateSerializerFormat("Seconds")
-                .setBooleanSerializer("1", "0")
+                .setDateFormat("Seconds")
+                .setBoolean("1", "0")
 
                 .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
                 .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)

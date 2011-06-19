@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -37,11 +38,11 @@ class PooledJaxb implements Jaxb {
     private final BlockingQueue<Jaxb> pool;
     private final long maxWait;
 
-    public PooledJaxb(JAXBContext jaxbContext, int poolSize, long maxWait) {
+    public PooledJaxb(Map<String,Object> customProperties, JAXBContext jaxbContext, int poolSize, long maxWait) {
         this.maxWait = maxWait;
         this.pool = new ArrayBlockingQueue<Jaxb>(poolSize);
         for (int i = 0; i < poolSize; i++) {
-            this.pool.add(new SimpleJaxb(jaxbContext));
+            this.pool.add(new SimpleJaxb(customProperties, jaxbContext));
         }
     }
 

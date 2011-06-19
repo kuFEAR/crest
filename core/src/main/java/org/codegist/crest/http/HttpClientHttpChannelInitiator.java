@@ -168,7 +168,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             return response.getStatusLine().getStatusCode();
         }
 
-        public InputStream read() throws IOException  {
+        public InputStream getResponseStream() throws IOException  {
             HttpEntity entity = response.getEntity();
             InputStream stream = entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
             return stream;

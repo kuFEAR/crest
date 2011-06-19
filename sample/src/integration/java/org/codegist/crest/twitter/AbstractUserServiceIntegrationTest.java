@@ -25,8 +25,6 @@ import org.codegist.crest.twitter.service.UserService;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author laurent.gilles@codegist.org
  */

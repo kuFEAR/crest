@@ -20,7 +20,6 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.param.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

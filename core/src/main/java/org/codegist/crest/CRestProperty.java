@@ -33,13 +33,6 @@ public interface CRestProperty {
 
 
     /**
-     * Indicates to CRest whether to add or not slashes when concatenating Interface.EndPoint + Interface.Path + Method.Path.
-     * <p>Expects a Boolean value
-     * <p>Default to true
-     */
-    String CREST_URL_ADD_SLASHES = "crest.config.url.add-slashes";
-
-    /**
      * Indicates the currency level, or number of threads, the different components CRest can handle.
      * <p>Expects a Integer value
      * <p>Default to 1
@@ -114,7 +107,7 @@ public interface CRestProperty {
      * @see org.codegist.crest.serializer.Serializer
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String SERIALIZER_DATE_FORMAT = "serializer.date.format";
+    String CREST_DATE_FORMAT = "serializer.date.format";
 
 
     /**
@@ -124,7 +117,7 @@ public interface CRestProperty {
      * @see org.codegist.crest.serializer.Serializer
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String SERIALIZER_BOOLEAN_TRUE = "serializer.boolean.true";
+    String CREST_BOOLEAN_TRUE = "serializer.boolean.true";
 
     /**
      * override the default boolean FALSE value ("false").
@@ -133,7 +126,7 @@ public interface CRestProperty {
      * @see org.codegist.crest.serializer.Serializer
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String SERIALIZER_BOOLEAN_FALSE = "serializer.boolean.false";
+    String CREST_BOOLEAN_FALSE = "serializer.boolean.false";
 
     /**
      * specify a type/serializer map to use for selection of serializer to apply for any given type

@@ -20,6 +20,9 @@
 
 package org.codegist.crest.param.common;
 
+import org.codegist.crest.model.BunchOfData;
+import org.codegist.crest.model.Data;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -50,4 +53,9 @@ public interface Params {
 
     String preEncoded(String p1, Collection<String> p2);
 
+    String defaultSerialize(Data p1, Collection<BunchOfData<Data>> p2, BunchOfData<Data>[] p3);
+
+    String configuredSerialize(Data p1, Collection<BunchOfData<Data>> p2, BunchOfData<Data>[] p3);
+
+    String serializeNulls(Data p1, Collection<BunchOfData<Data>> p2, BunchOfData<Data>[] p3);
 }

@@ -178,7 +178,7 @@ public class DefaultCRest implements CRest, Disposable {
             String encoding = interfaceConfig.getEncoding();
 
             // Build base request
-            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), interfaceConfig.getEncoding())
+            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), encoding)
                     .within(requestContext)
                     .using(mc.getHttpMethod())
                     .timeoutSocketAfter(mc.getSocketTimeout())

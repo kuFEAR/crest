@@ -201,8 +201,8 @@ public abstract class AbstractFlickrIntegrationTest {
         return new CRestBuilder()
                 .useHttpClientRestService()
                 .deserializeXmlWithJaxb(FlickrModelFactory.class)
-                .setDateSerializerFormat("Seconds")
-                .setBooleanSerializer("1", "0")
+                .setDateFormat("Seconds")
+                .setBoolean("1", "0")
                 .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
                 .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
                 .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken);

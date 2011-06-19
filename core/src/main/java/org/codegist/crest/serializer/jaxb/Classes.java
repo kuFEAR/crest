@@ -26,5 +26,7 @@ import java.util.Set;
  * @author laurent.gilles@codegist.org
  */
 interface Classes {
+
     Set<Class<?>> getClasses();
+
 }

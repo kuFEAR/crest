@@ -20,8 +20,8 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.param.*;
-import org.codegist.crest.request.*;
+import org.codegist.crest.param.ParamsSuite;
+import org.codegist.crest.request.RequestsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

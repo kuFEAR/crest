@@ -151,9 +151,9 @@
 //            public Map<String, Object> getProperties() {
 //                return new HashMap<String, Object>() {{
 //                    put(CRestProperty.SERIALIZER_LIST_SEPARATOR, "-");
-//                    put(CRestProperty.SERIALIZER_DATE_FORMAT, "dd/mm/yyyy");
-//                    put(CRestProperty.SERIALIZER_BOOLEAN_TRUE, "a");
-//                    put(CRestProperty.SERIALIZER_BOOLEAN_FALSE, "b");
+//                    put(CRestProperty.CREST_DATE_FORMAT, "dd/mm/yyyy");
+//                    put(CRestProperty.CREST_BOOLEAN_TRUE, "a");
+//                    put(CRestProperty.CREST_BOOLEAN_FALSE, "b");
 //                    put(CRestProperty.SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                        put(Integer.class, Stubs.Serializer1.INSTANCE);
 //                        put(long.class, Stubs.Serializer2.INSTANCE);

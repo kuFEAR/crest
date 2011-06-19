@@ -56,7 +56,7 @@ public class DeliciousSample implements Runnable {
                 .deserializeXmlWithJaxb()
                 .useHttpClientRestService()
                 .setProperty(CRestProperty.PARAM_COLLECTION_SEPARATOR," ")
-                .setBooleanSerializer("yes", "no")
+                .setBoolean("yes", "no")
                 .usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
                 .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
                 .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_EXTRAS, new HashMap<String, String>() {{

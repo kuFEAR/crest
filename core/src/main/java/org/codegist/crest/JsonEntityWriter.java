@@ -30,10 +30,11 @@ import java.util.Map;
  */
 public class JsonEntityWriter extends SerializingEntityWriter {
 
-    private static final String MIME  = "application/json";
-    
+    private static final String MIME  = "application/form-jsonencoded";
+    private static final String CONTENT_TYPE = "application/json";
+
     public JsonEntityWriter(Map<String,Object> customProperties) {
-        super(getSerializer(customProperties), MIME);
+        super(getSerializer(customProperties), CONTENT_TYPE);
     }
 
     private static Serializer getSerializer(Map<String,Object> customProperties){

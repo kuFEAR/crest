@@ -20,7 +20,13 @@
 
 package org.codegist.crest.param;
 
-import org.codegist.crest.request.RequestsSuite;
+import org.codegist.crest.param.cookies.CookiesSuite;
+import org.codegist.crest.param.forms.FormsSuite;
+import org.codegist.crest.param.headers.HeadersSuite;
+import org.codegist.crest.param.matrixes.MatrixesSuite;
+import org.codegist.crest.param.multiparts.MultiPartsSuite;
+import org.codegist.crest.param.paths.PathsSuite;
+import org.codegist.crest.param.queries.QueriesSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,15 +36,13 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-        FormsTest.class ,
-        PathsTest.class,
-        QueriesTest.class,
-        CookiesTest.class,
-        MatrixesTest.class,
-        HeadersTest.class,
-        MultiPartsTest.class,
-        FormJsonEntitiesTest.class,
-        FormXmlEntitiesTest.class
+        CookiesSuite.class,
+        FormsSuite.class,
+        HeadersSuite.class,
+        MatrixesSuite.class,
+        MultiPartsSuite.class,
+        PathsSuite.class,
+        QueriesSuite.class
         })
 public class ParamsSuite {
 }

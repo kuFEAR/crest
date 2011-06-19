@@ -2,15 +2,16 @@ package org.codegist.crest.config;
 
 import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
+import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.SerializerRegistry;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBuilder<T> {
@@ -31,20 +32,14 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
     private Serializer serializer;
     private Boolean encoded;
 
-    private static final Map<String,String> SEPARATOR = new HashMap<String, String>();
-    static{
-        SEPARATOR.put(HttpRequest.DEST_COOKIE, ";");
-        SEPARATOR.put(HttpRequest.DEST_HEADER, ",");
-    }
-
     ParamConfigBuilder(MethodConfigBuilder parent, Map<String, Object> customProperties) {
         this(parent, customProperties, String.class, String.class, Collections.<Class<? extends Annotation>, Annotation>emptyMap());
     }
     ParamConfigBuilder(MethodConfigBuilder parent, Map<String, Object> customProperties, Class<?> clazz, Type genericType, Map<Class<? extends Annotation>, Annotation> paramAnnotation) {
         super(customProperties);
         this.parent = parent;
-        this.clazz = clazz;
-        this.genericType = genericType;
+        this.clazz = Types.getComponentClass(clazz, genericType);
+        this.genericType = Types.getComponentType(clazz, genericType);
         this.paramAnnotation = paramAnnotation;
         this.serializerRegistry = (SerializerRegistry) customProperties.get(SerializerRegistry.class.getName());
     }
@@ -79,19 +74,8 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
             }
         }
 
-
         if (validateConfig) {
             Validate.notBlank(name, "Parameter must have a name");
-        }
-
-
-        // todo is that good enough?
-        if(clazz.isArray()) {
-            clazz = clazz.getComponentType();
-            genericType = clazz;
-        }else if(Collection.class.isAssignableFrom(clazz)){
-            genericType = ((ParameterizedType)genericType).getActualTypeArguments()[0];
-            clazz = (Class<?>)genericType;
         }
 
         return (T) new DefaultParamConfig(

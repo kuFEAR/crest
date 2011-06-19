@@ -29,9 +29,7 @@ import java.util.Map;
 
 public class SimpleXmlSerializer extends StreamingSerializer<Object> {
 
-    public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.SERIALIZER_USER_SERIALIZER_PROP;
-    public static final String DATE_FORMAT_PROP =  SimpleXmlFactory.SERIALIZER_DATE_FORMAT_PROP;
-    public static final String BOOLEAN_FORMAT_PROP = SimpleXmlFactory.SERIALIZER_BOOLEAN_FORMAT_PROP;
+    public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.USER_SERIALIZER_PROP;
 
     private final org.simpleframework.xml.Serializer serializer;
 

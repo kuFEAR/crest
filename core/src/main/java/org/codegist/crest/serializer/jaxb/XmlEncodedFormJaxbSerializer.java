@@ -20,9 +20,10 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.Strings;
+import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StreamingSerializer;
 
@@ -38,7 +39,7 @@ import java.util.*;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String, Object>> {
+public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpParam>> {
 
     public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = JaxbFactory.POOL_RETRIEVAL_MAX_WAIT_PROP;
     public static final String CUSTOM_JAXB = JaxbFactory.CUSTOM_JAXB;
@@ -56,7 +57,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
         this.wrapperElementName = new QName(Strings.defaultIfBlank((String) config.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
-    public void serialize(Map<String, Object> value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws SerializerException {
         JAXBElement<JaxbHttpParam> object = JaxbHttpParamJAXBElement.create(wrapperElementName, value);
         jaxb.marshal(object, out, charset);
     }
@@ -68,7 +69,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
             super(name, JaxbHttpParam.class, value);
         }
 
-        public static JAXBElement<JaxbHttpParam> create(QName wrapperElementName, Map<String, Object> value){
+        public static JAXBElement<JaxbHttpParam> create(QName wrapperElementName, List<HttpParam> value){
             JaxbHttpParam params = new JaxbHttpParam();
             params.setParams(value);
             return new JaxbHttpParamJAXBElement(wrapperElementName, params);
@@ -79,6 +80,8 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
         }
 
     }
+
+
     @XmlRootElement
     private static class JaxbHttpParam {
 
@@ -95,44 +98,48 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
             return classes;
         }
 
-        public void setParams(Map<String,Object> params) {
+        public void setParams(List<HttpParam> params) {
             this.params = new ArrayList<JAXBElement<?>>();
             this.classes = new HashSet<Class<?>>();
             this.classes.add(getClass());
-            for (Map.Entry<String, Object> entry: params.entrySet()) {
-                Object value = entry.getValue();
-                Class<?> cls = value.getClass();
+            for (HttpParam entry: params) {
+                Class<?> cls = entry.getConfig().getValueClass();
 
-                Iterator<Object> iterator = Objects.iterate(value);
-                while(iterator.hasNext()){
-                    Object val = iterator.next();
+                for(Object value : entry.getValue()){
+                    if(value == null) continue;
                     Object valueEl;
-                    if(isPrimitive(val)) {
-                       valueEl = val;
+                    if(isPrimitive(value)) {
+                       valueEl = value;
                     }else{
                         // Any other cleaner way to do that ??
                         XmlRootElement root = cls.getAnnotation(XmlRootElement.class);
                         String name;
                         String ns;
-                        if(root == null) {
+                        if(root != null) {
+                            name = "##default".equals(root.name()) ? decapitalize(cls.getSimpleName()) : root.name();
+                            ns = "##default".equals(root.namespace()) ? null : root.namespace();
+                        }else{
                             name = decapitalize(cls.getSimpleName());
                             ns = null;
-                        }else{
-                            name = root.name();
-                            ns = "##default".equals(root.namespace()) ? null : root.namespace();
                         }
-                        valueEl = new JAXBElement(new QName(ns, name), cls, val);
+                        valueEl = new JAXBElement(new QName(ns, name), cls, value);
                     }
-                    JAXBElement entryEl = new JAXBElement(new QName(entry.getKey()), valueEl.getClass(), val);
+                    JAXBElement entryEl = new JAXBElement(new QName(entry.getConfig().getName()), valueEl.getClass(), valueEl);
                    this.params.add(entryEl);
                 }
 
-                this.classes.add(cls);
+
+                this.classes.addAll(Types.getActors(entry.getConfig().getValueGenericType()));
             }
         }
 
         private boolean isPrimitive(Object value){
-            return (value.getClass().isPrimitive() || value instanceof String || value instanceof Date);
+            return value.getClass().isPrimitive()
+                    || value instanceof Number
+                    || value instanceof Boolean
+                    || value instanceof Character
+                    || value instanceof String
+                    || value instanceof Date;
         }
         private String decapitalize(String name) {
             if (name == null || name.length() == 0) {
@@ -147,6 +154,8 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<Map<String
             return new String(chars);
         }
     }
+
+
 
 
 

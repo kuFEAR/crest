@@ -31,6 +31,7 @@ import org.codegist.crest.http.*;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jackson.JacksonSerializer;
+import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 import org.codegist.crest.serializer.jaxb.JaxbSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
@@ -39,7 +40,10 @@ import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.codegist.crest.CRestProperty.*;
@@ -225,15 +229,16 @@ public class CRestBuilder {
         Class<? extends Deserializer> jsonDeserializer = getJsonDeserializerClass();
         Class<? extends Deserializer> xmlDeserializer = getXmlDeserializerClass();
 
+        Map<String,Object> jsonConfig = copyProperties(customProperties, jsonDeserializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+        Map<String,Object> xmlConfig = copyProperties(customProperties, xmlDeserializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+
         if (jsonDeserializer != null) {
-            Map<String,Object> config = copyProperties(customProperties, jsonDeserializerConfig, CREST_CONCURRENCY_LEVEL);
-            deserializerBuilder.register(jsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]), config);
+            deserializerBuilder.register(jsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonConfig);
         } else {
             deserializerBuilder.register(customJsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]));
         }
         if (xmlDeserializer != null) {
-            Map<String,Object> config = copyProperties(customProperties, xmlDeserializerConfig, CREST_CONCURRENCY_LEVEL);
-            deserializerBuilder.register(xmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]), config);
+            deserializerBuilder.register(xmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlConfig);
         } else {
             deserializerBuilder.register(customXmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]));
         }
@@ -247,21 +252,23 @@ public class CRestBuilder {
         Class<? extends Serializer> jsonSerializer = getJsonSerializerClass();
         Class<? extends Serializer> xmlSerializer = getXmlSerializerClass();
 
+        Map<String,Object> jsonConfig = copyProperties(customProperties, jsonSerializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+        Map<String,Object> xmlConfig = copyProperties(customProperties, xmlSerializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+
         if (jsonSerializer != null) {
-            Map<String,Object> config = copyProperties(customProperties, jsonSerializerConfig, CREST_CONCURRENCY_LEVEL);
-            serializerBuilder.register(jsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]), config);
+            serializerBuilder.register(jsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonConfig);
         } else {
             serializerBuilder.register(customJsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]));
         }
         if (xmlSerializer != null) {
-            Map<String,Object> config = copyProperties(customProperties, xmlSerializerConfig, CREST_CONCURRENCY_LEVEL);
-            serializerBuilder.register(xmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]), config);
+            serializerBuilder.register(xmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlConfig);
         } else {
             serializerBuilder.register(customXmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]));
         }
 
         // TODO make it configurable
-        serializerBuilder.register(getXmlEncodedFormSerializerClass(), FORM_XML_ENCODED_MIME_TYPES);
+        serializerBuilder.register(getXmlEncodedFormSerializerClass(), FORM_XML_ENCODED_MIME_TYPES, xmlConfig);
+        serializerBuilder.register(getJsonEncodedFormSerializerClass(), FORM_JSON_ENCODED_MIME_TYPES, jsonConfig);
 
         return serializerBuilder.build(customProperties);
     }
@@ -314,6 +321,9 @@ public class CRestBuilder {
             default:
                 return null;
         }
+    }
+    private Class<? extends Serializer> getJsonEncodedFormSerializerClass() {
+        return JsonEncodedFormJacksonSerializer.class;
     }
 
     private Class<? extends Serializer> getJsonSerializerClass() {
@@ -580,31 +590,31 @@ public class CRestBuilder {
 
     /**
      * Sets date serializer format to the given format.
-     * <p>Shortcut to builder.setProperty(CRestProperty.SERIALIZER_DATE_FORMAT, format)
+     * <p>Shortcut to builder.setProperty(CRestProperty.CREST_DATE_FORMAT, format)
      *
      * @param format Date format to use
      * @return current builder
-     * @see CRestProperty#SERIALIZER_DATE_FORMAT
+     * @see CRestProperty#CREST_DATE_FORMAT
      */
-    public CRestBuilder setDateSerializerFormat(String format) {
-        return setProperty(SERIALIZER_DATE_FORMAT, format);
+    public CRestBuilder setDateFormat(String format) {
+        return setProperty(CREST_DATE_FORMAT, format);
     }
 
     /**
      * Sets how boolean should be serialized.
      * <p>Shortcut to:
-     * <p>builder.setProperty(CRestProperty.SERIALIZER_BOOLEAN_TRUE, trueSerialized)
-     * <p>builder.setProperty(CRestProperty.SERIALIZER_BOOLEAN_FALSE, falseSerialized)
+     * <p>builder.setProperty(CRestProperty.CREST_BOOLEAN_TRUE, trueSerialized)
+     * <p>builder.setProperty(CRestProperty.CREST_BOOLEAN_FALSE, falseSerialized)
      *
      * @param trueSerialized  String representing serialized form of TRUE
      * @param falseSerialized String representing serialized form of FALSE
      * @return current builder
-     * @see CRestProperty#SERIALIZER_BOOLEAN_TRUE
-     * @see CRestProperty#SERIALIZER_BOOLEAN_FALSE
+     * @see CRestProperty#CREST_BOOLEAN_TRUE
+     * @see CRestProperty#CREST_BOOLEAN_FALSE
      */
-    public CRestBuilder setBooleanSerializer(String trueSerialized, String falseSerialized) {
-        return setProperty(SERIALIZER_BOOLEAN_TRUE, trueSerialized)
-                .setProperty(SERIALIZER_BOOLEAN_FALSE, falseSerialized);
+    public CRestBuilder setBoolean(String trueSerialized, String falseSerialized) {
+        return setProperty(CREST_BOOLEAN_TRUE, trueSerialized)
+                .setProperty(CREST_BOOLEAN_FALSE, falseSerialized);
     }
 
 
@@ -676,22 +686,8 @@ public class CRestBuilder {
         return this;
     }
 
-    public CRestBuilder deserializeXmlWithSimpleXml(String dateFormat) {
+    public CRestBuilder deserializeXmlWithSimpleXml(boolean strict) {
         deserializeXmlWithSimpleXml();
-        this.xmlDeserializerConfig.put(SimpleXmlDeserializer.DATE_FORMAT_PROP, dateFormat);
-        return this;
-    }
-
-    public CRestBuilder deserializeXmlWithSimpleXml(String trueVal, String falseVal) {
-        deserializeXmlWithSimpleXml();
-        this.xmlDeserializerConfig.put(SimpleXmlDeserializer.BOOLEAN_FORMAT_PROP, trueVal + ":" + falseVal);
-        return this;
-    }
-
-    public CRestBuilder deserializeXmlWithSimpleXml(String dateFormat, String trueVal, String falseVal, boolean strict) {
-        deserializeXmlWithSimpleXml();
-        this.xmlDeserializerConfig.put(SimpleXmlDeserializer.BOOLEAN_FORMAT_PROP, trueVal + ":" + falseVal);
-        this.xmlDeserializerConfig.put(SimpleXmlDeserializer.DATE_FORMAT_PROP, dateFormat);
         this.xmlDeserializerConfig.put(SimpleXmlDeserializer.STRICT_PROP, strict);
         return this;
     }
@@ -748,22 +744,9 @@ public class CRestBuilder {
         return this;
     }
 
-    public CRestBuilder serializeXmlWithSimpleXml(String dateFormat) {
+    public CRestBuilder serializeXmlWithSimpleXml(boolean strict) {
         serializeXmlWithSimpleXml();
-        this.xmlSerializerConfig.put(SimpleXmlSerializer.DATE_FORMAT_PROP, dateFormat);
-        return this;
-    }
-
-    public CRestBuilder serializeXmlWithSimpleXml(String trueVal, String falseVal) {
-        serializeXmlWithSimpleXml();
-        this.xmlSerializerConfig.put(SimpleXmlSerializer.BOOLEAN_FORMAT_PROP, trueVal + ":" + falseVal);
-        return this;
-    }
-
-    public CRestBuilder serializeXmlWithSimpleXml(String dateFormat, String trueVal, String falseVal) {
-        serializeXmlWithSimpleXml();
-        this.xmlSerializerConfig.put(SimpleXmlSerializer.BOOLEAN_FORMAT_PROP, trueVal + ":" + falseVal);
-        this.xmlSerializerConfig.put(SimpleXmlSerializer.DATE_FORMAT_PROP, dateFormat);
+        this.xmlSerializerConfig.put(SimpleXmlDeserializer.STRICT_PROP, strict);
         return this;
     }
 

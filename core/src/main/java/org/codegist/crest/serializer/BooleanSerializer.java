@@ -41,8 +41,8 @@ public class BooleanSerializer extends StringSerializer<Boolean> {
     }
     public BooleanSerializer(Map<String,Object> customProperties) {
         this(
-                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.SERIALIZER_BOOLEAN_TRUE), DEFAULT_TRUE),
-                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.SERIALIZER_BOOLEAN_FALSE), DEFAULT_FALSE)
+                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_BOOLEAN_TRUE), DEFAULT_TRUE),
+                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_BOOLEAN_FALSE), DEFAULT_FALSE)
         );
     }
     public BooleanSerializer(String trueString, String falseString) {

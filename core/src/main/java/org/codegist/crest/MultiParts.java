@@ -33,6 +33,7 @@ public final class MultiParts {
 
     public static final String CONTENT_TYPE = "multipart.content-type";
     public static final String FILENAME = "multipart.filename";
+    public static final String MULTIPART_FLAG = "multipart.flag";
 
     private MultiParts(){
         throw new IllegalStateException();
@@ -54,7 +55,15 @@ public final class MultiParts {
         return (String) param.getConfig().getMetaDatas().get(FILENAME);
     }
 
-    public static void putIfNotBlank(Map<String, Object> metadatas, String contentType, String fileName){
+    public static boolean hasMultiPart(Map<String,Object> metadatas){
+        return metadatas != null && metadatas.containsKey(MULTIPART_FLAG);
+    }
+    public static boolean hasMultiPart(HttpParam param){
+        return hasMultiPart(param.getConfig().getMetaDatas());
+    }
+
+    public static void putMetaDatas(Map<String, Object> metadatas, String contentType, String fileName){
+        metadatas.put(MULTIPART_FLAG, true);
         if(!Strings.isBlank(CONTENT_TYPE)) {
             metadatas.put(CONTENT_TYPE, contentType);
         }

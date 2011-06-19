@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static org.codegist.common.lang.Strings.isBlank;
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
@@ -71,14 +70,16 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             for(Pair encoded : process(header, charset)){
                 String name = encoded.getName();
                 String value = encoded.getValue();
-                LOGGER.debug("Header %s: %s ", name, value);
-                httpChannel.addHeader(name, value);
 
                 if(!hasContentType && "Content-Type".equals(name)) {
                     hasContentType = true;
-                }else if(!hasAccept&& "Accept".equals(name)) {
+                } else if(!hasAccept&& "Accept".equals(name)) {
                     hasAccept = true;
+                } else {
+                    value = "\"" + value + "\"";
                 }
+                LOGGER.debug("Header %s: %s ", name, value);
+                httpChannel.addHeader(name, value);
             }
         }
 
@@ -89,11 +90,12 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
                 if(!first) {
                     sb.append(",");
                 }
-                sb.append(encoded.getName()).append("=").append(encoded.getValue());
+                sb.append(encoded.getName()).append("=\"").append(encoded.getValue()).append("\"");
                 first = false;
             }
             String cookie = sb.toString();
             if(cookie.length() > 0) {
+                //cookie = "\""  + cookie + "\"";
                 LOGGER.debug("Cookie: %s ", cookie);
                 httpChannel.addHeader("Cookie", cookie);
             }

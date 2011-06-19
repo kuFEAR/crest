@@ -54,7 +54,7 @@
 //        when(resource.getContent()).thenReturn(spy);
 //
 //        HttpResourceInputStream stream = new HttpResourceInputStream(resource);
-//        String data = IOs.toString(stream); // read all
+//        String data = IOs.toString(stream); // getResponseStream all
 //        assertEquals("data", data);
 //        verify(resource, never()).release();
 //        verify(spy, never()).close();
@@ -67,7 +67,7 @@
 //        when(resource.getContent()).thenReturn(spy);
 //
 //        HttpResourceInputStream stream = new HttpResourceInputStream(resource);
-//        String data = IOs.toString(stream); // read all
+//        String data = IOs.toString(stream); // getResponseStream all
 //        stream.close();// close it
 //        stream.close();// close it again!
 //        assertEquals("data", data);

@@ -59,7 +59,7 @@ public final class SerializerRegistry extends Registry<Serializer>{
      * <p>The custom properties can customize the default behavior, it may contain values mapped with the following keys:
      * <p>  - {@link org.codegist.crest.CRestProperty#SERIALIZER_CUSTOM_SERIALIZER_MAP}
      * <p>  - {@link org.codegist.crest.CRestProperty#SERIALIZER_LIST_SEPARATOR}
-     * <p>  - {@link org.codegist.crest.CRestProperty#SERIALIZER_DATE_FORMAT}
+     * <p>  - {@link org.codegist.crest.CRestProperty#CREST_DATE_FORMAT}
      * @param type              Type to get the serializer for
      * @return the serializer
      */

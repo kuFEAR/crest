@@ -20,7 +20,10 @@
 
 package org.codegist.crest.server.stubs.request;
 
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 import static java.lang.String.format;

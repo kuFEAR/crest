@@ -20,7 +20,6 @@
 
 package org.codegist.crest.request.common;
 
-import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
 import org.junit.Test;
 

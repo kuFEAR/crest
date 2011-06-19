@@ -21,20 +21,10 @@
 package org.codegist.crest.request;
 
 import org.codegist.crest.CRest;
-import org.codegist.crest.JsonEntityWriter;
-import org.codegist.crest.XmlEntityWriter;
-import org.codegist.crest.annotate.EntityWriter;
-import org.codegist.crest.annotate.Path;
-import org.codegist.crest.annotate.Produces;
 import org.codegist.crest.request.common.CommonEntityRequestsTest;
-import org.codegist.crest.request.common.CommonRequestsTest;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

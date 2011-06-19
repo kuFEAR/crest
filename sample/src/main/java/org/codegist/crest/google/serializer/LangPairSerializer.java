@@ -21,12 +21,9 @@
 package org.codegist.crest.google.serializer;
 
 import org.codegist.crest.google.model.LangPair;
-import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StringSerializer;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**

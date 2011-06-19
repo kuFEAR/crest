@@ -42,7 +42,7 @@ public interface HttpChannel extends Disposable {
 
     int send() throws IOException;
 
-    InputStream read() throws IOException;
+    InputStream getResponseStream() throws IOException;
 
     String readContentType()throws IOException;
 

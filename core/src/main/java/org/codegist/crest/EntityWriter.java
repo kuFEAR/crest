@@ -20,12 +20,10 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 
 public interface EntityWriter {

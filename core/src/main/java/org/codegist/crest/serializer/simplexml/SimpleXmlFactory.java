@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.common.collect.Maps;
+import org.codegist.crest.CRestProperty;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.transform.Matcher;
@@ -41,16 +42,6 @@ public class SimpleXmlFactory {
     private static final String DESERIALIZER_PREFIX = "simplexml-deserializer";
 
     static final String USER_SERIALIZER_PROP =  "user-serializer";
-    static final String DATE_FORMAT_PROP =  "date.format";
-    static final String BOOLEAN_FORMAT_PROP = "boolean.format";
-
-    static final String SERIALIZER_USER_SERIALIZER_PROP =  SERIALIZER_PREFIX + "#" + USER_SERIALIZER_PROP;
-    static final String SERIALIZER_DATE_FORMAT_PROP =  SERIALIZER_PREFIX + "#" + DATE_FORMAT_PROP;
-    static final String SERIALIZER_BOOLEAN_FORMAT_PROP = SERIALIZER_PREFIX + "#" + BOOLEAN_FORMAT_PROP;
-
-    static final String DESERIALIZER_USER_SERIALIZER_PROP =  DESERIALIZER_PREFIX + "#" + USER_SERIALIZER_PROP;
-    static final String DESERIALIZER_DATE_FORMAT_PROP =  DESERIALIZER_PREFIX + "#" + DATE_FORMAT_PROP;
-    static final String DESERIALIZER_BOOLEAN_FORMAT_PROP = DESERIALIZER_PREFIX + "#" + BOOLEAN_FORMAT_PROP;
 
     public static Serializer createSerializer(Map<String,Object> cfg){
         return create(cfg, SERIALIZER_PREFIX);
@@ -68,12 +59,12 @@ public class SimpleXmlFactory {
             serializer = (org.simpleframework.xml.Serializer) config.get(prefix + "#" + USER_SERIALIZER_PROP);
         }else{
             MatcherRegistry.Builder registry = new MatcherRegistry.Builder();
-            if(config.containsKey(prefix + "#" + DATE_FORMAT_PROP)) {
-                registry.bind(Date.class, new DateMatcher((String) config.get(prefix + "#" + DATE_FORMAT_PROP)));
+            if(config.containsKey(CRestProperty.CREST_DATE_FORMAT)) {
+                registry.bind(Date.class, new DateMatcher((String) config.get(CRestProperty.CREST_DATE_FORMAT)));
             }
-            if(config.containsKey(prefix + "#" + BOOLEAN_FORMAT_PROP)) {
-                String trueVal = ((String)config.get(prefix + "#" + BOOLEAN_FORMAT_PROP)).split(":")[0];
-                String falseVal = ((String)config.get(prefix + "#" + BOOLEAN_FORMAT_PROP)).split(":")[1];
+            if(config.containsKey(CRestProperty.CREST_BOOLEAN_FALSE) && config.containsKey(CRestProperty.CREST_BOOLEAN_TRUE)) {
+                String trueVal = ((String)config.get(CRestProperty.CREST_BOOLEAN_TRUE));
+                String falseVal = ((String)config.get(CRestProperty.CREST_BOOLEAN_FALSE));
                 registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
             }
             if(registry.hasTransformers()) {

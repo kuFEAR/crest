@@ -21,6 +21,7 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Methods;
+import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestContext;
 import org.codegist.crest.MultiParts;
 import org.codegist.crest.annotate.*;
@@ -28,6 +29,7 @@ import org.codegist.crest.http.HttpRequest;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -151,7 +153,10 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                 methodConfigBuilder.setParamsEncoded(encoded != null);
 
                 for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
-                    Class<?> pType = meth.getParameterTypes()[i];
+                    Class<?> pClass = meth.getParameterTypes()[i];
+                    Type pType = meth.getGenericParameterTypes()[i];
+                    Class<?> realClass = Types.getComponentClass(pClass, pType);
+
                     Map<Class<? extends Annotation>, Annotation> paramAnnotations = Methods.getParamsAnnotation(meth, i);
                     ParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
 
@@ -160,12 +165,12 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                     encoded = (Encoded) paramAnnotations.get(Encoded.class);
                     listSeparator = (ListSeparator) paramAnnotations.get(ListSeparator.class);
 
-                    Serializer pSerializer = pType.getAnnotation(Serializer.class);
-                    Encoded pEncoded = pType.getAnnotation(Encoded.class);
-                    ListSeparator pListSeparator = pType.getAnnotation(ListSeparator.class);
+                    Serializer pSerializer = realClass.getAnnotation(Serializer.class);
+                    Encoded pEncoded = realClass.getAnnotation(Encoded.class);
+                    ListSeparator pListSeparator = realClass.getAnnotation(ListSeparator.class);
 
-                    ParamConfigHolder lowConfig = getFirstExtraParamConfig(modelPriority ? paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]) : pType.getAnnotations());
-                    ParamConfigHolder highConfig = getFirstExtraParamConfig(modelPriority ? pType.getAnnotations() : paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
+                    ParamConfigHolder lowConfig = getFirstExtraParamConfig(modelPriority ? paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]) : realClass.getAnnotations());
+                    ParamConfigHolder highConfig = getFirstExtraParamConfig(modelPriority ? realClass.getAnnotations() : paramAnnotations.values().toArray(new Annotation[paramAnnotations.size()]));
 
 
                     Serializer lowPrioritySerializer = modelPriority ? serializer : pSerializer;
@@ -279,7 +284,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
                     MultiPartParam p = (MultiPartParam) a;
                     name = p.value();
                     defaultValue = p.defaultValue();
-                    MultiParts.putIfNotBlank(metadatas, p.contentType(), p.fileName());
+                    MultiParts.putMetaDatas(metadatas, p.contentType(), p.fileName());
                 } else {
                     throw new IllegalArgumentException("Unsupported param annotation:" + a);
                 }

@@ -44,7 +44,7 @@ public class DateSerializer extends StringSerializer<Date> {
     }
 
     public DateSerializer(Map<String,Object> customProperties) {
-        this(Strings.defaultIfBlank((String) customProperties.get(CRestProperty.SERIALIZER_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
+        this(Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
     }
     
     public DateSerializer(String dateFormat) {

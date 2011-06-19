@@ -20,9 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestProperty;
-import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
-import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -30,10 +27,6 @@ import org.simpleframework.xml.Root;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -41,40 +34,41 @@ import java.util.Map;
 public class Test {
 
 
-    public static void main(String[] args) throws Exception {
-
-        Map<String,Object> o = new HashMap<String,Object>();
-        o.put("a","b");
-        o.put("c",new A("aaa", new B("bbb", new AA("a1"))));
-        o.put("d",new A("bbb", new B("ccc", new AA("b1"))));
-        o.put("e","f");
-
-        Map<String,Object> o2 = new HashMap<String,Object>();
-        o2.put("a","b");
-        o2.put("c",new A("aaa", new B("bbb", new AA("a1"))));
-        o2.put("e","f");
-
-        Map<String,Object> props = new Hashtable<String, Object>();
-        props.put(CRestProperty.CREST_CONCURRENCY_LEVEL, 16);
-        props.put(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME, "my-root");
-
-        Serializer<Map<String,Object>> simpleXml = new XmlEncodedFormSimpleXmlSerializer(props);
-        Serializer<Map<String,Object>> jaxb = new XmlEncodedFormJaxbSerializer(props);
-
-
+//    public static void main(String[] args) throws Exception {
 //
-        System.out.println("JAXB");
-        jaxb.serialize(o, Charset.defaultCharset(), System.out);
-        jaxb.serialize(o2, Charset.defaultCharset(), System.out);
-
-        System.out.println("\n----");
-        System.out.println("SIMPLEXML");
-        simpleXml.serialize(o, Charset.defaultCharset(), System.out);
-        simpleXml.serialize(o2, Charset.defaultCharset(), System.out);
-
-        System.out.println("");
-
-    }
+//        Map<String,Object> o = new HashMap<String,Object>();
+//        o.put("a","b");
+//        o.put("c",new A("aaa", new B("bbb", new AA("a1"))));
+//        o.put("d",new A("bbb", new B("ccc", new AA("b1"))));
+//        o.put("e","f");
+//
+//        Map<String,Object> o2 = new HashMap<String,Object>();
+//        o2.put("a","b");
+//        o2.put("c",new A("aaa", new B("bbb", new AA("a1"))));
+//        o2.put("e","f");
+//
+//        Map<String,Object> props = new Hashtable<String, Object>();
+//        props.put(CRestProperty.CREST_CONCURRENCY_LEVEL, 16);
+//        props.put(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME, "my-root");
+//
+//        Serializer<List<HttpParam>> simpleXml = new XmlEncodedFormSimpleXmlSerializer(props);
+//        Serializer<List<HttpParam>> jaxb = new XmlEncodedFormJaxbSerializer(props);
+//
+//
+////
+//        System.out.println("JAXB");
+//        jaxb.serialize(o, Charset.defaultCharset(), System.out);
+//        jaxb.serialize(o2, Charset.defaultCharset(), System.out);
+//
+//        System.out.println("\n----");
+//        System.out.println("SIMPLEXML");
+//        simpleXml.serialize(o, Charset.defaultCharset(), System.out);
+//        simpleXml.serialize(o2, Charset.defaultCharset(), System.out);
+//
+//        System.out.println("");
+//
+//    }
+//
 
     
     @XmlRootElement(name="A")

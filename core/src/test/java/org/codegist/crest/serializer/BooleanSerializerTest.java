@@ -51,8 +51,8 @@
 //    @Test
 //    public void testCustom2(){
 //        test(new BooleanSerializer(new HashMap<String, Object>(){{
-//            put(CRestProperty.SERIALIZER_BOOLEAN_FALSE, "fff");
-//            put(CRestProperty.SERIALIZER_BOOLEAN_TRUE, "ttt");
+//            put(CRestProperty.CREST_BOOLEAN_FALSE, "fff");
+//            put(CRestProperty.CREST_BOOLEAN_TRUE, "ttt");
 //        }}), "ttt", "fff");
 //    }
 //

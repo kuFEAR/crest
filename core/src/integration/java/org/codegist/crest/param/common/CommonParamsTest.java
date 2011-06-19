@@ -22,6 +22,11 @@ package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
+import org.codegist.crest.model.BunchOfData;
+import org.codegist.crest.model.Data;
+import org.codegist.crest.serializer.AnotherBunchOfDataSerializer;
+import org.codegist.crest.serializer.BunchOfDataSerializer;
+import org.codegist.crest.serializer.DataSerializer;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
@@ -46,7 +51,7 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
 
     @Test
     public void testSend() {
-        String p1 = UTF8_VALUE;
+        String p1 = "my-value";
         int p2 = 1983;
 
         String actual = toTest.send(p1, p2);
@@ -139,7 +144,7 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
 
     @Test
     public void testDefaultLists() {
-        String p11 = "p1-val1", p12 = UTF8_VALUE;
+        String p11 = "p1-val1", p12 = "my-value";
         boolean p21 = true, p22 = false;
         Integer p31 = 31, p32 = 32;
         Long p41 = 41l, p42 = 42l;
@@ -164,7 +169,7 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
         String p2Sep = "(p2)";
         String p3Sep = "(p3)";
         String p4Sep = "(p4)";
-        String p11 = "p1-val1", p12 = UTF8_VALUE;
+        String p11 = "p1-val1", p12 = "my-value";
         boolean p21 = true, p22 = false;
         Integer p31 = 31, p32 = 32;
         Long p41 = 41l, p42 = 42l;
@@ -197,8 +202,8 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
     @Test
     public void testEncodings() {
         String p21 = "&";
-        String p22 = UTF8_VALUE;
-        String p1 = UTF8_VALUE;
+        String p22 = "my-value";
+        String p1 = "my-value";
         Collection<String> p2 = asList(p21, p22);
 
         String actual = toTest.encodings(p1, p2);
@@ -213,8 +218,8 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
     @Test
     public void testPreEncoded() throws UnsupportedEncodingException {
         String p21 = "&";
-        String p22 = UTF8_VALUE;
-        String p1 = UTF8_VALUE;
+        String p22 = "my-value";
+        String p1 = "my-value";
         Collection<String> p2 = asList(encode(p21,"utf-8"), encode(p22, "utf-8"));
 
         String actual = toTest.preEncoded(encode(p1,"utf-8"), p2);
@@ -226,4 +231,106 @@ public class CommonParamsTest<T extends Params> extends BaseCRestTest<T> {
         assertEquals(expected, actual);
     }
 
+
+
+
+    @Test
+    public void testDefaultSerialize(){
+        Data bof = new Data(123, "val-456");
+        BunchOfData<Data> bof21 = new BunchOfData<Data>(date("31/12/2010", "dd/MM/yyyy"), false, new Data(456, "val-789"));
+        BunchOfData<Data> bof22 = new BunchOfData<Data>(date("20/01/2010", "dd/MM/yyyy"), false, new Data(789, "val-123"));
+        BunchOfData<Data> bof31 = new BunchOfData<Data>(date("02/12/2010", "dd/MM/yyyy"), true, new Data(1456, "val-1789"));
+        BunchOfData<Data> bof32 = new BunchOfData<Data>(date("23/03/2010", "dd/MM/yyyy"), null, new Data(1789, "val-1123"));
+
+        String actual = toTest.defaultSerialize(bof, (Collection) asList(bof21, bof22), new BunchOfData[]{bof31, bof32});
+
+        assertDefaultSerialize(bof,bof21,bof22,bof31,bof32,actual);
+    }
+    public void assertDefaultSerialize(
+            Data bof,
+            BunchOfData<Data> bof21,
+            BunchOfData<Data> bof22,
+            BunchOfData<Data> bof31,
+            BunchOfData<Data> bof32,
+            String actual
+        ){
+        String expectSerializedBof21 = new AnotherBunchOfDataSerializer().serialize(bof21, null);
+        String expectSerializedBof22 = new AnotherBunchOfDataSerializer().serialize(bof22, null);
+        String expectSerializedBof31 = new AnotherBunchOfDataSerializer().serialize(bof31, null);
+        String expectSerializedBof32 = new AnotherBunchOfDataSerializer().serialize(bof32, null);
+        String expectSerializedBof = bof.toString();
+        assertDefaultSerialize(expectSerializedBof,
+                                    expectSerializedBof21,
+                                    expectSerializedBof22,
+                                    expectSerializedBof31,
+                                    expectSerializedBof32,
+                                    actual);
+    }
+    public void assertDefaultSerialize(
+            String expectSerializedBof,
+            String expectSerializedBof21,
+            String expectSerializedBof22,
+            String expectSerializedBof31,
+            String expectSerializedBof32,
+            String actual
+        ){
+        String expected = format("defaults() p1=%s p2=%s p3=%s", expectSerializedBof, asList(expectSerializedBof21, expectSerializedBof22), asList(expectSerializedBof31, expectSerializedBof32));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testConfiguredSerialize(){
+        Data bof = new Data(123, "val-456");
+        BunchOfData<Data> bof21 = new BunchOfData<Data>(date("31/12/2010", "dd/MM/yyyy"), false, new Data(456, "val-789"));
+        BunchOfData<Data> bof22 = new BunchOfData<Data>(date("20/01/2010", "dd/MM/yyyy"), false, new Data(789, "val-123"));
+        BunchOfData<Data> bof31 = new BunchOfData<Data>(date("02/12/2010", "dd/MM/yyyy"), true, new Data(1456, "val-1789"));
+        BunchOfData<Data> bof32 = new BunchOfData<Data>(date("23/03/2010", "dd/MM/yyyy"), null, new Data(1789, "val-1123"));
+
+        String actual = toTest.configuredSerialize(bof, (Collection) asList(bof21, bof22), new BunchOfData[]{bof31, bof32});
+
+        assertConfiguredSerialize(bof,bof21,bof22,bof31,bof32,actual);
+    }
+    public void assertConfiguredSerialize(
+            Data bof,
+            BunchOfData<Data> bof21,
+            BunchOfData<Data> bof22,
+            BunchOfData<Data> bof31,
+            BunchOfData<Data> bof32,
+            String actual
+        ){
+
+        String expectSerializedBof21 = new BunchOfDataSerializer().serialize(bof21, null);
+        String expectSerializedBof22 = new BunchOfDataSerializer().serialize(bof22, null);
+        String expectSerializedBof31 = new BunchOfDataSerializer().serialize(bof31, null);
+        String expectSerializedBof32 = new BunchOfDataSerializer().serialize(bof32, null);
+        String expectSerializedBof = new DataSerializer().serialize(bof, null);
+         assertConfiguredSerialize(expectSerializedBof,
+                                    expectSerializedBof21,
+                                    expectSerializedBof22,
+                                    expectSerializedBof31,
+                                    expectSerializedBof32,
+                                    actual);
+    }
+    public void assertConfiguredSerialize(
+            String expectSerializedBof,
+            String expectSerializedBof21,
+            String expectSerializedBof22,
+            String expectSerializedBof31,
+            String expectSerializedBof32,
+            String actual
+        ){
+        String expected = format("configured() p1=%s p2=%s p3=%s", expectSerializedBof, asList(expectSerializedBof21, expectSerializedBof22), asList(expectSerializedBof31, expectSerializedBof32));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSerializeNulls(){
+        String actual = toTest.serializeNulls(null, null, null);
+        assertSerializeNulls(null, null, null, actual);
+    }
+
+    public void assertSerializeNulls(String expectedSerializedBof, String expectedSerializedBof2, String expectedSerializedBof3, String actual){
+        String expected = format("nulls() p1=%s p2=%s p3=%s", expectedSerializedBof, expectedSerializedBof2, expectedSerializedBof3);
+        assertEquals(expected, actual);
+    }
 }

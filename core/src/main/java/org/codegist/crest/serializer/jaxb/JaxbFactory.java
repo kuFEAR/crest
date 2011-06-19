@@ -76,9 +76,9 @@ class JaxbFactory {
         long maxWait = Objects.defaultIfNull((Long) customProperties.get(POOL_RETRIEVAL_MAX_WAIT_PROP), DEFAULT_MAX_WAIT);
 
         if (poolSize == 1) {
-            return new SimpleJaxb(jaxb);
+            return new SimpleJaxb(customProperties, jaxb);
         } else {
-            return new PooledJaxb(jaxb, poolSize, maxWait);
+            return new PooledJaxb(customProperties, jaxb, poolSize, maxWait);
         }
     }
 }

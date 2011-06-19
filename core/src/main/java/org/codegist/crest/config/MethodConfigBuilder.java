@@ -3,9 +3,7 @@ package org.codegist.crest.config;
 import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
 import org.codegist.common.reflect.Methods;
-import org.codegist.crest.CRestProperty;
-import org.codegist.crest.EntityWriter;
-import org.codegist.crest.UrlEncodedFormEntityWriter;
+import org.codegist.crest.*;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
@@ -28,12 +26,11 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
 
     private final Method method;
     private final InterfaceConfigBuilder parent;
-    private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();// TODO MULTIMAP ?
+    private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();
     private final ParamConfigBuilder[] methodParamConfigBuilders;
     private final DeserializerRegistry deserializerRegistry;
     private final ArrayList<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
-    private final boolean addSlashes;
 
     private HttpMethod meth;
     private Long socketTimeout;
@@ -50,7 +47,6 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         this.deserializerRegistry = getProperty(DeserializerRegistry.class.getName());
         this.parent = parent;
         this.method = method;
-        this.addSlashes = !Boolean.FALSE.equals(getProperty(CRestProperty.CREST_URL_ADD_SLASHES));
         this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
 
         for (int i = 0; i < this.methodParamConfigBuilders.length; i++) {
@@ -78,7 +74,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         String[] paths = fullPathPart.toArray(new String[fullPathPart.size()]);
 
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String path = Urls.normalizeSlashes(addSlashes ? join("/", paths) : join("", paths));
+        String path = Urls.normalizeSlashes(join("/", paths));
         HttpMethod meth = this.meth;
         Long socketTimeout = this.socketTimeout;
         Long connectionTimeout = this.connectionTimeout;
@@ -107,7 +103,14 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
             deserializers = defaultIfUndefined(deserializers, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, newInstance(MethodConfig.DEFAULT_DESERIALIZERS));
 
             if(entityWriter == null && meth.hasEntity()) {
-                entityWriter = newInstance(UrlEncodedFormEntityWriter.class);
+                Class<? extends EntityWriter> entityWriterCls = UrlEncodedFormEntityWriter.class;
+                for(ParamConfig cfg : pConfigMethod){
+                    if(MultiParts.hasMultiPart(cfg.getMetaDatas())) {
+                        entityWriterCls = MultiPartEntityWriter.class;
+                        break;
+                    }
+                }
+                entityWriter = newInstance(entityWriterCls);
             }
         }
         

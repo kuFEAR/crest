@@ -20,8 +20,6 @@
 
 package org.codegist.crest.http;
 
-import org.codegist.common.log.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -85,7 +83,7 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             return con.getResponseCode();
         }
 
-        public InputStream read() throws IOException {
+        public InputStream getResponseStream() throws IOException {
             return con.getInputStream();
         }
 

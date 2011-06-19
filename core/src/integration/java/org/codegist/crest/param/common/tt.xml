@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:ns1="http://schema.fabric.bbc.co.uk/EM3/OnAirSchedule">
+    <SOAP-ENV:Body>
+        <ns1:updatePublicationEventsRequest>
+            <ns1:Create>
+                <ns1:Programme>
+                    <ns1:FabricUpdateStatus>CREATE</ns1:FabricUpdateStatus>
+                    <ns1:EventId>67963181</ns1:EventId>
+                    <ns1:Service>4965</ns1:Service>
+                    <ns1:EpisodeId>2592588</ns1:EpisodeId>
+                    <ns1:UID>CCIA032D/01</ns1:UID>
+                    <ns1:OptOutEventIndicator>false</ns1:OptOutEventIndicator>
+                    <ns1:PlannedEventIndicator>Actual</ns1:PlannedEventIndicator>
+                    <ns1:BilledTitle>3429 - Network publication event testing, 2</ns1:BilledTitle>
+                    <ns1:BilledDate>2011-06-15</ns1:BilledDate>
+                    <ns1:BilledStartTime>16:00:00:00</ns1:BilledStartTime>
+                    <ns1:PublicationDate>2011-06-15</ns1:PublicationDate>
+                    <ns1:PublicationStartTime>16:00:00:00</ns1:PublicationStartTime>
+                    <ns1:SubtitleIndicator>500005786</ns1:SubtitleIndicator>
+                    <ns1:LiveIndicator>Prerecorded</ns1:LiveIndicator>
+                    <ns1:SimulcastIndicator>false</ns1:SimulcastIndicator>
+                    <ns1:TimeshiftIndicator>false</ns1:TimeshiftIndicator>
+                    <ns1:GrossDuration>00:30:00:00</ns1:GrossDuration>
+                    <ns1:NetDuration>00:30:00:00</ns1:NetDuration>
+                    <ns1:BillingSynopsis></ns1:BillingSynopsis>
+                    <ns1:Compliant>false</ns1:Compliant>
+                    <ns1:CompliedDateTime>1899-12-30T00:00:00Z</ns1:CompliedDateTime>
+                    <ns1:CompliedUser></ns1:CompliedUser>
+                    <ns1:CompliedService></ns1:CompliedService>
+                    <ns1:Confidential>false</ns1:Confidential>
+                </ns1:Programme>
+            </ns1:Create>
+            <ns1:Update></ns1:Update>
+            <ns1:Delete></ns1:Delete>
+        </ns1:updatePublicationEventsRequest>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

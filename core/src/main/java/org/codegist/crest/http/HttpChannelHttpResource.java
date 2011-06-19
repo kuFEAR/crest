@@ -58,7 +58,7 @@ class HttpChannelHttpResource implements HttpResource {
     }
 
     public InputStream getContent() throws IOException {
-        return !zipped ? channel.read() : new GZIPInputStream(channel.read());
+        return !zipped ? channel.getResponseStream() : new GZIPInputStream(channel.getResponseStream());
     }
 
     public void release() throws IOException {

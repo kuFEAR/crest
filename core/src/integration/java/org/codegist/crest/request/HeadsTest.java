@@ -22,7 +22,6 @@ package org.codegist.crest.request;
 
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRest;
-import org.codegist.crest.request.common.CommonRequestsTest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 

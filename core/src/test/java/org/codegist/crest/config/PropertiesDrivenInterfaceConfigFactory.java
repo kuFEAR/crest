@@ -33,7 +33,7 @@
 //
 ///**
 // * <p>Properties based config factory of any possible interfaces given to the factory.
-// * <p>Usefull when the end-point should be read externally instead, eg for profil (dev,integration,prod)
+// * <p>Usefull when the end-point should be getResponseStream externally instead, eg for profil (dev,integration,prod)
 // * <p>Expected format for a single Interface config is of the following :
 // * <p>- Any property not specified as mandatory is optional.
 // * <p>- The same logic as the annotation config applies here, config fallbacks from param to method to interface until one config is found, otherwise defaults to any respective default value ({@link org.codegist.crest.config.InterfaceConfig}, {@link MethodConfig}, {@link MethodParamConfig}).

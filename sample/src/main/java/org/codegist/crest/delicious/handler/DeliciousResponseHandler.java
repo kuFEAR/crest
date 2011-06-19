@@ -25,7 +25,6 @@ import org.codegist.crest.CRestException;
 import org.codegist.crest.ResponseContext;
 import org.codegist.crest.delicious.model.Result;
 import org.codegist.crest.handler.ResponseHandler;
-import org.codegist.crest.serializer.Deserializer;
 
 import java.lang.reflect.Type;
 

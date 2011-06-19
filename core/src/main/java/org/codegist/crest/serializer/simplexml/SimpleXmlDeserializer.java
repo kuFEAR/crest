@@ -35,11 +35,8 @@ import java.util.Map;
  */
 public class SimpleXmlDeserializer implements Deserializer {
     
-
     public static final String STRICT_PROP =  SimpleXmlDeserializer.class.getName() + "#strict";
-    public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.DESERIALIZER_USER_SERIALIZER_PROP;
-    public static final String DATE_FORMAT_PROP =  SimpleXmlFactory.DESERIALIZER_DATE_FORMAT_PROP;
-    public static final String BOOLEAN_FORMAT_PROP = SimpleXmlFactory.DESERIALIZER_BOOLEAN_FORMAT_PROP;
+    public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.USER_SERIALIZER_PROP;
 
     static final boolean DEFAULT_STRICT = true;
 
