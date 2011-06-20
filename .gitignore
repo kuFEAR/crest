@@ -1,4 +1,9 @@
 */target/*
-target/*
+target/*                  
+sample/target/
+core/target/
+integration/target/
+integration/client/target/
+integration/server/target/
 *.iml
 

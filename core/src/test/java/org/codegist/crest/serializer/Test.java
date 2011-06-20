@@ -20,6 +20,7 @@
 
 package org.codegist.crest.serializer;
 
+import org.junit.Ignore;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -31,6 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * @author laurent.gilles@codegist.org
  */
+@Ignore
 public class Test {
 
 

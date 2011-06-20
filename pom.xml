@@ -62,7 +62,8 @@
 
     <modules>
         <module>core</module>
-        <module>sample</module>
+        <!--module>sample</module-->
+        <module>integration</module>
     </modules>
 
     <dependencyManagement>
