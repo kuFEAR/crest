@@ -44,40 +44,40 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
 
     public HttpResponse execute(HttpRequest request) throws IOException {
 
-        boolean hasContentType = false;
-        boolean hasAccept = false;
         Charset charset = request.getCharset();
         String url = getUrlFor(request);
 
         LOGGER.debug("Initiating HTTP Channel: %s %s", request.getMeth(), url);
         LOGGER.trace(request);
 
-        HttpChannel httpChannel = channelInitiator.initiate(request.getMeth(), url);
+        HttpChannel httpChannel = channelInitiator.initiate(request.getMeth(), url, request.getCharset());
 
         if(request.getConnectionTimeout() != null) {
             int timeout = request.getConnectionTimeout().intValue();
-            LOGGER.debug("Set Connection Timeout %d ", timeout);
+            LOGGER.debug("Set Connection Timeout: %d ", timeout);
             httpChannel.setConnectionTimeout(timeout);
         }
 
         if(request.getSocketTimeout() != null) {
             int timeout = request.getSocketTimeout().intValue();
-            LOGGER.debug("Set Socket Timeout %d ", timeout);
+            LOGGER.debug("Set Socket Timeout: %d ", timeout);
             httpChannel.setSocketTimeout(timeout);
+        }
+
+        if(request.getContentType() != null) {
+            LOGGER.debug("Set Content-Type: %d ", request.getContentType());
+            httpChannel.setContentType(request.getContentType());
+        }
+
+        if(request.getAccept() != null) {
+            LOGGER.debug("Set Accept: %d ", request.getAccept());
+            httpChannel.setAccept(request.getAccept());
         }
 
         for(HttpParam header : request.getHeaderParams()){
             for(Pair encoded : process(header, charset)){
                 String name = encoded.getName();
-                String value = encoded.getValue();
-
-                if(!hasContentType && "Content-Type".equals(name)) {
-                    hasContentType = true;
-                } else if(!hasAccept&& "Accept".equals(name)) {
-                    hasAccept = true;
-                } else {
-                    value = "\"" + value + "\"";
-                }
+                String value = "\"" + encoded.getValue() + "\"";
                 LOGGER.debug("Header %s: %s ", name, value);
                 httpChannel.addHeader(name, value);
             }
@@ -95,20 +95,15 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             }
             String cookie = sb.toString();
             if(cookie.length() > 0) {
-                //cookie = "\""  + cookie + "\"";
                 LOGGER.debug("Cookie: %s ", cookie);
                 httpChannel.addHeader("Cookie", cookie);
             }
         }
 
-        if(!hasAccept) {
-            httpChannel.setHeader("Accept", "*/*");
-        }
-
         if(request.getMeth().hasEntity()) {
             String contentType = request.getEntityWriter().getContentType(request);
             if(isNotBlank(contentType)) {
-                if(!hasContentType) {
+                if(request.getContentType() == null) {
                     LOGGER.debug("Entity Content-Type : %s", contentType);
                     httpChannel.setHeader("Content-Type", contentType);
                 }else{

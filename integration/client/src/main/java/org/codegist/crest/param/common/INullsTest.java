@@ -21,7 +21,6 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -35,12 +34,12 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class INullsTest<T extends INullsTest.INulls> extends BaseCRestTest<T> {
 
-    public INullsTest(CRest crest, Class<T> service) {
+    public INullsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 

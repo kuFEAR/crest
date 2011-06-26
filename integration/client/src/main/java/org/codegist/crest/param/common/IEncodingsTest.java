@@ -21,7 +21,6 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -38,12 +37,12 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extends BaseCRestTest<T> {
 
-    public IEncodingsTest(CRest crest, Class<T> service) {
+    public IEncodingsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 
@@ -53,20 +52,18 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
 
         String encoded(String p1, Collection<String> p2);
 
-        String nastyCharacters(Collection<String> p2);
-
     }
 
     private static final String NASTY = "£\"(')?\n &£d&f{/p3=}:,;£\"(')?\n &£d&f{/pp3=}";
 
     @Test
-    public void testEncodings() {
+    public void testEncodings() throws UnsupportedEncodingException {
         String actual = toTest.defaults(NASTY, asList(NASTY, NASTY));
         assertDefault(NASTY, NASTY, NASTY, actual);
     }
 
-    public void assertDefault(String p1, String p21, String p22, String actual) {
-        String expected = format("default() p1=%s p2=%s", p1, string(p21, p22));
+    public void assertDefault(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
+        String expected = format("default() p1=%s p2=%s", (p1), string((p21), (p22)));
         assertEquals(expected, actual);
     }
 
@@ -77,7 +74,7 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
     }
 
     public void assertEncoded(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
-        String expected = format("encoded() p1=%s p2=%s", p1, string(p21, p22));
+        String expected = format("encoded() p1=%s p2=%s", (p1), string(p21, p22));
         assertEquals(expected, actual);
     }
 }

@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms.xml.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.ICollectionsTest;
@@ -35,12 +34,12 @@ import java.util.Set;
  */
 public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collections> {
 
-    public CollectionsTest(CRest crest) {
+    public CollectionsTest(CRestHolder crest) {
         super(crest, Collections.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byXmlSerializersAndRestServices());
     }
 
@@ -73,8 +72,8 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
         expected.append("<form-data>");
         expected.append("<p1>").append(p11).append("</p1>");
         expected.append("<p1>").append(xml(p12)).append("</p1>");
-        expected.append("<p2>").append(p21 ? "myTrue" : "myFalse").append("</p2>");
-        expected.append("<p2>").append(p22 ? "myTrue" : "myFalse").append("</p2>");
+        expected.append("<p2>").append(toString(p21)).append("</p2>");
+        expected.append("<p2>").append(toString(p22)).append("</p2>");
         expected.append("<p3>").append(p31).append("</p3>");
         expected.append("<p3>").append(p32).append("</p3>");
         expected.append("<p4>").append(p41).append("</p4>");

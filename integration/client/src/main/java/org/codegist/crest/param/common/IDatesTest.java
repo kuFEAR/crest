@@ -21,13 +21,10 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
@@ -40,25 +37,23 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class IDatesTest<T extends IDatesTest.IDates> extends BaseCRestTest<T> {
 
-    public IDatesTest(CRest crest, Class<T> service) {
+    public IDatesTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 
     @Test
     public void testDates() throws ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm:ssZ");
-        DateFormat expected = new SimpleDateFormat(DATE_FORMAT);
-        Date p1 = format.parse("1969/07/20T02:56:00+0000");
-        Date p21 = format.parse("1983/03/13T00:35:00+0100");
-        Date p22 = format.parse("2010/10/31T13:56:21-0700");
+        Date p1 = date("1969/07/20T02:56:00+0000", "yyyy/MM/dd'T'HH:mm:ssZ");
+        Date p21 = date("1983/03/13T00:35:00+0100", "yyyy/MM/dd'T'HH:mm:ssZ");
+        Date p22 = date("2010/10/31T13:56:21-0700", "yyyy/MM/dd'T'HH:mm:ssZ");
 
         String actual = toTest.date(p1, p21, p22);
-        assertDates(expected.format(p1), expected.format(p21), expected.format(p22), actual);
+        assertDates(toString(p1), toString(p21), toString(p22), actual);
     }
 
     public void assertDates(String p1, String p21, String p22, String actual) {

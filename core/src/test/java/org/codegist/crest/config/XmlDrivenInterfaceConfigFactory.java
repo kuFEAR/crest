@@ -213,7 +213,7 @@
 //                                .setErrorHandler(getString(methodNode, "error-handler"))
 //                                .setRetryHandler(getString(methodNode, "retry-handler"))
 //                                .setEntityWriter(getString(methodNode, "body-writer"))
-//                                .setAccepts(getString(methodNode, "consumes"))
+//                                .setAccept(getString(methodNode, "consumes"))
 //                                .setParamsSerializer(getString(methodNode, "params/serializer"));
 //                        break;
 //                    }

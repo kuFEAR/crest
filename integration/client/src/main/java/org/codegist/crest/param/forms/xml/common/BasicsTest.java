@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms.xml.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IBasicsTest;
@@ -33,12 +32,12 @@ import java.util.Collection;
  */
 public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
 
-    public BasicsTest(CRest crest) {
+    public BasicsTest(CRestHolder crest) {
         super(crest, Basics.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byXmlSerializersAndRestServices());
     }
 

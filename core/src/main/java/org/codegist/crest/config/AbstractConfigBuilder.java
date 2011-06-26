@@ -155,7 +155,7 @@ abstract class AbstractConfigBuilder<T> {
             }
             return instances;
         } catch (Exception e) {
-            throw new CRestException(e);
+            throw new CRestException(e.getMessage(), e);
         }
     }
 
@@ -169,7 +169,7 @@ abstract class AbstractConfigBuilder<T> {
             try {
                 return newInstance(clazz.getConstructor());
             } catch (Exception e1) {
-                throw new CRestException(e1);
+                throw new CRestException(e1.getMessage(), e1);
             }
         }
     }

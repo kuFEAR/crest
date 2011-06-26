@@ -35,7 +35,7 @@ public abstract class StreamingSerializer<V> implements Serializer<V> {
         try {
             return out.toString(charset.toString());
         } catch (UnsupportedEncodingException e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 

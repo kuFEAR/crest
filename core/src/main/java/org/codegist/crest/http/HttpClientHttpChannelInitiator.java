@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ProxySelector;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 /**
@@ -64,7 +65,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         this.client = client;
     }
 
-    public HttpChannel initiate(HttpMethod method, String url) {
+    public HttpChannel initiate(HttpMethod method, String url, Charset charset) {
         HttpUriRequest request;
         switch(method) {
             case GET:
@@ -159,6 +160,14 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             request.addHeader(name, value);
         }
 
+        public void setContentType(String value) throws IOException {
+            setHeader("Content-Type", value);
+        }
+
+        public void setAccept(String value) throws IOException {
+            setHeader("Accept", value);
+        }
+
         public void writeEntityWith(HttpEntityWriter httpEntityWriter)  throws IOException {
             ((HttpEntityEnclosingRequest) request).setEntity(new HttpEntityWriterHttpEntity(httpEntityWriter));
         }
@@ -174,7 +183,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             return stream;
         }
 
-        public String readContentType() {
+        public String getResponseContentType() {
             Header header = response.getFirstHeader("Content-Type");
             if(header != null) {
                 return header.getValue();
@@ -183,7 +192,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             }
         }
 
-        public String readContentEncoding() {
+        public String getResponseContentEncoding() {
             Header header = response.getFirstHeader("Content-Encoding");
             if(header != null) {
                 return header.getValue();

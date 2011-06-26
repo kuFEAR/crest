@@ -23,19 +23,22 @@ package org.codegist.crest.flickr.interceptor;
 import org.codegist.common.codec.Hex;
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.RequestContext;
+import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.Pair;
+import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptorAdapter;
 
 import java.security.MessageDigest;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
+
+import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class FlickrAuthInterceptor extends RequestInterceptorAdapter {
+public class FlickrAuthInterceptor implements RequestInterceptor {
 
     public static final String APP_SECRET_PROP = FlickrAuthInterceptor.class.getName() + "#app.secret";
     public static final String API_KEY_PROP = FlickrAuthInterceptor.class.getName() + "#api.key";
@@ -55,11 +58,9 @@ public class FlickrAuthInterceptor extends RequestInterceptorAdapter {
         Validate.notBlank(this.authToken, "Authentification token is required, please pass it in the properties (key=" + AUTH_TOKEN_PROP + ")");
     }
 
-    @Override
-    public void afterParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception {
-        StringBuilder sb = new StringBuilder(appSecret);
+    public void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception {
 
-        if (isForBody(builder.getMeth())) {
+        if (builder.getMeth().hasEntity()) {
             builder.addFormParam("api_key", apiKey);
             builder.addFormParam("auth_token", authToken);
         } else {
@@ -67,33 +68,27 @@ public class FlickrAuthInterceptor extends RequestInterceptorAdapter {
             builder.addQueryParam("auth_token", authToken);
         }
 
-        SortedMap<String, String> map = new TreeMap<String, String>();
-        if (builder.getQueryParams() != null) {
-            for (HttpParam param : builder.getQueryParams().allValues()) {
-             //   if (Params.isForUpload(param.getValue())) continue;
-                map.put(param.getName(), param.getValue().asString());
-            }
-        }
-        if (builder.getFormParams() != null) {
-            for (HttpParam param : builder.getFormParams().allValues()) {
-             //   if (Params.isForUpload(param.getValue())) continue;
-                map.put(param.getName(), param.getValue().asString());
-            }
-        }
+        List<HttpParam> params = new ArrayList<HttpParam>();
+        params.addAll(builder.getQueryParams());
+        params.addAll(builder.getFormParams());
 
-        for (Map.Entry<String, String> param : map.entrySet()) sb.append(param.getKey()).append(param.getValue());
+        StringBuilder sb = new StringBuilder(appSecret);
+        for (HttpParam param : params) {
+            for(Pair pair : process(param, builder.getCharset())){
+                sb.append(pair.getName()).append(param.getValue());
+            }
+        }
 
         MessageDigest digest = MessageDigest.getInstance("MD5");
         digest.update(sb.toString().getBytes());
         String hash = Hex.encodeAsString(digest.digest());
-        if (isForBody(builder.getMeth())) {
+
+        if (builder.getMeth().hasEntity()) {
             builder.addFormParam("api_sig", hash);
         } else {
             builder.addQueryParam("api_sig", hash);
         }
+
     }
 
-    private boolean isForBody(String meth) {
-        return HttpRequest.HTTP_POST.equals(meth) || HttpRequest.HTTP_PUT.equals(meth);
-    }
 }

@@ -49,6 +49,8 @@ public class HttpRequest {
 
     private final HttpMethod meth;
     private final PathBuilder pathBuilder;
+    private final String contentType;
+    private final String accept;
     private final Long socketTimeout;
     private final Long connectionTimeout;
     private final String encoding;
@@ -63,9 +65,11 @@ public class HttpRequest {
     private final List<HttpParam> cookieParams;
     private final List<HttpParam> formParam;
 
-    public HttpRequest(HttpMethod meth, PathBuilder pathBuilder, Long socketTimeout, Long connectionTimeout, String encoding, Charset charset, EntityWriter entityWriter, RequestContext requestContext, List<HttpParam> headerParams, List<HttpParam> matrixParams, List<HttpParam> queryParams, List<HttpParam> pathParams, List<HttpParam> cookieParams, List<HttpParam> formParam) {
+    public HttpRequest(HttpMethod meth, PathBuilder pathBuilder, String contentType, String accept, Long socketTimeout, Long connectionTimeout, String encoding, Charset charset, EntityWriter entityWriter, RequestContext requestContext, List<HttpParam> headerParams, List<HttpParam> matrixParams, List<HttpParam> queryParams, List<HttpParam> pathParams, List<HttpParam> cookieParams, List<HttpParam> formParam) {
         this.meth = meth;
         this.pathBuilder = pathBuilder;
+        this.contentType = contentType;
+        this.accept = accept;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
         this.encoding = encoding;
@@ -86,6 +90,14 @@ public class HttpRequest {
 
     public PathBuilder getPathBuilder() {
         return pathBuilder;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getAccept() {
+        return accept;
     }
 
     public Long getSocketTimeout() {
@@ -153,6 +165,8 @@ public class HttpRequest {
         private final List<HttpParam> cookieParams = new ArrayList<HttpParam>();
         private final List<HttpParam> formParams = new ArrayList<HttpParam>();
 
+        private String contentType;
+        private String accept;
         private HttpMethod meth = METH;
         private Long socketTimeout = null;
         private Long connectionTimeout = null;
@@ -181,6 +195,8 @@ public class HttpRequest {
             return new HttpRequest(
                     meth,
                     pathBuilder,
+                    contentType,
+                    accept,
                     socketTimeout,
                     connectionTimeout,
                     encoding,
@@ -215,10 +231,26 @@ public class HttpRequest {
             return this;
         }
 
-        public Builder using(HttpMethod meth) {
+        public Builder withAction(HttpMethod meth) {
             this.meth = meth;
             return this;
-        }       
+        }
+
+        public Builder thatAccepts(String accept){
+            this.accept = accept;
+            return this;
+        }
+
+        public Builder ofContentType(String contentType){
+            this.contentType = contentType;
+            return this;
+        }
+        public Builder withParams(ParamConfig[] paramConfigs) {
+            for(ParamConfig param : paramConfigs){
+                addParam(param);
+            }
+            return this;
+        }
         
         private Builder addHttpParam(List<HttpParam> params, ParamConfig paramConfig, Object value){
             if(value == null && paramConfig.getDefaultValue() == null) return this;
@@ -326,6 +358,10 @@ public class HttpRequest {
 
         public String getEncoding() {
             return encoding;
+        }
+
+        public Charset getCharset() {
+            return charset;
         }
 
         

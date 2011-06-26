@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.annotate.POST;
@@ -34,7 +33,7 @@ import java.util.Date;
  */
 public class DatesTest extends IDatesTest<DatesTest.Dates> {
 
-    public DatesTest(CRest crest) {
+    public DatesTest(CRestHolder crest) {
         super(crest, Dates.class);
     }
 

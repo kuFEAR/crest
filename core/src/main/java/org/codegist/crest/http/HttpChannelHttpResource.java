@@ -38,10 +38,10 @@ class HttpChannelHttpResource implements HttpResource {
 
     HttpChannelHttpResource(HttpChannel channel) throws IOException {
         this.channel = channel;
-        ContentType ct = new ContentType(channel.readContentType());
+        ContentType ct = new ContentType(channel.getResponseContentType());
         this.contentType = ct.mimeType;
         this.charset = ct.charset;
-        this.contentEncoding =  channel.readContentEncoding();
+        this.contentEncoding =  channel.getResponseContentEncoding();
         this.zipped = "gzip".equals(contentEncoding);
     }
 

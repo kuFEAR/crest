@@ -145,14 +145,6 @@ public interface CRestProperty {
      *********************************************************/
 
     /**
-     * specify where should the authentification parameter be added in the request, either in the URL or in the headers.
-     * <p>Expects a String value, either equals to URL or HEADER.
-     *
-     * @see org.codegist.crest.InterfaceContext#getProperties()
-     */
-    String OAUTH_PARAM_DEST = "authentification.oauth.parameter.destination";
-
-    /**
      * specify the preconfigured consumer secret.
      * <p>Expects a string.
      *
@@ -248,16 +240,6 @@ public interface CRestProperty {
      */
     String CONFIG_INTERFACE_DEFAULT_PATH = "config.interface.default.path";
 
-    /**
-     * override the default global request interceptor {@link org.codegist.crest.config.InterfaceConfig#DEFAULT_GLOBAL_INTERCEPTOR}.
-     * <p>Expects an instance of {@link org.codegist.crest.interceptor.RequestInterceptor}.
-     *
-     * @see org.codegist.crest.interceptor.RequestInterceptor
-     * @see org.codegist.crest.InterfaceContext#getProperties()
-     */
-    String CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR = "config.interface.default.request-interceptor";
-
-
     /*********************************************************
      *********************************************************
      ****** MethodConfig default values override properties 
@@ -303,6 +285,10 @@ public interface CRestProperty {
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
     String CONFIG_METHOD_DEFAULT_HTTP_METHOD = "config.method.default.http-method";
+
+    String CONFIG_METHOD_DEFAULT_CONTENT_TYPE = "config.method.default.content-type";
+
+    String CONFIG_METHOD_DEFAULT_ACCEPT = "config.method.default.accept";
 
     /**
      * override the default method extra params {@link org.codegist.crest.config.MethodConfig#DEFAULT_EXTRA_PARAMs}.

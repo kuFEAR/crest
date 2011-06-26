@@ -21,7 +21,6 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -36,12 +35,12 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> extends BaseCRestTest<T> {
 
-    public IDefaultValuesTest(CRest crest, Class<T> service) {
+    public IDefaultValuesTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 

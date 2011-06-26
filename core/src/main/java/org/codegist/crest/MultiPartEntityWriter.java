@@ -89,7 +89,7 @@ public class MultiPartEntityWriter implements EntityWriter {
                     }
                 } else {
                     String contentDisposition = partialPontentDiposition + (isNotBlank(partFileName) ? "; filename=\"" + partFileName + "\"\r\n" : "\r\n");
-                    String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset + "\r\n\r\n";
+                    String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset.displayName() + "\r\n\r\n";
                     for(Pair pair : process(param, charset, false)){
                         out.writeBytes(contentDisposition);
                         out.writeBytes(contentType);

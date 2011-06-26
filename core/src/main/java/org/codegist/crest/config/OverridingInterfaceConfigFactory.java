@@ -20,8 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.CRestContext;
-
 /**
  * Simple InterfaceConfigFactory that returns a overridden configuration, result of the config creation for a given interface from two InterfaceConfigFactories.
  *
@@ -61,11 +59,11 @@ public class OverridingInterfaceConfigFactory implements InterfaceConfigFactory 
         this.override = null;
     }
 
-    public InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) throws ConfigFactoryException {
-        InterfaceConfig configBase = baseFactory.newConfig(interfaze, context);
+    public InterfaceConfig newConfig(Class<?> interfaze) throws ConfigFactoryException {
+        InterfaceConfig configBase = baseFactory.newConfig(interfaze);
         InterfaceConfig override;
         if (overriderFactory != null) {
-            override = overriderFactory.newConfig(interfaze, context);
+            override = overriderFactory.newConfig(interfaze);
         }else{
             override = this.override;
         }

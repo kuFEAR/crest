@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.INullsTest;
 
@@ -31,7 +30,7 @@ import java.util.Collection;
  */
 public class NullsTest extends INullsTest<NullsTest.Nulls> {
 
-    public NullsTest(CRest crest) {
+    public NullsTest(CRestHolder crest) {
         super(crest, Nulls.class);
     }
 

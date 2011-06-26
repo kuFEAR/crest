@@ -64,7 +64,6 @@
         <test.src.dir>src/test/java</test.src.dir>
     </properties>
     <build>
-        <testSourceDirectory>${project.basedir}/${test.src.dir}</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -195,14 +194,6 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>integration-test</id>
-            <properties>
-                <test.src.dir>src/integration/java</test.src.dir>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>

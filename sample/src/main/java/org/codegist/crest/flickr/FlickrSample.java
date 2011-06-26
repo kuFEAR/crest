@@ -23,7 +23,7 @@ package org.codegist.crest.flickr;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
-import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
+//import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.service.Flickr;
@@ -58,9 +58,9 @@ public class FlickrSample implements Runnable {
                 .setDateFormat("Seconds")
                 .setBoolean("1", "0")
 
-                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
-                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
-                .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
+//                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
+//                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
+//                .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
                 .build();
 
         /* Build service instance */

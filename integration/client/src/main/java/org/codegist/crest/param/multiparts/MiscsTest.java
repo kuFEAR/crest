@@ -21,7 +21,6 @@
 package org.codegist.crest.param.multiparts;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.annotate.POST;
@@ -40,12 +39,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class MiscsTest extends BaseCRestTest<MiscsTest.Miscs> {
 
-    public MiscsTest(CRest crest) {
+    public MiscsTest(CRestHolder crest) {
         super(crest, Miscs.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 
@@ -67,9 +66,7 @@ public class MiscsTest extends BaseCRestTest<MiscsTest.Miscs> {
     @Test
     public void testMisc() throws IOException {
         InputStream is = new ByteArrayInputStream("hello".getBytes("UTF-8"));
-        File file = new File("textFile.txt");
-        file.deleteOnExit();
-
+        File file = File.createTempFile("textFile", "txt", getTempDir());
         FileWriter fw = new FileWriter(file);
         fw.write("that's my file");
         fw.close();
@@ -83,7 +80,7 @@ public class MiscsTest extends BaseCRestTest<MiscsTest.Miscs> {
                         "\n4(name=p3, content-type=text/plain;charset=UTF-8, value=2.3, filename=null)" +
                         "\n5(name=p3, content-type=text/plain;charset=UTF-8, value=3.4, filename=null)" +
                         "\n6(name=p4, content-type=application/octet-stream, value=hello, filename=null)" +
-                        "\n7(name=p5, content-type=application/octet-stream, value=that's my file, filename=textFile.txt)"
+                        "\n7(name=p5, content-type=application/octet-stream, value=that's my file, filename="+file.getName()+")"
                 , actual);
     }
 }

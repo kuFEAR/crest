@@ -20,7 +20,6 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.request.common.CommonRequestsTest;
 import org.junit.runners.Parameterized;
 
@@ -31,12 +30,12 @@ import java.util.Collection;
  */
 public class GetsTest extends CommonRequestsTest<Gets> {
 
-    public GetsTest(CRest crest) {
+    public GetsTest(CRestHolder crest) {
         super(crest, Gets.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
     }
 

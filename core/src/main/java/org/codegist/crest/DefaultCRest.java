@@ -23,16 +23,16 @@ package org.codegist.crest;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.reflect.ObjectMethodsAwareInvocationHandler;
+import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.ConfigFactoryException;
 import org.codegist.crest.config.InterfaceConfig;
+import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.http.HttpException;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.HttpRequestExecutor;
 import org.codegist.crest.http.HttpResponse;
-import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.DeserializationManager;
 
 import java.io.IOException;
@@ -40,26 +40,29 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
- * Default CRest implementation based on {@link org.codegist.crest.CRestContext} interface data model.
  * <p>On top of the behavior described in {@link org.codegist.crest.CRest}, this implementation adds :
  * <p>- {@link org.codegist.crest.interceptor.RequestInterceptor} to intercept any requests before it gets fired.
  * <p>- {@link org.codegist.crest.serializer.Serializer} to customize the serialization process of any types.
- * <p>- {@link org.codegist.crest.injector.Injector} to inject complexe types that can't be reduced to a String via the serializers.
  * <p>- {@link org.codegist.crest.handler.ResponseHandler} to customize response handling when interface method's response type is not one of raw types.
  * <p>- {@link org.codegist.crest.handler.ErrorHandler} to customize how the created interface behaves when any error occurs during the method call process.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class DefaultCRest implements CRest, Disposable {
 
-    private final CRestContext context;
+    private final HttpRequestExecutor httpRequestExecutor;
+    private final ProxyFactory proxyFactory;
+    private final InterfaceConfigFactory configFactory;
+    private final Map<String, Object> customProperties;
 
-    /**
-     * @param context The CRest configuration holder
-     */
-    public DefaultCRest(CRestContext context) {
-        this.context = context;   
+
+    public DefaultCRest(HttpRequestExecutor httpRequestExecutor, ProxyFactory proxyFactory, InterfaceConfigFactory configFactory, Map<String, Object> customProperties) {
+        this.httpRequestExecutor = httpRequestExecutor;
+        this.proxyFactory = proxyFactory;
+        this.configFactory = configFactory;
+        this.customProperties = customProperties;
     }
 
     /**
@@ -68,7 +71,7 @@ public class DefaultCRest implements CRest, Disposable {
     @SuppressWarnings("unchecked")
     public <T> T build(Class<T> interfaze) throws CRestException {
         try {
-            return (T) context.getProxyFactory().createProxy(interfaze.getClassLoader(), new RestInterfacer(interfaze), new Class[]{interfaze});
+            return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new RestInterfacer(interfaze), new Class[]{interfaze});
         } catch (Exception e) {
             return CRestException.<T>doThrow(e);
         }
@@ -77,11 +80,10 @@ public class DefaultCRest implements CRest, Disposable {
     class RestInterfacer<T> extends ObjectMethodsAwareInvocationHandler {
 
         private final InterfaceConfig interfaceConfig;
-        private final DeserializationManager deserializationManager;
+        private final DeserializationManager deserializationManager = (DeserializationManager) customProperties.get(DeserializationManager.class.getName());
 
         private RestInterfacer(Class<T> interfaze) throws ConfigFactoryException {
-            this.interfaceConfig = context.getConfigFactory().newConfig(interfaze, context);
-            this.deserializationManager = (DeserializationManager) context.getProperties().get(DeserializationManager.class.getName());
+            this.interfaceConfig = configFactory.newConfig(interfaze);
         }
 
         @Override
@@ -101,7 +103,6 @@ public class DefaultCRest implements CRest, Disposable {
             ResponseContext responseContext;
             Exception exception;
             RetryHandler retryHandler = mc.getRetryHandler();
-            HttpRequestExecutor httpRequestExecutor = context.getHttpRequestExecutor();
             do {
                 exception = null;
                 // build the request, can throw exception but that should not be part of the retry policy
@@ -142,10 +143,10 @@ public class DefaultCRest implements CRest, Disposable {
             HttpResponse response = responseContext.getResponse();
             Class<?> returnTypeClass = mc.getMethod().getReturnType();
             try {
-                if (returnTypeClass.equals(InputStream.class)) {
+                if (InputStream.class.equals(returnTypeClass)) {
                     // If InputStream return type, then return raw response ()
                     return response.asStream();
-                } else if (returnTypeClass.equals(Reader.class)) {
+                } else if (Reader.class.equals(returnTypeClass)) {
                     // If Reader return type, then return raw response
                     return response.asReader();
                 } else {
@@ -173,34 +174,23 @@ public class DefaultCRest implements CRest, Disposable {
          */
         private HttpRequest buildRequest(RequestContext requestContext) throws Exception {
             MethodConfig mc = requestContext.getMethodConfig();
-            RequestInterceptor gi = interfaceConfig.getGlobalInterceptor();
-            RequestInterceptor ri = mc.getRequestInterceptor();
-            String encoding = interfaceConfig.getEncoding();
 
             // Build base request
-            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), encoding)
+            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), interfaceConfig.getEncoding())
                     .within(requestContext)
-                    .using(mc.getHttpMethod())
                     .timeoutSocketAfter(mc.getSocketTimeout())
-                    .timeoutConnectionAfter(mc.getConnectionTimeout());
-
-
-            // Notify injectors (Global and method) before param injection
-            gi.beforeParamsInjectionHandle(builder, requestContext);
-            ri.beforeParamsInjectionHandle(builder, requestContext);
-
-            // Add default params
-            for(ParamConfig p : mc.getExtraParams()){
-                builder.addParam(p);
-            }
+                    .timeoutConnectionAfter(mc.getConnectionTimeout())
+                    .ofContentType(mc.getContentType())
+                    .thatAccepts(mc.getAccept())
+                    .withAction(mc.getHttpMethod())
+                    .withParams(mc.getExtraParams());
 
             for (int i = 0; i < mc.getParamCount(); i++) {
                 builder.addParam(mc.getParamConfig(i), requestContext.getValue(i));
             }
 
-            // Notify injectors (Global and method after param injection
-            ri.afterParamsInjectionHandle(builder, requestContext);
-            gi.afterParamsInjectionHandle(builder, requestContext);
+            // Notify interceptor
+            mc.getRequestInterceptor().beforeFire(builder, requestContext);
 
             return builder.build();
         }
@@ -208,6 +198,6 @@ public class DefaultCRest implements CRest, Disposable {
 
 
     public void dispose() {
-        Disposables.dispose(context.getHttpRequestExecutor());
+        Disposables.dispose(httpRequestExecutor);
     }
 }

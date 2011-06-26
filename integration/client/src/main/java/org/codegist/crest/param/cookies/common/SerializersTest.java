@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
@@ -37,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SerializersTest extends ISerializersTest<SerializersTest.Serializers> {
 
-    public SerializersTest(CRest crest) {
+    public SerializersTest(CRestHolder crest) {
         super(crest, Serializers.class);
     }
 
@@ -71,13 +70,13 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
     public void assertDefaultSerialize(String expectSerializedBof, String expectSerializedBof21, String expectSerializedBof22, String expectSerializedBof31, String expectSerializedBof32, String actual) {
         // these value doesn't mean anything, because the serialization generate cookies special characters (coma and semi-colon).
         // this test at least the the serialization process is executed for cookies as well
-        assertEquals("default(cookies(count:18):[p1=Data{val1=123, val2='val-456'}, p2=AnotherBuchOfData(val1=Fri Dec 31 00:00:00 GMT 2010, val2=false, val3=Data(val1=456, val2=val-789)), p2=AnotherBuchOfData(val1=Wed Jan 20 00:00:00 GMT 2010, val2=false, val3=Data(val1=789, val2=val-123)), p3=AnotherBuchOfData(val1=Thu Dec 02 00:00:00 GMT 2010, val2=true, val3=Data(val1=1456, val2=val-1789)), p3=AnotherBuchOfData(val1=Tue Mar 23 00:00:00 GMT 2010, val2=true, val3=Data(val1=1789, val2=val-1123))]) p1=Data{val1=123 p2=AnotherBuchOfData(val1=Wed Jan 20 00:00:00 GMT 2010 p3=AnotherBuchOfData(val1=Tue Mar 23 00:00:00 GMT 2010", actual);
+        assertEquals("default(cookies(count:18):[p1=Data{val1=123, val2='val-456'}, p2=AnotherBuchOfData(val1=31/12/2010 00:00:00, val2=false, val3=Data(val1=456, val2=val-789)), p2=AnotherBuchOfData(val1=20/01/2010 00:00:00, val2=false, val3=Data(val1=789, val2=val-123)), p3=AnotherBuchOfData(val1=02/12/2010 00:00:00, val2=true, val3=Data(val1=1456, val2=val-1789)), p3=AnotherBuchOfData(val1=23/03/2010 00:00:00, val2=true, val3=Data(val1=1789, val2=val-1123))]) p1=Data{val1=123 p2=AnotherBuchOfData(val1=20/01/2010 00:00:00 p3=AnotherBuchOfData(val1=23/03/2010 00:00:00", actual);
     }
 
     @Override
     public void assertConfiguredSerialize(String expectSerializedBof, String expectSerializedBof21, String expectSerializedBof22, String expectSerializedBof31, String expectSerializedBof32, String actual) {
         // these value doesn't mean anything, because the serialization generate cookies special characters (coma and semi-colon).
         // this test at least the the serialization process is executed for cookies as well
-        assertEquals("configured(cookies(count:18):[p1=Data(val1=123, val2=val-456), p2=MyBuchOfData(val1=Fri Dec 31 00:00:00 GMT 2010, val2=false, val3=Data(val1=456, val2=val-789)), p2=MyBuchOfData(val1=Wed Jan 20 00:00:00 GMT 2010, val2=false, val3=Data(val1=789, val2=val-123)), p3=MyBuchOfData(val1=Thu Dec 02 00:00:00 GMT 2010, val2=true, val3=Data(val1=1456, val2=val-1789)), p3=MyBuchOfData(val1=Tue Mar 23 00:00:00 GMT 2010, val2=true, val3=Data(val1=1789, val2=val-1123))]) p1=Data(val1=123 p2=MyBuchOfData(val1=Wed Jan 20 00:00:00 GMT 2010 p3=MyBuchOfData(val1=Tue Mar 23 00:00:00 GMT 2010", actual);
+        assertEquals("configured(cookies(count:18):[p1=Data(val1=123, val2=val-456), p2=MyBuchOfData(val1=31/12/2010 00:00:00, val2=false, val3=Data(val1=456, val2=val-789)), p2=MyBuchOfData(val1=20/01/2010 00:00:00, val2=false, val3=Data(val1=789, val2=val-123)), p3=MyBuchOfData(val1=02/12/2010 00:00:00, val2=true, val3=Data(val1=1456, val2=val-1789)), p3=MyBuchOfData(val1=23/03/2010 00:00:00, val2=true, val3=Data(val1=1789, val2=val-1123))]) p1=Data(val1=123 p2=MyBuchOfData(val1=20/01/2010 00:00:00 p3=MyBuchOfData(val1=23/03/2010 00:00:00", actual);
     }
 }

@@ -31,10 +31,7 @@ import org.codegist.crest.http.HttpRequest;
  */
 public class RequestInterceptorAdapter implements RequestInterceptor {
 
-    public void beforeParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception {
-    }
-
-    public void afterParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception {
+    public void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception {
     }
 
 }

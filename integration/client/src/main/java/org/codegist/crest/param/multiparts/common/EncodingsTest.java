@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IEncodingsTest;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import java.util.Collection;
  */
 public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
-    public EncodingsTest(CRest crest) {
+    public EncodingsTest(CRestHolder crest) {
         super(crest, Encodings.class);
     }
 

@@ -23,7 +23,7 @@ package org.codegist.crest.delicious.service;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.delicious.handler.DeliciousResponseHandler;
 import org.codegist.crest.delicious.model.*;
-import org.codegist.crest.security.handler.RefreshAuthenticationRetryHandler;
+import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
 
 import java.util.Date;
 
@@ -31,7 +31,7 @@ import java.util.Date;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @EndPoint("http://api.del.icio.us/v2")
-@RetryHandler(RefreshAuthenticationRetryHandler.class)
+@RetryHandler(RefreshAuthorizationRetryHandler.class)
 @ResponseHandler(DeliciousResponseHandler.class)
 //@Accepts("application/xml")
 public interface Delicious {

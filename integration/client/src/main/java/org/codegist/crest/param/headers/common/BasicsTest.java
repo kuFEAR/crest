@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.headers.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.GET;
 import org.codegist.crest.annotate.HeaderParam;
@@ -32,7 +31,7 @@ import org.codegist.crest.param.common.IBasicsTest;
  */
 public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
 
-    public BasicsTest(CRest crest) {
+    public BasicsTest(CRestHolder crest) {
         super(crest, Basics.class);
     }
 

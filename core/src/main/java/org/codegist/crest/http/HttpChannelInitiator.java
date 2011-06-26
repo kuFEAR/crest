@@ -21,6 +21,7 @@
 package org.codegist.crest.http;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -28,6 +29,6 @@ import java.io.IOException;
 
 public interface HttpChannelInitiator {
 
-    HttpChannel initiate(HttpMethod method, String url) throws IOException;
+    HttpChannel initiate(HttpMethod method, String url, Charset charset) throws IOException;
 
 }

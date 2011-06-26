@@ -21,7 +21,6 @@
 package org.codegist.crest.request.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,29 +30,29 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class CommonRequestsTest<T extends Requests> extends BaseCRestTest<T> {
 
-    public CommonRequestsTest(CRest crest, Class<T> service) {
+    public CommonRequestsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
 
-    public static CRest[] byRestServicesAndCustomContentTypes() {
-        return new CRest[]{
+    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
+        return new CRestHolder[]{
                 /* HttpURLConnection based CRest */
-                baseBuilder()
+                new CRestHolder(baseBuilder()
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-                        .build(),
+                        .build()),
                 /* Apache HttpClient based CRest */
-                baseBuilder()
+                new CRestHolder(baseBuilder()
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
                         .useHttpClientRestService()
-                        .build(),
+                        .build()),
         };
     }
 
 
     @Test
     public void testRaw() {
-        String actual = toTest.raw();
+        String actual = toTest.raw().toString();
         assertRaw(actual);
     }
 
@@ -63,7 +62,7 @@ public abstract class CommonRequestsTest<T extends Requests> extends BaseCRestTe
 
     @Test
     public void testAccept() {
-        String actual = toTest.accept();
+        String actual = toTest.accept().toString();
         assertAccept(actual);
     }
 
@@ -73,7 +72,7 @@ public abstract class CommonRequestsTest<T extends Requests> extends BaseCRestTe
 
     @Test
     public void testContentType() {
-        String actual = toTest.contentType();
+        String actual = toTest.contentType().toString();
         assertContentType(actual);
     }
 

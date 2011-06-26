@@ -41,7 +41,7 @@ public class SimpleXmlSerializer extends StreamingSerializer<Object> {
         try {
             serializer.write(value, out);
         } catch (Exception e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 

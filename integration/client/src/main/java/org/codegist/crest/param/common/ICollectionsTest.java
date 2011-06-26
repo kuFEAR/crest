@@ -21,7 +21,6 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -40,12 +39,12 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class ICollectionsTest<T extends ICollectionsTest.ICollections> extends BaseCRestTest<T> {
 
-    public ICollectionsTest(CRest crest, Class<T> service) {
+    public ICollectionsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 
@@ -67,7 +66,7 @@ public abstract class ICollectionsTest<T extends ICollectionsTest.ICollections> 
     }
 
     public void assertDefaultLists(String p11, String p12, boolean p21, boolean p22, Integer p31, Integer p32, Long p41, Long p42, String actual) {
-        String expected = format("default() p1=%s p2=%s p3=%s p4=%s", string(p11, p12), string(p21 ? "myTrue" : "myFalse", p22 ? "myTrue" : "myFalse"), string(p31, p32), string(p41, p42));
+        String expected = format("default() p1=%s p2=%s p3=%s p4=%s", string(p11, p12), string(toString(p21), toString(p22)), string(p31, p32), string(p41, p42));
         assertEquals(expected, actual);
     }
 
@@ -101,7 +100,7 @@ public abstract class ICollectionsTest<T extends ICollectionsTest.ICollections> 
                                    Long p41, String p4Sep, Long p42, String actual) {
         String expected = format("merging() p1=%s%s%s p2=%s%s%s p3=%s%s%s p4=%s%s%s",
                 p11, p1Sep, p12,
-                p21 ? "myTrue" : "myFalse", p2Sep, p22 ? "myTrue" : "myFalse",
+                toString(p21), p2Sep, toString(p22),
                 p31, p3Sep, p32,
                 p41, p4Sep, p42);
         assertEquals(expected, actual);

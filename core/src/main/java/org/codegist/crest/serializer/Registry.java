@@ -102,7 +102,7 @@ abstract class Registry<T> {
                     throw new SerializerException("Class " + clazz + " doesn't have neither default contructor or a Map argument constructor!", e1);
                 }
             } catch (Exception e) {
-                throw new SerializerException(e);
+                throw new SerializerException(e.getMessage(), e);
             }
         }
     }

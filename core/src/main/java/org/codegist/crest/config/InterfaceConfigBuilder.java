@@ -18,7 +18,6 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
     private final Class interfaze;
     private final Map<Method, MethodConfigBuilder> builderCache;
     private String encoding;
-    private RequestInterceptor globalInterceptor;
 
     // todo can we do without it ?
     public InterfaceConfigBuilder() {
@@ -51,17 +50,14 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         }
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
         String encoding = this.encoding;
-        RequestInterceptor globalInterceptor = this.globalInterceptor;
 
         if (!isTemplate) {
             encoding = defaultIfUndefined(encoding, CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING, InterfaceConfig.DEFAULT_ENCODING);
-            globalInterceptor = defaultIfUndefined(globalInterceptor, CRestProperty.CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR, newInstance(InterfaceConfig.DEFAULT_GLOBAL_INTERCEPTOR));
         }
         
         return new DefaultInterfaceConfig(
                 interfaze,
                 encoding,
-                globalInterceptor,
                 mConfig
         );
     }
@@ -84,23 +80,6 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         this.encoding = replacePlaceholders(encoding);
         return this;
     }
-
-    public InterfaceConfigBuilder setGlobalInterceptor(RequestInterceptor requestInterceptor) {
-        if (ignore(requestInterceptor)) return this;
-        this.globalInterceptor = requestInterceptor;
-        return this;
-    }
-
-    public InterfaceConfigBuilder setGlobalInterceptor(String interceptorClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(interceptorClassName)) return this;
-        return setGlobalInterceptor((Class<? extends RequestInterceptor>) Class.forName(replacePlaceholders(interceptorClassName)));
-    }
-
-    public InterfaceConfigBuilder setGlobalInterceptor(Class<? extends RequestInterceptor> interceptorCls) throws IllegalAccessException, InstantiationException {
-        if (ignore(interceptorCls)) return this;
-        return setGlobalInterceptor(newInstance(interceptorCls));
-    }
-
 
     /* METHODS SETTINGS METHODS */
 

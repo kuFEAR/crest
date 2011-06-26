@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.headers.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IDefaultValuesTest;
 
@@ -29,7 +28,7 @@ import org.codegist.crest.param.common.IDefaultValuesTest;
  */
 public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.DefaultValues> {
 
-    public DefaultValuesTest(CRest crest) {
+    public DefaultValuesTest(CRestHolder crest) {
         super(crest, DefaultValues.class);
     }
 

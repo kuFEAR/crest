@@ -20,9 +20,11 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.oauth.OAuthenticator;
-import org.codegist.crest.oauth.OAuthenticatorV10;
-import org.codegist.crest.oauth.Token;
+import org.codegist.crest.http.DefaultHttpRequestExecutor;
+import org.codegist.crest.http.HttpURLConnectionHttpChannelInitiator;
+import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.security.oauth.OAuthenticator;
+import org.codegist.crest.security.oauth.OAuthenticatorV1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,19 +57,19 @@ public class OAuthHelper {
 
 
     private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret, String requestUrl, String accessUrl, String redirect) throws IOException {
-        Token consumerToken = new Token(consumerTok, consumerSecret);
+        OAuthToken consumerOAuthToken = new OAuthToken(consumerTok, consumerSecret);
         Map<String, Object> config = new HashMap<String, Object>();
-        config.put(OAuthenticatorV10.CONFIG_TOKEN_REQUEST_URL, requestUrl);
-        config.put(OAuthenticatorV10.CONFIG_TOKEN_ACCESS_URL, accessUrl);
+        config.put(OAuthenticatorV1.CONFIG_TOKEN_REQUEST_URL, requestUrl);
+        config.put(OAuthenticatorV1.CONFIG_TOKEN_ACCESS_URL, accessUrl);
 
-        OAuthenticator oauth = new OAuthenticatorV10(new DefaultRestService(), consumerToken, config);
+        OAuthenticator oauth = new OAuthenticatorV1(new DefaultHttpRequestExecutor(new HttpURLConnectionHttpChannelInitiator()), consumerOAuthToken, config);
 
-        Token tok = oauth.getRequestToken();
+        OAuthToken tok = oauth.getRequestToken();
         System.out.println("RequestToken=" + tok);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("goto " + String.format(redirect, tok.getToken()));
         System.out.println("Input verifier :");
-        Token accessToken = oauth.getAccessToken(tok, br.readLine());
-        System.out.println("Token  =" + accessToken);
+        OAuthToken accessOAuthToken = oauth.getAccessToken(tok, br.readLine());
+        System.out.println("Token  =" + accessOAuthToken);
     }
 }

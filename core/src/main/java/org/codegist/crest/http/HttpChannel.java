@@ -38,13 +38,17 @@ public interface HttpChannel extends Disposable {
 
     void setHeader(String name, String value) throws IOException;
 
+    void setContentType(String value) throws IOException;
+
+    void setAccept(String value) throws IOException;
+
     void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException;
 
     int send() throws IOException;
 
     InputStream getResponseStream() throws IOException;
 
-    String readContentType()throws IOException;
+    String getResponseContentType() throws IOException;
 
-    String readContentEncoding()throws IOException;
+    String getResponseContentEncoding() throws IOException;
 }

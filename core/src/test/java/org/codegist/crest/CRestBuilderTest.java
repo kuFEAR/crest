@@ -30,8 +30,8 @@
 //import org.codegist.common.reflect.ProxyFactory;
 //import org.codegist.crest.annotate.EndPoint;
 //import org.codegist.crest.config.*;
-//import org.codegist.crest.oauth.OAuthenticator;
-//import org.codegist.crest.oauth.Token;
+//import org.codegist.crest.security.oauth.OAuthenticator;
+//import org.codegist.crest.security.oauth.Token;
 //import org.codegist.crest.security.AuthentificationManager;
 //import org.codegist.crest.security.OAuthentificationManager;
 //import org.codegist.crest.serializer.*;

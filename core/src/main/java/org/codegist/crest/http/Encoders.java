@@ -40,13 +40,13 @@ public final class Encoders {
     }
     public static String encode(String value, Charset charset, boolean quote){
         try {
-            String val =  Urls.encode(value, charset.toString());
+            String val =  Urls.encode(value, charset.displayName());
             if(quote) {
                 val = "\"" + val + "\"";
             }
             return val;
         } catch (UnsupportedEncodingException e) {
-            throw new CRestException(e);
+            throw new CRestException(e.getMessage(), e);
         }
     }
 }

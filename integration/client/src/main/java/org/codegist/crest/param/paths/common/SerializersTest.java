@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class SerializersTest extends ISerializersTest<SerializersTest.Serializers> {
 
-    public SerializersTest(CRest crest) {
+    public SerializersTest(CRestHolder crest) {
         super(crest, Serializers.class);
     }
 

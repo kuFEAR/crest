@@ -20,7 +20,6 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.request.common.CommonEntityRequestsTest;
 import org.junit.runners.Parameterized;
 
@@ -32,12 +31,12 @@ import java.util.Collection;
 //@Ignore
 public class PostsTest extends CommonEntityRequestsTest<Posts> {
 
-    public PostsTest(CRest crest) {
+    public PostsTest(CRestHolder crest) {
         super(crest, Posts.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
     }
 

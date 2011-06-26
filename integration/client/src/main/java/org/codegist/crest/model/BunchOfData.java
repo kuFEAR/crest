@@ -21,30 +21,26 @@
 package org.codegist.crest.model;
 
 import org.codegist.crest.annotate.Serializer;
+import org.codegist.crest.model.jackson.JacksonBunchOfData;
+import org.codegist.crest.model.jaxb.JaxbBunchOfData;
+import org.codegist.crest.model.simplexml.SimpleXmlBunchOfData;
 import org.codegist.crest.serializer.AnotherBunchOfDataSerializer;
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 /**
+ * abstract so that implementation-specific annotation are on subtypes in order to run the tests in environment where some of the declared annotation are not in the classpath
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @Serializer(AnotherBunchOfDataSerializer.class)
-@XmlRootElement
-@Root
-public class BunchOfData<T> {
+public abstract class BunchOfData<T> {
 
-    @Element
     private Date val1;
 
-    @Attribute
     private Boolean val2;
 
-    @Element
     private T val3;
 
     public BunchOfData(Date val1, Boolean val2, T val3) {
@@ -56,6 +52,29 @@ public class BunchOfData<T> {
     public BunchOfData() {
     }
 
+    public static <T> BunchOfData<T> create(org.codegist.crest.model.Serializer serializer, Date val1, Boolean val2, T val3){
+        String klass;
+        switch(serializer){
+            case JACKSON:
+                klass = "org.codegist.crest.model.jackson.JacksonBunchOfData";
+                break;
+            case JAXB:
+                klass = "org.codegist.crest.model.jaxb.JaxbBunchOfData";
+                break;
+            case SIMPLEXML:
+                klass = "org.codegist.crest.model.simplexml.SimpleXmlBunchOfData";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        try {
+            Constructor constructor = Class.forName(klass).getConstructor(Date.class, Boolean.class, Object.class);
+            return (BunchOfData<T>) constructor.newInstance(val1, val2, val3);
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Date getVal1() {
         return val1;
     }
@@ -64,7 +83,6 @@ public class BunchOfData<T> {
         this.val1 = val1;
     }
 
-    @XmlAttribute
     public Boolean getVal2() {
         return val2;
     }

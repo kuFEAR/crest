@@ -20,10 +20,10 @@
 
 package org.codegist.crest.param.headers.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IEncodingsTest;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -37,8 +37,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
-    public EncodingsTest(CRest crest) {
+    public EncodingsTest(CRestHolder crest) {
         super(crest, Encodings.class);
+    }
+
+
+    @Parameterized.Parameters
+    public static Collection<CRestHolder[]> getData() {
+        return crest(byRestServicesForHeaders());
     }
 
     @EndPoint("{crest.server.end-point}")
@@ -66,8 +72,8 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
     }
 
     @Override
-    public void assertDefault(String p1, String p21, String p22, String actual) {
-        String expected = format("default() p1=%s p2=%s", p1.replaceAll("\n", ""), string(p21.replaceAll("\n", ""), p22.replaceAll("\n", "")));
+    public void assertDefault(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
+        String expected = format("default() p1=%s p2=%s", encodeHeader(p1.replaceAll("\n", "")), string(encodeHeader(p21.replaceAll("\n", "")), encodeHeader(p22.replaceAll("\n", ""))));
         assertEquals(expected, actual);
     }
 }

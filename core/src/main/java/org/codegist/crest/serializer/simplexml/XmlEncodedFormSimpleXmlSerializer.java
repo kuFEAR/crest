@@ -85,7 +85,7 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
             }
             node.commit();
         } catch (Exception e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 

@@ -57,7 +57,6 @@ public final class Configs {
         return new DefaultInterfaceConfig(
                 defaultIfNull(overrides.getInterface(), base.getInterface()),
                 defaultIfNull(overrides.getEncoding(), base.getEncoding()),
-                defaultIfNull(overrides.getGlobalInterceptor(), base.getGlobalInterceptor()),
                 cache
         );
     }
@@ -109,6 +108,8 @@ public final class Configs {
         return new DefaultMethodConfig(
                 defaultIfNull(overrides.getMethod(), base.getMethod()),
                 defaultIfNull(overrides.getPathTemplate(), base.getPathTemplate()),
+                defaultIfNull(overrides.getContentType(), base.getContentType()),
+                defaultIfNull(overrides.getAccept(), base.getAccept()),
                 defaultIfNull(overrides.getHttpMethod(), base.getHttpMethod()),
                 defaultIfNull(overrides.getSocketTimeout(), base.getSocketTimeout()),
                 defaultIfNull(overrides.getConnectionTimeout(), base.getConnectionTimeout()),

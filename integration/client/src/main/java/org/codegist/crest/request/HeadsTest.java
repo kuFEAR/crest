@@ -20,24 +20,25 @@
 
 package org.codegist.crest.request;
 
-import org.codegist.crest.CRest;
-import org.codegist.crest.request.common.CommonRequestsTest;
+import org.codegist.crest.BaseCRestTest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
 
+import static org.codegist.crest.request.common.CommonRequestsTest.*;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HeadsTest extends CommonRequestsTest<Heads> {
+public class HeadsTest extends BaseCRestTest<Heads> {
 
-    public HeadsTest(CRest crest) {
+    public HeadsTest(CRestHolder crest) {
         super(crest, Heads.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServicesAndCustomContentTypes());
     }
 

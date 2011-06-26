@@ -20,8 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.CRestContext;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +39,7 @@ public class PreconfiguredInterfaceConfigFactory implements InterfaceConfigFacto
         this.config = configMap;
     }
 
-    public InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) {
+    public InterfaceConfig newConfig(Class<?> interfaze) {
         return config.get(interfaze);
     }
 }

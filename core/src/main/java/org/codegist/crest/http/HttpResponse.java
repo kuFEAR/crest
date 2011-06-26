@@ -43,10 +43,6 @@ public class HttpResponse {
 
     private String responseString = null;
 
-//    public HttpResponse(HttpRequest request, int statusCode) throws IOException {
-//        this(request, statusCode, EMPTY_HTTP_RESOURCE);
-//    }
-
     public HttpResponse(HttpRequest request, int statusCode, HttpResource resource) throws IOException {
         this.request = request;
         this.statusCode = statusCode;
@@ -110,28 +106,5 @@ public class HttpResponse {
                 .append("request", request)
                 .toString();
     }
-
-    private static final HttpResource EMPTY_HTTP_RESOURCE = new HttpResource () {
-        private final InputStream INPUT_STREAM = new ByteArrayInputStream(new byte[0]);
-        public InputStream getContent() throws HttpException {
-            return INPUT_STREAM;
-        }
-
-        public Charset getCharset() throws IOException {
-            return null;
-        }
-
-        public String getContentType() throws IOException {
-            return null;
-        }
-
-        public String getContentEncoding() throws IOException {
-            return null;
-        }
-
-        public void release() throws HttpException {
-
-        }
-    };
 }
 

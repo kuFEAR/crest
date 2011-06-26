@@ -20,7 +20,6 @@
 
 package org.codegist.crest.utils;
 
-import javax.ws.rs.core.Cookie;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -30,16 +29,6 @@ import static java.util.Arrays.asList;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class ToStrings {
-    public static String string(List<Cookie> cookies, int expected) {
-        String headers;
-        if (cookies.isEmpty() || cookies.size() == expected) {
-            headers = "";
-        } else {
-            headers = format("cookies(count:%d):%s", cookies.size(), cookies);
-        }
-        return headers;
-    }
-
     public static String string(Object... value) {
         return string(asList(value));
     }

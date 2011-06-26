@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
@@ -35,7 +34,7 @@ import java.util.Collection;
  */
 public class SerializersTest extends ISerializersTest<SerializersTest.Serializers> {
 
-    public SerializersTest(CRest crest) {
+    public SerializersTest(CRestHolder crest) {
         super(crest, Serializers.class);
     }
 

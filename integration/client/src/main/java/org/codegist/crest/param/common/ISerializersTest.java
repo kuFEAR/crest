@@ -21,7 +21,6 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRest;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.serializer.AnotherBunchOfDataSerializer;
@@ -42,22 +41,22 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class ISerializersTest<T extends ISerializersTest.ISerializers> extends BaseCRestTest<T> {
 
-    public ISerializersTest(CRest crest, Class<T> service) {
+    public ISerializersTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
     }
 
     @Test
     public void testDefaultSerialize() {
-        Data bof = new Data(123, "val-456");
-        BunchOfData<Data> bof21 = new BunchOfData<Data>(date("31/12/2010", "dd/MM/yyyy"), false, new Data(456, "val-789"));
-        BunchOfData<Data> bof22 = new BunchOfData<Data>(date("20/01/2010", "dd/MM/yyyy"), false, new Data(789, "val-123"));
-        BunchOfData<Data> bof31 = new BunchOfData<Data>(date("02/12/2010", "dd/MM/yyyy"), true, new Data(1456, "val-1789"));
-        BunchOfData<Data> bof32 = new BunchOfData<Data>(date("23/03/2010", "dd/MM/yyyy"), true, new Data(1789, "val-1123"));
+        Data bof = newData(123, "val-456");
+        BunchOfData<Data> bof21 = newBunchOfData(date("31/12/2010", "dd/MM/yyyy"), false, newData(456, "val-789"));
+        BunchOfData<Data> bof22 = newBunchOfData(date("20/01/2010", "dd/MM/yyyy"), false, newData(789, "val-123"));
+        BunchOfData<Data> bof31 = newBunchOfData(date("02/12/2010", "dd/MM/yyyy"), true, newData(1456, "val-1789"));
+        BunchOfData<Data> bof32 = newBunchOfData(date("23/03/2010", "dd/MM/yyyy"), true, newData(1789, "val-1123"));
 
         String actual = toTest.defaults(bof, (Collection) asList(bof21, bof22), new BunchOfData[]{bof31, bof32});
 
@@ -99,11 +98,11 @@ public abstract class ISerializersTest<T extends ISerializersTest.ISerializers> 
 
     @Test
     public void testConfiguredSerialize() {
-        Data bof = new Data(123, "val-456");
-        BunchOfData<Data> bof21 = new BunchOfData<Data>(date("31/12/2010", "dd/MM/yyyy"), false, new Data(456, "val-789"));
-        BunchOfData<Data> bof22 = new BunchOfData<Data>(date("20/01/2010", "dd/MM/yyyy"), false, new Data(789, "val-123"));
-        BunchOfData<Data> bof31 = new BunchOfData<Data>(date("02/12/2010", "dd/MM/yyyy"), true, new Data(1456, "val-1789"));
-        BunchOfData<Data> bof32 = new BunchOfData<Data>(date("23/03/2010", "dd/MM/yyyy"), true, new Data(1789, "val-1123"));
+        Data bof = newData(123, "val-456");
+        BunchOfData<Data> bof21 = newBunchOfData(date("31/12/2010", "dd/MM/yyyy"), false, newData(456, "val-789"));
+        BunchOfData<Data> bof22 = newBunchOfData(date("20/01/2010", "dd/MM/yyyy"), false, newData(789, "val-123"));
+        BunchOfData<Data> bof31 = newBunchOfData(date("02/12/2010", "dd/MM/yyyy"), true, newData(1456, "val-1789"));
+        BunchOfData<Data> bof32 = newBunchOfData(date("23/03/2010", "dd/MM/yyyy"), true, newData(1789, "val-1123"));
 
         String actual = toTest.configured(bof, (Collection) asList(bof21, bof22), new BunchOfData[]{bof31, bof32});
 

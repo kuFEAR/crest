@@ -20,7 +20,6 @@
 
 package org.codegist.crest.request.common;
 
-import org.codegist.crest.CRest;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,41 +29,41 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class CommonEntityRequestsTest<T extends EntityRequests> extends CommonRequestsTest<T> {
 
-    public CommonEntityRequestsTest(CRest crest, Class<T> service) {
+    public CommonEntityRequestsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
     }
 
 
-    public static CRest[] byRestServicesAndCustomContentTypes() {
-        return new CRest[]{
+    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
+        return new CRestHolder[]{
                 /* HttpURLConnection based CRest */
-                baseBuilder()
+                new CRestHolder(baseBuilder()
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-                        .build(),
+                        .build()),
                 /* Apache HttpClient based CRest */
-                baseBuilder()
+                new CRestHolder(baseBuilder()
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
                         .useHttpClientRestService()
-                        .build(),
+                        .build()),
         };
     }
 
 
     @Test
     public void testRaw() {
-        String actual = toTest.raw();
+        String actual = toTest.raw().toString();
         assertEquals("raw() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[*/*]", actual);
     }
 
     @Test
     public void testAccept() {
-        String actual = toTest.accept();
+        String actual = toTest.accept().toString();
         assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1, application/custom2]", actual);
     }
 
     @Test
     public void testContentType() {
-        String actual = toTest.contentType();
+        String actual = toTest.contentType().toString();
         assertEquals("contentType() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 

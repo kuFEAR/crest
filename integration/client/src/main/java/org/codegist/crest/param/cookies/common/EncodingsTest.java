@@ -20,10 +20,10 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IEncodingsTest;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -35,8 +35,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
-    public EncodingsTest(CRest crest) {
+    public EncodingsTest(CRestHolder crest) {
         super(crest, Encodings.class);
+    }
+    
+    @Parameterized.Parameters
+    public static Collection<CRestHolder[]> getData() {
+        return crest(byRestServicesForHeaders());
     }
 
     @EndPoint("{crest.server.end-point}")
@@ -60,9 +65,9 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
     // comma/semi-colons are considered special charactere in cookies value and are not escapable (true ?)
 
     @Override
-    public void assertDefault(String p1, String p21, String p22, String actual) {
+    public void assertDefault(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
         assertEquals(
-                "default(cookies(count:6):[p1=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}]) p1=£(')? &£d&f{/p3=}: p2=£(')? &£d&f{/p3=}:", actual);
+                encodeHeader("default(cookies(count:6):[p1=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}]) p1=£(')? &£d&f{/p3=}: p2=£(')? &£d&f{/p3=}:"),  actual);
     }
 
     @Override

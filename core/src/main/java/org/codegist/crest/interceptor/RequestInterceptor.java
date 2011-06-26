@@ -30,7 +30,7 @@ import org.codegist.crest.http.HttpRequest;
  * @see org.codegist.crest.InterfaceContext#getProperties()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface RequestInterceptor {
+public interface RequestInterceptor { // TODO is that really usefull ?
 
     /**
      * Called after general parameter have been added to the request, but before parameters are injected into it.
@@ -38,15 +38,6 @@ public interface RequestInterceptor {
      * @param builder The current http request being build
      * @param context The current request context
      */
-    void beforeParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception ;
-
-
-    /**
-     * Called after parameters have been injected into the request.
-     *
-     * @param builder The current http request being build
-     * @param context The current request context
-     */
-    void afterParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception ;
+    void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception;
 
 }

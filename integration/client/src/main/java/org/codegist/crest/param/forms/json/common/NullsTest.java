@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms.json.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.INullsTest;
@@ -35,12 +34,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class NullsTest extends INullsTest<NullsTest.Nulls> {
 
-    public NullsTest(CRest crest) {
+    public NullsTest(CRestHolder crest) {
         super(crest, Nulls.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byJsonSerializersAndRestServices());
     }
 

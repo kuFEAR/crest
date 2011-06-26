@@ -33,6 +33,8 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
 
     private HttpMethod meth;
+    private String contentType;
+    private String accept;
     private Long socketTimeout;
     private Long connectionTimeout;
     private RequestInterceptor requestInterceptor;
@@ -75,6 +77,8 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
 
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
         String path = Urls.normalizeSlashes(join("/", paths));
+        String contentType = this.contentType;
+        String accept = this.accept;
         HttpMethod meth = this.meth;
         Long socketTimeout = this.socketTimeout;
         Long connectionTimeout = this.connectionTimeout;
@@ -88,6 +92,8 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         if (!isTemplate) {
             path = defaultIfUndefined(path, CRestProperty.CONFIG_METHOD_DEFAULT_PATH, MethodConfig.DEFAULT_PATH);
             meth = defaultIfUndefined(meth, CRestProperty.CONFIG_METHOD_DEFAULT_HTTP_METHOD, MethodConfig.DEFAULT_HTTP_METHOD);
+            contentType = defaultIfUndefined(contentType, CRestProperty.CONFIG_METHOD_DEFAULT_CONTENT_TYPE, MethodConfig.DEFAULT_CONTENT_TYPE);
+            accept = defaultIfUndefined(accept, CRestProperty.CONFIG_METHOD_DEFAULT_ACCEPT, MethodConfig.DEFAULT_ACCEPT);
             ParamConfig[] defs = defaultIfUndefined(null, CRestProperty.CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, MethodConfig.DEFAULT_EXTRA_PARAMs);
             for (ParamConfig def : defs) {
                 if (extraParams.containsKey(def.getName())) continue;
@@ -117,6 +123,8 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return new DefaultMethodConfig(
                 method,
                 RegexPathTemplate.create(path),
+                contentType,
+                accept,
                 meth,
                 socketTimeout,
                 connectionTimeout,
@@ -157,14 +165,14 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
             addDeserializer(deserializerRegistry.getForMimeType(mMime));
             mimes[i] = mMime;
         }
-        addExtraHeaderParam("Accept", join(",", mimes));
-
+        this.accept = join(",", mimes);
         return this;
     }
 
     public MethodConfigBuilder setProduces(String contentType) {
         if (ignore(contentType)) return this;
-        return addExtraHeaderParam("Content-Type", replacePlaceholders(contentType));
+        this.contentType = replacePlaceholders(contentType);
+        return this;
     }
 
     public MethodConfigBuilder addExtraFormParam(String name, String defaultValue) {

@@ -36,7 +36,7 @@ import java.io.IOException;
 public class DefaultResponseHandler implements ResponseHandler {
 
     public final Object handle(ResponseContext context) throws IOException {
-        if (context.getExpectedType().toString().equals("void")) return null;
+        if (void.class.equals(context.getExpectedType()) || Void.class.equals(context.getExpectedType())) return null;
         return context.deserialize();
     }
 }

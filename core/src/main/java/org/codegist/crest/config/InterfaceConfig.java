@@ -49,13 +49,6 @@ public interface InterfaceConfig {
      */
     String DEFAULT_ENCODING = "UTF-8";
 
-    /**
-     * Default request interceptor applied when non specified.
-     *
-     * @see org.codegist.crest.config.InterfaceConfig#getGlobalInterceptor()
-     */
-    Class<? extends RequestInterceptor> DEFAULT_GLOBAL_INTERCEPTOR = NoOpRequestInterceptor.class;
-
     /*##############################################################################*/
 
     /**
@@ -64,18 +57,6 @@ public interface InterfaceConfig {
      * @return the encoding of the interface
      */
     String getEncoding();
-
-    /**
-     * Global service request interceptor.
-     * <p>For a given request, the call order is :
-     * <p>- InterfaceConfig.requestInterceptor.beforeParamsInjectionHandle(...)
-     * <p>- MethodConfig.requestInterceptor.beforeParamsInjectionHandle(...)
-     * <p>- MethodConfig.requestInterceptor.afterParamsInjectionHandle(...)
-     * <p>- InterfaceConfig.requestInterceptor.afterParamsInjectionHandle(...)
-     *
-     * @return global service request interceptor.
-     */
-    RequestInterceptor getGlobalInterceptor();
 
     /**
      * @return The interface being configured by the current object.

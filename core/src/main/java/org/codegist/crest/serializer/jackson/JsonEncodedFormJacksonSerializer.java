@@ -74,7 +74,7 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
             }
             jackson.writeValue(out, map);
         } catch (IOException e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
     private boolean areAllNull(Collection<Object> objects){

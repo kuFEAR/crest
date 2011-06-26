@@ -21,6 +21,7 @@
 package org.codegist.crest;
 
 import org.codegist.common.collect.Maps;
+import org.codegist.common.lang.Strings;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
@@ -28,6 +29,13 @@ import org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.OverridingInterfaceConfigFactory;
 import org.codegist.crest.http.*;
+import org.codegist.crest.security.basic.BasicAuthorization;
+import org.codegist.crest.security.oauth.OAuthorization;
+import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.security.oauth.OAuthenticator;
+import org.codegist.crest.security.oauth.OAuthenticatorV1;
+import org.codegist.crest.security.Authorization;
+import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jackson.JacksonSerializer;
@@ -39,6 +47,7 @@ import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -129,25 +138,21 @@ public class CRestBuilder {
     private final Set<String> plainTextMimes = new HashSet<String>(asList(DEFAULT_PLAINTEXT_MIMETYPES));
     private final Set<String> xmlMimes = new HashSet<String>(asList(DEFAULT_XML_MIMETYPES));
     private final Set<String> jsonMimes = new HashSet<String>(asList(DEFAULT_JSON_MIMETYPES));
+    private final Map<String, Object> customProperties = new HashMap<String, Object>();
+    private final Map<String, String> placeholders = new HashMap<String, String>();
+    private final Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
+    private final Map<String,Object> oauthConfig = new HashMap<String, Object>();
 
     private InterfaceConfigFactory overridesFactory = null;
-
-    private Map<String, Object> customProperties = new HashMap<String, Object>();
-    private Map<String, String> placeholders = new HashMap<String, String>();
-    private Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
 
     private HttpChannelInitiator httpChannelInitiator;
 
     private boolean useHttpClient = false;
+    private String auth;
+    private String username;
+    private String password;
 
     public CRest build() {
-        CRestContext context = buildContext();
-        return new DefaultCRest(context);
-    }
-
-    CRestContext buildContext() {
-        customProperties = Maps.defaultsIfNull(customProperties);
-
         ProxyFactory proxyFactory = buildProxyFactory();
         Maps.putIfNotPresent(customProperties, ProxyFactory.class.getName(), proxyFactory);
 
@@ -159,25 +164,15 @@ public class CRestBuilder {
         SerializerRegistry serializerRegistry = buildSerializerRegistry();
         Maps.putIfNotPresent(customProperties, SerializerRegistry.class.getName(), serializerRegistry);
 
-        HttpChannelInitiator httpChannelInitiator = buildHttpChannelInitiator();
-        HttpRequestExecutor httpRequestExecutor = new DefaultHttpRequestExecutor(httpChannelInitiator);
-        Maps.putIfNotPresent(customProperties, HttpRequestExecutor.class.getName(), httpRequestExecutor);
+        HttpChannelInitiator plainChannelInitiator = buildHttpChannelInitiator();
+        Authorization authorization = buildAuthorization(plainChannelInitiator);
+        HttpRequestExecutor httpRequestExecutor = buildHttpRequestExecutor(plainChannelInitiator, authorization);
 
-//        AuthentificationManager authentificationManager = buildAuthentificationManager(restService);
-//        Maps.putIfNotPresent(customProperties, AuthentificationManager.class.getName(), authentificationManager);
+        Maps.putIfNotPresent(customProperties, HttpRequestExecutor.class.getName(), httpRequestExecutor);
+        Maps.putIfNotPresent(customProperties, Authorization.class.getName(), authorization);
 
         InterfaceConfigFactory configFactory = buildInterfaceConfigFactory();
 
-//        if (authentificationManager != null) {
-//            RequestInterceptor authentificationInterceptor = new AuthentificationInterceptor(authentificationManager);
-//            try {
-//                configFactory = new OverridingInterfaceConfigFactory(configFactory, new InterfaceConfigBuilder()
-//                        .setGlobalInterceptor(authentificationInterceptor)
-//                        .buildTemplate());
-//            } catch (Exception e) {
-//                throw new CRestException(e);
-//            }
-//        }
         Maps.putIfNotPresent(customProperties, InterfaceConfigFactory.class.getName(), configFactory);
 
         /* Put then in the properties. These are not part of the API */
@@ -200,7 +195,7 @@ public class CRestBuilder {
                 break;
         }
 
-        return new DefaultCRestContext(httpRequestExecutor, proxyFactory, configFactory, customProperties);
+        return new DefaultCRest(httpRequestExecutor, proxyFactory, configFactory, customProperties);
     }
 
     private HttpChannelInitiator buildHttpChannelInitiator() {
@@ -213,6 +208,17 @@ public class CRestBuilder {
         } else {
             return httpChannelInitiator;
         }
+    }
+
+    private HttpRequestExecutor buildHttpRequestExecutor(HttpChannelInitiator plainChannelInitiator, Authorization authorization){
+        HttpRequestExecutor httpRequestExecutor;
+        if(authorization != null) {
+            HttpChannelInitiator authenticationChannelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization);
+            httpRequestExecutor = new DefaultHttpRequestExecutor(authenticationChannelInitiator);
+        }else{
+            httpRequestExecutor = new DefaultHttpRequestExecutor(plainChannelInitiator);
+        }
+        return httpRequestExecutor;
     }
 
     private ProxyFactory buildProxyFactory() {
@@ -336,54 +342,51 @@ public class CRestBuilder {
     }
 
     private InterfaceConfigFactory buildInterfaceConfigFactory() {
-        InterfaceConfigFactory configFactory = new CRestAnnotationDrivenInterfaceConfigFactory();
-//        switch (configType) {
-//            default:
-//            case CFG_TYPE_ANNO:
-//                if (properties != null) {
-//                    configFactory = new OverridingInterfaceConfigFactory(
-//                            baseConfigFactory,
-//                            new PropertiesDrivenInterfaceConfigFactory(properties, true));
-//                } else if (document != null) {
-//                    configFactory = new OverridingInterfaceConfigFactory(
-//                            baseConfigFactory,
-//                            new XmlDrivenInterfaceConfigFactory(document, true));
-//                } else {
-//                    configFactory = baseConfigFactory;
-//                }
-//                break;
-//            case CFG_TYPE_PROP:
-//                configFactory = new PropertiesDrivenInterfaceConfigFactory(properties);
-//                break;
-//            case CFG_TYPE_XML:
-//                configFactory = new XmlDrivenInterfaceConfigFactory(document);
-//                break;
-//        }
+        InterfaceConfigFactory configFactory = new CRestAnnotationDrivenInterfaceConfigFactory(customProperties);
         if (overridesFactory != null) {
             configFactory = new OverridingInterfaceConfigFactory(configFactory, overridesFactory);
         }
         return configFactory;
     }
 
+    private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
+        if("oauth".equals(auth)) {
+            return buildOAuthorization(channelInitiator);
+        }else if("basic".equals(auth)) {
+            return buildBasicAuthorization();
+        }else{
+            return null;
+        }
+    }
 
-//    private AuthentificationManager buildAuthentificationManager(RestService restService) {
-//        String consumerKey = (String) customProperties.get(OAUTH_CONSUMER_KEY);
-//        String consumerSecret = (String) customProperties.get(OAUTH_CONSUMER_SECRET);
-//        String accessTok = (String) customProperties.get(OAUTH_ACCESS_TOKEN);
-//        String accessTokenSecret = (String) customProperties.get(OAUTH_ACCESS_TOKEN_SECRET);
-//        Map<String, String> accessTokenExtras = (Map<String, String>) customProperties.get(OAUTH_ACCESS_TOKEN_EXTRAS);
-//
-//        if (Strings.isBlank(consumerKey)
-//                || Strings.isBlank(consumerSecret)
-//                || Strings.isBlank(accessTok)
-//                || Strings.isBlank(accessTokenSecret)) return null;
-//
-//        Token consumerToken = new Token(consumerKey, consumerSecret);
-//        OAuthenticator authenticator = new OAuthenticatorV10(restService, consumerToken, customProperties);
-//        Token accessToken = new Token(accessTok, accessTokenSecret, accessTokenExtras);
-//
-//        return new OAuthentificationManager(authenticator, accessToken);
-//    }
+    private Authorization buildBasicAuthorization() {
+        try {
+            return new BasicAuthorization(username, password);
+        } catch (UnsupportedEncodingException e) {
+            throw new CRestException(e);
+        }
+    }
+
+    private Authorization buildOAuthorization(HttpChannelInitiator channelInitiator) {
+        String consumerKey = (String) oauthConfig.get(OAUTH_CONSUMER_KEY);
+        String consumerSecret = (String) oauthConfig.get(OAUTH_CONSUMER_SECRET);
+        String accessTok = (String) oauthConfig.get(OAUTH_ACCESS_TOKEN);
+        String accessTokenSecret = (String) oauthConfig.get(OAUTH_ACCESS_TOKEN_SECRET);
+        Map<String, String> accessTokenExtras = (Map<String, String>) oauthConfig.get(OAUTH_ACCESS_TOKEN_EXTRAS);
+
+        if (Strings.isBlank(consumerKey)
+                || Strings.isBlank(consumerSecret)
+                || Strings.isBlank(accessTok)
+                || Strings.isBlank(accessTokenSecret)) return null;
+
+        OAuthToken consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);
+        HttpRequestExecutor executor = new DefaultHttpRequestExecutor(channelInitiator);
+
+        OAuthenticator authenticator = new OAuthenticatorV1(executor, consumerOAuthToken, customProperties);
+        OAuthToken accessOAuthToken = new OAuthToken(accessTok, accessTokenSecret, accessTokenExtras);
+
+        return new OAuthorization(authenticator, accessOAuthToken);
+    }
 
     public CRestBuilder useHttpClientRestService() {
         this.useHttpClient = true;
@@ -448,75 +451,10 @@ public class CRestBuilder {
      * @return current builder
      */
     public CRestBuilder setProperties(Map<String, Object> customProperties) {
-        this.customProperties = customProperties;
+        this.customProperties.clear();
+        this.customProperties.putAll(customProperties);
         return this;
     }
-//
-//    /**
-//     * Resulting CRest instance will handle annotated configurated interfaces.
-//     *
-//     * @return current builder
-//     * @see org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory
-//     */
-//    public CRestBuilder withAnnotatedConfig() {
-//        this.configType = CFG_TYPE_ANNO;
-//        this.properties = null;
-//        return this;
-//    }
-//
-//    /**
-//     * Resulting CRest instance will handle properties based configuration.
-//     * <p>Given properties must be able to configure any possible interface given to the resulting CRest instance.
-//     *
-//     * @param props configuration properties
-//     * @return current builder
-//     */
-//    public CRestBuilder withPropertiesConfig(Map<String, String> props) {
-//        this.configType = CFG_TYPE_PROP;
-//        this.properties = props;
-//        return this;
-//    }
-//
-//    /**
-//     * Resulting CRest instance will handle xml based configuration.
-//     * <p>Given xml must be able to configure any possible interface given to the resulting CRest instance.
-//     *
-//     * @param document xml configuration document
-//     * @return current builder
-//     */
-//    public CRestBuilder withXmlConfig(Document document) {
-//        this.configType = CFG_TYPE_XML;
-//        this.document = document;
-//        return this;
-//    }
-
-//    /**
-//     * Resulting CRest instance will overrides any configuration resulting from its current {@link org.codegist.crest.config.InterfaceConfigFactory} with the given properties.
-//     * <p>Properties must be formatted as documentated in {@link org.codegist.crest.config.PropertiesDrivenInterfaceConfigFactory}
-//     * <p>Can be used for instance to override the server end-point for differents devs environment.
-//     *
-//     * @param props properties
-//     * @return current builder
-//     * @see org.codegist.crest.config.PropertiesDrivenInterfaceConfigFactory
-//     */
-//    public CRestBuilder overrideDefaultConfigWith(Map<String, String> props) {
-//        this.properties = props;
-//        return this;
-//    }
-//
-//    /**
-//     * Resulting CRest instance will overrides any configuration resulting from its current {@link org.codegist.crest.config.InterfaceConfigFactory} with the given xml configuration.
-//     * <p>Document must be formatted as documentated in {@link org.codegist.crest.config.XmlDrivenInterfaceConfigFactory}
-//     * <p>Can be used for instance to override the server end-point for differents devs environment.
-//     *
-//     * @param document xml configuration
-//     * @return current builder
-//     * @see org.codegist.crest.config.XmlDrivenInterfaceConfigFactory
-//     */
-//    public CRestBuilder overrideDefaultConfigWith(Document document) {
-//        this.document = document;
-//        return this;
-//    }
 
     /**
      * Resulting CRest instance will overrides any configuration resulting from its internal {@link org.codegist.crest.config.InterfaceConfigFactory} with the configuration issued by the given overridesFactory.
@@ -554,37 +492,26 @@ public class CRestBuilder {
     }
 
     /**
-     * <p>Authentification parameters are added to the request headers.
-     * <p>See  {@link CRestBuilder#usePreauthentifiedOAuth(String, String, String, String, boolean)}
-     *
-     * @param consumerKey       Consumer key
-     * @param consumerSecret    Consumer secret
-     * @param accessToken       Preauthentified access token
-     * @param accessTokenSecret Preauthentified access token secret
-     * @return current builder
-     * @see CRestBuilder#usePreauthentifiedOAuth(String, String, String, String, boolean)
-     */
-    public CRestBuilder usePreauthentifiedOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
-        return usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret, true);
-    }
-
-    /**
      * Resulting CRest instance will authentify every requests using OAuth (http://oauth.net/) authentification mechanism, using a pre-authentified access token and consumer information.
      *
      * @param consumerKey         Consumer key
      * @param consumerSecret      Consumer secret
      * @param accessToken         Preauthentified access token
      * @param accessTokenSecret   Preauthentified access token secret
-     * @param authParamsInHeaders If true, adds the authentification information into the request headers, otherwise in the query string
      * @return current builder
      */
-    public CRestBuilder usePreauthentifiedOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, boolean authParamsInHeaders) {
-        this.customProperties = Maps.defaultsIfNull(customProperties);
-        setProperty(OAUTH_CONSUMER_KEY, consumerKey);
-        setProperty(OAUTH_CONSUMER_SECRET, consumerSecret);
-        setProperty(OAUTH_ACCESS_TOKEN, accessToken);
-        setProperty(OAUTH_ACCESS_TOKEN_SECRET, accessTokenSecret);
-        setProperty(OAUTH_PARAM_DEST, authParamsInHeaders ? "header" : "url");
+    public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
+        this.auth = "oauth";
+        this.oauthConfig.put(OAUTH_CONSUMER_KEY, consumerKey);
+        this.oauthConfig.put(OAUTH_CONSUMER_SECRET, consumerSecret);
+        this.oauthConfig.put(OAUTH_ACCESS_TOKEN, accessToken);
+        this.oauthConfig.put(OAUTH_ACCESS_TOKEN_SECRET, accessTokenSecret);
+        return this;
+    }
+    public CRestBuilder authenticatesWithBasic(String username, String password) {
+        this.auth = "basic";
+        this.username = username;
+        this.password = password;
         return this;
     }
 

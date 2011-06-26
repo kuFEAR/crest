@@ -20,8 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.CRestContext;
-
 /**
  * Creates instances of {@link org.codegist.crest.config.InterfaceConfig} for the given interfaces.
  * <p>Implementors must apply to the following contract :
@@ -44,6 +42,6 @@ public interface InterfaceConfigFactory {
      * @throws ConfigFactoryException for any problem occuring during the configuration construction
      * @see org.codegist.crest.config.InterfaceConfigFactory
      */
-    InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) throws ConfigFactoryException;
+    InterfaceConfig newConfig(Class<?> interfaze) throws ConfigFactoryException;
 
 }

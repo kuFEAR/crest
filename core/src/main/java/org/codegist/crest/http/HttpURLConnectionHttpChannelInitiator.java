@@ -25,13 +25,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
 */
 public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiator {
 
-    public HttpChannel initiate(HttpMethod method, String url) throws IOException {
+    public HttpChannel initiate(HttpMethod method, String url, Charset charset) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod(method.name());
         return new HttpURLConnectionHttpChannel(con, method.hasEntity());
@@ -66,6 +67,14 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             con.addRequestProperty(name, value);
         }
 
+        public void setContentType(String value) throws IOException {
+            setHeader("Content-Type", value);
+        }
+
+        public void setAccept(String value) throws IOException {
+            setHeader("Accept", value);
+        }
+
         public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
             this.httpEntityWriter = httpEntityWriter;
         }
@@ -87,11 +96,11 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             return con.getInputStream();
         }
 
-        public String readContentType() {
+        public String getResponseContentType() {
             return con.getHeaderField("Content-Type");
         }
 
-        public String readContentEncoding() {
+        public String getResponseContentEncoding() {
             return con.getHeaderField("Content-Encoding");
         }
 

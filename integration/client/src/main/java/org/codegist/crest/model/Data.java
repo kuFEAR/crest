@@ -20,22 +20,24 @@
 
 package org.codegist.crest.model;
 
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
+import org.codegist.crest.model.jackson.JacksonBunchOfData;
+import org.codegist.crest.model.jackson.JacksonData;
+import org.codegist.crest.model.jaxb.JaxbBunchOfData;
+import org.codegist.crest.model.jaxb.JaxbData;
+import org.codegist.crest.model.simplexml.SimpleXmlBunchOfData;
+import org.codegist.crest.model.simplexml.SimpleXmlData;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.lang.reflect.Constructor;
+import java.util.Date;
 
 /**
+ * abstract so that implementation-specific annotation are on subtypes in order to run the tests in environment where some of the declared annotation are not in the classpath
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-@XmlRootElement
-@Root
-public class Data {
+public abstract class Data {
 
-    @Element
     private int val1;
 
-    @Element
     private String val2;
 
     public Data() {
@@ -45,6 +47,29 @@ public class Data {
     public Data(int val1, String val2) {
         this.val1 = val1;
         this.val2 = val2;
+    }
+
+    public static Data create(org.codegist.crest.model.Serializer serializer, int val1, String val2){
+        String klass;
+        switch(serializer){
+            case JACKSON:
+                klass = "org.codegist.crest.model.jackson.JacksonData";
+                break;
+            case JAXB:
+                klass = "org.codegist.crest.model.jaxb.JaxbData";
+                break;
+            case SIMPLEXML:
+                klass = "org.codegist.crest.model.simplexml.SimpleXmlData";
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        try {
+            Constructor constructor = Class.forName(klass).getConstructor(int.class, String.class);
+            return (Data) constructor.newInstance(val1, val2);
+        }catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getVal1() {

@@ -32,6 +32,9 @@ public class Pair {
     private final String value;
     private final Charset charset;
 
+    public Pair(String name, String value) {
+        this(name, value, null, true);
+    }
     public Pair(String name, String value, Charset charset, boolean encoded) {
         this.name = encoded ? name : encode(name, charset);
         this.value = encoded ? value : encode(value, charset);

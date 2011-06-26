@@ -22,8 +22,8 @@
 //
 //import org.codegist.common.lang.Pair;
 //import org.codegist.crest.http.HttpRequest;
-//import org.codegist.crest.oauth.OAuthenticator;
-//import org.codegist.crest.oauth.Token;
+//import org.codegist.crest.security.oauth.OAuthenticator;
+//import org.codegist.crest.security.oauth.Token;
 //import org.junit.Test;
 //
 //import static org.mockito.Mockito.mock;

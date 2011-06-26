@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.ICollectionsTest;
 
@@ -35,7 +34,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collections> {
 
-    public CollectionsTest(CRest crest) {
+    public CollectionsTest(CRestHolder crest) {
         super(crest, Collections.class);
     }
 
@@ -66,10 +65,12 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
     public void assertDefaultLists(String p11, String p12, boolean p21, boolean p22, Integer p31, Integer p32, Long p41, Long p42, String actual) {
         assertEquals(format("default(cookies(count:8):[p1=%s, p1=%s, p2=%s, p2=%s, p3=%s, p3=%s, p4=%s, p4=%s]) p1=%s p2=%s p3=%s p4=%s",
                 p11, p12,
-                p21 ? "myTrue" : "myFalse", p22 ? "myTrue" : "myFalse",
+                toString(p21), toString(p22),
                 p31, p32,
                 p41, p42,
-                p12, p22 ? "myTrue" : "myFalse", p32, p42
+                p12,
+                toString(p22), 
+                p32, p42
         ), actual);
     }
 }

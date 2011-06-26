@@ -66,6 +66,10 @@ public interface MethodConfig {
      */
     String DEFAULT_PATH = "";
 
+    String DEFAULT_CONTENT_TYPE = null;
+
+    String DEFAULT_ACCEPT = "*/*";
+
     /**
      * Default method extra params.
      *
@@ -129,6 +133,10 @@ public interface MethodConfig {
     ErrorHandler getErrorHandler();
 
     RequestInterceptor getRequestInterceptor();
+
+    String getContentType();
+
+    String getAccept();
 
     Long getSocketTimeout();
 

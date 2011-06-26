@@ -37,14 +37,12 @@ class DefaultInterfaceConfig implements InterfaceConfig {
 
     private final Class<?> interfaze;
     private final String encoding;
-    private final RequestInterceptor globalInterceptor;
     private final Map<Method, MethodConfig> cache;
     private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultInterfaceConfig(Class<?> interfaze, String encoding, RequestInterceptor globalInterceptor, Map<Method, MethodConfig> cache) {
+    DefaultInterfaceConfig(Class<?> interfaze, String encoding, Map<Method, MethodConfig> cache) {
         this.interfaze = interfaze;
         this.encoding = encoding;
-        this.globalInterceptor = globalInterceptor;
         this.cache = Maps.unmodifiable(cache);
         this.annotations = interfaze != null ? Maps.unmodifiable(Annotations.toMap(interfaze.getAnnotations())) : null;
     }
@@ -55,10 +53,6 @@ class DefaultInterfaceConfig implements InterfaceConfig {
 
     public String getEncoding() {
         return encoding;
-    }
-
-    public RequestInterceptor getGlobalInterceptor() {
-        return globalInterceptor;
     }
 
     public Method[] getMethods() {
@@ -77,7 +71,6 @@ class DefaultInterfaceConfig implements InterfaceConfig {
         return new ToStringBuilder(this)
                 .append("interface", interfaze)
                 .append("encoding", encoding)
-                .append("globalInterceptor", globalInterceptor)
                 .append("cache", cache)
                 .toString();
     }

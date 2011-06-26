@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.ICollectionsTest;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import java.util.Set;
  */
 public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collections> {
 
-    public CollectionsTest(CRest crest) {
+    public CollectionsTest(CRestHolder crest) {
         super(crest, Collections.class);
     }
 

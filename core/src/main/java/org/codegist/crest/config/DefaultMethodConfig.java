@@ -43,6 +43,8 @@ class DefaultMethodConfig implements MethodConfig {
 
     private final Method method;
     private final PathTemplate path;
+    private final String contentType;
+    private final String accept;
     private final HttpMethod httpMethod;
     private final Long socketTimeout;
     private final Long connectionTimeout;
@@ -56,9 +58,11 @@ class DefaultMethodConfig implements MethodConfig {
     private final ParamConfig[] methodParamConfigs;
     private final Map<Class<? extends Annotation>, Annotation> annotations;
 
-    DefaultMethodConfig(Method method, PathTemplate path, HttpMethod httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
+    DefaultMethodConfig(Method method, PathTemplate path, String contentType, String accept, HttpMethod httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
         this.method = method;
         this.path = path;
+        this.contentType = contentType;
+        this.accept = accept;
         this.httpMethod = httpMethod;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
@@ -79,6 +83,14 @@ class DefaultMethodConfig implements MethodConfig {
 
     public ResponseHandler getResponseHandler() {
         return responseHandler;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getAccept() {
+        return accept;
     }
 
     public Method getMethod() {
@@ -136,6 +148,8 @@ class DefaultMethodConfig implements MethodConfig {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("path", path)
+                .append("contentType", contentType)
+                .append("accept", accept)
                 .append("method", method)
                 .append("httpMethod", httpMethod)
                 .append("socketTimeout", socketTimeout)

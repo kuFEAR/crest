@@ -24,6 +24,7 @@ import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 
 import static java.lang.String.format;
 
@@ -33,7 +34,8 @@ import static java.lang.String.format;
 public class BunchOfDataSerializer extends StringSerializer<BunchOfData<Data>> {
 
     public String serialize(BunchOfData<Data> value, Charset charset) throws SerializerException {
-        return format("MyBuchOfData(val1=%s,val2=%s,val3=Data(val1=%s,val2=%s))", value.getVal1(), value.getVal2(), value.getVal3().getVal1(), value.getVal3().getVal2());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return format("MyBuchOfData(val1=%s,val2=%s,val3=Data(val1=%s,val2=%s))", sdf.format(value.getVal1()), value.getVal2(), value.getVal3().getVal1(), value.getVal3().getVal2());
     }
 
 }

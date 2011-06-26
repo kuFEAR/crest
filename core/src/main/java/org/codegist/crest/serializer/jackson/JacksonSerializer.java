@@ -42,7 +42,7 @@ public class JacksonSerializer<T> extends StreamingSerializer<T> {
         try {
             jackson.writeValue(out, value);
         } catch (IOException e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 }

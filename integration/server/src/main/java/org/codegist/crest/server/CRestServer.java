@@ -22,12 +22,27 @@ package org.codegist.crest.server;
 
 import org.codegist.crest.server.stubs.request.*;
 
+import java.io.Console;
+import java.io.IOException;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class CRestServer {
 
     private final Server server;
+
+    public static void main(String[] args) throws IOException {
+        new Thread(){
+            @Override
+            public void run() {
+                CRestServer server = new CRestServer("http://localhost:8080");
+            }
+        }.start();
+        
+        System.out.print("Press enter to stop");
+        System.in.read();
+    }
 
     public CRestServer(String address) {
         this.server = Server.createAndStart(address,

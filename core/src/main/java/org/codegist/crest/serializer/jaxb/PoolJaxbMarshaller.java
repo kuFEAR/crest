@@ -79,7 +79,7 @@ class PooledJaxb implements Jaxb {
             if (jaxb == null)
                 throw new SerializerException("No jaxb could have been retrieved in the allowed time window");
         } catch (InterruptedException e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
         return jaxb;
     }

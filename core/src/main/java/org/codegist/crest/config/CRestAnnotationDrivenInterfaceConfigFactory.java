@@ -22,7 +22,6 @@ package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Methods;
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.CRestContext;
 import org.codegist.crest.MultiParts;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.http.HttpRequest;
@@ -44,25 +43,26 @@ import java.util.*;
  */
 public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
+    public static final String PROP_BUILD_TEMPLATE = CRestAnnotationDrivenInterfaceConfigFactory.class + "#build-template";
+    public static final String PROP_MODEL_PRIORITY = CRestAnnotationDrivenInterfaceConfigFactory.class + "#model-priority";
+
+    private final Map<String,Object> customProperties;
     private final boolean buildTemplates;
-    private final boolean modelPriority = false; // todo
+    private final boolean modelPriority;
 
-    public CRestAnnotationDrivenInterfaceConfigFactory(boolean buildTemplates) {
-        this.buildTemplates = buildTemplates;
-    }
-
-    public CRestAnnotationDrivenInterfaceConfigFactory() {
-        this(false);
+    public CRestAnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties) {
+        this.customProperties = customProperties;
+        this.buildTemplates = Boolean.valueOf((String) customProperties.get(PROP_BUILD_TEMPLATE));
+        this.modelPriority = Boolean.valueOf((String) customProperties.get(PROP_MODEL_PRIORITY));
     }
 
     // TODO handle @MultiPartParam(s)
-    public InterfaceConfig newConfig(Class<?> interfaze, CRestContext context) throws ConfigFactoryException {
+    public InterfaceConfig newConfig(Class<?> interfaze) throws ConfigFactoryException {
         try {
             /* Interface specifics */
             EndPoint endPoint = interfaze.getAnnotation(EndPoint.class);
             Path path = interfaze.getAnnotation(Path.class);
             Encoding encoding = interfaze.getAnnotation(Encoding.class);
-            GlobalInterceptor globalInterceptor = interfaze.getAnnotation(GlobalInterceptor.class);
 
             /* Methods defaults */
             SocketTimeout socketTimeout = interfaze.getAnnotation(SocketTimeout.class);
@@ -82,7 +82,7 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             Serializer serializer = interfaze.getAnnotation(Serializer.class);
             Encoded encoded = interfaze.getAnnotation(Encoded.class);
 
-            InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, context.getProperties());
+            InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, customProperties);
             for (ParamConfigHolder c : extraParams) {
                 config.addMethodsExtraParam(c.name, c.defaultValue, c.destination, c.metadatas);
             }
@@ -90,7 +90,6 @@ public class CRestAnnotationDrivenInterfaceConfigFactory implements InterfaceCon
             if (endPoint != null) config.setMethodsEndPoint(endPoint.value());
             if (path != null) config.appendMethodsPath(path.value());
             if (encoding != null) config.setEncoding(encoding.value());
-            if (globalInterceptor != null) config.setGlobalInterceptor(globalInterceptor.value());
 
             if (socketTimeout != null) config.setMethodsSocketTimeout(socketTimeout.value());
             if (connectionTimeout != null) config.setMethodsConnectionTimeout(connectionTimeout.value());

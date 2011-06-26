@@ -27,12 +27,14 @@ import org.codegist.crest.handler.ResponseHandler;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import java.io.IOException;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class GoogleResponseHandler implements ResponseHandler {
 
-    public final Object handle(ResponseContext context) {
+    public final Object handle(ResponseContext context) throws IOException {
         /* Marshall the response */
         Response<?> res = context.deserializeTo(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
         /* Check for google OK status */

@@ -205,7 +205,7 @@
 //                                .setErrorHandler(getMethodProp(serviceAlias, methAlias, "error-handler"))
 //                                .setRetryHandler(getMethodProp(serviceAlias, methAlias, "retry-handler"))
 //                                .setEntityWriter(getMethodProp(serviceAlias, methAlias, "body-writer"))
-//                                .setAccepts(getMethodProp(serviceAlias, methAlias, "consumes"))
+//                                .setAccept(getMethodProp(serviceAlias, methAlias, "consumes"))
 //                                .setParamsSerializer(getMethodProp(serviceAlias, methAlias, "serializer"));
 //                        break;
 //                    }

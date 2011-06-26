@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms.json.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.ICollectionsTest;
@@ -37,12 +36,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collections> {
 
-    public CollectionsTest(CRest crest) {
+    public CollectionsTest(CRestHolder crest) {
         super(crest, Collections.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byJsonSerializersAndRestServices());
     }
 

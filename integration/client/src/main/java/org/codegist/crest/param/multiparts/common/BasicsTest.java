@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.MultiPartEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IBasicsTest;
@@ -30,7 +29,7 @@ import org.codegist.crest.param.common.IBasicsTest;
  */
 public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
 
-    public BasicsTest(CRest crest) {
+    public BasicsTest(CRestHolder crest) {
         super(crest, Basics.class);
     }
 

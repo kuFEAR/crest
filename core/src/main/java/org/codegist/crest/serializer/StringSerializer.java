@@ -33,7 +33,7 @@ public abstract class StringSerializer<V> implements Serializer<V> {
         try {
             out.write(serialize(value, charset).getBytes(charset));
         } catch (IOException e) {
-            throw new SerializerException(e);
+            throw new SerializerException(e.getMessage(), e);
         }
     }
 

@@ -30,19 +30,19 @@ import org.codegist.crest.request.common.Requests;
 @EndPoint("{crest.server.end-point}")
 @Path("request/head")
 @HEAD
-public interface Heads extends Requests {
+public interface Heads {
 
     @GET
     String last();
 
-    String raw();
+    void raw();
 
     @Path("accept")
     @Consumes({"application/custom1", "application/custom2"})
-    String accept();
+    void accept();
 
     @Path("content-type")
     @Produces("application/custom")
-    String contentType();
+    void contentType();
 
 }

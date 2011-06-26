@@ -34,16 +34,10 @@ public class CompositeRequestInterceptor implements RequestInterceptor {
         this.interceptors = interceptors;
     }
 
-    public void beforeParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception {
+    public void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception {
         for (RequestInterceptor interceptor : interceptors) {
             if (interceptor == null) continue;
-            interceptor.beforeParamsInjectionHandle(builder, context);
-        }
-    }
-
-    public void afterParamsInjectionHandle(HttpRequest.Builder builder, RequestContext context) throws Exception {
-        for (RequestInterceptor interceptor : interceptors) {
-            interceptor.afterParamsInjectionHandle(builder, context);
+            interceptor.beforeFire(builder, context);
         }
     }
 

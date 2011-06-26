@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms.json.common;
 
-import org.codegist.crest.CRest;
 import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IDefaultValuesTest;
@@ -35,12 +34,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.DefaultValues> {
 
-    public DefaultValuesTest(CRest crest) {
+    public DefaultValuesTest(CRestHolder crest) {
         super(crest, DefaultValues.class);
     }
 
     @Parameterized.Parameters
-    public static Collection<CRest[]> getData() {
+    public static Collection<CRestHolder[]> getData() {
         return crest(byJsonSerializersAndRestServices());
     }
 
