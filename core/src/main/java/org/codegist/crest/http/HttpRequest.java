@@ -33,7 +33,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import static org.codegist.crest.http.HttpParamProcessor.iterateProcess;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -144,8 +147,34 @@ public class HttpRequest {
         return cookieParams;
     }
 
-    public List<HttpParam> getFormParam() {
+    public List<HttpParam> getFormParams() {
         return formParam;
+    }
+
+
+
+    public Iterator<Pair> iterateProcessedHeaders() {
+        return iterateProcess(headerParams, charset);
+    }
+
+    public Iterator<Pair> iterateProcessedMatrixes() {
+        return iterateProcess(matrixParams, charset);
+    }
+
+    public Iterator<Pair> iterateProcessedQueries() {
+        return iterateProcess(queryParams, charset);
+    }
+
+    public Iterator<Pair> iterateProcessedPaths() {
+        return iterateProcess(pathParams, charset);
+    }
+
+    public Iterator<Pair> iterateProcessedCookies() {
+        return iterateProcess(cookieParams, charset);
+    }
+
+    public Iterator<Pair> iterateProcessedForms() {
+        return iterateProcess(formParam, charset);
     }
 
     public static class Builder {

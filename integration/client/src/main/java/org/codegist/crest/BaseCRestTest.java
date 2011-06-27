@@ -26,7 +26,6 @@ import org.codegist.crest.model.Data;
 import org.codegist.crest.model.Serializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -158,7 +157,7 @@ public abstract class BaseCRestTest<T> {
 
     public static CRestBuilder baseBuilder() {
         return new CRestBuilder()
-                .setConfigPlaceholder("crest.server.end-point", TEST_SERVER)
+                .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                 .addProperties(DEFAULT_PROPERTIES)
                 .bindPlainTextDeserializerWith("text/html");
     }

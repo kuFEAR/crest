@@ -57,7 +57,7 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
     private static final String NASTY = "£\"(')?\n &£d&f{/p3=}:,;£\"(')?\n &£d&f{/pp3=}";
 
     @Test
-    public void testEncodings() throws UnsupportedEncodingException {
+    public void testDefaults() throws UnsupportedEncodingException {
         String actual = toTest.defaults(NASTY, asList(NASTY, NASTY));
         assertDefault(NASTY, NASTY, NASTY, actual);
     }

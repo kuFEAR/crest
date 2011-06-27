@@ -20,7 +20,10 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.MultiPartParam;
+import org.codegist.crest.annotate.POST;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.common.IEncodingsTest;
 import org.junit.Test;
 
@@ -43,12 +46,6 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
         @Path("default")
         String defaults(
-                @MultiPartParam("p1") String p1,
-                @MultiPartParam("p2") Collection<String> p2);
-
-        @Path("encoded")
-        @Encoded
-        String encoded(
                 @MultiPartParam("p1") String p1,
                 @MultiPartParam("p2") Collection<String> p2);
 

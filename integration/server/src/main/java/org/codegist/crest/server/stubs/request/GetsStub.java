@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.codegist.common.collect.Collections.join;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -64,6 +65,6 @@ public class GetsStub {
     }
 
     private static String asResponse(String from, List<String> contentTypes, List<String> accepts) {
-        return format("%s() content-type-header=%s accepts-header=%s", from, contentTypes, accepts);
+        return format("%s() content-type-header=[%s] accepts-header=[%s]", from, join(",", contentTypes), join(",", accepts));
     }
 }

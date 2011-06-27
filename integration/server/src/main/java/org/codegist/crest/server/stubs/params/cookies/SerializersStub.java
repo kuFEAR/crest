@@ -24,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
 import java.util.List;
 
+import static java.lang.String.format;
 import static org.codegist.crest.server.utils.ToStrings.string;
 
 /**
@@ -36,31 +37,37 @@ public class SerializersStub {
 
     @GET
     @Path("default")
-    public String defaults(
-            @HeaderParam("Cookie") List<Cookie> cookies,
-            @CookieParam("p1") String p1,
-            @CookieParam("p2") String p2,
-            @CookieParam("p3") String p3) {
-        return String.format("default(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+    public String defaults(@HeaderParam("Cookie") List<Cookie> cookies) {
+        return format("default(%s) %s=%s %s=%s %s=%s", string(cookies, 3),
+                cookies.get(0).getName(),
+                cookies.get(0).getValue(),
+                cookies.get(1).getName(),
+                cookies.get(1).getValue(),
+                cookies.get(2).getName(),
+                cookies.get(2).getValue()
+        );
     }
 
     @GET
     @Path("configured")
-    public String configured(
-            @HeaderParam("Cookie") List<Cookie> cookies,
-            @CookieParam("p1") String p1,
-            @CookieParam("p2") String p2,
-            @CookieParam("p3") String p3) {
-        return String.format("configured(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+    public String configured(@HeaderParam("Cookie") List<Cookie> cookies) {
+        return format("configured(%s) %s=%s %s=%s %s=%s", string(cookies, 3),
+                cookies.get(0).getName(),
+                cookies.get(0).getValue(),
+                cookies.get(1).getName(),
+                cookies.get(1).getValue(),
+                cookies.get(2).getName(),
+                cookies.get(2).getValue()
+        );
     }
 
     @GET
     @Path("null")
     public String nulls(
             @HeaderParam("Cookie") List<Cookie> cookies,
-            @CookieParam("p1") String p1,
-            @CookieParam("p2") String p2,
-            @CookieParam("p3") String p3) {
-        return String.format("null(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+            @CookieParam("p1") Cookie p1,
+            @CookieParam("p2") Cookie p2,
+            @CookieParam("p3") Cookie p3) {
+        return format("null(%s) p1=%s p2=%s p3=%s", string(cookies, 0), p1,p2,p3);
     }
 }

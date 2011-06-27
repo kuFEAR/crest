@@ -21,11 +21,7 @@
 package org.codegist.crest.security;
 
 import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.Pair;
-
-import java.util.List;
 
 /**
  * AuthentificationManager interface

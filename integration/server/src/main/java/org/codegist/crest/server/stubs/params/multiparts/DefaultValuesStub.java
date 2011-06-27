@@ -20,31 +20,42 @@
 
 package org.codegist.crest.server.stubs.params.multiparts;
 
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import static org.codegist.crest.server.stubs.params.multiparts.MultiParts.toResponseString;
+import static java.lang.String.format;
+import static org.codegist.crest.server.utils.ToStrings.string;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 @Produces("text/html;charset=UTF-8")
+@Consumes("multipart/form-data")
 @Path("params/multipart/default-value")
 public class DefaultValuesStub {
 
     @POST
     @Path("value")
-    public String value(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("value", msg);
+    public String value(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") FormDataBodyPart p2
+    ) throws UnsupportedEncodingException {
+        return format("value() p1=%s p2=%s", string(p1),string(p2));
     }
 
     @POST
     @Path("param")
-    public String param(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("param", msg);
+    public String param(
+            @FormDataParam("p1") List<FormDataBodyPart> p1,
+            @FormDataParam("p2") FormDataBodyPart p2,
+            @FormDataParam("p3") FormDataBodyPart p3) throws UnsupportedEncodingException {
+        return format("param() p1=%s p2=%s p3=%s", string(p1),string(p2),string(p3));
     }
 }

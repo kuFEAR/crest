@@ -53,7 +53,7 @@ public class DatesTest extends IDatesTest<DatesTest.Dates> {
 
     @Override
     public void assertDates(String p1, String p21, String p22, String actual) {
-        assertEquals(format("date(cookies(count:3):[p1=%s, p2=%s, p2=%s]) p1=%s p2=%s",
+        assertEquals(format("date(cookies(count:2):[p1=%s,p2=%s,p2=%s]) p1=%s p2=%s",
                 p1,
                 p21, p22,
                 p1, p22

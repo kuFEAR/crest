@@ -20,38 +20,55 @@
 
 package org.codegist.crest.server.stubs.params.multiparts;
 
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import static org.codegist.crest.server.stubs.params.multiparts.MultiParts.toResponseString;
+import static java.lang.String.format;
+import static org.codegist.crest.server.utils.ToStrings.string;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 @Produces("text/html;charset=UTF-8")
+@Consumes("multipart/form-data")
 @Path("params/multipart/serializer")
 public class SerializersStub {
 
 
     @POST
     @Path("default")
-    public String defaults(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("default", msg);
+    public String defaults(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") List<FormDataBodyPart> p2,
+            @FormDataParam("p3") List<FormDataBodyPart> p3
+    ) throws UnsupportedEncodingException {
+        return format("default() p1=%s p2=%s p3=%s", string(p1), string(p2), string(p3));
     }
 
     @POST
     @Path("configured")
-    public String configured(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("configured", msg);
+    public String configured(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") List<FormDataBodyPart> p2,
+            @FormDataParam("p3") List<FormDataBodyPart> p3
+    ) throws UnsupportedEncodingException {
+        return format("configured() p1=%s p2=%s p3=%s", string(p1), string(p2), string(p3));
     }
 
     @POST
     @Path("null")
-    public String nulls(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("null", msg, "p1", "p2", "p3");
+    public String nulls(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") List<FormDataBodyPart> p2,
+            @FormDataParam("p3") List<FormDataBodyPart> p3
+    ) throws UnsupportedEncodingException {
+        return format("null() p1=%s p2=%s p3=%s", string(p1), string(p2), string(p3));
     }
 }

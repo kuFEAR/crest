@@ -40,7 +40,6 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.codegist.common.net.Urls.parseQueryString;
-import static org.codegist.crest.http.HttpParamProcessor.process;
 
 /**
  * TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

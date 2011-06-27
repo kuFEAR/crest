@@ -20,25 +20,32 @@
 
 package org.codegist.crest.server.stubs.params.multiparts;
 
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.io.UnsupportedEncodingException;
 
+import static java.util.Arrays.asList;
 import static org.codegist.crest.server.stubs.params.multiparts.MultiParts.toResponseString;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 @Produces("text/html;charset=UTF-8")
+@Consumes("multipart/form-data")
 @Path("params/multipart/basic")
 public class BasicsStub {
 
     @POST
-    public String send(MultipartBody msg) throws UnsupportedEncodingException {
-        return toResponseString("send", msg, "p1", "p2");
+    public String send(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") FormDataBodyPart p2
+    ) throws UnsupportedEncodingException {
+        return toResponseString("send", asList(p1, p2), "p1", "p2");
     }
 
 }

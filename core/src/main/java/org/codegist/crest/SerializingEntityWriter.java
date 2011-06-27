@@ -49,6 +49,6 @@ public class SerializingEntityWriter implements EntityWriter {
     }
 
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
-        serializer.serialize(request.getFormParam(), request.getCharset(), outputStream);
+        serializer.serialize(request.getFormParams(), request.getCharset(), outputStream);
     }
 }

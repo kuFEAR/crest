@@ -40,7 +40,7 @@ public class EncodingsStub {
             @HeaderParam("Cookie") List<Cookie> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2) {
-        return String.format("default(%s) p1=%s p2=%s", string(cookies, 3), p1, p2);
+        return String.format("default(%s) p1=%s p2=%s", string(cookies, -1), p1, p2);
     }
 
     @GET
@@ -49,7 +49,7 @@ public class EncodingsStub {
             @HeaderParam("Cookie") List<Cookie> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2) {
-        return String.format("encoded(%s) p1=%s p2=%s", string(cookies, 3), p1, p2);
+        return String.format("encoded(%s) p1=%s p2=%s", string(cookies, -1), p1, p2);
     }
 
 }

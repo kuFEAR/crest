@@ -22,7 +22,6 @@ package org.codegist.crest.server;
 
 import org.codegist.crest.server.stubs.request.*;
 
-import java.io.Console;
 import java.io.IOException;
 
 /**
@@ -30,13 +29,22 @@ import java.io.IOException;
  */
 public class CRestServer {
 
+    private final Class<? extends Server> SERVER_IMPL = JerseyServer.class;
     private final Server server;
 
     public static void main(String[] args) throws IOException {
         new Thread(){
             @Override
             public void run() {
-                CRestServer server = new CRestServer("http://localhost:8080");
+                try {
+                    CRestServer server = new CRestServer("http://localhost:8080");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
         
@@ -44,8 +52,10 @@ public class CRestServer {
         System.in.read();
     }
 
-    public CRestServer(String address) {
-        this.server = Server.createAndStart(address,
+    public CRestServer(String address) throws IOException, IllegalAccessException, InstantiationException {
+        address += "/crest-server";
+        this.server = SERVER_IMPL.newInstance();
+        this.server.start(address,
                 new org.codegist.crest.server.stubs.params.queries.BasicsStub(),
                 new org.codegist.crest.server.stubs.params.queries.CollectionsStub(),
                 new org.codegist.crest.server.stubs.params.queries.DatesStub(),
@@ -63,7 +73,8 @@ public class CRestServer {
                 new org.codegist.crest.server.stubs.params.matrixes.SerializersStub(),
 
                 new org.codegist.crest.server.stubs.params.forms.BasicsStub(),
-                new org.codegist.crest.server.stubs.params.forms.CollectionsStub(),
+                new org.codegist.crest.server.stubs.params.forms.CollectionsStub(),              
+                
                 new org.codegist.crest.server.stubs.params.forms.DatesStub(),
                 new org.codegist.crest.server.stubs.params.forms.DefaultValuesStub(),
                 new org.codegist.crest.server.stubs.params.forms.EncodingsStub(),

@@ -21,7 +21,6 @@
 package org.codegist.crest.model.simplexml;
 
 import org.codegist.crest.model.BunchOfData;
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 

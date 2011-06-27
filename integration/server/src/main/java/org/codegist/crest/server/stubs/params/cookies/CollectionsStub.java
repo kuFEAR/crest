@@ -42,7 +42,7 @@ public class CollectionsStub {
             @CookieParam("p2") String p2,
             @CookieParam("p3") Integer p3,
             @CookieParam("p4") Long p4) {
-        return String.format("default(%s) p1=%s p2=%s p3=%s p4=%s", string(cookies, 4), p1, p2, p3, p4);
+        return String.format("default(%s) p1=%s p2=%s p3=%s p4=%s", string(cookies, -1), p1, p2, p3, p4);
     }
 
     @GET

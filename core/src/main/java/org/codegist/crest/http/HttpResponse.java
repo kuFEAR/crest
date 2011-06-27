@@ -23,7 +23,10 @@ package org.codegist.crest.http;
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.ToStringBuilder;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 
 /**

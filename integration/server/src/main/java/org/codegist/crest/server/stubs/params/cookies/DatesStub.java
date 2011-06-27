@@ -38,7 +38,7 @@ public class DatesStub {
             @HeaderParam("Cookie") List<Cookie> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2) {
-        return String.format("date(%s) p1=%s p2=%s", string(cookies, 2), p1, p2);
+        return String.format("date(%s) p1=%s p2=%s", string(cookies, -1), p1, p2);
     }
 
 }

@@ -57,7 +57,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
 
     @Override
     public void assertParamsValue(String p11, String p12, String p2, String p3, String actual) {
-        assertEquals(format("param(cookies(count:4):[p2=%s, p1=%s, p3=%s, p1=%s]) p1=%s p2=%s p3=%s",
+        assertEquals(format("param(cookies(count:4):[p2=%s,p1=%s,p3=%s,p1=%s]) p1=%s p2=%s p3=%s",
                 p2, p11, p3, p12,
                 p12, p2, p3
         ), actual);

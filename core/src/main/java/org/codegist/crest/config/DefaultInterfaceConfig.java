@@ -23,7 +23,6 @@ package org.codegist.crest.config;
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.reflect.Annotations;
-import org.codegist.crest.interceptor.RequestInterceptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

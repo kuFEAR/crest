@@ -20,30 +20,43 @@
 
 package org.codegist.crest.server.stubs.params.multiparts;
 
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.apache.cxf.jaxrs.ext.multipart.Multipart;
-import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 @Produces("text/html;charset=UTF-8")
+@Consumes("multipart/form-data")
 @Path("params/multipart/misc")
 public class MiscsStub {
 
     @POST
-    @Multipart
-    public String misc(MultipartBody msg) throws IOException {
+    public String misc(
+            @FormDataParam("p1") FormDataBodyPart p1,
+            @FormDataParam("p2") FormDataBodyPart p2,
+            @FormDataParam("p3") List<FormDataBodyPart> p3,
+            @FormDataParam("p4") FormDataBodyPart p4,
+            @FormDataParam("p5") FormDataBodyPart p5
+    ) throws IOException {
+        List<FormDataBodyPart> ps = new ArrayList<FormDataBodyPart>();
+        ps.add(p1);
+        ps.add(p2);
+        ps.addAll(p3);
+        ps.add(p4);
+        ps.add(p5);
         String s = "misc";
-        int i = 0, max = msg.getAllAttachments().size() - 1;
-        for (Attachment at : msg.getAllAttachments()) {
-            if (i == max) break;
-            s += "\n" + (++i) + "(name=" + at.getContentDisposition().getParameter("name") + ", content-type=" + at.getContentType() + ", value=" + new String(at.getObject(byte[].class), "utf-8") + ", filename=" + at.getContentDisposition().getParameter("filename") + ")";
+        int i = 0;
+        for (FormDataBodyPart part : ps) {
+            s += "\n" + (++i) + "(name=" + part.getName() + ", content-type=" + part.getHeaders().getFirst("Content-Type") + ", value=" + new String(part.getValueAs(byte[].class), "utf-8") + ", filename=" + part.getContentDisposition().getFileName() + ")";
         }
         return s;
     }

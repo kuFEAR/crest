@@ -20,15 +20,7 @@
 
 package org.codegist.crest.model;
 
-import org.codegist.crest.model.jackson.JacksonBunchOfData;
-import org.codegist.crest.model.jackson.JacksonData;
-import org.codegist.crest.model.jaxb.JaxbBunchOfData;
-import org.codegist.crest.model.jaxb.JaxbData;
-import org.codegist.crest.model.simplexml.SimpleXmlBunchOfData;
-import org.codegist.crest.model.simplexml.SimpleXmlData;
-
 import java.lang.reflect.Constructor;
-import java.util.Date;
 
 /**
  * abstract so that implementation-specific annotation are on subtypes in order to run the tests in environment where some of the declared annotation are not in the classpath

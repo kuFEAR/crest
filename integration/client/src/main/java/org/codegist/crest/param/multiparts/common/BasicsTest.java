@@ -20,8 +20,10 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.MultiPartEntityWriter;
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.MultiPartParam;
+import org.codegist.crest.annotate.POST;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.common.IBasicsTest;
 
 /**
@@ -38,12 +40,14 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     @POST
     public static interface Basics extends IBasicsTest.IBasics {
 
-        @EntityWriter(MultiPartEntityWriter.class)
-        String send();
-
         String send(
                 @MultiPartParam("p1") String p1,
                 @MultiPartParam("p2") int p2);
 
+    }
+
+    @Override
+    public void testSend() {
+        // no sens to send multipart with no params
     }
 }

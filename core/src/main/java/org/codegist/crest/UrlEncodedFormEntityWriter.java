@@ -20,15 +20,13 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.Pair;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import static org.codegist.crest.http.HttpParamProcessor.process;
+import java.util.Iterator;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -43,14 +41,14 @@ public class UrlEncodedFormEntityWriter implements EntityWriter {
         PrintStream print = new PrintStream(out);
         
         boolean first = true;
-        for(HttpParam param : request.getFormParam()){
-            for(Pair encoded : process(param, request.getCharset())){
-                if(!first) {
-                    print.append("&");
-                }
-                print.append(encoded.getName()).append("=").append(encoded.getValue());
-                first = false;
+        Iterator<Pair> headers = request.iterateProcessedForms();
+        while(headers.hasNext()){
+            Pair encoded = headers.next();
+            if(!first) {
+                print.append("&");
             }
+            print.append(encoded.getName()).append("=").append(encoded.getValue());
+            first = false;
         }
     }
 

@@ -23,15 +23,15 @@ package org.codegist.crest.flickr.interceptor;
 import org.codegist.common.codec.Hex;
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.RequestContext;
-import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.Pair;
 import org.codegist.crest.interceptor.RequestInterceptor;
-import org.codegist.crest.interceptor.RequestInterceptorAdapter;
 
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.codegist.crest.http.HttpParamProcessor.process;
 
@@ -73,6 +73,7 @@ public class FlickrAuthInterceptor implements RequestInterceptor {
         params.addAll(builder.getFormParams());
 
         StringBuilder sb = new StringBuilder(appSecret);
+        
         for (HttpParam param : params) {
             for(Pair pair : process(param, builder.getCharset())){
                 sb.append(pair.getName()).append(param.getValue());

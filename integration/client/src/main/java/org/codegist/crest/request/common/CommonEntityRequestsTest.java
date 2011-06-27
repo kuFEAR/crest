@@ -58,7 +58,7 @@ public abstract class CommonEntityRequestsTest<T extends EntityRequests> extends
     @Test
     public void testAccept() {
         String actual = toTest.accept().toString();
-        assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1, application/custom2]", actual);
+        assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1,application/custom2]", actual);
     }
 
     @Test

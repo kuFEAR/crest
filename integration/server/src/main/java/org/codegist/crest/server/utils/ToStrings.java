@@ -20,22 +20,28 @@
 
 package org.codegist.crest.server.utils;
 
+import com.sun.jersey.multipart.FormDataBodyPart;
+
 import javax.ws.rs.core.Cookie;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.codegist.common.collect.Collections.join;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class ToStrings {
-    public static String string(List<Cookie> cookies, int expected) {
+    public static String string(Collection<Cookie> cookies, int expected) {
         String headers;
         if (cookies.isEmpty() || cookies.size() == expected) {
             headers = "";
         } else {
-            headers = format("cookies(count:%d):%s", cookies.size(), cookies);
+            headers = format("cookies(count:%d):[%s]", cookies.size(), join(",", cookies));
         }
         return headers;
     }
@@ -43,8 +49,17 @@ public class ToStrings {
     public static String string(Object... value) {
         return string(asList(value));
     }
-
-    public static String string(List values) {
+    public static String string(FormDataBodyPart part) throws UnsupportedEncodingException {
+        return new String(part.getValueAs(byte[].class), "utf-8");
+    }
+    public static String string(List<FormDataBodyPart> parts) throws UnsupportedEncodingException {
+        List<String> values = new ArrayList<String>();
+        for(FormDataBodyPart part : parts){
+            values.add(string(part));
+        }
+        return string(values);
+    }
+    public static String string(Collection values) {
         return format("list(size:%d){%s}", values.size(), values);
     }
 }

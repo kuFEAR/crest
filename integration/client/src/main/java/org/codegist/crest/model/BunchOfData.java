@@ -21,13 +21,9 @@
 package org.codegist.crest.model;
 
 import org.codegist.crest.annotate.Serializer;
-import org.codegist.crest.model.jackson.JacksonBunchOfData;
-import org.codegist.crest.model.jaxb.JaxbBunchOfData;
-import org.codegist.crest.model.simplexml.SimpleXmlBunchOfData;
 import org.codegist.crest.serializer.AnotherBunchOfDataSerializer;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 /**

@@ -22,12 +22,12 @@ package org.codegist.crest.server;
 
 import org.codegist.common.io.Sockets;
 import org.codegist.crest.CRestSuite;
+import org.codegist.crest.param.multiparts.MultiPartsSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -48,7 +48,7 @@ public class CRestSuiteTest {
     private static CRestServer SERVER;
 
     @BeforeClass
-    public synchronized static void setUp() throws IOException {
+    public synchronized static void setUp() throws IOException, InstantiationException, IllegalAccessException {
         if(SERVER != null) return;
         SERVER = new CRestServer("http://localhost:" + PORT);
         SERVER.stopOnExit();

@@ -23,6 +23,8 @@ package org.codegist.crest.http;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -34,6 +36,13 @@ import static org.codegist.common.lang.Strings.isNotBlank;
 public abstract class HttpParamProcessor {
 
     protected abstract Collection<Pair> exec(HttpParam params, Charset charset, boolean preEncodeIfNeeded);
+
+    public static Iterator<Pair> iterateProcess(List<HttpParam> params, Charset charset){
+        return iterateProcess(params, charset, true);
+    }
+    public static Iterator<Pair> iterateProcess(List<HttpParam> params, Charset charset, boolean encodeIfNeeded){
+        return new ProcessIterator(params, charset, encodeIfNeeded);
+    }
 
     public static Collection<Pair> process(HttpParam param, Charset charset){
         return process(param, charset, true);
@@ -89,5 +98,40 @@ public abstract class HttpParamProcessor {
     };
 
 
+    private static class ProcessIterator implements Iterator<Pair> {
+        final Iterator<HttpParam> params;
+        final Charset charset;
+        final boolean encodeIfNeeded;
+
+        Iterator<Pair> current;
+
+        private ProcessIterator(List<HttpParam> params, Charset charset, boolean encodeIfNeeded) {
+            this.params = params.iterator();
+            this.charset = charset;
+            this.encodeIfNeeded = encodeIfNeeded;
+        }
+
+        public boolean hasNext() {
+            if(current != null && current.hasNext()) {
+                return true;
+            }else if(params.hasNext()){
+                doNext();
+                return hasNext();
+            }else{
+                return false;
+            }
+        }
+
+        public Pair next() {
+            return current.next();
+        }
+
+        private void doNext() {
+            this.current = process(this.params.next(), charset, encodeIfNeeded).iterator();
+        }
+        public void remove() {
+
+        }
+    }
 
 }

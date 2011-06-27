@@ -63,7 +63,7 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
 
     @Override
     public void assertDefaultLists(String p11, String p12, boolean p21, boolean p22, Integer p31, Integer p32, Long p41, Long p42, String actual) {
-        assertEquals(format("default(cookies(count:8):[p1=%s, p1=%s, p2=%s, p2=%s, p3=%s, p3=%s, p4=%s, p4=%s]) p1=%s p2=%s p3=%s p4=%s",
+        assertEquals(format("default(cookies(count:4):[p1=%s,p1=%s,p2=%s,p2=%s,p3=%s,p3=%s,p4=%s,p4=%s]) p1=%s p2=%s p3=%s p4=%s",
                 p11, p12,
                 toString(p21), toString(p22),
                 p31, p32,

@@ -20,38 +20,15 @@
 
 package org.codegist.crest.server;
 
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.codegist.common.log.Logger;
+import java.io.IOException;
 
-import java.util.Arrays;
+/**
+ * @author laurent.gilles@codegist.org
+ */
+public interface Server {
 
-public class Server {
+    void start(String address, Object... services) throws IOException;
+    
+    void stop();
 
-    private static final Logger LOG = Logger.getLogger(Server.class);
-    private org.apache.cxf.endpoint.Server server;
-    private JAXRSServerFactoryBean bean;
-
-    public static Server createAndStart(String address, Object... services) {
-        final Server server = new Server();
-        server.start(address, services);
-        return server;
-    }
-
-    public void start(String address, Object... services) {
-        if (server != null) {
-            throw new IllegalStateException("Server is already running");
-        }
-        LOG.info("Starting server [address=%s, test %s]", address, Arrays.toString(services));
-        bean = new JAXRSServerFactoryBean();
-        bean.setServiceBeans(Arrays.asList(services));
-        bean.setAddress(address);
-        server = bean.create();
-    }
-
-    public void stop() {
-        LOG.info("Stoping server [address=%s, test %s]", bean.getAddress(), bean.getResourceClasses());
-        server.stop();
-        server.destroy();
-        server = null;
-    }
 }

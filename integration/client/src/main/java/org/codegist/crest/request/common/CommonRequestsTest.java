@@ -67,7 +67,7 @@ public abstract class CommonRequestsTest<T extends Requests> extends BaseCRestTe
     }
 
     public static void assertAccept(String actual) {
-        assertEquals("accept() content-type-header=[] accepts-header=[application/custom1, application/custom2]", actual);
+        assertEquals("accept() content-type-header=[] accepts-header=[application/custom1,application/custom2]", actual);
     }
 
     @Test

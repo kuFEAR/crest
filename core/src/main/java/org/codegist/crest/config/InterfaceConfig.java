@@ -20,9 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.interceptor.NoOpRequestInterceptor;
-import org.codegist.crest.interceptor.RequestInterceptor;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;

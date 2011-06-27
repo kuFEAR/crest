@@ -50,6 +50,5 @@ public class NullsTest extends INullsTest<NullsTest.Nulls> {
                 @MultiPartParam("p2") @ListSeparator("(p2)") Collection<String> p2,
                 @MultiPartParam("p3") @ListSeparator("(p3)") String[] p3);
 
-
     }
 }

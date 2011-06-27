@@ -22,8 +22,6 @@ package org.codegist.crest.model.jaxb;
 
 import org.codegist.crest.model.BunchOfData;
 
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 

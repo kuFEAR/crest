@@ -49,10 +49,10 @@ public class MultiPartEntityWriter implements EntityWriter {
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
 
         DataOutputStream out = new DataOutputStream(outputStream);
-        if (!request.getFormParam().isEmpty()) {
+        if (!request.getFormParams().isEmpty()) {
             Charset charset = request.getCharset();
 
-            for (HttpParam param: request.getFormParam()) {
+            for (HttpParam param: request.getFormParams()) {
                 Class<?> paramClass = param.getConfig().getValueClass();
                 String partName = param.getConfig().getName();
                 String partContentType = MultiParts.getContentType(param);

@@ -25,7 +25,7 @@ import org.codegist.crest.config.PathBuilder;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
@@ -74,13 +74,13 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             httpChannel.setAccept(request.getAccept());
         }
 
-        for(HttpParam header : request.getHeaderParams()){
-            for(Pair encoded : process(header, charset)){
-                String name = encoded.getName();
-                String value = "\"" + encoded.getValue() + "\"";
-                LOGGER.debug("Header %s: %s ", name, value);
-                httpChannel.addHeader(name, value);
-            }
+        Iterator<Pair> headers = request.iterateProcessedHeaders();
+        while(headers.hasNext()){
+            Pair encoded = headers.next();
+            String name = encoded.getName();
+            String value = encoded.getValue();
+            LOGGER.debug("Header %s: %s ", name, value);
+            httpChannel.addHeader(name, value);
         }
 
         for(HttpParam header : request.getCookieParams()){
@@ -90,7 +90,7 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
                 if(!first) {
                     sb.append(",");
                 }
-                sb.append(encoded.getName()).append("=\"").append(encoded.getValue()).append("\"");
+                sb.append(encoded.getName()).append("=").append(encoded.getValue());
                 first = false;
             }
             String cookie = sb.toString();
@@ -122,8 +122,8 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         PathBuilder pathBuilder = request.getPathBuilder();
 
         Charset charset = request.getCharset();
-        String matrix = buildUrl(request.getMatrixParams(), charset, ";");
-        String query = buildUrl(request.getQueryParams(), charset, "&");
+        String matrix = buildUrl(request.iterateProcessedMatrixes(), ";");
+        String query = buildUrl(request.iterateProcessedQueries(), "&");
 
         for(HttpParam param : request.getPathParams()){
             for(Pair encoded : process(param, charset)){
@@ -141,17 +141,17 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
 
         return pathBuilder.build() + matrix + query;
     }
-    private String buildUrl(List<HttpParam> params, Charset charset, String sep){
+    private String buildUrl(Iterator<Pair> params, String sep){
         boolean first = true;
         StringBuilder sb = new StringBuilder();
-        for(HttpParam param : params){
-            for(Pair encoded : process(param, charset)){
-                if(!first) {
-                    sb.append(sep);
-                }
-                sb.append(encoded.getName()).append("=").append(encoded.getValue());
-                first = false;
+        while(params.hasNext()){
+            Pair encoded = params.next();
+            if(!first) {
+                sb.append(sep);
             }
+            sb.append(encoded.getName()).append("=").append(encoded.getValue());
+            first = false;
+
         }
         return sb.toString();
     }

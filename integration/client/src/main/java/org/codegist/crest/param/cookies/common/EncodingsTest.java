@@ -67,7 +67,7 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
     @Override
     public void assertDefault(String p1, String p21, String p22, String actual) throws UnsupportedEncodingException {
         assertEquals(
-                encodeHeader("default(cookies(count:6):[p1=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}, p2=£(')? &£d&f{/p3=}:, £\"(')? &£d&f{/pp3=}]) p1=£(')? &£d&f{/p3=}: p2=£(')? &£d&f{/p3=}:"),  actual);
+                encodeHeader("default(cookies(count:2):[£\"(')? &£d&f{/pp3=},£\"(')? &£d&f{/pp3=}]) p1=£\"(')? &£d&f{/p3=}: p2=£\"(')? &£d&f{/p3=}:"),  actual);
     }
 
     @Override

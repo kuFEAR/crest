@@ -74,11 +74,11 @@ public class MiscsTest extends BaseCRestTest<MiscsTest.Miscs> {
         String actual = toTest.misc("val-p1", 1983, new float[]{1.2f, 2.3f, 3.4f}, is, file);
         assertEquals(
                 "misc" +
-                        "\n1(name=p1, content-type=text/plain;charset=UTF-8, value=val-p1, filename=null)" +
-                        "\n2(name=p2, content-type=text/html;charset=UTF-8, value=1983, filename=my-file)" +
-                        "\n3(name=p3, content-type=text/plain;charset=UTF-8, value=1.2, filename=null)" +
-                        "\n4(name=p3, content-type=text/plain;charset=UTF-8, value=2.3, filename=null)" +
-                        "\n5(name=p3, content-type=text/plain;charset=UTF-8, value=3.4, filename=null)" +
+                        "\n1(name=p1, content-type=text/plain; charset=UTF-8, value=val-p1, filename=null)" +
+                        "\n2(name=p2, content-type=text/html; charset=UTF-8, value=1983, filename=my-file)" +
+                        "\n3(name=p3, content-type=text/plain; charset=UTF-8, value=1.2, filename=null)" +
+                        "\n4(name=p3, content-type=text/plain; charset=UTF-8, value=2.3, filename=null)" +
+                        "\n5(name=p3, content-type=text/plain; charset=UTF-8, value=3.4, filename=null)" +
                         "\n6(name=p4, content-type=application/octet-stream, value=hello, filename=null)" +
                         "\n7(name=p5, content-type=application/octet-stream, value=that's my file, filename="+file.getName()+")"
                 , actual);
