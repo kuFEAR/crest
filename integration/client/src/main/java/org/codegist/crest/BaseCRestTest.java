@@ -50,6 +50,7 @@ public abstract class BaseCRestTest<T> {
     private static final String TEST_TMP_DIR = System.getProperty("crest.test.tmp-dir", null);
 
 
+
     private static final Map<String,Object> DEFAULT_PROPERTIES = new HashMap<String, Object>(){{
         put(CRestProperty.CREST_DATE_FORMAT, DATE_FORMAT);
         put(CRestProperty.CREST_BOOLEAN_FALSE, "myFalse");
@@ -155,60 +156,90 @@ public abstract class BaseCRestTest<T> {
         }
     }
 
-    public static CRestBuilder baseBuilder() {
-        return new CRestBuilder()
+
+    // this represent the real root builder shared by all tests
+    private static CRestBuilder baseBuilder() {
+        return  new CRestBuilder()
                 .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                 .addProperties(DEFAULT_PROPERTIES)
                 .bindPlainTextDeserializerWith("text/html");
     }
 
-    public static CRestHolder[] byDefault() {
-        return new CRestHolder[]{
-                new CRestHolder(baseBuilder().build())
+    // these represents the common permutations all test will pass
+    private static CRestBuilder[] baseBuilders() {
+        return new CRestBuilder[] {
+                baseBuilder(),
+                baseBuilder().authenticatesWithOAuth( "ConsumerKey","ConsumerSecret","AccessToken","AccessTokenSecret"),
+                baseBuilder().authenticatesWithBasic("My UserName", "My P@Sww0rd")
         };
+    }
+    public static List<CRestHolder> forEach(CRestBuilder[] builders, Builder builder){
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        for(CRestBuilder b : builders){
+            holders.add(builder.build(b));
+        }
+        return holders;
+    }
+    public static List<CRestHolder> forEachBaseBuilder(Builder builder){
+        return forEach(baseBuilders(), builder);
+    }
+    public static CRestHolder[] arrify(List<CRestHolder> list){
+        return list.toArray(new CRestHolder[list.size()]);
+    }
+
+    public static interface Builder {
+        CRestHolder build(CRestBuilder builder);
+    }
+
+    public static List<CRestHolder> byDefault() {
+        return forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.build());
+            }
+        });
     }
 
     public static CRestHolder[] byRestServices() {
-        return byRestServices(baseBuilder());
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(byDefault());
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.useHttpClientRestService().build());
+            }
+        }));
+        return arrify(holders);
     }
 
-    public static CRestHolder[] byRestServices(CRestBuilder base) {
-        return new CRestHolder[]{
-                /* HttpURLConnection based CRest */
-                new CRestHolder(base.build()),
-                /* Apache HttpClient based CRest */
-                new CRestHolder(base.useHttpClientRestService().build()),
-        };
-    }
     public static CRestHolder[] byRestServicesForHeaders() {
-        return new CRestHolder[]{
-                /* HttpURLConnection based CRest */
-                new CRestHolder(baseBuilder().build(), HTTP_URL_CONNECTION),
-                /* Apache HttpClient based CRest */
-                new CRestHolder(baseBuilder().useHttpClientRestService().build()),
-        };
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.build(), HTTP_URL_CONNECTION);
+            }
+        }));
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.useHttpClientRestService().build());
+            }
+        }));
+        return arrify(holders);
     }
 
     public static CRestHolder[] byXmlSerializers() {
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.serializeXmlWithSimpleXml().build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+            }
+        }));
         if(TEST_JAXB) {
-            return new CRestHolder[]{
-                    /* Jaxb Serialization based CRest */
-                    new CRestHolder(baseBuilder()
-                            .serializeXmlWithJaxb()
-                            .build(), JAXB_SPECIFIC_PROPERTIES),
-                    /* SimpleXml Serialization based CRest */
-                    new CRestHolder(baseBuilder()
-                            .serializeXmlWithSimpleXml()
-                            .build(), SIMPLEXML_SPECIFIC_PROPERTIES)
-            };
-        }else{
-            return new CRestHolder[]{
-                    /* SimpleXml Serialization based CRest */
-                    new CRestHolder(baseBuilder()
-                            .serializeXmlWithSimpleXml()
-                            .build(), SIMPLEXML_SPECIFIC_PROPERTIES)
-            };
+            holders.addAll(forEachBaseBuilder(new Builder() {
+                public CRestHolder build(CRestBuilder builder) {
+                    return new CRestHolder(builder.serializeXmlWithJaxb().build(), JAXB_SPECIFIC_PROPERTIES);
+                }
+            }));
         }
+        return arrify(holders);
     }
 
     public static CRestHolder[] byJsonSerializersAndRestServices() {
@@ -216,45 +247,35 @@ public abstract class BaseCRestTest<T> {
     }
 
     public static CRestHolder[] byXmlSerializersAndRestServices() {
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.serializeXmlWithSimpleXml().build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+            }
+        }));
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder.useHttpClientRestService().serializeXmlWithSimpleXml().build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+            }
+        }));
         if(TEST_JAXB) {
-           return new CRestHolder[]{
-                /* Jaxb Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .serializeXmlWithJaxb()
-                        .build(), JAXB_SPECIFIC_PROPERTIES),
-                /* SimpleXml Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .serializeXmlWithSimpleXml()
-                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES),
-                /* Jaxb Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .useHttpClientRestService()
-                        .serializeXmlWithJaxb()
-                        .build(), JAXB_SPECIFIC_PROPERTIES),
-                /* SimpleXml Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .useHttpClientRestService()
-                        .serializeXmlWithSimpleXml()
-                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES)
-            };
-        }else{
-            return new CRestHolder[]{
-                /* SimpleXml Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .serializeXmlWithSimpleXml()
-                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES),
-                /* SimpleXml Serialization based CRest */
-                new CRestHolder(baseBuilder()
-                        .useHttpClientRestService()
-                        .serializeXmlWithSimpleXml()
-                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES)
-            };
+            holders.addAll(forEachBaseBuilder(new Builder() {
+                public CRestHolder build(CRestBuilder builder) {
+                    return new CRestHolder(builder.serializeXmlWithJaxb().build(), JAXB_SPECIFIC_PROPERTIES);
+                }
+            }));
+            holders.addAll(forEachBaseBuilder(new Builder() {
+                public CRestHolder build(CRestBuilder builder) {
+                    return new CRestHolder(builder.useHttpClientRestService().serializeXmlWithJaxb().build(), JAXB_SPECIFIC_PROPERTIES);
+                }
+            }));
         }
+        return arrify(holders);
     }
 
 
     public static CRestHolder[] byJsonSerializers() {
-        return new CRestHolder[]{new CRestHolder(baseBuilder().build())};
+        return arrify(byDefault());
     }
 
     public static Collection<CRestHolder[]> crest(CRestHolder[]... holderss) {

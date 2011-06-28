@@ -61,7 +61,7 @@ public class OAuthorization implements Authorization {
             if(!first) {
                 value.append(",");
             }
-            value.append("\"").append(oauth.getName()).append("\"");
+            value.append(oauth.getName());
             value.append("=");
             value.append("\"").append(oauth.getValue()).append("\"");
             first = false;

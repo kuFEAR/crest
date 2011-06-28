@@ -34,6 +34,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.codegist.common.lang.Strings.isNotBlank;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -76,11 +78,13 @@ public class AuthorizationHttpChannel implements HttpChannel {
     }
 
     public int send() throws IOException {
-        if(contentType.startsWith("application/x-www-form-urlencoded")) {
+        if(contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             httpEntityWriter.writeEntityTo(out);
             String formContent = out.toString(charset.displayName());
-            this.parameters.addAll(parse(formContent));
+            if(isNotBlank(formContent)) {
+                this.parameters.addAll(parse(formContent));
+            }
         }
         authenticate();
         return this.delegate.send();

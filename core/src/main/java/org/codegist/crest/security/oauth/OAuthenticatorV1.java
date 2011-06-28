@@ -132,11 +132,18 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
 
 
-
+    private static final Pair[] EMPTY_PAIRS = new Pair[0];
 
     public List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) {
-        List<Pair> oauthParams = oauthParamsFor(accessOAuthToken, parameters); // generate base oauth params
-        sign(accessOAuthToken, url, method , oauthParams);
+        return oauth(accessOAuthToken, method, url, EMPTY_PAIRS, parameters);
+    }
+    
+    private List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair[] extrasOAuthParams, Pair... parameters) {
+        List<Pair> oauthParams = oauthParamsFor(accessOAuthToken, extrasOAuthParams); // generate base oauth params
+        List<Pair> toSign = new ArrayList<Pair>(oauthParams);
+        toSign.addAll(asList(parameters));
+        String signature = sign(accessOAuthToken, url, method , toSign);
+        oauthParams.add(pair("oauth_signature", signature));
         return oauthParams;
     }
 
@@ -229,7 +236,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
         return baseURL + url.substring(slashIndex);
     }
 
-    private void sign(OAuthToken accessOAuthToken, String url, HttpMethod method, List<Pair> oauthParams) {
+    private String sign(OAuthToken accessOAuthToken, String url, HttpMethod method, List<Pair> oauthParams) {
         // first, sort the list without changing the one given
         List<Pair> sorted = sort(oauthParams);
 
@@ -256,7 +263,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
             String encoded = new String(Base64.encodeToByte(mac.doFinal(data.getBytes(ENC))), ENC);
 
             LOGGER.debug("Signature[data=\"%s\",signature=\"%s\",result=\"%s\"]", data, signature, encoded);
-            oauthParams.add(pair("oauth_signature", encoded));
+            return encoded;
         } catch(Exception e){
             throw new CRestException(e);
         }

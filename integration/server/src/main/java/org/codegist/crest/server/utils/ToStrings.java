@@ -41,7 +41,11 @@ public class ToStrings {
         if (cookies.isEmpty() || cookies.size() == expected) {
             headers = "";
         } else {
-            headers = format("cookies(count:%d):[%s]", cookies.size(), join(",", cookies));
+            List<String> cookieStrs = new ArrayList<String>();
+            for(Cookie c : cookies){
+                cookieStrs.add(c.getName()+"="+c.getValue());
+            }
+            headers = format("cookies(count:%d):[%s]", cookies.size(), join(",", cookieStrs));
         }
         return headers;
     }

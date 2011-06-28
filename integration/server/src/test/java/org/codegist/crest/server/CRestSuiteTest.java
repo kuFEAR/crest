@@ -35,15 +35,15 @@ import java.io.IOException;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(CRestSuite.class)
 public class CRestSuiteTest {
-    private static int PORT;
-    static {
-        try {
-            PORT = Sockets.getFreePort();
-            System.setProperty("crest.server.end-point", "http://localhost:" + PORT);
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
+    private static int PORT = 8080;
+//    static {  for some reason this works when ran within an IDE, but not within maven...
+//        try {
+//            PORT = Sockets.getFreePort();
+//            System.setProperty("crest.server.end-point", "http://localhost:" + PORT);
+//        } catch (IOException e) {
+//            throw new ExceptionInInitializerError(e);
+//        }
+//    }
 
     private static CRestServer SERVER;
 

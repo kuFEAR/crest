@@ -29,8 +29,8 @@ import java.io.IOException;
  */
 public class CRestServer {
 
-    private final Class<? extends Server> SERVER_IMPL = JerseyServer.class;
     private final Server server;
+
 
     public static void main(String[] args) throws IOException {
         new Thread(){
@@ -54,7 +54,7 @@ public class CRestServer {
 
     public CRestServer(String address) throws IOException, IllegalAccessException, InstantiationException {
         address += "/crest-server";
-        this.server = SERVER_IMPL.newInstance();
+        this.server = new JerseyServer();
         this.server.start(address,
                 new org.codegist.crest.server.stubs.params.queries.BasicsStub(),
                 new org.codegist.crest.server.stubs.params.queries.CollectionsStub(),

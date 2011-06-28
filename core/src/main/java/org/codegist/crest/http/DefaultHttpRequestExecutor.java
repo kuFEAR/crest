@@ -105,7 +105,7 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             if(isNotBlank(contentType)) {
                 if(request.getContentType() == null) {
                     LOGGER.debug("Entity Content-Type : %s", contentType);
-                    httpChannel.setHeader("Content-Type", contentType);
+                    httpChannel.setContentType(contentType);
                 }else{
                     LOGGER.debug("Entity Content-Type : %s (ignored as previously set)", contentType);
                 }

@@ -20,6 +20,8 @@
 
 package org.codegist.crest.http;
 
+import org.codegist.common.lang.ToStringBuilder;
+
 import java.nio.charset.Charset;
 
 import static org.codegist.crest.http.Encoders.encode;
@@ -51,5 +53,14 @@ public class Pair {
 
     public Charset getCharset() {
         return charset;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("name", name)
+                .append("value", value)
+                .append("charset", charset)
+                .toString();
     }
 }

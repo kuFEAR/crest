@@ -34,14 +34,17 @@ import static org.codegist.common.codec.Base64.encodeToString;
  */
 public class BasicAuthorization implements Authorization {
 
-    private final String hash;
+    private final AuthorizationToken token;
 
     public BasicAuthorization(String name, String password) throws UnsupportedEncodingException {
-        this.hash = encodeToString((name + ":" + password).getBytes("utf-8"));
+        this(new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes("utf-8"))));
+    }
+    public BasicAuthorization(AuthorizationToken token) throws UnsupportedEncodingException {
+        this.token = token;
     }
 
     public AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters) {
-        return new AuthorizationToken("Basic", hash);
+        return token;
     }
 
     public void refresh() {

@@ -33,20 +33,20 @@ public abstract class CommonEntityRequestsTest<T extends EntityRequests> extends
         super(crest, service);
     }
 
-
-    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
-        return new CRestHolder[]{
-                /* HttpURLConnection based CRest */
-                new CRestHolder(baseBuilder()
-                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-                        .build()),
-                /* Apache HttpClient based CRest */
-                new CRestHolder(baseBuilder()
-                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-                        .useHttpClientRestService()
-                        .build()),
-        };
-    }
+//
+//    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
+//        return new CRestHolder[]{
+//                /* HttpURLConnection based CRest */
+//                new CRestHolder(baseBuilder()
+//                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
+//                        .build()),
+//                /* Apache HttpClient based CRest */
+//                new CRestHolder(baseBuilder()
+//                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
+//                        .useHttpClientRestService()
+//                        .build()),
+//        };
+//    }
 
 
     @Test
