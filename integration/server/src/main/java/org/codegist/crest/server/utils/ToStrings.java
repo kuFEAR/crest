@@ -50,9 +50,12 @@ public class ToStrings {
         return string(asList(value));
     }
     public static String string(FormDataBodyPart part) throws UnsupportedEncodingException {
-        return new String(part.getValueAs(byte[].class), "utf-8");
+        return part != null ? new String(part.getValueAs(byte[].class), "utf-8") : "null";
     }
     public static String string(List<FormDataBodyPart> parts) throws UnsupportedEncodingException {
+        if(parts == null) {
+            return "null";
+        }
         List<String> values = new ArrayList<String>();
         for(FormDataBodyPart part : parts){
             values.add(string(part));

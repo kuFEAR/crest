@@ -57,6 +57,7 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
                 @MultiPartParam("p3") @Serializer(BunchOfDataSerializer.class) BunchOfData<Data>[] p3);
 
         @Path("null")
+        @MultiPartParam(value="p0", defaultValue = "some val") // default value so that jersey accepts the requests
         String nulls(
                 @MultiPartParam("p1") @Serializer(DataSerializer.class) Data p1,
                 @MultiPartParam("p2") @Serializer(BunchOfDataSerializer.class) Collection<BunchOfData<Data>> p2,

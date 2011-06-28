@@ -39,12 +39,14 @@ public class NullsTest extends INullsTest<NullsTest.Nulls> {
     @POST
     public static interface Nulls extends INullsTest.INulls {
 
+        @MultiPartParam(value="p0", defaultValue = "some val") // default value so that jersey accepts the requests
         String nulls(
                 @MultiPartParam("p1") String p1,
                 @MultiPartParam("p2") Collection<String> p2,
                 @MultiPartParam("p3") String[] p3);
 
         @Path("merging")
+        @MultiPartParam(value="p0", defaultValue = "some val") // default value so that jersey accepts the requests
         String merging(
                 @MultiPartParam("p1") String p1,
                 @MultiPartParam("p2") @ListSeparator("(p2)") Collection<String> p2,
