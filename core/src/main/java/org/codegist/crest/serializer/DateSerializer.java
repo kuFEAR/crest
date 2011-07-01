@@ -61,7 +61,7 @@ public class DateSerializer extends StringSerializer<Date> {
         this.formatType = formatType;
     }
 
-    public String serialize(Date value, Charset charset) throws SerializerException {
+    public String serialize(Date value, Charset charset) {
         String serialized;
         if(formatter != null) {
              synchronized (formatter) {

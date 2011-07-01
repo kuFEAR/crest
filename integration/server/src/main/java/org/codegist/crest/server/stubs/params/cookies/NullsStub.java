@@ -21,10 +21,9 @@
 package org.codegist.crest.server.stubs.params.cookies;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
 import java.util.List;
 
-import static org.codegist.crest.server.utils.ToStrings.string;
+import static org.codegist.crest.server.utils.ToStrings.stringCookie;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -35,20 +34,20 @@ public class NullsStub {
 
     @GET
     public String nulls(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
             @CookieParam("p3") String p3) {
-        return String.format("null(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+        return String.format("null(%s) p1=%s p2=%s p3=%s", stringCookie(cookies, 3), p1, p2, p3);
     }
 
     @GET
     @Path("merging")
     public String merging(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
             @CookieParam("p3") String p3) {
-        return String.format("merging(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+        return String.format("merging(%s) p1=%s p2=%s p3=%s", stringCookie(cookies, 3), p1, p2, p3);
     }
 }

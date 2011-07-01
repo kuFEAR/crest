@@ -30,7 +30,6 @@ import java.lang.annotation.Target;
 /**
  * <p>If specified at method parameter level, replace any method path template matching its name with it's value.
  * <p>If specified at interface or method level, replace any method path template matching its name with it's default value.
- * @see org.codegist.crest.http.HttpRequest.Builder#addPathParam(String, String)
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)

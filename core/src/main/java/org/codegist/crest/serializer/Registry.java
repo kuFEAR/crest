@@ -68,7 +68,9 @@ abstract class Registry<T> {
 
     private T build(String mimeType) {
         Object item = mimeTypeRegistry.get(mimeType);
-        if (item == null) throw new CRestException("No item bound to mime type: " + mimeType);
+        if (item == null) {
+            throw new CRestException("No item bound to mime type: " + mimeType);
+        }
         if (clazz.isAssignableFrom(item.getClass())) {
             return (T) item;
         } else if (item instanceof ItemDescriptor) {
@@ -92,17 +94,17 @@ abstract class Registry<T> {
             try {
                 return clazz.getConstructor(Map.class).newInstance(config);
             } catch (InvocationTargetException e) {
-                throw new SerializerException(e.getMessage(), e.getCause());
+                throw CRestException.handle(e);
             } catch (NoSuchMethodException e) {
                 try {
                     return clazz.getConstructor().newInstance();
                 } catch (InvocationTargetException e1) {
-                    throw new SerializerException(e1.getMessage(), e1.getCause());
+                    throw CRestException.handle(e1);
                 } catch (Exception e1) {
-                    throw new SerializerException("Class " + clazz + " doesn't have neither default contructor or a Map argument constructor!", e1);
+                    throw new CRestException("Class " + clazz + " doesn't have neither default contructor or a Map argument constructor!", e1);
                 }
             } catch (Exception e) {
-                throw new SerializerException(e.getMessage(), e);
+                throw CRestException.handle(e);
             }
         }
     }

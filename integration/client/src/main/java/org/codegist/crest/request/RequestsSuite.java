@@ -28,12 +28,19 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        GetsTest.class,
-        PostsTest.class,
-        PutsTest.class,
-        DeletesTest.class,
-        HeadsTest.class,
-        OptionsTest.class
+        org.codegist.crest.request.crest.GetsTest.class,
+        org.codegist.crest.request.crest.PostsTest.class,
+        org.codegist.crest.request.crest.PutsTest.class,
+        org.codegist.crest.request.crest.DeletesTest.class,
+        org.codegist.crest.request.crest.HeadsTest.class,
+        org.codegist.crest.request.crest.OptionsTest.class,
+
+        org.codegist.crest.request.jaxrs.GetsTest.class,
+        org.codegist.crest.request.jaxrs.PostsTest.class,
+        org.codegist.crest.request.jaxrs.PutsTest.class,
+        org.codegist.crest.request.jaxrs.DeletesTest.class,
+        org.codegist.crest.request.jaxrs.HeadsTest.class,
+        org.codegist.crest.request.jaxrs.OptionsTest.class
 })
 public class RequestsSuite {
 }

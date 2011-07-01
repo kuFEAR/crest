@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.forms;
 
-import org.codegist.crest.param.forms.common.*;
 import org.codegist.crest.param.forms.json.JsonsSuite;
 import org.codegist.crest.param.forms.xml.XmlsSuite;
 import org.junit.runner.RunWith;
@@ -31,13 +30,22 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        BasicsTest.class,
-        CollectionsTest.class,
-        DatesTest.class,
-        DefaultValuesTest.class,
-        EncodingsTest.class,
-        NullsTest.class,
-        SerializersTest.class,
+        org.codegist.crest.param.forms.crest.BasicsTest.class,
+        org.codegist.crest.param.forms.crest.CollectionsTest.class,
+        org.codegist.crest.param.forms.crest.DatesTest.class,
+        org.codegist.crest.param.forms.crest.DefaultValuesTest.class,
+        org.codegist.crest.param.forms.crest.EncodingsTest.class,
+        org.codegist.crest.param.forms.crest.NullsTest.class,
+        org.codegist.crest.param.forms.crest.SerializersTest.class,
+
+        org.codegist.crest.param.forms.jaxrs.BasicsTest.class,
+        org.codegist.crest.param.forms.jaxrs.CollectionsTest.class,
+        org.codegist.crest.param.forms.jaxrs.DatesTest.class,
+        org.codegist.crest.param.forms.jaxrs.DefaultValuesTest.class,
+        org.codegist.crest.param.forms.jaxrs.EncodingsTest.class,
+        org.codegist.crest.param.forms.jaxrs.NullsTest.class,
+        org.codegist.crest.param.forms.jaxrs.SerializersTest.class,
+
         JsonsSuite.class,
         XmlsSuite.class
 })

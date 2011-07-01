@@ -20,6 +20,8 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.CRestException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -29,13 +31,13 @@ import java.nio.charset.Charset;
  */
 public abstract class StreamingSerializer<V> implements Serializer<V> {
 
-    public String serialize(V value, Charset charset) throws SerializerException {
+    public String serialize(V value, Charset charset) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         serialize(value, charset, out);
         try {
             return out.toString(charset.toString());
         } catch (UnsupportedEncodingException e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 

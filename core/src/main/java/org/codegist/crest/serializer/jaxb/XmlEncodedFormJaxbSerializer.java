@@ -24,7 +24,6 @@ import org.codegist.common.lang.Strings;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StreamingSerializer;
 
 import javax.xml.bind.JAXBElement;
@@ -57,7 +56,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpP
         this.wrapperElementName = new QName(Strings.defaultIfBlank((String) config.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) {
         JAXBElement<JaxbHttpParam> object = JaxbHttpParamJAXBElement.create(wrapperElementName, value);
         jaxb.marshal(object, out, charset);
     }

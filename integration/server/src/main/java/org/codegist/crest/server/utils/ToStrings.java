@@ -22,7 +22,6 @@ package org.codegist.crest.server.utils;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
 
-import javax.ws.rs.core.Cookie;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,19 +35,20 @@ import static org.codegist.common.collect.Collections.join;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class ToStrings {
-    public static String string(Collection<Cookie> cookies, int expected) {
+    public static String stringCookie(Collection<String> cookies, int expected) {
         String headers;
         if (cookies.isEmpty() || cookies.size() == expected) {
             headers = "";
         } else {
-            List<String> cookieStrs = new ArrayList<String>();
-            for(Cookie c : cookies){
-                cookieStrs.add(c.getName()+"="+c.getValue());
-            }
-            headers = format("cookies(count:%d):[%s]", cookies.size(), join(",", cookieStrs));
+//            List<String> cookieStrs = new ArrayList<String>();
+//            for(String c : cookies){
+//                cookieStrs.add(c.getName()+"="+c.getValue());
+//            }
+            headers = format("cookies(count:%d):[%s]", cookies.size(), join(",", cookies));
         }
         return headers;
     }
+
 
     public static String string(Object... value) {
         return string(asList(value));
@@ -56,7 +56,7 @@ public class ToStrings {
     public static String string(FormDataBodyPart part) throws UnsupportedEncodingException {
         return part != null ? new String(part.getValueAs(byte[].class), "utf-8") : "null";
     }
-    public static String string(List<FormDataBodyPart> parts) throws UnsupportedEncodingException {
+    public static String stringMulti(List<FormDataBodyPart> parts) throws UnsupportedEncodingException {
         if(parts == null) {
             return "null";
         }
@@ -66,7 +66,10 @@ public class ToStrings {
         }
         return string(values);
     }
+    public static String string(List<String> values) {
+        return format("list(size:%d):[%s]", values.size(), join(",", values));
+    }
     public static String string(Collection values) {
-        return format("list(size:%d){%s}", values.size(), values);
+        return format("list(size:%d):[%s]", values.size(), join(",", values));
     }
 }

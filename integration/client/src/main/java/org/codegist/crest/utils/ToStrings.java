@@ -24,6 +24,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.codegist.common.collect.Collections.join;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -34,6 +35,6 @@ public class ToStrings {
     }
 
     public static String string(List values) {
-        return format("list(size:%d){%s}", values.size(), values);
+        return format("list(size:%d):[%s]", values.size(), join(",",values));
     }
 }

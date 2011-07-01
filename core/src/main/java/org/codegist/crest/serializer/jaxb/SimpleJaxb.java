@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.crest.serializer.DeserializerException;
+import org.codegist.crest.CRestException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -45,7 +45,7 @@ class SimpleJaxb implements Jaxb {
             this.marshaller = jaxbContext.createMarshaller();
             this.unmarshaller = jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
 
@@ -54,7 +54,7 @@ class SimpleJaxb implements Jaxb {
             marshaller.setProperty(Marshaller.JAXB_ENCODING, charset.toString());
             marshaller.marshal(object, out);
         } catch (JAXBException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
 
@@ -66,7 +66,7 @@ class SimpleJaxb implements Jaxb {
         try {
             return (T) unmarshaller.unmarshal(reader);
         } catch (JAXBException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
 

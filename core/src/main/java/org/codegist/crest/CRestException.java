@@ -40,7 +40,7 @@ public class CRestException extends RuntimeException {
         super(cause);
     }
 
-    static <T> T doThrow(Throwable e) {
+    public static <T extends RuntimeException> T handle(Throwable e) {
         if (e instanceof CRestException) {
             throw (CRestException) e;
         } else if (e instanceof IllegalArgumentException) {

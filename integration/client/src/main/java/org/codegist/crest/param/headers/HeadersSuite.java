@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.headers;
 
-import org.codegist.crest.param.headers.common.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,13 +28,21 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        BasicsTest.class,
-        CollectionsTest.class,
-        DatesTest.class,
-        DefaultValuesTest.class,
-        EncodingsTest.class,
-        NullsTest.class,
-        SerializersTest.class
+        org.codegist.crest.param.headers.crest.BasicsTest.class,
+        org.codegist.crest.param.headers.crest.CollectionsTest.class,
+        org.codegist.crest.param.headers.crest.DatesTest.class,
+        org.codegist.crest.param.headers.crest.DefaultValuesTest.class,
+        org.codegist.crest.param.headers.crest.EncodingsTest.class,
+        org.codegist.crest.param.headers.crest.NullsTest.class,
+        org.codegist.crest.param.headers.crest.SerializersTest.class,
+
+        org.codegist.crest.param.headers.jaxrs.BasicsTest.class,
+        org.codegist.crest.param.headers.jaxrs.CollectionsTest.class,
+        org.codegist.crest.param.headers.jaxrs.DatesTest.class,
+        org.codegist.crest.param.headers.jaxrs.DefaultValuesTest.class,
+        org.codegist.crest.param.headers.jaxrs.EncodingsTest.class,
+        org.codegist.crest.param.headers.jaxrs.NullsTest.class,
+        org.codegist.crest.param.headers.jaxrs.SerializersTest.class
 })
 public class HeadersSuite {
 }

@@ -21,8 +21,8 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.common.collect.Maps;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.serializer.DeserializerException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,11 +55,11 @@ public class SimpleXmlDeserializer implements Deserializer {
     }
 
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws DeserializerException {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         try {
             return serializer.read(type, new InputStreamReader(stream, charset), strict);
         } catch (Exception e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
 

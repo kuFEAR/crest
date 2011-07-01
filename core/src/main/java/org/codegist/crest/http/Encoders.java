@@ -46,7 +46,7 @@ public final class Encoders {
             }
             return val;
         } catch (UnsupportedEncodingException e) {
-            throw new CRestException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 }

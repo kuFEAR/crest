@@ -192,7 +192,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
                     Maps.filter(result, "oauth_token", "oauth_token_secret")
             );
         } catch (Exception e) {
-            throw new CRestException(e);
+            throw CRestException.handle(e);
         } finally {
             if (refreshTokenResponse != null) {
                 refreshTokenResponse.close();
@@ -265,7 +265,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
             LOGGER.debug("Signature[data=\"%s\",signature=\"%s\",result=\"%s\"]", data, signature, encoded);
             return encoded;
         } catch(Exception e){
-            throw new CRestException(e);
+            throw CRestException.handle(e);
         }
     }
 

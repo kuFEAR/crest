@@ -21,8 +21,8 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.lang.Objects;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.serializer.DeserializerException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -61,14 +61,14 @@ class JaxbFactory {
         try {
             return create(JAXBContext.newInstance(context), customProperties);
         } catch (JAXBException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
     static Jaxb create(Map<String,Object> customProperties, Class<?>... classToBeBound) {
         try {
             return create(JAXBContext.newInstance(classToBeBound), customProperties);
         } catch (JAXBException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
     static Jaxb create(JAXBContext jaxb, Map<String,Object> customProperties) {

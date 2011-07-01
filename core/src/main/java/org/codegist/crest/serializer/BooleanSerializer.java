@@ -50,7 +50,7 @@ public class BooleanSerializer extends StringSerializer<Boolean> {
         this.falseString = falseString;
     }
 
-    public String serialize(Boolean value, Charset charset) throws SerializerException {
+    public String serialize(Boolean value, Charset charset) {
         return value ? trueString : falseString;
     }
 }

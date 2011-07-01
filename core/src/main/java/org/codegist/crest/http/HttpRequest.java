@@ -23,7 +23,6 @@ package org.codegist.crest.http;
 import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.EntityWriter;
-import org.codegist.crest.RequestContext;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.config.PathTemplate;
@@ -59,16 +58,15 @@ public class HttpRequest {
     private final String encoding;
     private final Charset charset;
     private final EntityWriter entityWriter;
-    private final RequestContext requestContext;
 
     private final List<HttpParam> headerParams;
     private final List<HttpParam> matrixParams;
     private final List<HttpParam> queryParams;
     private final List<HttpParam> pathParams;
     private final List<HttpParam> cookieParams;
-    private final List<HttpParam> formParam;
+    private final List<HttpParam> formParams;
 
-    public HttpRequest(HttpMethod meth, PathBuilder pathBuilder, String contentType, String accept, Long socketTimeout, Long connectionTimeout, String encoding, Charset charset, EntityWriter entityWriter, RequestContext requestContext, List<HttpParam> headerParams, List<HttpParam> matrixParams, List<HttpParam> queryParams, List<HttpParam> pathParams, List<HttpParam> cookieParams, List<HttpParam> formParam) {
+    public HttpRequest(HttpMethod meth, PathBuilder pathBuilder, String contentType, String accept, Long socketTimeout, Long connectionTimeout, String encoding, Charset charset, EntityWriter entityWriter, List<HttpParam> headerParams, List<HttpParam> matrixParams, List<HttpParam> queryParams, List<HttpParam> pathParams, List<HttpParam> cookieParams, List<HttpParam> formParams) {
         this.meth = meth;
         this.pathBuilder = pathBuilder;
         this.contentType = contentType;
@@ -78,13 +76,12 @@ public class HttpRequest {
         this.encoding = encoding;
         this.charset = charset;
         this.entityWriter = entityWriter;
-        this.requestContext = requestContext;
         this.headerParams = headerParams;
         this.matrixParams = matrixParams;
         this.queryParams = queryParams;
         this.pathParams = pathParams;
         this.cookieParams = cookieParams;
-        this.formParam = formParam;
+        this.formParams = formParams;
     }
 
     public HttpMethod getMeth() {
@@ -123,10 +120,6 @@ public class HttpRequest {
         return entityWriter;
     }
 
-    public RequestContext getRequestContext() {
-        return requestContext;
-    }
-
     public List<HttpParam> getHeaderParams() {
         return headerParams;
     }
@@ -148,10 +141,8 @@ public class HttpRequest {
     }
 
     public List<HttpParam> getFormParams() {
-        return formParam;
+        return formParams;
     }
-
-
 
     public Iterator<Pair> iterateProcessedHeaders() {
         return iterateProcess(headerParams, charset);
@@ -174,7 +165,7 @@ public class HttpRequest {
     }
 
     public Iterator<Pair> iterateProcessedForms() {
-        return iterateProcess(formParam, charset);
+        return iterateProcess(formParams, charset);
     }
 
     public static class Builder {
@@ -199,7 +190,6 @@ public class HttpRequest {
         private HttpMethod meth = METH;
         private Long socketTimeout = null;
         private Long connectionTimeout = null;
-        private RequestContext requestContext;
 
         public Builder(PathTemplate pathTemplate, EntityWriter entityWriter) throws UnsupportedEncodingException {
             this(pathTemplate, entityWriter, ENCODING);
@@ -231,7 +221,6 @@ public class HttpRequest {
                     encoding,
                     charset,
                     entityWriter,
-                    requestContext,
                     headerParams,
                     matrixParams,
                     queryParams,
@@ -239,15 +228,6 @@ public class HttpRequest {
                     cookieParams,
                     formParams
             );
-        }
-
-        public Builder within(RequestContext requestContext){
-            this.requestContext = requestContext;
-            return this;
-        }
-
-        public Builder timeoutAfter(Long timeout) {
-            return timeoutConnectionAfter(timeout).timeoutSocketAfter(timeout);
         }
 
         public Builder timeoutSocketAfter(Long timeout) {
@@ -274,65 +254,18 @@ public class HttpRequest {
             this.contentType = contentType;
             return this;
         }
+
         public Builder withParams(ParamConfig[] paramConfigs) {
             for(ParamConfig param : paramConfigs){
                 addParam(param);
             }
             return this;
         }
-        
-        private Builder addHttpParam(List<HttpParam> params, ParamConfig paramConfig, Object value){
-            if(value == null && paramConfig.getDefaultValue() == null) return this;
-            params.add(new HttpParam(paramConfig, Objects.asCollection(value)));
-            return this;
-        }
-
-        public Builder addHeaderParam(String name, String value) {
-            return addHeaderParam(name, value, false);
-        }
-        public Builder addHeaderParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_HEADER, encoded);
-        }
-
-        public Builder addQueryParam(String name, String value) {
-            return addQueryParam(name, value, false);
-        }
-        public Builder addQueryParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_QUERY, encoded);
-        }
-
-        public Builder addCookieParam(String name, String value) {
-            return addCookieParam(name, value, false);
-        }
-        public Builder addCookieParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_COOKIE, encoded);
-        }
-
-        public Builder addFormParam(String name, String value) {
-            return addFormParam(name, value, false);
-        }
-        public Builder addFormParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_FORM, encoded);
-        }
-
-        public Builder addPathParam(String name, String value) {
-            return addPathParam(name, value, false);
-        }
-        public Builder addPathParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_PATH, encoded);
-        }
-
-        public Builder addMatrixParam(String name, String value) {
-            return addMatrixParam(name, value, false);
-        }
-        public Builder addMatrixParam(String name, String value, boolean encoded) {
-            return addParam(name, value, HttpRequest.DEST_MATRIX, encoded);
-        }
-
 
         public Builder addParam(String name, String value, String dest, boolean encoded) {
             return addParam(new StringParamConfig(name, value, dest, encoded));
         }
+
         public Builder addParam(ParamConfig paramConfig) {
             return addParam(paramConfig, paramConfig.getDefaultValue());
         }
@@ -356,11 +289,16 @@ public class HttpRequest {
             }
         }
 
+        private Builder addHttpParam(List<HttpParam> params, ParamConfig paramConfig, Object value){
+            if(value == null && paramConfig.getDefaultValue() == null) return this;
+            params.add(new HttpParam(paramConfig, Objects.asCollection(value)));
+            return this;
+        }
+
         public HttpMethod getMeth() {
             return meth;
         }
 
-        /* TODO ALL THAT OAUTH BUSINESS STINKS, REFACTOR IT */
         public List<HttpParam> getHeaderParams() {
             return headerParams;
         }
@@ -375,6 +313,14 @@ public class HttpRequest {
 
         public List<HttpParam> getPathParams() {
             return pathParams;
+        }
+
+        public List<HttpParam> getMatrixParams() {
+            return matrixParams;
+        }
+
+        public List<HttpParam> getCookieParams() {
+            return cookieParams;
         }
 
         public Long getSocketTimeout() {
@@ -393,7 +339,22 @@ public class HttpRequest {
             return charset;
         }
 
-        
+        public PathBuilder getPathBuilder() {
+            return pathBuilder;
+        }
+
+        public EntityWriter getEntityWriter() {
+            return entityWriter;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public String getAccept() {
+            return accept;
+        }
+
         private static class SimplePathTemplate implements PathTemplate {
             private final String path;
 
@@ -432,18 +393,20 @@ public class HttpRequest {
     public String toString() {
         return new ToStringBuilder(this)
                 .append("meth", meth)
+                .append("pathBuilder", pathBuilder)
+                .append("contentType", contentType)
+                .append("accept", accept)
+                .append("socketTimeout", socketTimeout)
+                .append("connectionTimeout", connectionTimeout)
+                .append("encoding", encoding)
                 .append("charset", charset)
+                .append("entityWriter", entityWriter)
                 .append("headerParams", headerParams)
                 .append("matrixParams", matrixParams)
                 .append("queryParams", queryParams)
                 .append("pathParams", pathParams)
                 .append("cookieParams", cookieParams)
-                .append("formParam", formParam)
-                .append("socketTimeout", socketTimeout)
-                .append("connectionTimeout", connectionTimeout)
-                .append("pathBuilder", pathBuilder)
-                .append("entityWriter", entityWriter)
-                .append("requestContext", requestContext)
+                .append("formParams", formParams)
                 .toString();
     }
 

@@ -85,7 +85,7 @@ public class RegexPathTemplate implements PathTemplate {
             try {
                 return encoded ? value : Urls.encode(value, encoding);
             } catch (UnsupportedEncodingException e) {
-                throw new CRestException(e.getMessage(), e);
+                throw CRestException.handle(e);
             }
         }
 

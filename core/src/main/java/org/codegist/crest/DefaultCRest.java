@@ -24,7 +24,6 @@ import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.reflect.ObjectMethodsAwareInvocationHandler;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.ConfigFactoryException;
 import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
@@ -73,7 +72,7 @@ public class DefaultCRest implements CRest, Disposable {
         try {
             return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new RestInterfacer(interfaze), new Class[]{interfaze});
         } catch (Exception e) {
-            return CRestException.<T>doThrow(e);
+            throw CRestException.handle(e);
         }
     }
 
@@ -82,7 +81,7 @@ public class DefaultCRest implements CRest, Disposable {
         private final InterfaceConfig interfaceConfig;
         private final DeserializationManager deserializationManager = (DeserializationManager) customProperties.get(DeserializationManager.class.getName());
 
-        private RestInterfacer(Class<T> interfaze) throws ConfigFactoryException {
+        private RestInterfacer(Class<T> interfaze) {
             this.interfaceConfig = configFactory.newConfig(interfaze);
         }
 
@@ -91,7 +90,7 @@ public class DefaultCRest implements CRest, Disposable {
             try {
                 return doInvoke(method, args);
             } catch (Throwable e) {
-                return CRestException.doThrow(e);
+                return CRestException.handle(e);
             }
         }
 
@@ -177,7 +176,6 @@ public class DefaultCRest implements CRest, Disposable {
 
             // Build base request
             HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), interfaceConfig.getEncoding())
-                    .within(requestContext)
                     .timeoutSocketAfter(mc.getSocketTimeout())
                     .timeoutConnectionAfter(mc.getConnectionTimeout())
                     .ofContentType(mc.getContentType())

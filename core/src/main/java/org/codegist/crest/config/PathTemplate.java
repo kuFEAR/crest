@@ -27,6 +27,6 @@ public interface PathTemplate {
 
     PathBuilder getBuilder(String encoding);
 
-    String getUrlTemplate();
+    String getUrlTemplate(); // TODO MOVE ENDPOINT BACK TO INTERFACE CONFIG -- THIS IS NOT PART OF THE PATH AND THAT CAUSES PROBLEM FOR JAX-RS
 
 }

@@ -21,10 +21,9 @@
 package org.codegist.crest.server.stubs.params.cookies;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
 import java.util.List;
 
-import static org.codegist.crest.server.utils.ToStrings.string;
+import static org.codegist.crest.server.utils.ToStrings.stringCookie;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -35,10 +34,10 @@ public class BasicsStub {
 
     @GET
     public String send(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2) {
-        return String.format("send(%s) p1=%s p2=%s", string(cookies, 2), p1, p2);
+        return String.format("send(%s) p1=%s p2=%s", stringCookie(cookies, 2), p1, p2);
     }
 
 }

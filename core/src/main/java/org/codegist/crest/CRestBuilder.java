@@ -25,9 +25,13 @@ import org.codegist.common.lang.Strings;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory;
+import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
-import org.codegist.crest.config.OverridingInterfaceConfigFactory;
+import org.codegist.crest.config.annotate.AnnotationHandler;
+import org.codegist.crest.config.annotate.AnnotationHandlers;
+import org.codegist.crest.config.annotate.CRestAnnotationHandlers;
+import org.codegist.crest.config.annotate.DefaultAnnotationHandlers;
+import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotationHandlers;
 import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
@@ -48,11 +52,9 @@ import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.codegist.crest.CRestProperty.*;
@@ -63,19 +65,10 @@ import static org.codegist.crest.CRestProperty.*;
  * CRest crest = new CRestBuilder().build();
  * </pre></code>
  * <p>will create {@link org.codegist.crest.CRest} with the following features :
- * <p>- Annotation driven configuration handled by {@link org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory}, lookup for annotation in package {@link org.codegist.crest.annotate}.
- * <p>- Raw response return, meaning the given interface method return type must be either java.io.String, java.io.InputStream or java.io.Reader.
- * <p>- HTTP calls handled by {@link org.codegist.crest.DefaultRestService}
- * <p>- Uses JDK dynamics proxies to instanciates given interfaces
- * <p/>
  * <p>This default configuration has the benefit to not require any third party dependencies, but is not the recommanded one.
- * <p>For best performances, it is recommended to use the CGLib proxy factory, {@link org.codegist.common.reflect.CglibProxyFactory} (requires cglib available in the classpath) and the apache http client backed rest service {@link org.codegist.crest.HttpClientRestService}, see {@link CRestBuilder#useHttpClientRestService()}.
+ * <p>For best performances, it is recommended to use the CGLib proxy factory, {@link org.codegist.common.reflect.CglibProxyFactory} (requires cglib available in the classpath) and the apache http client backed rest service
  *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
- * @see org.codegist.crest.config.CRestAnnotationDrivenInterfaceConfigFactory
- * @see org.codegist.crest.config.PropertiesDrivenInterfaceConfigFactory
- * @see org.codegist.crest.DefaultRestService
- * @see org.codegist.crest.HttpClientRestService
  * @see org.codegist.common.reflect.CglibProxyFactory
  * @see org.codegist.common.reflect.JdkProxyFactory
  * @see DefaultCRest
@@ -143,14 +136,13 @@ public class CRestBuilder {
     private final Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
     private final Map<String,Object> oauthConfig = new HashMap<String, Object>();
 
-    private InterfaceConfigFactory overridesFactory = null;
-
     private HttpChannelInitiator httpChannelInitiator;
 
     private boolean useHttpClient = false;
     private String auth;
     private String username;
     private String password;
+    private boolean enableJaxRsSupport;
 
     public CRest build() {
         ProxyFactory proxyFactory = buildProxyFactory();
@@ -342,11 +334,17 @@ public class CRestBuilder {
     }
 
     private InterfaceConfigFactory buildInterfaceConfigFactory() {
-        InterfaceConfigFactory configFactory = new CRestAnnotationDrivenInterfaceConfigFactory(customProperties);
-        if (overridesFactory != null) {
-            configFactory = new OverridingInterfaceConfigFactory(configFactory, overridesFactory);
+        AnnotationHandlers annotationHandlers;
+        if(enableJaxRsSupport) {
+            Map<Class<? extends Annotation>, AnnotationHandler<?>> handlers = new LinkedHashMap<Class<? extends Annotation>, AnnotationHandler<?>>();
+            handlers.putAll(CRestAnnotationHandlers.getHandlersMap());
+            handlers.putAll(JaxRsAnnotationHandlers.getHandlersMap());
+            annotationHandlers = new DefaultAnnotationHandlers(handlers);
+        }else{
+            annotationHandlers = CRestAnnotationHandlers.getInstance();
         }
-        return configFactory;
+        customProperties.put(AnnotationDrivenInterfaceConfigFactory.PROP_HANDLERS, annotationHandlers);
+        return new AnnotationDrivenInterfaceConfigFactory(customProperties);
     }
 
     private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
@@ -363,7 +361,7 @@ public class CRestBuilder {
         try {
             return new BasicAuthorization(username, password);
         } catch (UnsupportedEncodingException e) {
-            throw new CRestException(e);
+            throw CRestException.handle(e);
         }
     }
 
@@ -390,6 +388,11 @@ public class CRestBuilder {
 
     public CRestBuilder useHttpClientRestService() {
         this.useHttpClient = true;
+        return this;
+    }
+
+    public CRestBuilder enableJaxRsSupport(){
+        this.enableJaxRsSupport = true;
         return this;
     }
 
@@ -455,19 +458,6 @@ public class CRestBuilder {
         this.customProperties.putAll(customProperties);
         return this;
     }
-
-    /**
-     * Resulting CRest instance will overrides any configuration resulting from its internal {@link org.codegist.crest.config.InterfaceConfigFactory} with the configuration issued by the given overridesFactory.
-     * <p>This factory is meant to returns template configs, thus can return configuration with null values that will be interpreted as fallbacking to the current  {@link org.codegist.crest.config.InterfaceConfigFactory}.
-     *
-     * @param overridesFactory config overrider factory
-     * @return current builder
-     */
-    public CRestBuilder overrideDefaultConfigWith(InterfaceConfigFactory overridesFactory) {
-        this.overridesFactory = overridesFactory;
-        return this;
-    }
-
 
     /**
      * Resulting CRest instance will use native jdk proxies to build interface instances.
@@ -539,7 +529,7 @@ public class CRestBuilder {
      * @see CRestProperty#CREST_BOOLEAN_TRUE
      * @see CRestProperty#CREST_BOOLEAN_FALSE
      */
-    public CRestBuilder setBoolean(String trueSerialized, String falseSerialized) {
+    public CRestBuilder setBooleanFormat(String trueSerialized, String falseSerialized) {
         return setProperty(CREST_BOOLEAN_TRUE, trueSerialized)
                 .setProperty(CREST_BOOLEAN_FALSE, falseSerialized);
     }

@@ -21,10 +21,9 @@
 package org.codegist.crest.server.stubs.params.cookies;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
 import java.util.List;
 
-import static org.codegist.crest.server.utils.ToStrings.string;
+import static org.codegist.crest.server.utils.ToStrings.stringCookie;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -36,19 +35,19 @@ public class DefaultValuesStub {
     @GET
     @Path("value")
     public String value(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") Integer p2) {
-        return String.format("value(%s) p1=%s p2=%s", string(cookies, 2), p1, p2);
+        return String.format("value(%s) p1=%s p2=%s", stringCookie(cookies, 2), p1, p2);
     }
 
     @GET
     @Path("param")
     public String param(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
             @CookieParam("p3") String p3) {
-        return String.format("param(%s) p1=%s p2=%s p3=%s", string(cookies, 3), p1, p2, p3);
+        return String.format("param(%s) p1=%s p2=%s p3=%s", stringCookie(cookies, 3), p1, p2, p3);
     }
 }

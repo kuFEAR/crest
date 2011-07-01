@@ -90,7 +90,7 @@ public class JerseyServer implements Server {
     public static class BasicAuthenticationFilter implements ContainerRequestFilter {
 
         public static final String USERNAME = "My UserName";
-        public static final String PASSWORD = "My P@Sww0rd";
+        public static final String PASSWORD = "My password";
 
         public ContainerRequest filter(ContainerRequest containerRequest) {
             String authHeader = containerRequest.getHeaderValue(OAuthParameters.AUTHORIZATION_HEADER);

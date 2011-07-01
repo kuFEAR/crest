@@ -160,6 +160,7 @@ public abstract class BaseCRestTest<T> {
     // this represent the real root builder shared by all tests
     private static CRestBuilder baseBuilder() {
         return  new CRestBuilder()
+                .enableJaxRsSupport()
                 .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                 .addProperties(DEFAULT_PROPERTIES)
                 .bindPlainTextDeserializerWith("text/html");
@@ -170,7 +171,7 @@ public abstract class BaseCRestTest<T> {
         return new CRestBuilder[] {
                 baseBuilder(),
                 baseBuilder().authenticatesWithOAuth( "ConsumerKey","ConsumerSecret","AccessToken","AccessTokenSecret"),
-                baseBuilder().authenticatesWithBasic("My UserName", "My P@Sww0rd")
+                baseBuilder().authenticatesWithBasic("My UserName", "My password")
         };
     }
     public static List<CRestHolder> forEach(CRestBuilder[] builders, Builder builder){

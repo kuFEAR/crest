@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.crest.serializer.SerializerException;
+import org.codegist.crest.CRestException;
 
 import javax.xml.bind.JAXBContext;
 import java.io.OutputStream;
@@ -77,9 +77,9 @@ class PooledJaxb implements Jaxb {
         try {
             jaxb = pool.poll(maxWait, TimeUnit.MILLISECONDS);
             if (jaxb == null)
-                throw new SerializerException("No jaxb could have been retrieved in the allowed time window");
+                throw new CRestException("No jaxb could have been retrieved in the allowed time window");
         } catch (InterruptedException e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
         return jaxb;
     }

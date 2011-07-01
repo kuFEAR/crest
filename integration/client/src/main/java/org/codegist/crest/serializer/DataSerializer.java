@@ -31,7 +31,7 @@ import static java.lang.String.format;
  */
 public class DataSerializer extends StringSerializer<Data> {
 
-    public String serialize(Data value, Charset charset) throws SerializerException {
+    public String serialize(Data value, Charset charset) {
         return format("Data(val1=%s,val2=%s)", value.getVal1(), value.getVal2());
     }
 }

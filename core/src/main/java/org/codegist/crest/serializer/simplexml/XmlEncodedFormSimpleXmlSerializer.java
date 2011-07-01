@@ -21,11 +21,11 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.common.lang.Strings;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.serializer.BooleanSerializer;
 import org.codegist.crest.serializer.DateSerializer;
-import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StreamingSerializer;
 import org.simpleframework.xml.stream.Format;
 import org.simpleframework.xml.stream.NodeBuilder;
@@ -59,7 +59,7 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
         this.rootElement = Strings.defaultIfBlank((String) cfg.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME);
     }
 
-    public void serialize(List<HttpParam> params, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(List<HttpParam> params, Charset charset, OutputStream out) {
         try {
             String prolog = "<?xml version=\"1.0\" encoding=\""+charset.toString()+"\" standalone=\"yes\"?>";
             OutputNode node = NodeBuilder.write(new OutputStreamWriter(out, charset), new Format(0, prolog));
@@ -85,7 +85,7 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
             }
             node.commit();
         } catch (Exception e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 

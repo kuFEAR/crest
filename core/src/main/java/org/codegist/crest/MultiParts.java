@@ -24,6 +24,7 @@ import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.http.HttpParam;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -70,5 +71,11 @@ public final class MultiParts {
         if(!Strings.isBlank(FILENAME)) {
             metadatas.put(FILENAME, fileName);
         }
+    }
+
+    public static Map<String,Object> toMetaDatas(String contentType, String fileName){
+        Map<String,Object> metadatas = new HashMap<String, Object>();
+        putMetaDatas(metadatas, contentType, fileName);
+        return metadatas;
     }
 }

@@ -20,8 +20,8 @@
 
 package org.codegist.crest.serializer.jackson;
 
+import org.codegist.crest.CRestException;
 import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.serializer.SerializerException;
 import org.codegist.crest.serializer.StreamingSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -42,7 +42,7 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
     }
 
     // todo clean that....
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) {
         try {
             Map<String, Object> map = new LinkedHashMap<String, Object>();
             for(HttpParam p : value){
@@ -74,7 +74,7 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
             }
             jackson.writeValue(out, map);
         } catch (IOException e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
     private boolean areAllNull(Collection<Object> objects){

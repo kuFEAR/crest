@@ -33,37 +33,21 @@ public abstract class CommonEntityRequestsTest<T extends EntityRequests> extends
         super(crest, service);
     }
 
-//
-//    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
-//        return new CRestHolder[]{
-//                /* HttpURLConnection based CRest */
-//                new CRestHolder(baseBuilder()
-//                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-//                        .build()),
-//                /* Apache HttpClient based CRest */
-//                new CRestHolder(baseBuilder()
-//                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-//                        .useHttpClientRestService()
-//                        .build()),
-//        };
-//    }
-
-
     @Test
     public void testRaw() {
-        String actual = toTest.raw().toString();
+        String actual = toTest.raw();
         assertEquals("raw() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[*/*]", actual);
     }
 
     @Test
     public void testAccept() {
-        String actual = toTest.accept().toString();
+        String actual = toTest.accept();
         assertEquals("accept() content-type-header=[application/x-www-form-urlencoded; charset=UTF-8] accepts-header=[application/custom1,application/custom2]", actual);
     }
 
     @Test
     public void testContentType() {
-        String actual = toTest.contentType().toString();
+        String actual = toTest.contentType();
         assertEquals("contentType() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 

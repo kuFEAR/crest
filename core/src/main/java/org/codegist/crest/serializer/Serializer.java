@@ -20,6 +20,8 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.CRestException;
+
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
@@ -41,8 +43,8 @@ public interface Serializer<T> {
      * @return serialized version of the argument
      * @throws NullPointerException when value is null
      */
-    void serialize(T value, Charset charset, OutputStream out) throws SerializerException;
+    void serialize(T value, Charset charset, OutputStream out) throws CRestException;
 
-    String serialize(T value, Charset charset) throws SerializerException;
+    String serialize(T value, Charset charset) throws CRestException;
 
 }

@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.crest.serializer.SerializerException;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.serializer.StreamingSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -38,11 +38,11 @@ public class JacksonSerializer<T> extends StreamingSerializer<T> {
         this.jackson = JacksonProvider.createSerializer(config);
     }
 
-    public void serialize(Object value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(Object value, Charset charset, OutputStream out) {
         try {
             jackson.writeValue(out, value);
         } catch (IOException e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 }

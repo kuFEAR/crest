@@ -21,10 +21,9 @@
 package org.codegist.crest.server.stubs.params.cookies;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
 import java.util.List;
 
-import static org.codegist.crest.server.utils.ToStrings.string;
+import static org.codegist.crest.server.utils.ToStrings.stringCookie;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -37,22 +36,22 @@ public class CollectionsStub {
     @GET
     @Path("default")
     public String defaults(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
             @CookieParam("p3") Integer p3,
             @CookieParam("p4") Long p4) {
-        return String.format("default(%s) p1=%s p2=%s p3=%s p4=%s", string(cookies, -1), p1, p2, p3, p4);
+        return String.format("default(%s) p1=%s p2=%s p3=%s p4=%s", stringCookie(cookies, -1), p1, p2, p3, p4);
     }
 
     @GET
     @Path("merging")
     public String merging(
-            @HeaderParam("Cookie") List<Cookie> cookies,
+            @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
             @CookieParam("p3") String p3,
             @CookieParam("p4") String p4) {
-        return String.format("merging(%s) p1=%s p2=%s p3=%s p4=%s", string(cookies, 4), p1, p2, p3, p4);
+        return String.format("merging(%s) p1=%s p2=%s p3=%s p4=%s", stringCookie(cookies, 4), p1, p2, p3, p4);
     }
 }

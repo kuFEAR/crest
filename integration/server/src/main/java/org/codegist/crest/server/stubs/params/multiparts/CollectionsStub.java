@@ -22,6 +22,7 @@ package org.codegist.crest.server.stubs.params.multiparts;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.codegist.crest.server.utils.ToStrings;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -56,7 +57,7 @@ public class CollectionsStub {
         ps.addAll(p2);
         ps.addAll(p3);
         ps.addAll(p4);
-        return format("default() p1=%s p2=%s p3=%s p4=%s", string(p1), string(p2), string(p3), string(p4));
+        return format("default() p1=%s p2=%s p3=%s p4=%s", ToStrings.stringMulti(p1), ToStrings.stringMulti(p2), ToStrings.stringMulti(p3), ToStrings.stringMulti(p4));
     }
 
 

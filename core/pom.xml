@@ -111,6 +111,11 @@
             <artifactId>jackson-mapper-asl</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
 

@@ -4,6 +4,7 @@ import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.SerializerRegistry;
 
@@ -14,7 +15,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBuilder<T> {
+public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> {
 
     private final MethodConfigBuilder parent;
 
@@ -66,7 +67,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
             metas = defaultIfUndefined(metas, CRestProperty.CONFIG_PARAM_DEFAULT_METAS, ParamConfig.DEFAULT_METADATAS);
             listSeparator = defaultIfUndefined(listSeparator, CRestProperty.CONFIG_PARAM_DEFAULT_LIST_SEPARATOR, null);
             serializer = defaultIfUndefined(serializer, CRestProperty.CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(ParamConfig.DEFAULT_SERIALIZER));
-            encoded = defaultIfUndefined(encoded, CRestProperty.CONFIG_PARAM_DEFAULT_ENCODED, ParamConfig.DEFAULT_ENCODED);
+            encoded = defaultIfUndefined(encoded, CRestProperty.CONFIG_PARAM_DEFAULT_ENCODED, (HttpRequest.DEST_COOKIE.equals(dest) || HttpRequest.DEST_HEADER.equals(dest)) ? Boolean.TRUE : ParamConfig.DEFAULT_ENCODED);
             if (serializer == null) {
                 State.notNull(serializerRegistry, "Can't lookup a serializer by type. Please provide a SerializerFactory");
                 // if null, then choose which serializer to apply using default rules
@@ -93,6 +94,28 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
 
     public MethodConfigBuilder endParamConfig() {
         return parent;
+    }
+
+    public ParamConfigBuilder forQuery() {
+        return setDestination(HttpRequest.DEST_QUERY);
+    }
+    public ParamConfigBuilder forPath() {
+        return setDestination(HttpRequest.DEST_PATH);
+    }
+    public ParamConfigBuilder forMatrix() {
+        return setDestination(HttpRequest.DEST_MATRIX);
+    }
+    public ParamConfigBuilder forCookie() {
+        return setDestination(HttpRequest.DEST_COOKIE);
+    }
+    public ParamConfigBuilder forHeader() {
+        return setDestination(HttpRequest.DEST_HEADER);
+    }
+    public ParamConfigBuilder forForm() {
+        return setDestination(HttpRequest.DEST_FORM);
+    }
+    public ParamConfigBuilder forMultiPart() {
+        return forForm();
     }
 
     @Override
@@ -138,46 +161,15 @@ public class ParamConfigBuilder<T extends ParamConfig> extends AbstractConfigBui
         return this;
     }
 
-    public ParamConfigBuilder addMetaDatas(String name, Object value) {
-        if (ignore(name) && ignore(value)) return this;
-        this.metas.clear();
-        this.metas.put(name, value);
-        return this;
-    }
-
-
-    /**
-     * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
-     *
-     * @param serializerClassName the serializer classname to use for this argument
-     * @return current builder
-     */
-    public ParamConfigBuilder setSerializer(String serializerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(serializerClassName)) return this;
-        return setSerializer((Class<? extends Serializer>) Class.forName(replacePlaceholders(serializerClassName)));
-    }
-
     /**
      * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
      *
      * @param serializer the serializer to use for this argument
      * @return current builder
      */
-    public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) throws IllegalAccessException, InstantiationException {
+    public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
         if (ignore(serializer)) return this;
-        return setSerializer(newInstance(serializer));
-    }
-
-    /**
-     * Sets the argument's serializer. If not set, the system automatically choose a serializer based on the argument type. See {@link org.codegist.crest.CRest} for the selection rules.
-     *
-     * @param serializer the serializer to use for this argument
-     * @return current builder
-     */
-    public ParamConfigBuilder setSerializer(Serializer serializer) {
-        if (ignore(serializer)) return this;
-        this.serializer = serializer;
+        this.serializer = newInstance(serializer);
         return this;
     }
-
 }

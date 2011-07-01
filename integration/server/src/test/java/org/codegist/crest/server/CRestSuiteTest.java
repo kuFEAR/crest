@@ -20,9 +20,7 @@
 
 package org.codegist.crest.server;
 
-import org.codegist.common.io.Sockets;
 import org.codegist.crest.CRestSuite;
-import org.codegist.crest.param.multiparts.MultiPartsSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

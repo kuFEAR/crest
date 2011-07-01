@@ -22,6 +22,7 @@ package org.codegist.crest.server.stubs.params.multiparts;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.codegist.crest.server.utils.ToStrings;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -56,6 +57,6 @@ public class DefaultValuesStub {
             @FormDataParam("p1") List<FormDataBodyPart> p1,
             @FormDataParam("p2") FormDataBodyPart p2,
             @FormDataParam("p3") FormDataBodyPart p3) throws UnsupportedEncodingException {
-        return format("param() p1=%s p2=%s p3=%s", string(p1),string(p2),string(p3));
+        return format("param() p1=%s p2=%s p3=%s", ToStrings.stringMulti(p1),string(p2),string(p3));
     }
 }

@@ -22,6 +22,7 @@ package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.log.Logger;
+import org.codegist.crest.CRestException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,18 +50,18 @@ public final class DeserializationManager {
                     try {
                         stream = new ByteArrayInputStream(IOs.toByteArray(stream, true));
                     } catch (IOException e) {
-                        throw new DeserializerException(e.getMessage(), e);
+                        throw CRestException.handle(e);
                     }
                 }
                 for (Deserializer deserializer : deserializers) { /*  */
                     try {
                         LOG.debug("Trying to deserialize response with user specified deserializer : %s.", deserializer);
                         return deserializer.<T>deserialize(type, genericType, stream, charset);
-                    } catch (DeserializerException e) {
+                    } catch (CRestException e) {
                         LOG.warn("Failed to deserialize response with user specified deserializer : %s. Trying next.", deserializer);
                     }
                 }
-                throw new DeserializerException("Could not deserialize response with given deserializers! (received content-type=" + mimeType + ")");
+                throw new CRestException("Could not deserialize response with given deserializers! (received content-type=" + mimeType + ")");
             }
 
             /* Either the user hasn't specified an expected mime type or deserialization attempts failed, we fallback to the server's Content-Type*/

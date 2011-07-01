@@ -35,7 +35,7 @@ public class ToStringSerializer<T> extends StringSerializer<T> {
      * @param value Context of the serialization
      * @return serialized value of param
      */
-    public String serialize(T value, Charset charset) throws SerializerException {
+    public String serialize(T value, Charset charset) {
         return value.toString();
     }
 }

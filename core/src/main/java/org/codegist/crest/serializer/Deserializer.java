@@ -20,6 +20,8 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.CRestException;
+
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -29,6 +31,6 @@ import java.nio.charset.Charset;
  */
 public interface Deserializer {
 
-    <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws DeserializerException;
+    <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException;
 
 }

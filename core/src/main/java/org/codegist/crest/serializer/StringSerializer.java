@@ -20,6 +20,8 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.CRestException;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -28,12 +30,12 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public abstract class StringSerializer<V> implements Serializer<V> {
-    public void serialize(V value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(V value, Charset charset, OutputStream out) {
 
         try {
             out.write(serialize(value, charset).getBytes(charset));
         } catch (IOException e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 

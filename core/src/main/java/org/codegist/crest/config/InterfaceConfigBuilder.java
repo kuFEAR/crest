@@ -5,6 +5,7 @@ import org.codegist.crest.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
+import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Serializer;
 
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfig> {
+public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
 
     private final Class interfaze;
     private final Map<Method, MethodConfigBuilder> builderCache;
@@ -90,21 +91,7 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsSocketTimeout(String socketTimeout) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setSocketTimeout(socketTimeout);
-        }
-        return this;
-    }
-
     public InterfaceConfigBuilder setMethodsConnectionTimeout(Long connectionTimeout) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setConnectionTimeout(connectionTimeout);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsConnectionTimeout(String connectionTimeout) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setConnectionTimeout(connectionTimeout);
         }
@@ -114,6 +101,13 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
     public InterfaceConfigBuilder addMethodsExtraFormParam(String name, String value) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.addExtraFormParam(name, value);
+        }
+        return this;
+    }
+
+    public InterfaceConfigBuilder addMethodsExtraMultiPartParam(String name, String value , String contentType, String fileName) {
+        for (MethodConfigBuilder b : builderCache.values()) {
+            b.addExtraMultiPartParam(name, value, contentType, fileName);
         }
         return this;
     }
@@ -153,112 +147,35 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         return this;
     }
 
-    public InterfaceConfigBuilder addMethodsExtraParam(String name, String value, String destination, Map<String,Object> metaDatas) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.addExtraParam(name, value, destination, metaDatas);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsRequestInterceptor(RequestInterceptor requestInterceptor) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setRequestInterceptor(requestInterceptor);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsRequestInterceptor(String requestInterceptorClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setRequestInterceptor(requestInterceptorClassName);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorCls) throws IllegalAccessException, InstantiationException {
+    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorCls) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setRequestInterceptor(requestInterceptorCls);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsResponseHandler(ResponseHandler responseHandler) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setResponseHandler(responseHandler);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsResponseHandler(String responseHandlerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setResponseHandler(responseHandlerClassName);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) throws IllegalAccessException, InstantiationException {
+    public InterfaceConfigBuilder setMethodsResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setResponseHandler(responseHandlerClass);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsErrorHandler(ErrorHandler errorHandler) {
+    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandler) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setErrorHandler(errorHandler);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsErrorHandler(String errorHandler) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setErrorHandler(errorHandler);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandler) throws IllegalAccessException, InstantiationException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setErrorHandler(errorHandler);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsRetryHandler(RetryHandler retryHandler) {
+    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandler) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setRetryHandler(retryHandler);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsRetryHandler(String retryHandler) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setRetryHandler(retryHandler);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandler) throws IllegalAccessException, InstantiationException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setRetryHandler(retryHandler);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsEntityWriter(EntityWriter entityWriter) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setEntityWriter(entityWriter);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsEntityWriter(String bodyWriter) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setEntityWriter(bodyWriter);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter) throws IllegalAccessException, InstantiationException {
+    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setEntityWriter(bodyWriter);
         }
@@ -281,7 +198,7 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsHttpMethod(String meth) {
+    public InterfaceConfigBuilder setMethodsHttpMethod(HttpMethod meth) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setHttpMethod(meth);
         }
@@ -307,30 +224,9 @@ public class InterfaceConfigBuilder extends AbstractConfigBuilder<InterfaceConfi
 
     /* PARAMS SETTINGS METHODS */
 
-    public InterfaceConfigBuilder setParamsSerializer(Serializer paramSerializer) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setParamsSerializer(paramSerializer);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setParamsSerializer(String paramSerializerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setParamsSerializer(paramSerializerClassName);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) throws IllegalAccessException, InstantiationException {
+    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setParamsSerializer(paramSerializerCls);
-        }
-        return this;
-    }
-
-    public InterfaceConfigBuilder setParamsName(String name) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setParamsName(name);
         }
         return this;
     }

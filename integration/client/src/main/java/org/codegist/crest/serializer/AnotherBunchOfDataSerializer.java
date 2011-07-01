@@ -33,7 +33,7 @@ import static java.lang.String.format;
  */
 public class AnotherBunchOfDataSerializer extends StringSerializer<BunchOfData<Data>> {
 
-    public String serialize(BunchOfData<Data> value, Charset charset) throws SerializerException {
+    public String serialize(BunchOfData<Data> value, Charset charset) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         return format("AnotherBuchOfData(val1=%s, val2=%s, val3=Data(val1=%s, val2=%s))", sdf.format(value.getVal1()), value.getVal2(), value.getVal3().getVal1(), value.getVal3().getVal2());
     }

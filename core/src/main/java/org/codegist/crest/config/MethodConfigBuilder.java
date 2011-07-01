@@ -18,11 +18,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static org.codegist.common.collect.Arrays.join;
 
 @SuppressWarnings("unchecked")
-public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
+public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
 
     private final Method method;
     private final InterfaceConfigBuilder parent;
@@ -162,7 +161,7 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         String[] mimes = new String[mimeTypes.length];
         for (int i = 0; i < mimeTypes.length; i++) {
             String mMime = replacePlaceholders(mimeTypes[i]);
-            addDeserializer(deserializerRegistry.getForMimeType(mMime));
+            this.deserializers.add(deserializerRegistry.getForMimeType(mMime));
             mimes[i] = mMime;
         }
         this.accept = join(",", mimes);
@@ -175,48 +174,37 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder addExtraFormParam(String name, String defaultValue) {
-        return addExtraFormParam(name, defaultValue, Collections.<String, Object>emptyMap());
+    public MethodConfigBuilder addExtraMultiPartParam(String name, String defaultValue, String contentType, String fileName) {
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_FORM, MultiParts.toMetaDatas(contentType, fileName));
     }
-    public MethodConfigBuilder addExtraFormParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_FORM, metas);
+
+    public MethodConfigBuilder addExtraFormParam(String name, String defaultValue) {
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_FORM);
     }
 
     public MethodConfigBuilder addExtraHeaderParam(String name, String defaultValue) {
-        return addExtraHeaderParam(name, defaultValue, Collections.<String, Object>emptyMap());
-    }
-    public MethodConfigBuilder addExtraHeaderParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_HEADER, metas);
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_HEADER);
     }
 
     public MethodConfigBuilder addExtraQueryParam(String name, String defaultValue) {
-        return addExtraQueryParam(name, defaultValue, Collections.<String, Object>emptyMap());
-    }
-    public MethodConfigBuilder addExtraQueryParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_QUERY, metas);
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_QUERY);
     }
 
     public MethodConfigBuilder addExtraPathParam(String name, String defaultValue) {
-        return addExtraPathParam(name, defaultValue, Collections.<String, Object>emptyMap());
-    }
-    public MethodConfigBuilder addExtraPathParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_PATH, metas);
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_PATH);
     }
 
     public MethodConfigBuilder addExtraCookieParam(String name, String defaultValue) {
-        return addExtraCookieParam(name, defaultValue, Collections.<String, Object>emptyMap());
-    }
-    public MethodConfigBuilder addExtraCookieParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_COOKIE, metas);
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_COOKIE);
     }
 
     public MethodConfigBuilder addExtraMatrixParam(String name, String defaultValue) {
-        return addExtraMatrixParam(name, defaultValue, Collections.<String, Object>emptyMap());
-    }
-    public MethodConfigBuilder addExtraMatrixParam(String name, String defaultValue, Map<String,Object> metas) {
-        return addExtraParam(name, defaultValue, HttpRequest.DEST_MATRIX, metas);
+        return addExtraParam(name, defaultValue, HttpRequest.DEST_MATRIX);
     }
 
+    public MethodConfigBuilder addExtraParam(String name, String defaultValue, String dest) {
+        return addExtraParam(name, defaultValue, dest, Collections.<String, Object>emptyMap());
+    }
     public MethodConfigBuilder addExtraParam(String name, String defaultValue, String dest, Map<String,Object> metaDatas) {
         if (ignore(name) && ignore(defaultValue) && ignore(dest)) return this;
         return startExtraParamConfig(name)
@@ -251,9 +239,9 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder setHttpMethod(String meth) {
+    public MethodConfigBuilder setHttpMethod(HttpMethod meth) {
         if (ignore(meth)) return this;
-        this.meth = HttpMethod.valueOf(replacePlaceholders(meth));
+        this.meth = meth;
         return this;
     }
 
@@ -263,144 +251,47 @@ public class MethodConfigBuilder extends AbstractConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder setSocketTimeout(String socketTimeout) {
-        if (ignore(socketTimeout)) return this;
-        return setSocketTimeout(Long.parseLong(replacePlaceholders(socketTimeout)));
-    }
-
     public MethodConfigBuilder setConnectionTimeout(Long connectionTimeout) {
         if (ignore(connectionTimeout)) return this;
         this.connectionTimeout = connectionTimeout;
         return this;
     }
 
-    public MethodConfigBuilder setConnectionTimeout(String connectionTimeout) {
-        if (ignore(connectionTimeout)) return this;
-        return setConnectionTimeout(Long.parseLong(replacePlaceholders(connectionTimeout)));
-    }
-
-    public MethodConfigBuilder setRequestInterceptor(RequestInterceptor requestInterceptor) {
-        if (ignore(requestInterceptor)) return this;
-        this.requestInterceptor = requestInterceptor;
-        return this;
-    }
-
-    public MethodConfigBuilder setRequestInterceptor(String interceptorClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(interceptorClassName)) return this;
-        return setRequestInterceptor((Class<? extends RequestInterceptor>) Class.forName(replacePlaceholders(interceptorClassName)));
-    }
-
-    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls) throws IllegalAccessException, InstantiationException {
+    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls) {
         if (ignore(interceptorCls)) return this;
-        return setRequestInterceptor(newInstance(interceptorCls));
-    }
-
-    public MethodConfigBuilder setResponseHandler(ResponseHandler responseHandler) {
-        if (ignore(responseHandler)) return this;
-        this.responseHandler = responseHandler;
+        this.requestInterceptor = newInstance(interceptorCls);
         return this;
     }
 
-    public MethodConfigBuilder setResponseHandler(String responseHandlerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(responseHandlerClassName)) return this;
-        return setResponseHandler((Class<? extends ResponseHandler>) Class.forName(replacePlaceholders(responseHandlerClassName)));
-    }
-
-    public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) throws IllegalAccessException, InstantiationException {
+    public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) {
         if (ignore(responseHandlerClass)) return this;
-        return setResponseHandler(newInstance(responseHandlerClass));
-    }
-
-
-    public MethodConfigBuilder setErrorHandler(ErrorHandler errorHandler) {
-        if (ignore(errorHandler)) return this;
-        this.errorHandler = errorHandler;
+        this.responseHandler  = newInstance(responseHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setErrorHandler(String methodHandlerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(methodHandlerClassName)) return this;
-        return setErrorHandler((Class<? extends ErrorHandler>) Class.forName(replacePlaceholders(methodHandlerClassName)));
-    }
-
-    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass) throws IllegalAccessException, InstantiationException {
+    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass) {
         if (ignore(methodHandlerClass)) return this;
-        return setErrorHandler(newInstance(methodHandlerClass));
-    }
-
-
-    public MethodConfigBuilder setRetryHandler(RetryHandler retryHandler) {
-        if (ignore(retryHandler)) return this;
-        this.retryHandler = retryHandler;
+        this.errorHandler = newInstance(methodHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setRetryHandler(String retryHandlerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(retryHandlerClassName)) return this;
-        return setRetryHandler((Class<? extends RetryHandler>) Class.forName(replacePlaceholders(retryHandlerClassName)));
-    }
-
-    public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass) throws IllegalAccessException, InstantiationException {
+    public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass) {
         if (ignore(retryHandlerClass)) return this;
-        return setRetryHandler(newInstance(retryHandlerClass));
-    }
-
-    public MethodConfigBuilder setEntityWriter(EntityWriter entityWriter) {
-        if (ignore(entityWriter)) return this;
-        this.entityWriter = entityWriter;
+        this.retryHandler = newInstance(retryHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setEntityWriter(String bodyWriterClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        if (ignore(bodyWriterClassName)) return this;
-        return setEntityWriter((Class<? extends EntityWriter>) Class.forName(replacePlaceholders(bodyWriterClassName)));
-    }
-
-    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass) throws IllegalAccessException, InstantiationException {
+    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass) {
         if (ignore(bodyWriterClass)) return this;
-        return setEntityWriter(newInstance(bodyWriterClass));
-    }
-
-    public MethodConfigBuilder addDeserializer(Deserializer deserializer) {
-        if (ignore(deserializer)) return this;
-        this.deserializers.add(deserializer);
+        this.entityWriter = newInstance(bodyWriterClass);
         return this;
     }
-
-    public MethodConfigBuilder setDeserializers(Deserializer... deserializer) {
-        if (ignore(deserializer)) return this;
-        this.deserializers.clear();
-        this.deserializers.addAll(asList(deserializer));
-        return this;
-    }
-
 
     /* PARAMS SETTINGS METHODS */
 
-    public MethodConfigBuilder setParamsSerializer(Serializer paramSerializer) {
+    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer)  {
         for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setSerializer(paramSerializer);
-        }
-        return this;
-    }
-
-    public MethodConfigBuilder setParamsSerializer(String paramSerializerClassName) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
-        for (ParamConfigBuilder b : methodParamConfigBuilders) {
-            b.setSerializer(paramSerializerClassName);
-        }
-        return this;
-    }
-
-    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer) throws IllegalAccessException, InstantiationException {
-        for (ParamConfigBuilder b : methodParamConfigBuilders) {
-            b.setSerializer(paramSerializer);
-        }
-        return this;
-    }
-
-    public MethodConfigBuilder setParamsName(String name) {
-        for (ParamConfigBuilder b : methodParamConfigBuilders) {
-            b.setName(name);
         }
         return this;
     }

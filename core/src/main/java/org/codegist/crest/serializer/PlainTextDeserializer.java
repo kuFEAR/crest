@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
+import org.codegist.crest.CRestException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,11 +30,11 @@ import java.nio.charset.Charset;
 
 public class PlainTextDeserializer implements Deserializer {
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws DeserializerException {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         try {
             return (T) IOs.toString(stream, charset);
         } catch (IOException e) {
-            throw new DeserializerException(e);
+            throw CRestException.handle(e);
         }
     }
 

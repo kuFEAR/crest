@@ -55,7 +55,7 @@ public class FlickrSample implements Runnable {
                 }})
                 .useHttpClientRestService()
                 .setDateFormat("Seconds")
-                .setBoolean("1", "0")
+                .setBooleanFormat("1", "0")
 
 //                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
 //                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)

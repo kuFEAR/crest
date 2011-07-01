@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.serializer.SerializerException;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.serializer.StreamingSerializer;
 
 import java.io.OutputStream;
@@ -37,11 +37,11 @@ public class SimpleXmlSerializer extends StreamingSerializer<Object> {
         serializer = SimpleXmlFactory.createSerializer(cfg);
     }
 
-    public void serialize(Object value, Charset charset, OutputStream out) throws SerializerException {
+    public void serialize(Object value, Charset charset, OutputStream out) {
         try {
             serializer.write(value, out);
         } catch (Exception e) {
-            throw new SerializerException(e.getMessage(), e);
+            throw CRestException.handle(e);
         }
     }
 
