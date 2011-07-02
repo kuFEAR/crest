@@ -18,17 +18,22 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.param.paths;
 
-import org.codegist.crest.param.ParamsSuite;
-import org.codegist.crest.request.RequestsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author laurent.gilles@codegist.org
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ParamsSuite.class,
-        RequestsSuite.class
+        org.codegist.crest.param.paths.crest.BasicsTest.class,
+        org.codegist.crest.param.paths.crest.CollectionsTest.class,
+        org.codegist.crest.param.paths.crest.DatesTest.class,
+        org.codegist.crest.param.paths.crest.DefaultValuesTest.class,
+        org.codegist.crest.param.paths.crest.EncodingsTest.class,
+        org.codegist.crest.param.paths.crest.SerializersTest.class
 })
-public class CRestSuite {
+public class PathsCRestSuite {
 }

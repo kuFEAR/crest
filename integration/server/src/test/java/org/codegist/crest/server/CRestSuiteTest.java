@@ -20,7 +20,8 @@
 
 package org.codegist.crest.server;
 
-import org.codegist.crest.CRestSuite;
+import org.codegist.crest.CRestAllSuite;
+import org.codegist.crest.CRestJaxRsSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -31,7 +32,7 @@ import java.io.IOException;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses(CRestSuite.class)
+@Suite.SuiteClasses(CRestAllSuite.class)
 public class CRestSuiteTest {
     private static int PORT = 8080;
 //    static {  for some reason this works when ran within an IDE, but not within maven...

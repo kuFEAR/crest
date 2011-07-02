@@ -18,29 +18,23 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.request;
+package org.codegist.crest;
 
+import org.codegist.crest.param.ParamsBaseSuite;
+import org.codegist.crest.param.ParamsCRestSuite;
+import org.codegist.crest.param.ParamsJaxRsSuite;
+import org.codegist.crest.request.RequestsCRestSuite;
+import org.codegist.crest.request.RequestsJaxRsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-/**
- * @author laurent.gilles@codegist.org
- */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        org.codegist.crest.request.crest.GetsTest.class,
-        org.codegist.crest.request.crest.PostsTest.class,
-        org.codegist.crest.request.crest.PutsTest.class,
-        org.codegist.crest.request.crest.DeletesTest.class,
-        org.codegist.crest.request.crest.HeadsTest.class,
-        org.codegist.crest.request.crest.OptionsTest.class,
-
-        org.codegist.crest.request.jaxrs.GetsTest.class,
-        org.codegist.crest.request.jaxrs.PostsTest.class,
-        org.codegist.crest.request.jaxrs.PutsTest.class,
-        org.codegist.crest.request.jaxrs.DeletesTest.class,
-        org.codegist.crest.request.jaxrs.HeadsTest.class,
-        org.codegist.crest.request.jaxrs.OptionsTest.class
+        ParamsBaseSuite.class,
+        ParamsCRestSuite.class,
+        ParamsJaxRsSuite.class,
+        RequestsCRestSuite.class,
+        RequestsJaxRsSuite.class
 })
-public class RequestsSuite {
+public class CRestAllSuite {
 }

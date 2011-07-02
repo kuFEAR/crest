@@ -34,15 +34,7 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.queries.crest.DefaultValuesTest.class,
         org.codegist.crest.param.queries.crest.EncodingsTest.class,
         org.codegist.crest.param.queries.crest.NullsTest.class,
-        org.codegist.crest.param.queries.crest.SerializersTest.class,
-
-        org.codegist.crest.param.queries.jaxrs.BasicsTest.class,
-        org.codegist.crest.param.queries.jaxrs.CollectionsTest.class,
-        org.codegist.crest.param.queries.jaxrs.DatesTest.class,
-        org.codegist.crest.param.queries.jaxrs.DefaultValuesTest.class,
-        org.codegist.crest.param.queries.jaxrs.EncodingsTest.class,
-        org.codegist.crest.param.queries.jaxrs.NullsTest.class,
-        org.codegist.crest.param.queries.jaxrs.SerializersTest.class
+        org.codegist.crest.param.queries.crest.SerializersTest.class
 })
-public class QueriesSuite {
+public class QueriesCRestSuite {
 }

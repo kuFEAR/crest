@@ -28,14 +28,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        org.codegist.crest.param.headers.crest.BasicsTest.class,
-        org.codegist.crest.param.headers.crest.CollectionsTest.class,
-        org.codegist.crest.param.headers.crest.DatesTest.class,
-        org.codegist.crest.param.headers.crest.DefaultValuesTest.class,
-        org.codegist.crest.param.headers.crest.EncodingsTest.class,
-        org.codegist.crest.param.headers.crest.NullsTest.class,
-        org.codegist.crest.param.headers.crest.SerializersTest.class,
-
         org.codegist.crest.param.headers.jaxrs.BasicsTest.class,
         org.codegist.crest.param.headers.jaxrs.CollectionsTest.class,
         org.codegist.crest.param.headers.jaxrs.DatesTest.class,
@@ -44,5 +36,5 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.headers.jaxrs.NullsTest.class,
         org.codegist.crest.param.headers.jaxrs.SerializersTest.class
 })
-public class HeadersSuite {
+public class HeadersJaxRsSuite {
 }

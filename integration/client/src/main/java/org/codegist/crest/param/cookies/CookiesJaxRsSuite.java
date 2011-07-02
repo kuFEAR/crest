@@ -29,14 +29,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        org.codegist.crest.param.cookies.crest.BasicsTest.class,
-        org.codegist.crest.param.cookies.crest.CollectionsTest.class,
-        org.codegist.crest.param.cookies.crest.DatesTest.class,
-        org.codegist.crest.param.cookies.crest.DefaultValuesTest.class,
-        org.codegist.crest.param.cookies.crest.EncodingsTest.class,
-        org.codegist.crest.param.cookies.crest.NullsTest.class,
-        org.codegist.crest.param.cookies.crest.SerializersTest.class
-        ,
         org.codegist.crest.param.cookies.jaxrs.BasicsTest.class,
         org.codegist.crest.param.cookies.jaxrs.CollectionsTest.class,
         org.codegist.crest.param.cookies.jaxrs.DatesTest.class,
@@ -45,5 +37,5 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.cookies.jaxrs.NullsTest.class,
         org.codegist.crest.param.cookies.jaxrs.SerializersTest.class
 })
-public class CookiesSuite {
+public class CookiesJaxRsSuite {
 }

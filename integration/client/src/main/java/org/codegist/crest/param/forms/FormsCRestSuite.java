@@ -36,18 +36,7 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.forms.crest.DefaultValuesTest.class,
         org.codegist.crest.param.forms.crest.EncodingsTest.class,
         org.codegist.crest.param.forms.crest.NullsTest.class,
-        org.codegist.crest.param.forms.crest.SerializersTest.class,
-
-        org.codegist.crest.param.forms.jaxrs.BasicsTest.class,
-        org.codegist.crest.param.forms.jaxrs.CollectionsTest.class,
-        org.codegist.crest.param.forms.jaxrs.DatesTest.class,
-        org.codegist.crest.param.forms.jaxrs.DefaultValuesTest.class,
-        org.codegist.crest.param.forms.jaxrs.EncodingsTest.class,
-        org.codegist.crest.param.forms.jaxrs.NullsTest.class,
-        org.codegist.crest.param.forms.jaxrs.SerializersTest.class,
-
-        JsonsSuite.class,
-        XmlsSuite.class
+        org.codegist.crest.param.forms.crest.SerializersTest.class
 })
-public class FormsSuite {
+public class FormsCRestSuite {
 }

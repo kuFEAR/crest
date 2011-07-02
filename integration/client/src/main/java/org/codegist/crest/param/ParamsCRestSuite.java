@@ -20,13 +20,18 @@
 
 package org.codegist.crest.param;
 
-import org.codegist.crest.param.cookies.CookiesSuite;
-import org.codegist.crest.param.forms.FormsSuite;
-import org.codegist.crest.param.headers.HeadersSuite;
-import org.codegist.crest.param.matrixes.MatrixesSuite;
+import org.codegist.crest.param.cookies.CookiesCRestSuite;
+import org.codegist.crest.param.cookies.CookiesJaxRsSuite;
+import org.codegist.crest.param.forms.FormsEntitySuite;
+import org.codegist.crest.param.headers.HeadersCRestSuite;
+import org.codegist.crest.param.headers.HeadersJaxRsSuite;
+import org.codegist.crest.param.matrixes.MatrixesCRestSuite;
+import org.codegist.crest.param.matrixes.MatrixesJaxRsSuite;
 import org.codegist.crest.param.multiparts.MultiPartsSuite;
-import org.codegist.crest.param.paths.PathsSuite;
-import org.codegist.crest.param.queries.QueriesSuite;
+import org.codegist.crest.param.paths.PathsCRestSuite;
+import org.codegist.crest.param.paths.PathsJaxRsSuite;
+import org.codegist.crest.param.queries.QueriesCRestSuite;
+import org.codegist.crest.param.queries.QueriesJaxRsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,13 +41,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        CookiesSuite.class,
-        FormsSuite.class,
-        HeadersSuite.class,
-        MatrixesSuite.class,
-        MultiPartsSuite.class,
-        PathsSuite.class,
-        QueriesSuite.class
+        CookiesCRestSuite.class,
+        HeadersCRestSuite.class,
+        MatrixesCRestSuite.class,
+        PathsCRestSuite.class,
+        QueriesCRestSuite.class
 })
-public class ParamsSuite {
+public class ParamsCRestSuite {
 }

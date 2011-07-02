@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.param.paths;
+package org.codegist.crest.param.headers;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,19 +28,13 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        org.codegist.crest.param.paths.crest.BasicsTest.class,
-        org.codegist.crest.param.paths.crest.CollectionsTest.class,
-        org.codegist.crest.param.paths.crest.DatesTest.class,
-        org.codegist.crest.param.paths.crest.DefaultValuesTest.class,
-        org.codegist.crest.param.paths.crest.EncodingsTest.class,
-        org.codegist.crest.param.paths.crest.SerializersTest.class,
-
-        org.codegist.crest.param.paths.jaxrs.BasicsTest.class,
-        org.codegist.crest.param.paths.jaxrs.CollectionsTest.class,
-        org.codegist.crest.param.paths.jaxrs.DatesTest.class,
-        org.codegist.crest.param.paths.jaxrs.DefaultValuesTest.class,
-        org.codegist.crest.param.paths.jaxrs.EncodingsTest.class,
-        org.codegist.crest.param.paths.jaxrs.SerializersTest.class
+        org.codegist.crest.param.headers.crest.BasicsTest.class,
+        org.codegist.crest.param.headers.crest.CollectionsTest.class,
+        org.codegist.crest.param.headers.crest.DatesTest.class,
+        org.codegist.crest.param.headers.crest.DefaultValuesTest.class,
+        org.codegist.crest.param.headers.crest.EncodingsTest.class,
+        org.codegist.crest.param.headers.crest.NullsTest.class,
+        org.codegist.crest.param.headers.crest.SerializersTest.class
 })
-public class PathsSuite {
+public class HeadersCRestSuite {
 }

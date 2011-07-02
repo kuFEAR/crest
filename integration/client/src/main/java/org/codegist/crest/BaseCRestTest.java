@@ -47,6 +47,7 @@ public abstract class BaseCRestTest<T> {
 
     private static final String TEST_SERVER = System.getProperty("crest.server.end-point", "http://localhost:8080");
     private static final boolean TEST_JAXB = Boolean.valueOf(System.getProperty("crest.test.jaxb", "true"));
+    private static final boolean TEST_JAXRS = Boolean.valueOf(System.getProperty("crest.test.jaxrs", "true"));
     private static final String TEST_TMP_DIR = System.getProperty("crest.test.tmp-dir", null);
 
 
@@ -159,11 +160,17 @@ public abstract class BaseCRestTest<T> {
 
     // this represent the real root builder shared by all tests
     private static CRestBuilder baseBuilder() {
-        return  new CRestBuilder()
-                .enableJaxRsSupport()
-                .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
-                .addProperties(DEFAULT_PROPERTIES)
-                .bindPlainTextDeserializerWith("text/html");
+        CRestBuilder builder = new CRestBuilder()
+                    .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
+                    .addProperties(DEFAULT_PROPERTIES)
+                    .bindPlainTextDeserializerWith("text/html");
+        if(TEST_JAXRS) {
+            builder.enableJaxRsSupport();
+        }
+        if(!TEST_JAXB) {
+            builder.deserializeXmlWithSimpleXml().serializeXmlWithSimpleXml();
+        }
+        return builder;
     }
 
     // these represents the common permutations all test will pass

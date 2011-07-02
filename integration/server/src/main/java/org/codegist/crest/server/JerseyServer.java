@@ -110,7 +110,8 @@ public class JerseyServer implements Server {
     }
     public static class OAuthAuthenticationFilter implements ContainerRequestFilter {
 
-        private final NonceManager nonces = new NonceManager(300000, 100);
+        private static final long MAX_AGE = 60 * 60 * 1000; // one houre
+        private final NonceManager nonces = new NonceManager(MAX_AGE, 100);
 
         public static final String OAUTH_CONSUMER_KEY = "ConsumerKey";
         public static final String OAUTH_CONSUMER_SECRET = "ConsumerSecret";
