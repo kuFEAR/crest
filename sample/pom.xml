@@ -173,9 +173,6 @@
                         <argument>${crest.sample.delicious.access-token}</argument>
                         <argument>${crest.sample.delicious.access-token-secret}</argument>
                         <argument>${crest.sample.delicious.session-handle}</argument>
-                        <argument>${crest.sample.flickr.key}</argument>
-                        <argument>${crest.sample.flickr.secret}</argument>
-                        <argument>${crest.sample.flickr.token}</argument>
                         <argument>${crest.sample.twitter.account1.consumer-key}</argument>
                         <argument>${crest.sample.twitter.account1.consumer-secret}</argument>
                         <argument>${crest.sample.twitter.account1.access-token}</argument>
@@ -188,6 +185,9 @@
                         <argument>${crest.sample.twitter.account2.access-token-secret}</argument>
                         <argument>${crest.sample.twitter.account2.user-id}</argument>
                         <argument>${crest.sample.twitter.account2.screen-name}</argument>
+                        <argument>${crest.sample.flickr.key}</argument>
+                        <argument>${crest.sample.flickr.secret}</argument>
+                        <argument>${crest.sample.flickr.token}</argument>
                     </arguments>
                     <classpathScope>compile</classpathScope>
                 </configuration>

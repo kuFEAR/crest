@@ -21,10 +21,8 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.param.cookies.CookiesJaxRsSuite;
-import org.codegist.crest.param.forms.FormsEntitySuite;
 import org.codegist.crest.param.headers.HeadersJaxRsSuite;
 import org.codegist.crest.param.matrixes.MatrixesJaxRsSuite;
-import org.codegist.crest.param.multiparts.MultiPartsSuite;
 import org.codegist.crest.param.paths.PathsJaxRsSuite;
 import org.codegist.crest.param.queries.QueriesJaxRsSuite;
 import org.junit.runner.RunWith;

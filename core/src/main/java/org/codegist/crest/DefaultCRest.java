@@ -49,7 +49,7 @@ import java.util.Map;
  * <p>- {@link org.codegist.crest.handler.ErrorHandler} to customize how the created interface behaves when any error occurs during the method call process.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class DefaultCRest implements CRest, Disposable {
+public class DefaultCRest extends CRest implements Disposable {
 
     private final HttpRequestExecutor httpRequestExecutor;
     private final ProxyFactory proxyFactory;

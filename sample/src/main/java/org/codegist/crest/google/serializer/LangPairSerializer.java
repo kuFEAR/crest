@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
 public class LangPairSerializer extends StringSerializer<LangPair> {
     private static final String FORMAT = "%s|%s";
 
-    public String serialize(LangPair value, Charset charset) throws SerializerException {
+    public String serialize(LangPair value, Charset charset) {
         return String.format(FORMAT, value.getFrom(), value.getTo());
     }
 

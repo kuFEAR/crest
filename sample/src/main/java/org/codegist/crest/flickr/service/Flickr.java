@@ -23,6 +23,7 @@ package org.codegist.crest.flickr.service;
 import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.flickr.handler.FlickrResponseHandler;
+import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.Comment;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.model.Uploader;
@@ -38,10 +39,9 @@ import java.util.Date;
  */
 @EndPoint("http://flickr.com")
 @Path("/services")
-//@GlobalInterceptor(FlickrAuthInterceptor.class)
+@RequestInterceptor(FlickrAuthInterceptor.class)
 @ResponseHandler(FlickrResponseHandler.class)
 @POST
-//@Accepts("application/xml")
 public interface Flickr {
 
     @EntityWriter(JsonEntityWriter.class)

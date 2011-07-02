@@ -52,9 +52,13 @@ public class DeliciousSample implements Runnable {
     }
 
     public void run() {
+        LOG.debug("consumerKey       = %s", consumerKey);
+        LOG.debug("consumerSecret    = %s", consumerSecret);
+        LOG.debug("accessToken       = %s", accessToken);
+        LOG.debug("accessTokenSecret = %s", accessTokenSecret);
+        LOG.debug("sessionHandle    = %s", sessionHandle);
+
         CRest crest = new CRestBuilder()
-                .deserializeXmlWithJaxb()
-                .useHttpClientRestService()
                 .setBooleanFormat("yes", "no")
                 .authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
                 .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")

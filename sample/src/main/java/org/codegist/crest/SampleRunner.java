@@ -61,7 +61,7 @@ public class SampleRunner {
                 new FlickrSample(args[i++], args[i++], args[i++]),
                 new GoogleServicesSample()
         };
-        samples[3].run();
+        samples[2].run();
 //        for (Runnable sample : samples) {
 //            LOG.info("Running " + sample.getClass().getSimpleName());
 //            try {

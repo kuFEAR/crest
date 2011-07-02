@@ -39,20 +39,21 @@ public class OAuthHelper {
 
     public static void main(String[] args) throws IOException {
         // Yahoo
-        //OAuthHelper.doAccessTokenRetrievalWorkflow(
-        // "",
-        // "",
-        // "https://api.login.yahoo.com/oauth/v2/get_request_token",
-        // "https://api.login.yahoo.com/oauth/v2/get_token",
-        // "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
-
-        // Twitter
         OAuthHelper.doAccessTokenRetrievalWorkflow(
-                "",
-                "",
-                "https://api.twitter.com/oauth/request_token",
-                "https://api.twitter.com/oauth/access_token",
-                "http://api.twitter.com/oauth/authorize?oauth_token=%s");
+        "",
+        "",
+        "https://api.login.yahoo.com/oauth/v2/get_request_token",
+        "https://api.login.yahoo.com/oauth/v2/get_token",
+        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
+//
+        // Twitter
+//        OAuthHelper.doAccessTokenRetrievalWorkflow(
+//                "",
+//                "",
+//
+//                "https://api.twitter.com/oauth/request_token",
+//                "https://api.twitter.com/oauth/access_token",
+//                "http://api.twitter.com/oauth/authorize?oauth_token=%s");
     }
 
 
@@ -65,6 +66,7 @@ public class OAuthHelper {
         OAuthenticator oauth = new OAuthenticatorV1(new DefaultHttpRequestExecutor(new HttpURLConnectionHttpChannelInitiator()), consumerOAuthToken, config);
 
         OAuthToken tok = oauth.getRequestToken();
+
         System.out.println("RequestToken=" + tok);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("goto " + String.format(redirect, tok.getToken()));

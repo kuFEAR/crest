@@ -557,6 +557,11 @@ public class CRestBuilder {
         placeholders.put(placeholder, value);
         return this;
     }
+    public CRestBuilder setConfigPlaceholders(Map<String,String> placeholders) {
+        placeholders.clear();
+        placeholders.putAll(placeholders);
+        return this;
+    }
 
     public CRestBuilder bindJsonDeserializerWith(String... mimeTypes) {
         this.jsonMimes.addAll(asList(mimeTypes));

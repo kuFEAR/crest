@@ -20,6 +20,8 @@
 
 package org.codegist.crest;
 
+import java.util.Map;
+
 /**
  * CRest rest-bounded instances behave as follow :
  * <p>- methods with a java.io.InputStream or java.io.Reader return type are always considered as expecting the raw server response. Server InputStream/Reader is then return. It is of the responsability of the client to properly call close() on the given Stream in order to free network resources.
@@ -31,7 +33,7 @@ package org.codegist.crest;
  * @see CRest#build(Class)
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface CRest {
+public abstract class CRest {
 
     /**
      * Build rest-bounded instances of the given interface
@@ -43,5 +45,22 @@ public interface CRest {
      * @see org.codegist.crest.handler.ResponseHandler
      * @see org.codegist.crest.handler.DefaultResponseHandler
      */
-    <T> T build(Class<T> interfaze) throws CRestException;
+    public abstract <T> T build(Class<T> interfaze) throws CRestException;
+
+    public static CRest getInstance(){
+        return new CRestBuilder().build();
+    }
+
+    public static CRest getInstance(Map<String,String> placeholders){
+        return new CRestBuilder().setConfigPlaceholders(placeholders).build();
+    }
+
+    public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret){
+        return new CRestBuilder().authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret).build();
+    }
+
+    public static CRest getBasicAuthInstance(String username, String password){
+        return new CRestBuilder().authenticatesWithBasic(username, password).build();
+    }
+
 }

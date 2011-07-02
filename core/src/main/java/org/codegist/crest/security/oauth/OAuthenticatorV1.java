@@ -135,10 +135,10 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private static final Pair[] EMPTY_PAIRS = new Pair[0];
 
     public List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) {
-        return oauth(accessOAuthToken, method, url, EMPTY_PAIRS, parameters);
+        return oauth(accessOAuthToken, method, url, parameters, EMPTY_PAIRS);
     }
     
-    private List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair[] extrasOAuthParams, Pair... parameters) {
+    private List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair[] parameters, Pair... extrasOAuthParams) {
         List<Pair> oauthParams = oauthParamsFor(accessOAuthToken, extrasOAuthParams); // generate base oauth params
         List<Pair> toSign = new ArrayList<Pair>(oauthParams);
         toSign.addAll(asList(parameters));
@@ -174,7 +174,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private OAuthToken getAccessToken(OAuthToken requestOAuthToken, String url, HttpMethod meth, Pair... extrasOAuthParams) {
         HttpResponse refreshTokenResponse = null;
         try {
-            List<Pair> oauthParams = oauth(requestOAuthToken, meth, url, extrasOAuthParams);
+            List<Pair> oauthParams = oauth(requestOAuthToken, meth, url, EMPTY_PAIRS, extrasOAuthParams);
 
             String dest = HttpMethod.GET.equals(meth) ? HttpRequest.DEST_QUERY : HttpRequest.DEST_FORM;
 
@@ -272,10 +272,6 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
     private static Pair pair(String name, String value){
         return new Pair(name, value, CHARSET, false);
-    }
-
-    private List<Pair> oauthParams() {
-        return oauthParamsFor(SIGN_METH, IGNORE_POISON);
     }
 
     private List<Pair> oauthParamsFor(OAuthToken accessOAuthToken, Pair... extras) {

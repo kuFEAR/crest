@@ -22,9 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.crest.param.ParamsBaseSuite;
 import org.codegist.crest.param.ParamsCRestSuite;
-import org.codegist.crest.param.ParamsJaxRsSuite;
 import org.codegist.crest.request.RequestsCRestSuite;
-import org.codegist.crest.request.RequestsJaxRsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

@@ -27,12 +27,12 @@ import org.codegist.crest.twitter.model.Message;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @EndPoint("http://api.twitter.com")
-@Path("/1/direct_messages")
+@Path("/1")
 @HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
-//@Accepts("application/json")
+@Consumes("application/json")
 public interface DirectMessageService {
 
-    @Path(".json")
+    @Path("direct_messages.json")
     Message[] getReceived(
             @QueryParam("count") long count,
             @QueryParam("page") long page,
@@ -40,38 +40,38 @@ public interface DirectMessageService {
             @QueryParam("max_id") long maxId
             );
 
-    @Path(".json")
+    @Path("direct_messages.json")
     Message[] getReceived(
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
-    @Path("/sent.json")
+    @Path("direct_messages/sent.json")
     Message[] getSent(
             @QueryParam("count") long count,
             @QueryParam("page") long page,
             @QueryParam("since_id") long sinceId,
             @QueryParam("max_id") long maxId);
 
-    @Path("/sent.json")
+    @Path("direct_messages/sent.json")
     Message[] getSent(
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
     @POST
-    @Path("/new.json")
+    @Path("direct_messages/new.json")
     Message send(
             @QueryParam("user_id") long userId,
             @QueryParam("text") String msg);
 
     @POST
-    @Path("/new.json")
+    @Path("direct_messages/new.json")
     Message send(
             @QueryParam("user_id") long userId,
             @QueryParam("text") String msg,
             @QueryParam("screen_name") String screenName);
 
     @DELETE
-    @Path("/destroy/{msgid}.json")
+    @Path("direct_messages/destroy/{msgid}.json")
     Message destroy(@PathParam("msgid") long msgId);
 
 }

@@ -61,11 +61,11 @@ public class FlickrAuthInterceptor implements RequestInterceptor {
     public void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception {
 
         if (builder.getMeth().hasEntity()) {
-            builder.addFormParam("api_key", apiKey);
-            builder.addFormParam("auth_token", authToken);
+            builder.addParam("api_key", apiKey, HttpRequest.DEST_FORM, false);
+            builder.addParam("auth_token", authToken, HttpRequest.DEST_FORM, false);
         } else {
-            builder.addQueryParam("api_key", apiKey);
-            builder.addQueryParam("auth_token", authToken);
+            builder.addParam("api_key", apiKey, HttpRequest.DEST_QUERY, false);
+            builder.addParam("auth_token", authToken, HttpRequest.DEST_QUERY, false);
         }
 
         List<HttpParam> params = new ArrayList<HttpParam>();
@@ -85,9 +85,9 @@ public class FlickrAuthInterceptor implements RequestInterceptor {
         String hash = Hex.encodeAsString(digest.digest());
 
         if (builder.getMeth().hasEntity()) {
-            builder.addFormParam("api_sig", hash);
+            builder.addParam("api_sig", hash, HttpRequest.DEST_FORM, false);
         } else {
-            builder.addQueryParam("api_sig", hash);
+            builder.addParam("api_sig", hash, HttpRequest.DEST_QUERY, false);
         }
 
     }

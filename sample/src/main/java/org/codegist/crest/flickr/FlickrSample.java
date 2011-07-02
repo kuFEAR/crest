@@ -23,6 +23,7 @@ package org.codegist.crest.flickr;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
+import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.service.Flickr;
@@ -48,6 +49,9 @@ public class FlickrSample implements Runnable {
     }
 
     public void run() {
+        LOG.debug("apiKey    = %s", apiKey);
+        LOG.debug("appSecret = %s", appSecret);
+        LOG.debug("authToken = %s", authToken);
         /* Get the factory */
         CRest crest = new CRestBuilder()
                 .deserializeXmlWithJaxb(new HashMap<String, Object>(){{
@@ -56,10 +60,9 @@ public class FlickrSample implements Runnable {
                 .useHttpClientRestService()
                 .setDateFormat("Seconds")
                 .setBooleanFormat("1", "0")
-
-//                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
-//                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
-//                .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
+                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
+                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
+                .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
                 .build();
 
         /* Build service instance */

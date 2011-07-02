@@ -22,7 +22,6 @@ package org.codegist.crest.twitter;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
-import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.twitter.model.Message;
 import org.codegist.crest.twitter.model.Status;
 import org.codegist.crest.twitter.model.User;
@@ -53,12 +52,14 @@ public class TwitterSample implements Runnable {
     }
 
     public void run() {
+
+        LOG.debug("consumerKey       = %s", consumerKey);
+        LOG.debug("consumerSecret    = %s", consumerSecret);
+        LOG.debug("accessToken       = %s", accessToken);
+        LOG.debug("accessTokenSecret = %s", accessTokenSecret);
+        
         /* Get the factory */
-        CRest crest = new CRestBuilder()
-                .deserializeXmlWithSimpleXml()
-                .setConcurrencyLevel(12)
-                .authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-                .build();
+        CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
         /* Build services instances */
         StatusService statusService = crest.build(StatusService.class);
