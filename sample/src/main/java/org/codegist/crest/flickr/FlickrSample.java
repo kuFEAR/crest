@@ -52,11 +52,6 @@ public class FlickrSample implements Runnable {
     }
 
     public void run() {
-        String consumerKey       = "e0ecb99bde924245e19d008cd5b73339";
-        String consumerSecret    = "388f273a47b5ffad";
-        String accessToken       = "72157627098468812-2c989a27b74e71c3";
-        String accessTokenSecret = "dd6d6921ab452c5f";
-
         LOG.debug("consumerKey       = %s", consumerKey);
         LOG.debug("consumerSecret    = %s", consumerSecret);
         LOG.debug("accessToken       = %s", accessToken);

@@ -99,10 +99,13 @@ public class DefaultCRest extends CRest implements Disposable {
             RequestContext requestContext = new DefaultRequestContext(interfaceConfig, method, args);
 
             int attemptCount = 0;
-            ResponseContext responseContext;
+            ResponseContext responseContext = null;
             Exception exception;
             RetryHandler retryHandler = mc.getRetryHandler();
             do {
+                if(responseContext != null && responseContext.getResponse() != null) {
+                    responseContext.getResponse().close();
+                }
                 exception = null;
                 // build the request, can throw exception but that should not be part of the retry policy
                 HttpRequest request = buildRequest(requestContext);
@@ -114,7 +117,7 @@ public class DefaultCRest extends CRest implements Disposable {
                 } catch (HttpException e) {
                     responseContext = new DefaultResponseContext(deserializationManager, requestContext, e.getResponse());
                     exception = e;
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     responseContext = new DefaultResponseContext(deserializationManager, requestContext, null);
                     exception = e;
                 }

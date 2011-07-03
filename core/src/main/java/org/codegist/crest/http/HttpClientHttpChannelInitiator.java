@@ -20,10 +20,9 @@
 
 package org.codegist.crest.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpVersion;
+import org.apache.http.*;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ClientConnectionManager;
@@ -141,7 +140,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         private static final Logger LOGGER = Logger.getLogger(HttpClientHttpChannel.class);
         private final HttpClient client;
         private final HttpUriRequest request;
-        private volatile org.apache.http.HttpResponse response;
+        private volatile Response response;
 
         private HttpClientHttpChannel(HttpClient client, HttpUriRequest request){
             this.request = request;
@@ -176,45 +175,68 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             ((HttpEntityEnclosingRequest) request).setEntity(new HttpEntityWriterHttpEntity(httpEntityWriter));
         }
 
-        public int send()  throws IOException {
-            response = client.execute(request);
-            return response.getStatusLine().getStatusCode();
-        }
-
-        public InputStream getResponseStream() throws IOException  {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
-        }
-
-        public String getResponseContentType() {
-            Header header = response.getFirstHeader("Content-Type");
-            if(header != null) {
-                return header.getValue();
-            }else{
-                return null;
-            }
-        }
-
-        public String getResponseContentEncoding() {
-            Header header = response.getFirstHeader("Content-Encoding");
-            if(header != null) {
-                return header.getValue();
-            }else{
-                return null;
-            }
+        public Response send()  throws IOException {
+            response = new HttpClientResponse(request, client.execute(request));
+            return response;
         }
 
 
         public void dispose() {
-            try {
-                if(response.getEntity() != null) {
-                    response.getEntity().consumeContent();
-                }
+            response.dispose();
+        }
 
-            } catch (IOException e) {
-                LOGGER.warn(e, "Failed to consume content for request %s", request);
-            } finally {
-                request.abort();
+        private static class HttpClientResponse implements Response {
+
+            private final HttpUriRequest request;
+            private final org.apache.http.HttpResponse response;
+
+            private HttpClientResponse(HttpUriRequest request, HttpResponse response) {
+                this.request = request;
+                this.response = response;
+            }
+
+            public InputStream getStream() throws IOException  {
+                HttpEntity entity = response.getEntity();
+                return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
+            }
+
+            public String getContentType() {
+                Header header = response.getFirstHeader("Content-Type");
+                if(header != null) {
+                    return header.getValue();
+                }else{
+                    return null;
+                }
+            }
+
+            public String getContentEncoding() {
+                Header header = response.getFirstHeader("Content-Encoding");
+                if(header != null) {
+                    return header.getValue();
+                }else{
+                    return null;
+                }
+            }
+
+            public int getStatusCode() throws IOException {
+                return response.getStatusLine().getStatusCode();
+            }
+
+            public String getStatusMessage() throws IOException {
+                return response.getStatusLine().getReasonPhrase();
+            }
+
+            public void dispose() {
+                try {
+                if(response.getEntity() != null) {
+                        response.getEntity().consumeContent();
+                    }
+
+                } catch (IOException e) {
+                    LOGGER.warn(e, "Failed to consume content for request %s", request);
+                } finally {
+                    request.abort();
+                }
             }
         }
 

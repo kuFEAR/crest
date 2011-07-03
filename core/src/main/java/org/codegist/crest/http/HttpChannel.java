@@ -44,11 +44,19 @@ public interface HttpChannel extends Disposable {
 
     void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException;
 
-    int send() throws IOException;
+    Response send() throws IOException;
 
-    InputStream getResponseStream() throws IOException;
+    interface Response extends Disposable {
 
-    String getResponseContentType() throws IOException;
+        int getStatusCode() throws IOException;
 
-    String getResponseContentEncoding() throws IOException;
+        String getStatusMessage() throws IOException;
+
+        InputStream getStream() throws IOException;
+
+        String getContentType() throws IOException;
+
+        String getContentEncoding() throws IOException;
+
+    }
 }

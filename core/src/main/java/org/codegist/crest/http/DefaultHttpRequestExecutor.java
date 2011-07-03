@@ -113,8 +113,12 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
             httpChannel.writeEntityWith(new HttpRequestEntityWriter(request, LOGGER));
         }
 
-        int statusCode = httpChannel.send();
-        return new HttpResponse(request, statusCode, new HttpChannelHttpResource(httpChannel));
+        HttpChannel.Response response = httpChannel.send();
+        HttpResponse httpResponse = new HttpResponse(request, response.getStatusCode(), new HttpChannelResponseHttpResource(response));
+        if(response.getStatusCode() >= 400) {
+            throw new HttpException(response.getStatusMessage(), httpResponse);
+        }
+        return httpResponse;
     }
 
 

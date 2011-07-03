@@ -28,20 +28,20 @@ import java.util.zip.GZIPInputStream;
 /**
  * @author laurent.gilles@codegist.org
  */
-class HttpChannelHttpResource implements HttpResource {
+class HttpChannelResponseHttpResource implements HttpResource {
 
-    private final HttpChannel channel;
+    private final HttpChannel.Response response;
     private final String contentEncoding;
     private final Charset charset;
     private final String contentType;
     private final boolean zipped;
 
-    HttpChannelHttpResource(HttpChannel channel) throws IOException {
-        this.channel = channel;
-        ContentType ct = new ContentType(channel.getResponseContentType());
+    HttpChannelResponseHttpResource(HttpChannel.Response response) throws IOException {
+        this.response = response;
+        ContentType ct = new ContentType(response.getContentType());
         this.contentType = ct.mimeType;
         this.charset = ct.charset;
-        this.contentEncoding =  channel.getResponseContentEncoding();
+        this.contentEncoding =  response.getContentEncoding();
         this.zipped = "gzip".equals(contentEncoding);
     }
 
@@ -58,11 +58,11 @@ class HttpChannelHttpResource implements HttpResource {
     }
 
     public InputStream getContent() throws IOException {
-        return !zipped ? channel.getResponseStream() : new GZIPInputStream(channel.getResponseStream());
+        return !zipped ? response.getStream() : new GZIPInputStream(response.getStream());
     }
 
     public void release() throws IOException {
-        channel.dispose();
+        response.dispose();
     }
 
     private static final class ContentType {

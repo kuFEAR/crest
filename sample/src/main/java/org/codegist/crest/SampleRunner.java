@@ -47,14 +47,14 @@ public class SampleRunner {
                 new TwitterSample(args[i++], args[i++], args[i++], args[i++]),
                 new GoogleServicesSample()
         };
-        samples[1].run();
-//        for (Runnable sample : samples) {
-//            LOG.info("Running " + sample.getClass().getSimpleName());
-//            try {
-//                sample.run();
-//            } catch (Throwable e) {
-//                LOG.error(e);
-//            }
-//        }
+//        samples[0].run();
+        for (Runnable sample : samples) {
+            LOG.info("Running " + sample.getClass().getSimpleName());
+            try {
+                sample.run();
+            } catch (Throwable e) {
+                LOG.error(e);
+            }
+        }
     }
 }

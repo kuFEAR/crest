@@ -20,6 +20,8 @@
 
 package org.codegist.crest.http;
 
+import org.codegist.common.io.EmptyInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -79,7 +81,7 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             this.httpEntityWriter = httpEntityWriter;
         }
 
-        public int send() throws IOException {
+        public Response send() throws IOException {
             con.setRequestProperty("Connection", "Keep-Alive");
             con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
             if(hasEntity) {
@@ -92,23 +94,48 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
                 os.flush();
                 os.close();
             }
-            return con.getResponseCode();
-        }
-
-        public InputStream getResponseStream() throws IOException {
-            return con.getInputStream();
-        }
-
-        public String getResponseContentType() {
-            return con.getHeaderField("Content-Type");
-        }
-
-        public String getResponseContentEncoding() {
-            return con.getHeaderField("Content-Encoding");
+            return new HttpURLResponse(con);
         }
 
         public void dispose() {
             con.disconnect();
+        }
+        
+        private static class HttpURLResponse implements Response {
+
+            private final HttpURLConnection con;
+
+            private HttpURLResponse(HttpURLConnection con) {
+                this.con = con;
+            }
+
+            public int getStatusCode() throws IOException {
+                return con.getResponseCode();
+            }
+
+            public String getStatusMessage() throws IOException {
+                return con.getResponseMessage();
+            }
+
+            public InputStream getStream() throws IOException {
+                if(getStatusCode() >= 400) {
+                    return EmptyInputStream.INSTANCE;
+                }else{
+                    return con.getInputStream();
+                }
+            }
+
+            public String getContentType() {
+                return con.getHeaderField("Content-Type");
+            }
+
+            public String getContentEncoding() {
+                return con.getHeaderField("Content-Encoding");
+            }
+
+            public void dispose() {
+                con.disconnect();
+            }
         }
 
     }

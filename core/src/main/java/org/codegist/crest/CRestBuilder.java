@@ -371,7 +371,7 @@ public class CRestBuilder {
         String consumerSecret = (String) oauthConfig.get(OAUTH_CONSUMER_SECRET);
         String accessTok = (String) oauthConfig.get(OAUTH_ACCESS_TOKEN);
         String accessTokenSecret = (String) oauthConfig.get(OAUTH_ACCESS_TOKEN_SECRET);
-        Map<String, String> accessTokenExtras = (Map<String, String>) oauthConfig.get(OAUTH_ACCESS_TOKEN_EXTRAS);
+        Map<String, String> accessTokenAttributes = (Map<String, String>) oauthConfig.get(OAUTH_ACCESS_TOKEN_ATTRIBUTES);
 
         if (Strings.isBlank(consumerKey)
                 || Strings.isBlank(consumerSecret)
@@ -382,7 +382,7 @@ public class CRestBuilder {
         HttpRequestExecutor executor = new DefaultHttpRequestExecutor(channelInitiator);
 
         OAuthenticator authenticator = new OAuthenticatorV1(executor, consumerOAuthToken, customProperties);
-        OAuthToken accessOAuthToken = new OAuthToken(accessTok, accessTokenSecret, accessTokenExtras);
+        OAuthToken accessOAuthToken = new OAuthToken(accessTok, accessTokenSecret, accessTokenAttributes);
 
         return new OAuthorization(authenticator, accessOAuthToken);
     }
@@ -492,11 +492,15 @@ public class CRestBuilder {
      * @return current builder
      */
     public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
+        return authenticatesWithOAuth(consumerKey,consumerSecret,accessToken, accessTokenSecret, Collections.<String, String>emptyMap());
+    }
+    public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> attributes) {
         this.auth = "oauth";
         this.oauthConfig.put(OAUTH_CONSUMER_KEY, consumerKey);
         this.oauthConfig.put(OAUTH_CONSUMER_SECRET, consumerSecret);
         this.oauthConfig.put(OAUTH_ACCESS_TOKEN, accessToken);
         this.oauthConfig.put(OAUTH_ACCESS_TOKEN_SECRET, accessTokenSecret);
+        this.oauthConfig.put(OAUTH_ACCESS_TOKEN_ATTRIBUTES, attributes);
         return this;
     }
     public CRestBuilder authenticatesWithBasic(String username, String password) {

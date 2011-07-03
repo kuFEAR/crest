@@ -68,7 +68,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
         delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
     }
 
-    public int send() throws IOException {
+    public Response send() throws IOException {
         if(hasEntityParser()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             httpEntityWriter.writeEntityTo(out);
@@ -88,18 +88,6 @@ public class AuthorizationHttpChannel implements HttpChannel {
     public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
         this.httpEntityWriter = hasEntityParser() ? new CachingHttpEntityWriter(httpEntityWriter) : httpEntityWriter;
         this.delegate.writeEntityWith(this.httpEntityWriter);
-    }
-
-    public InputStream getResponseStream() throws IOException {
-        return this.delegate.getResponseStream();
-    }
-
-    public String getResponseContentType() throws IOException {
-        return this.delegate.getResponseContentType();
-    }
-
-    public String getResponseContentEncoding() throws IOException {
-        return this.delegate.getResponseContentEncoding();
     }
 
     public void dispose() {

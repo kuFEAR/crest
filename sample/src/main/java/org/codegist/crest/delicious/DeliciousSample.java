@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 
+import static org.codegist.crest.CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -56,15 +58,14 @@ public class DeliciousSample implements Runnable {
         LOG.debug("consumerSecret    = %s", consumerSecret);
         LOG.debug("accessToken       = %s", accessToken);
         LOG.debug("accessTokenSecret = %s", accessTokenSecret);
-        LOG.debug("sessionHandle    = %s", sessionHandle);
+        LOG.debug("sessionHandle     = %s", sessionHandle);
 
         CRest crest = new CRestBuilder()
-                .setBooleanFormat("yes", "no")
-                .authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-                .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
-                .setProperty(CRestProperty.OAUTH_ACCESS_TOKEN_EXTRAS, new HashMap<String, String>() {{
+                .setProperty(OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
+                .authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret, new HashMap<String, String>() {{
                     put("oauth_session_handle", sessionHandle);
                 }})
+                .setBooleanFormat("yes", "no")
                 .build();
 
         /* Build service instance */

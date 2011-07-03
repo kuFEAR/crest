@@ -182,7 +182,7 @@ public interface CRestProperty {
      *
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String OAUTH_ACCESS_TOKEN_EXTRAS = "authentification.oauth.access.extras";
+    String OAUTH_ACCESS_TOKEN_ATTRIBUTES = "authentification.oauth.access.attributes";
 
 
     /**
