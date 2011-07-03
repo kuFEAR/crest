@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static org.codegist.common.lang.Strings.isEmpty;
+
 /**
  * Handy builders for {@link org.codegist.crest.config.DefaultInterfaceConfig}.
  * <p>Support auto empty/null ignore and defaults methods and params values at respectively interface and method levels.
@@ -39,7 +41,6 @@ import java.util.regex.Pattern;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  * @see org.codegist.crest.config.DefaultInterfaceConfig
  * @see org.codegist.crest.config.DefaultMethodConfig
- * @see DefaultMethodParamConfig
  */
 abstract class ConfigBuilder<T> {
 
@@ -130,8 +131,8 @@ abstract class ConfigBuilder<T> {
 
     protected <T> T defaultIfUndefined(T value, String defProp, T def) {
         if (value instanceof String || def instanceof String) {
-            String defs = Strings.defaultIfBlank((String) customProperties.get(defProp), (String) def);
-            return (T) Strings.defaultIfBlank((String) value, defs);
+            String defs = Strings.defaultIfEmpty((String) customProperties.get(defProp), (String) def);
+            return (T) Strings.defaultIfEmpty((String) value, defs);
         } else {
             def = Objects.defaultIfNull((T) customProperties.get(defProp), def);
             return Objects.defaultIfNull(value, def);
@@ -192,7 +193,7 @@ abstract class ConfigBuilder<T> {
 
     protected boolean ignore(Object value) {
         if (!ignoreNullOrEmptyValues) return false;
-        return (value == null || (value instanceof String && Strings.isBlank((String) value)));
+        return (value == null || (value instanceof String && isEmpty((String) value)));
     }
 
 }

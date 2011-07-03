@@ -39,6 +39,7 @@ import java.util.Date;
 @Path("/services")
 @ResponseHandler(FlickrResponseHandler.class)
 @POST
+@ListSeparator(" ")
 public interface Flickr {
 
     @Path("/rest")
@@ -91,7 +92,7 @@ public interface Flickr {
 
     @Path("/upload")
     long uploadPhoto(
-            @MultiPartParam("photo") InputStream photo,
+            @MultiPartParam(value = "photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo,
             @MultiPartParam("title") String title,
             @MultiPartParam("description") String description,
             @MultiPartParam("tags") String[] tags,
@@ -115,7 +116,7 @@ public interface Flickr {
     @Path("/upload")
     @MultiPartParam(value = "async", defaultValue = "1")
     String asyncUploadPhoto(
-            @MultiPartParam("photo") InputStream photo,
+            @MultiPartParam(value = "photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo,
             @MultiPartParam("title") String title,
             @MultiPartParam("description") String description,
             @MultiPartParam("tags") String[] tags,

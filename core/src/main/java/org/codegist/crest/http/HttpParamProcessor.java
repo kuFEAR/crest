@@ -29,6 +29,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.codegist.common.lang.Strings.isNotBlank;
+import static org.codegist.common.lang.Strings.isNotEmpty;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -48,7 +49,7 @@ public abstract class HttpParamProcessor {
         return process(param, charset, true);
     }
     public static Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded){
-        if(isNotBlank(param.getConfig().getListSeparator())) {
+        if(param.getConfig().getListSeparator() != null) {
             return COLLECTION_MERGING_PROCESSOR.exec(param, charset, encodeIfNeeded);
         }else{
             return DEFAULT_PROCESSOR.exec(param, charset, encodeIfNeeded);

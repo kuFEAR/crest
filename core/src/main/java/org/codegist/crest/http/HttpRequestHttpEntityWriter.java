@@ -42,6 +42,7 @@ class HttpRequestEntityWriter implements HttpEntityWriter {
     public void writeEntityTo(OutputStream out) throws IOException {
         OutputStream os = !logger.isTraceOn() ? out : new LoggingOutputStream(out, logger);
         httpRequest.getEntityWriter().writeTo(httpRequest, os);
+        os.flush();
     }
 
     public int getContentLength() {
