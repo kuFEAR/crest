@@ -21,6 +21,7 @@
 package org.codegist.crest.security.oauth;
 
 import org.codegist.common.lang.Validate;
+import org.codegist.crest.http.HttpEntityWriter;
 import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.Pair;
 import org.codegist.crest.security.Authorization;
@@ -51,7 +52,7 @@ public class OAuthorization implements Authorization {
     }
 
     public void refresh() {
-        this.accessOAuthToken = oauth.refreshAccessToken(this.accessOAuthToken, this.accessOAuthToken.getExtra("oauth_session_handle"));
+        this.accessOAuthToken = oauth.refreshAccessToken(this.accessOAuthToken, this.accessOAuthToken.getAttribute("oauth_session_handle"));
     }
 
     private static String asString(List<Pair> oauthParams){

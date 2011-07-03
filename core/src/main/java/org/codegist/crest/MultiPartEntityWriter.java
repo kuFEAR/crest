@@ -46,6 +46,10 @@ public class MultiPartEntityWriter implements EntityWriter {
         return MULTIPART + BOUNDARY;
     }
 
+    public int getContentLength(HttpRequest httpRequest) {
+        return -1;
+    }
+
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
 
         DataOutputStream out = new DataOutputStream(outputStream);

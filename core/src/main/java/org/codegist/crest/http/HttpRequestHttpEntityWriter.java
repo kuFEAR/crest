@@ -43,4 +43,8 @@ class HttpRequestEntityWriter implements HttpEntityWriter {
         OutputStream os = !logger.isTraceOn() ? out : new LoggingOutputStream(out, logger);
         httpRequest.getEntityWriter().writeTo(httpRequest, os);
     }
+
+    public int getContentLength() {
+        return httpRequest.getEntityWriter().getContentLength(httpRequest);
+    }
 }

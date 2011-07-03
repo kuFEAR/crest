@@ -20,19 +20,17 @@
 
 package org.codegist.crest.security.http;
 
-import org.codegist.crest.http.HttpChannel;
-import org.codegist.crest.http.HttpEntityWriter;
-import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.Pair;
+import org.codegist.common.io.IOs;
+import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
 
@@ -42,23 +40,26 @@ import static org.codegist.common.lang.Strings.isNotBlank;
 public class AuthorizationHttpChannel implements HttpChannel {
 
     private final Authorization authenticatorManager;
+    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers;
     private final HttpChannel delegate;
     private final List<Pair> parameters = new ArrayList<Pair>();
     private final String url;
     private final Charset charset;
     private final HttpMethod method;
-    private String contentType;
+    private String contentType = "";
+    private String fullContentType = "";
     private HttpEntityWriter httpEntityWriter;
 
-    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset) {
+    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset, Map<String,HttpEntityParamsParser> httpEntityParamsParsers) {
         this.url = url;
         this.method = method;
         this.charset = charset;
         this.delegate = delegate;
+        this.httpEntityParamsParsers = httpEntityParamsParsers;
         this.authenticatorManager = authenticatorManager;
         String[] split = url.split("\\?");
         if(split.length == 2) {
-            this.parameters.addAll(parse(split[1]));
+            this.parameters.addAll(Pairs.parseUrlEncoded(split[1]));
         }
     }
 
@@ -67,37 +68,26 @@ public class AuthorizationHttpChannel implements HttpChannel {
         delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
     }
 
-    private static List<Pair> parse(String urlEncoded){
-        List<Pair> pairs = new ArrayList<Pair>();
-        String[] split = urlEncoded.split("&");
-        for(String param : split){
-            String[] paramSplit = param.split("=");
-            pairs.add(new Pair(paramSplit[0], paramSplit[1]));
-        }
-        return pairs;
-    }
-
     public int send() throws IOException {
-        if(contentType != null && contentType.startsWith("application/x-www-form-urlencoded")) {
+        if(hasEntityParser()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             httpEntityWriter.writeEntityTo(out);
-            String formContent = out.toString(charset.displayName());
-            if(isNotBlank(formContent)) {
-                this.parameters.addAll(parse(formContent));
-            }
+            List<Pair> entityParams = httpEntityParamsParsers.get(contentType).parse(fullContentType, charset, new ByteArrayInputStream(out.toByteArray()));
+            this.parameters.addAll(entityParams);
         }
         authenticate();
         return this.delegate.send();
     }
 
-    public void setContentType(String value) throws IOException {
-        this.delegate.setContentType(value);
-        this.contentType = value;
+    public void setContentType(String contentType) throws IOException {
+        this.delegate.setContentType(contentType);
+        this.contentType = contentType.split(";")[0].trim();
+        this.fullContentType = contentType;
     }
 
     public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
-        this.delegate.writeEntityWith(httpEntityWriter);
-        this.httpEntityWriter = httpEntityWriter;
+        this.httpEntityWriter = hasEntityParser() ? new CachingHttpEntityWriter(httpEntityWriter) : httpEntityWriter;
+        this.delegate.writeEntityWith(this.httpEntityWriter);
     }
 
     public InputStream getResponseStream() throws IOException {
@@ -134,5 +124,37 @@ public class AuthorizationHttpChannel implements HttpChannel {
 
     public void setConnectionTimeout(int timeout) throws IOException {
         this.delegate.setConnectionTimeout(timeout);
+    }
+
+    private boolean hasEntityParser(){
+        return httpEntityParamsParsers.containsKey(contentType);
+    }
+
+
+    private class CachingHttpEntityWriter implements HttpEntityWriter {
+
+        private final HttpEntityWriter delegate;
+        private Integer contentLength;
+        private byte[] entityContent;
+
+        private CachingHttpEntityWriter(HttpEntityWriter delegate) {
+            this.delegate = delegate;
+        }
+
+        public void writeEntityTo(OutputStream out) throws IOException {
+            if(entityContent == null) {
+                ByteArrayOutputStream cache = new ByteArrayOutputStream();
+                delegate.writeEntityTo(cache);
+                this.entityContent = cache.toByteArray();
+            }
+            IOs.copy(new ByteArrayInputStream(entityContent), out);
+        }
+
+        public int getContentLength() {
+            if(contentLength == null) {
+                contentLength = delegate.getContentLength();
+            }
+            return contentLength;
+        }
     }
 }

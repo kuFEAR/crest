@@ -18,19 +18,21 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.security.http;
 
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.http.Pair;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.List;
 
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public interface HttpEntityParamsParser {
 
-public interface EntityWriter {
+    List<Pair> parse(String contentType, Charset charset, InputStream httpEntity) throws IOException;
 
-    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
-
-    String getContentType(HttpRequest request);
-
-    int getContentLength(HttpRequest httpRequest);
 }

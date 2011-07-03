@@ -27,6 +27,7 @@ import org.codegist.crest.security.Authorization;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -35,13 +36,15 @@ public class AuthorizationHttpChannelInitiator implements HttpChannelInitiator {
 
     private final HttpChannelInitiator delegate;
     private final Authorization authorization;
+    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers;
 
-    public AuthorizationHttpChannelInitiator(HttpChannelInitiator delegate, Authorization authorization) {
+    public AuthorizationHttpChannelInitiator(HttpChannelInitiator delegate, Authorization authorization, Map<String,HttpEntityParamsParser> httpEntityParamsParsers) {
         this.delegate = delegate;
         this.authorization = authorization;
+        this.httpEntityParamsParsers = httpEntityParamsParsers;
     }
 
     public HttpChannel initiate(HttpMethod method, String url, Charset charset) throws IOException {
-        return new AuthorizationHttpChannel(delegate.initiate(method, url, charset), authorization, method, url, charset);
+        return new AuthorizationHttpChannel(delegate.initiate(method, url, charset), authorization, method, url, charset, httpEntityParamsParsers);
     }
 }

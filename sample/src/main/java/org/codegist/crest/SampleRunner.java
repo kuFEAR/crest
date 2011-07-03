@@ -36,20 +36,6 @@ public class SampleRunner {
 
 
     /**
-     * expected args:
-     * <p>[0] delicious.consumerKey
-     * <p>[1] delicious.consumerSecret
-     * <p>[2] delicious.accessToken
-     * <p>[3] delicious.accessTokenSecret
-     * <p>[4] delicious.sessionHandle
-     * <p>[5] twitter.consumerKey
-     * <p>[6] twitter.consumerSecret
-     * <p>[7] twitter.accessToken
-     * <p>[8] twitter.accessTokenSecret
-     * <p>[9] flickr.apiKey
-     * <p>[10] flickr.appSecret
-     * <p>[11] flickr.authToken
-     *
      * @param args args
      * @throws Exception
      */
@@ -57,11 +43,11 @@ public class SampleRunner {
         int i = 0;
         Runnable[] samples = {
                 new DeliciousSample(args[i++], args[i++], args[i++], args[i++], args[i++]),
+                new FlickrSample(args[i++], args[i++], args[i++], args[i++]),
                 new TwitterSample(args[i++], args[i++], args[i++], args[i++]),
-                new FlickrSample(args[i++], args[i++], args[i++]),
                 new GoogleServicesSample()
         };
-        samples[2].run();
+        samples[1].run();
 //        for (Runnable sample : samples) {
 //            LOG.info("Running " + sample.getClass().getSimpleName());
 //            try {

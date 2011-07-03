@@ -52,6 +52,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ProxySelector;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -92,6 +93,9 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
         return new HttpClientHttpChannel(client, request);
     }
 
+    public static HttpChannelInitiator newHttpChannelInitiator() {
+        return newHttpChannelInitiator(Collections.<String, Object>emptyMap());
+    }
     public static HttpChannelInitiator newHttpChannelInitiator(Map<String, Object> customProperties) {
         int concurrencyLevel = Objects.defaultIfNull((Integer) customProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), 1);
         return newHttpChannelInitiator(concurrencyLevel, concurrencyLevel);
@@ -179,8 +183,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
 
         public InputStream getResponseStream() throws IOException  {
             HttpEntity entity = response.getEntity();
-            InputStream stream = entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
-            return stream;
+            return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
         }
 
         public String getResponseContentType() {
@@ -228,7 +231,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             }
 
             public long getContentLength() {
-                return -1;
+                return writer.getContentLength();
             }
 
             public InputStream getContent() throws IOException, IllegalStateException {

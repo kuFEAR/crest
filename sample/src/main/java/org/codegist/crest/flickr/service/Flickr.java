@@ -20,10 +20,8 @@
 
 package org.codegist.crest.flickr.service;
 
-import org.codegist.crest.JsonEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.flickr.handler.FlickrResponseHandler;
-import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.Comment;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.model.Uploader;
@@ -39,12 +37,10 @@ import java.util.Date;
  */
 @EndPoint("http://flickr.com")
 @Path("/services")
-@RequestInterceptor(FlickrAuthInterceptor.class)
 @ResponseHandler(FlickrResponseHandler.class)
 @POST
 public interface Flickr {
 
-    @EntityWriter(JsonEntityWriter.class)
     @Path("/rest")
     @QueryParam(value = "method", defaultValue = "flickr.galleries.create")
     Gallery newGallery(
@@ -88,47 +84,47 @@ public interface Flickr {
 
 
     @Path("/upload")
-    long uploadPhoto(@FormParam("photo") File photo);
+    long uploadPhoto(@MultiPartParam(value = "photo", contentType = "image/jpeg") File photo);
 
     @Path("/upload")
-    long uploadPhoto(@FormParam("photo") InputStream photo);
+    long uploadPhoto(@MultiPartParam(value="photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo);
 
     @Path("/upload")
     long uploadPhoto(
-            @FormParam("photo") InputStream photo,
-            @FormParam("title") String title,
-            @FormParam("description") String description,
-            @FormParam("tags") String[] tags,
-            @FormParam("is_public") boolean isPublic,
-            @FormParam("is_friend") boolean isFriend,
-            @FormParam("is_family") boolean isFamily,
-            @FormParam("safety_level") SafetyLevel safetyLevel,
-            @FormParam("content_type") ContentType contentLype,
-            @FormParam("hidden") Visibility searchVisibility
+            @MultiPartParam("photo") InputStream photo,
+            @MultiPartParam("title") String title,
+            @MultiPartParam("description") String description,
+            @MultiPartParam("tags") String[] tags,
+            @MultiPartParam("is_public") boolean isPublic,
+            @MultiPartParam("is_friend") boolean isFriend,
+            @MultiPartParam("is_family") boolean isFamily,
+            @MultiPartParam("safety_level") SafetyLevel safetyLevel,
+            @MultiPartParam("content_type") ContentType contentLype,
+            @MultiPartParam("hidden") Visibility searchVisibility
     );
 
 
     @Path("/upload")
-    @FormParam(value = "async", defaultValue = "1")
-    String asyncUploadPhoto(@FormParam("photo") File photo);
+    @MultiPartParam(value = "async", defaultValue = "1")
+    String asyncUploadPhoto(@MultiPartParam(value = "photo", contentType = "image/jpeg") File photo);
 
     @Path("/upload")
-    @FormParam(value = "async", defaultValue = "1")
-    String asyncUploadPhoto(@FormParam("photo") InputStream photo);
+    @MultiPartParam(value = "async", defaultValue = "1")
+    String asyncUploadPhoto(@MultiPartParam(value = "photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo);
 
     @Path("/upload")
-    @FormParam(value = "async", defaultValue = "1")
+    @MultiPartParam(value = "async", defaultValue = "1")
     String asyncUploadPhoto(
-            @FormParam("photo") InputStream photo,
-            @FormParam("title") String title,
-            @FormParam("description") String description,
-            @FormParam("tags") String[] tags,
-            @FormParam("is_public") boolean isPublic,
-            @FormParam("is_friend") boolean isFriend,
-            @FormParam("is_family") boolean isFamily,
-            @FormParam("safety_level") SafetyLevel safetyLevel,
-            @FormParam("content_type") ContentType contentLype,
-            @FormParam("hidden") Visibility searchVisibility
+            @MultiPartParam("photo") InputStream photo,
+            @MultiPartParam("title") String title,
+            @MultiPartParam("description") String description,
+            @MultiPartParam("tags") String[] tags,
+            @MultiPartParam("is_public") boolean isPublic,
+            @MultiPartParam("is_friend") boolean isFriend,
+            @MultiPartParam("is_family") boolean isFamily,
+            @MultiPartParam("safety_level") SafetyLevel safetyLevel,
+            @MultiPartParam("content_type") ContentType contentLype,
+            @MultiPartParam("hidden") Visibility searchVisibility
     );
 
     @Path("/rest")

@@ -21,6 +21,7 @@
 package org.codegist.crest;
 
 import org.codegist.crest.http.DefaultHttpRequestExecutor;
+import org.codegist.crest.http.HttpClientHttpChannelInitiator;
 import org.codegist.crest.http.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthenticator;
@@ -38,13 +39,20 @@ import java.util.Map;
 public class OAuthHelper {
 
     public static void main(String[] args) throws IOException {
-        // Yahoo
+        // Flickr
         OAuthHelper.doAccessTokenRetrievalWorkflow(
-        "",
-        "",
-        "https://api.login.yahoo.com/oauth/v2/get_request_token",
-        "https://api.login.yahoo.com/oauth/v2/get_token",
-        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
+        "e0ecb99bde924245e19d008cd5b73339",
+        "388f273a47b5ffad",
+        "http://www.flickr.com/services/oauth/request_token",
+        "http://www.flickr.com/services/oauth/access_token",
+        "http://www.flickr.com/services/oauth/authorize?oauth_token=%s");
+        // Yahoo
+//        OAuthHelper.doAccessTokenRetrievalWorkflow(
+//        "",
+//        "",
+//        "https://api.login.yahoo.com/oauth/v2/get_request_token",
+//        "https://api.login.yahoo.com/oauth/v2/get_token",
+//        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
 //
         // Twitter
 //        OAuthHelper.doAccessTokenRetrievalWorkflow(
@@ -63,7 +71,7 @@ public class OAuthHelper {
         config.put(OAuthenticatorV1.CONFIG_TOKEN_REQUEST_URL, requestUrl);
         config.put(OAuthenticatorV1.CONFIG_TOKEN_ACCESS_URL, accessUrl);
 
-        OAuthenticator oauth = new OAuthenticatorV1(new DefaultHttpRequestExecutor(new HttpURLConnectionHttpChannelInitiator()), consumerOAuthToken, config);
+        OAuthenticator oauth = new OAuthenticatorV1(new DefaultHttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator()), consumerOAuthToken, config);
 
         OAuthToken tok = oauth.getRequestToken();
 

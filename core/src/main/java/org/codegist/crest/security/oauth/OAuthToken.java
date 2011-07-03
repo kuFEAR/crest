@@ -34,15 +34,15 @@ public class OAuthToken {
 
     private final String token;
     private final String secret;
-    private final Map<String,String> extras;
+    private final Map<String,String> attributes;
 
     public OAuthToken(String token, String secret) {
         this(token, secret, null);
     }
-    public OAuthToken(String token, String secret, Map<String,String> extras) {
+    public OAuthToken(String token, String secret, Map<String,String> attributes) {
         this.token = token;
         this.secret = secret;
-        this.extras = Maps.unmodifiable(extras);
+        this.attributes = Maps.unmodifiable(attributes);
     }
 
     public String getToken() {
@@ -53,15 +53,15 @@ public class OAuthToken {
         return secret;
     }
 
-    public Pair getExtra(String name){
-        return new Pair(name, extras.get(name));
+    public Pair getAttribute(String name){
+        return new Pair(name, attributes.get(name));
     }
 
     /**
      * @return Extra non-oauth-specification compliant fields returned by the oauth service.
      */
-    public Map<String,String> getExtras(){
-        return extras;
+    public Map<String,String> getAttributes(){
+        return attributes;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class OAuthToken {
         return new ToStringBuilder(this)
                 .append("token", token)
                 .append("secret", secret)
-                .append("extras", extras)
+                .append("attributes", attributes)
                 .toString();
     }
 }

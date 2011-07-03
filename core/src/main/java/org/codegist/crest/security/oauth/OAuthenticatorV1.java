@@ -40,18 +40,8 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.codegist.common.net.Urls.parseQueryString;
+import static org.codegist.crest.http.Pairs.sortByNameAndValues;
 
-/**
- * TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * TODO THIS SHOULD BE REFACTORED IN ORDER TO USE A HttpRequest instead of the HttpRequest.Builder ---> no need to mess around with the param serializers,
- * TODO EI: just grab whatever is about to be sent to the server
- * TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * OAuth v1.0 authentificator implementation
- * TODO : tidy up, explode in different specilized classes: more cohesion and less coupling please!!
- * @author Laurent Gilles (laurent.gilles@codegist.org)
- */
 public class OAuthenticatorV1 implements OAuthenticator {
 
     public static final String CONFIG_TOKEN_ACCESS_REFRESH_URL = CRestProperty.OAUTH_ACCESS_TOKEN_REFRESH_URL;
@@ -79,6 +69,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private static final String SIGN_METH_4_J = "HmacSHA1";
     private static final EntityWriter ENTITY_WRITER = new UrlEncodedFormEntityWriter();
 
+    private static final Pair[] EMPTY_PAIRS = new Pair[0];
 
     private final VariantProvider variant;
 
@@ -129,10 +120,6 @@ public class OAuthenticatorV1 implements OAuthenticator {
         else
             refreshAccessTokenMeth =  HttpMethod.POST;
     }
-
-
-
-    private static final Pair[] EMPTY_PAIRS = new Pair[0];
 
     public List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) {
         return oauth(accessOAuthToken, method, url, parameters, EMPTY_PAIRS);
@@ -238,7 +225,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
     private String sign(OAuthToken accessOAuthToken, String url, HttpMethod method, List<Pair> oauthParams) {
         // first, sort the list without changing the one given
-        List<Pair> sorted = sort(oauthParams);
+        List<Pair> sorted = sortByNameAndValues(oauthParams);
 
         String signMeth = method.toString();
         String signUri = constructRequestURL(url);
@@ -290,19 +277,6 @@ public class OAuthenticatorV1 implements OAuthenticator {
         params.add(pair("oauth_version", "1.0"));
         params.addAll(asList(extras));
         return params;
-    }
-
-    private static final Comparator<Pair> HTTP_PAIR_COMPARATOR = new Comparator<Pair>() {
-        public int compare(Pair o1, Pair o2) {
-            int i = o1.getName().compareTo(o2.getName());
-            return i != 0 ? i : o1.getValue().compareTo(o2.getValue());
-        }
-    };
-
-    private static List<Pair> sort(List<Pair> map){
-       List<Pair> sorted = new ArrayList<Pair>(map);
-       Collections.sort(sorted, HTTP_PAIR_COMPARATOR);
-       return sorted;
     }
 
     static interface VariantProvider {

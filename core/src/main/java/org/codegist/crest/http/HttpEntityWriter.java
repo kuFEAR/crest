@@ -30,4 +30,6 @@ public interface HttpEntityWriter {
 
     void writeEntityTo(OutputStream out) throws IOException;
 
+    int getContentLength();
+
 }

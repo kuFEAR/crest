@@ -36,10 +36,8 @@ import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
-import org.codegist.crest.security.oauth.OAuthToken;
-import org.codegist.crest.security.oauth.OAuthenticator;
-import org.codegist.crest.security.oauth.OAuthenticatorV1;
-import org.codegist.crest.security.oauth.OAuthorization;
+import org.codegist.crest.security.http.HttpEntityParamsParser;
+import org.codegist.crest.security.oauth.*;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jackson.JacksonSerializer;
@@ -135,6 +133,10 @@ public class CRestBuilder {
     private final Map<String, String> placeholders = new HashMap<String, String>();
     private final Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
     private final Map<String,Object> oauthConfig = new HashMap<String, Object>();
+    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers = new HashMap<String, HttpEntityParamsParser>();
+    {
+         httpEntityParamsParsers.put("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamsParser());
+    }
 
     private HttpChannelInitiator httpChannelInitiator;
 
@@ -205,7 +207,7 @@ public class CRestBuilder {
     private HttpRequestExecutor buildHttpRequestExecutor(HttpChannelInitiator plainChannelInitiator, Authorization authorization){
         HttpRequestExecutor httpRequestExecutor;
         if(authorization != null) {
-            HttpChannelInitiator authenticationChannelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization);
+            HttpChannelInitiator authenticationChannelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization, httpEntityParamsParsers);
             httpRequestExecutor = new DefaultHttpRequestExecutor(authenticationChannelInitiator);
         }else{
             httpRequestExecutor = new DefaultHttpRequestExecutor(plainChannelInitiator);
@@ -356,7 +358,6 @@ public class CRestBuilder {
             return null;
         }
     }
-
     private Authorization buildBasicAuthorization() {
         try {
             return new BasicAuthorization(username, password);
@@ -502,6 +503,15 @@ public class CRestBuilder {
         this.auth = "basic";
         this.username = username;
         this.password = password;
+        return this;
+    }
+
+    public CRestBuilder parseAuthenticatedMultiPartEntityWith(HttpEntityParamsParser httpEntityParamsParser){
+        return parseAuthenticatedEntityWith("multipart/form-data", httpEntityParamsParser);
+    }
+
+    public CRestBuilder parseAuthenticatedEntityWith(String entityContentType, HttpEntityParamsParser httpEntityParamsParser){
+        this.httpEntityParamsParsers.put(entityContentType, httpEntityParamsParser);
         return this;
     }
 

@@ -37,6 +37,10 @@ public class UrlEncodedFormEntityWriter implements EntityWriter {
         return "application/x-www-form-urlencoded; charset=" + request.getEncoding();
     }
 
+    public int getContentLength(HttpRequest httpRequest) {
+        return -1;
+    }
+
     public void writeTo(HttpRequest request, OutputStream out) throws IOException {
         PrintStream print = new PrintStream(out);
         

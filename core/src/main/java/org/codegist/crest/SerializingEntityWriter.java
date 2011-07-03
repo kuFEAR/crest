@@ -48,6 +48,10 @@ public class SerializingEntityWriter implements EntityWriter {
         return contentType;
     }
 
+    public int getContentLength(HttpRequest httpRequest) {
+        return -1;
+    }
+
     public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
         serializer.serialize(request.getFormParams(), request.getCharset(), outputStream);
     }

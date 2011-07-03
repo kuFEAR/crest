@@ -23,9 +23,10 @@ package org.codegist.crest.flickr;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
-import org.codegist.crest.flickr.interceptor.FlickrAuthInterceptor;
 import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
+import org.codegist.crest.flickr.model.Uploader;
+import org.codegist.crest.flickr.security.MultiPartEntityParamsParser;
 import org.codegist.crest.flickr.service.Flickr;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 
@@ -38,48 +39,59 @@ public class FlickrSample implements Runnable {
 
     private static final Logger LOG = Logger.getLogger(FlickrSample.class);
 
-    private final String apiKey;
-    private final String appSecret;
-    private final String authToken;
+    private final String consumerKey;
+    private final String consumerSecret;
+    private final String accessToken;
+    private final String accessTokenSecret;
 
-    public FlickrSample(String apiKey, String appSecret, String authToken) {
-        this.apiKey = apiKey;
-        this.appSecret = appSecret;
-        this.authToken = authToken;
+    public FlickrSample(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
+        this.consumerKey = consumerKey;
+        this.consumerSecret = consumerSecret;
+        this.accessToken = accessToken;
+        this.accessTokenSecret = accessTokenSecret;
     }
 
     public void run() {
-        LOG.debug("apiKey    = %s", apiKey);
-        LOG.debug("appSecret = %s", appSecret);
-        LOG.debug("authToken = %s", authToken);
+        String consumerKey       = "e0ecb99bde924245e19d008cd5b73339";
+        String consumerSecret    = "388f273a47b5ffad";
+        String accessToken       = "72157627098468812-2c989a27b74e71c3";
+        String accessTokenSecret = "dd6d6921ab452c5f";
+
+        LOG.debug("consumerKey       = %s", consumerKey);
+        LOG.debug("consumerSecret    = %s", consumerSecret);
+        LOG.debug("accessToken       = %s", accessToken);
+        LOG.debug("accessTokenSecret = %s", accessTokenSecret);
+
         /* Get the factory */
         CRest crest = new CRestBuilder()
+                .parseAuthenticatedMultiPartEntityWith(new MultiPartEntityParamsParser())
+                .authenticatesWithOAuth(consumerKey,consumerSecret,accessToken,accessTokenSecret)
                 .deserializeXmlWithJaxb(new HashMap<String, Object>(){{
                     put(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class);
                 }})
-                .useHttpClientRestService()
-                .setDateFormat("Seconds")
-                .setBooleanFormat("1", "0")
-                .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
-                .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
-                .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
+                .setDateFormat("Seconds").setBooleanFormat("1", "0")
                 .build();
 
         /* Build service instance */
         Flickr flickr = crest.build(Flickr.class);
 
         /* Use it! */
-        //long photoId = flickr.uploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
-//        String ticketId = flickr.asyncUploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
-//        Uploader upload = flickr.checkUploads(ticketId);
         Gallery gallery = flickr.newGallery("My Gallery Title", "My Gallery Desc");
+        long photoId = flickr.uploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
+        String ticketId = flickr.asyncUploadPhoto(FlickrSample.class.getResourceAsStream("photo1.jpg"));
+        Uploader upload = flickr.checkUploads(ticketId);
 
-//        LOG.info("photoId=" + photoId);
-//        LOG.info("ticketId=" + ticketId);
-//        LOG.info("upload=" + upload);
+        LOG.info("photoId=" + photoId);
+        LOG.info("ticketId=" + ticketId);
+        LOG.info("upload=" + upload);
         LOG.info("gallery=" + gallery);
     }
 
+
+    public static void main(String[] args) {
+        int i = 0;
+        new FlickrSample(args[i++],args[i++],args[i++],args[i++]).run();
+    }
 
 
 }

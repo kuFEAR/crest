@@ -83,6 +83,9 @@ public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiat
             con.setRequestProperty("Connection", "Keep-Alive");
             con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
             if(hasEntity) {
+                if(httpEntityWriter.getContentLength() >= 0) {
+                   con.setRequestProperty("Content-Length", String.valueOf(httpEntityWriter.getContentLength()));
+                }
                 con.setDoOutput(true);
                 OutputStream os = con.getOutputStream();
                 httpEntityWriter.writeEntityTo(os);

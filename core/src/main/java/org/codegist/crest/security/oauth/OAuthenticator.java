@@ -56,7 +56,7 @@ public interface OAuthenticator {
      * Refreshs the given access token if it has expired. Include optional extra oauth header from the extra field of the token.
      * @param accessOAuthToken expired access token
      * @param includeExtras extras field name from the given token to include in the request
-     * @see OAuthToken#getExtras()
+     * @see OAuthToken#getAttributes()
      * @return a new access token
      */
     OAuthToken refreshAccessToken(OAuthToken accessOAuthToken, Pair... extrasOAuthParams);
