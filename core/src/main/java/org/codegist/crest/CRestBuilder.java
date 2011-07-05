@@ -202,9 +202,8 @@ public class CRestBuilder {
         Class<? extends Deserializer> jsonDeserializer = getJsonDeserializerClass();
         Class<? extends Deserializer> xmlDeserializer = getXmlDeserializerClass();
 
-        Map<String,Object> commonProps = sub(customProperties, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT);
-        jsonDeserializerConfig.putAll(commonProps);
-        xmlDeserializerConfig.putAll(commonProps);
+        jsonDeserializerConfig.putAll(customProperties);
+        xmlDeserializerConfig.putAll(customProperties);
 
         if (jsonDeserializer != null) {
             mimeDeserializerBuilder.register(jsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonDeserializerConfig);
@@ -226,9 +225,8 @@ public class CRestBuilder {
         Class<? extends Serializer> jsonSerializer = getJsonSerializerClass();
         Class<? extends Serializer> xmlSerializer = getXmlSerializerClass();
 
-        Map<String,Object> commonProps = sub(customProperties, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT);
-        jsonSerializerConfig.putAll(commonProps);
-        xmlSerializerConfig.putAll(commonProps);
+        jsonSerializerConfig.putAll(customProperties);
+        xmlSerializerConfig.putAll(customProperties);
 
         if (jsonSerializer != null) {
             mimeSerializerBuilder.register(jsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonSerializerConfig);
