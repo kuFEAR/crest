@@ -11,7 +11,7 @@ import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.serializer.Registry;
+import org.codegist.crest.Registry;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;

@@ -4,8 +4,8 @@ import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.Registry;
 import org.codegist.crest.http.HttpRequest;
-import org.codegist.crest.serializer.Registry;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;

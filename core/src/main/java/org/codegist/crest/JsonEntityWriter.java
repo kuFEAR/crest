@@ -20,7 +20,6 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.serializer.Registry;
 import org.codegist.crest.serializer.Serializer;
 
 import java.util.Map;

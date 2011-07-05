@@ -23,6 +23,7 @@ package org.codegist.crest.config.annotate;
 import org.codegist.crest.annotate.*;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,46 +36,48 @@ public final class CRestAnnotationHandlers {
         throw new IllegalStateException();
     }
 
-    public static Map<Class<? extends Annotation>, AnnotationHandler<?>> getHandlersMap(){
-        Map<Class<? extends Annotation>, AnnotationHandler<?>> handlers = new HashMap<Class<? extends Annotation>, AnnotationHandler<?>>();
-        handlers.put(ConnectionTimeout.class, new ConnectionTimeoutAnnotationHandler());
-        handlers.put(Consumes.class, new ConsumesAnnotationHandler());
-        handlers.put(CookieParam.class, new CookieParamAnnotationHandler());
-        handlers.put(CookieParams.class, new CookieParamsAnnotationHandler());
-        handlers.put(DELETE.class, new DELETEAnnotationHandler());
-        handlers.put(Encoded.class, new EncodedAnnotationHandler());
-        handlers.put(Encoding.class, new EncodingAnnotationHandler());
-        handlers.put(EndPoint.class, new EndPointAnnotationHandler());
-        handlers.put(EntityWriter.class, new EntityWriterAnnotationHandler());
-        handlers.put(ErrorHandler.class, new ErrorHandlerAnnotationHandler());
-        handlers.put(FormParam.class, new FormParamAnnotationHandler());
-        handlers.put(FormParams.class, new FormParamsAnnotationHandler());
-        handlers.put(GET.class, new GETAnnotationHandler());
-        handlers.put(HEAD.class, new HEADAnnotationHandler());
-        handlers.put(HeaderParam.class, new HeaderParamAnnotationHandler());
-        handlers.put(HeaderParams.class, new HeaderParamsAnnotationHandler());
-        handlers.put(ListSeparator.class, new ListSeparatorAnnotationHandler());
-        handlers.put(MatrixParam.class, new MatrixParamAnnotationHandler());
-        handlers.put(MatrixParams.class, new MatrixParamsAnnotationHandler());
-        handlers.put(MultiPartParam.class, new MultiPartParamAnnotationHandler());
-        handlers.put(MultiPartParams.class, new MultiPartParamsAnnotationHandler());
-        handlers.put(OPTIONS.class, new OPTIONSAnnotationHandler());
-        handlers.put(Path.class, new PathAnnotationHandler());
-        handlers.put(PathParam.class, new PathParamAnnotationHandler());
-        handlers.put(PathParams.class, new PathParamsAnnotationHandler());
-        handlers.put(POST.class, new POSTAnnotationHandler());
-        handlers.put(Produces.class, new ProducesAnnotationHandler());
-        handlers.put(PUT.class, new PUTAnnotationHandler());
-        handlers.put(QueryParam.class, new QueryParamAnnotationHandler());
-        handlers.put(QueryParams.class, new QueryParamsAnnotationHandler());
-        handlers.put(RequestInterceptor.class, new RequestInterceptorAnnotationHandler());
-        handlers.put(ResponseHandler.class, new ResponseHandlerAnnotationHandler());
-        handlers.put(RetryHandler.class, new RetryHandlerAnnotationHandler());
-        handlers.put(Serializer.class, new SerializerAnnotationHandler());
-        handlers.put(SocketTimeout.class, new SocketTimeoutAnnotationHandler());
-        handlers.put(JsonEntity.class, new JsonEntityAnnotationHandler());
-        handlers.put(XmlEntity.class, new XmlEntityAnnotationHandler());
-        handlers.put(MultiPartEntity.class, new MultiPartEntityAnnotationHandler());
-        return handlers;
+    public static final  Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> MAPPING;
+
+    static {
+        Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> handlers = new HashMap<Class<? extends Annotation>, Class<? extends AnnotationHandler>>();
+        handlers.put(ConnectionTimeout.class, ConnectionTimeoutAnnotationHandler.class);
+        handlers.put(Consumes.class, ConsumesAnnotationHandler.class);
+        handlers.put(CookieParam.class, CookieParamAnnotationHandler.class);
+        handlers.put(CookieParams.class, CookieParamsAnnotationHandler.class);
+        handlers.put(DELETE.class, DELETEAnnotationHandler.class);
+        handlers.put(Encoded.class, EncodedAnnotationHandler.class);
+        handlers.put(Encoding.class, EncodingAnnotationHandler.class);
+        handlers.put(EndPoint.class, EndPointAnnotationHandler.class);
+        handlers.put(EntityWriter.class, EntityWriterAnnotationHandler.class);
+        handlers.put(ErrorHandler.class, ErrorHandlerAnnotationHandler.class);
+        handlers.put(FormParam.class, FormParamAnnotationHandler.class);
+        handlers.put(FormParams.class, FormParamsAnnotationHandler.class);
+        handlers.put(GET.class, GETAnnotationHandler.class);
+        handlers.put(HEAD.class, HEADAnnotationHandler.class);
+        handlers.put(HeaderParam.class, HeaderParamAnnotationHandler.class);
+        handlers.put(HeaderParams.class, HeaderParamsAnnotationHandler.class);
+        handlers.put(ListSeparator.class, ListSeparatorAnnotationHandler.class);
+        handlers.put(MatrixParam.class, MatrixParamAnnotationHandler.class);
+        handlers.put(MatrixParams.class, MatrixParamsAnnotationHandler.class);
+        handlers.put(MultiPartParam.class, MultiPartParamAnnotationHandler.class);
+        handlers.put(MultiPartParams.class, MultiPartParamsAnnotationHandler.class);
+        handlers.put(OPTIONS.class, OPTIONSAnnotationHandler.class);
+        handlers.put(Path.class, PathAnnotationHandler.class);
+        handlers.put(PathParam.class, PathParamAnnotationHandler.class);
+        handlers.put(PathParams.class, PathParamsAnnotationHandler.class);
+        handlers.put(POST.class, POSTAnnotationHandler.class);
+        handlers.put(Produces.class, ProducesAnnotationHandler.class);
+        handlers.put(PUT.class, PUTAnnotationHandler.class);
+        handlers.put(QueryParam.class, QueryParamAnnotationHandler.class);
+        handlers.put(QueryParams.class, QueryParamsAnnotationHandler.class);
+        handlers.put(RequestInterceptor.class, RequestInterceptorAnnotationHandler.class);
+        handlers.put(ResponseHandler.class, ResponseHandlerAnnotationHandler.class);
+        handlers.put(RetryHandler.class, RetryHandlerAnnotationHandler.class);
+        handlers.put(Serializer.class, SerializerAnnotationHandler.class);
+        handlers.put(SocketTimeout.class, SocketTimeoutAnnotationHandler.class);
+        handlers.put(JsonEntity.class, JsonEntityAnnotationHandler.class);
+        handlers.put(XmlEntity.class, XmlEntityAnnotationHandler.class);
+        handlers.put(MultiPartEntity.class, MultiPartEntityAnnotationHandler.class);
+        MAPPING = Collections.unmodifiableMap(handlers);
     }
 }

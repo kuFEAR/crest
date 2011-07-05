@@ -18,15 +18,12 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
-
-import org.codegist.crest.CRestException;
+package org.codegist.crest;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

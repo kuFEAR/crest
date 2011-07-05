@@ -23,6 +23,7 @@ package org.codegist.crest.serializer;
 import org.codegist.common.io.IOs;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
+import org.codegist.crest.Registry;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

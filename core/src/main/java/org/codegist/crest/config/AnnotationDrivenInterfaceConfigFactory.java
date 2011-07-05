@@ -21,7 +21,8 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.config.annotate.AnnotationHandlers;
+import org.codegist.crest.Registry;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -43,12 +44,12 @@ import static java.lang.System.arraycopy;
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
     private final Map<String,Object> customProperties;
-    private final AnnotationHandlers handlers;
+    private final Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry;
     private final boolean buildTemplates;
     private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties, AnnotationHandlers handlers, boolean buildTemplates, boolean modelPriority) {
-        this.handlers = handlers;
+    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean buildTemplates, boolean modelPriority) {
+        this.handlersRegistry = handlersRegistry;
         this.buildTemplates = buildTemplates;
         this.modelPriority = modelPriority;
         this.customProperties = customProperties;
@@ -58,13 +59,13 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
         InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, customProperties);
         
         for(Annotation annotation : interfaze.getAnnotations()){
-            handlers.handlerFor(annotation).handleInterfaceAnnotation(annotation, config);
+            handlersRegistry.getFor(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);
         }
 
         for (Method meth : interfaze.getDeclaredMethods()) {
             MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
             for(Annotation methAnnotation : meth.getAnnotations()){
-                handlers.handlerFor(methAnnotation).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
+                handlersRegistry.getFor(methAnnotation.annotationType()).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
             }
 
             for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
@@ -83,7 +84,7 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
                 arraycopy(highAnnotations, 0, annotations, lowAnnotations.length, highAnnotations.length);
 
                 for(Annotation paramAnnotation : annotations){
-                    handlers.handlerFor(paramAnnotation).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
+                    handlersRegistry.getFor(paramAnnotation.annotationType()).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
                 }
             }
         }

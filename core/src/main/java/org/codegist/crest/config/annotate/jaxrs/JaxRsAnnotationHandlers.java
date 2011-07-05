@@ -24,6 +24,7 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 
 import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,26 +36,27 @@ public final class JaxRsAnnotationHandlers {
     private JaxRsAnnotationHandlers(){
         throw new IllegalStateException();
     }
+    public static final  Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> MAPPING;
 
-    public static Map<Class<? extends Annotation>, AnnotationHandler<?>> getHandlersMap(){
-        Map<Class<? extends Annotation>, AnnotationHandler<?>> handlers = new HashMap<Class<? extends Annotation>, AnnotationHandler<?>>();
-        handlers.put(Consumes.class, new ConsumesAnnotationHandler());
-        handlers.put(CookieParam.class, new CookieParamAnnotationHandler());
-        handlers.put(DELETE.class, new DELETEAnnotationHandler());
-        handlers.put(Encoded.class, new EncodedAnnotationHandler());
-        handlers.put(FormParam.class, new FormParamAnnotationHandler());
-        handlers.put(GET.class, new GETAnnotationHandler());
-        handlers.put(HEAD.class, new HEADAnnotationHandler());
-        handlers.put(HeaderParam.class, new HeaderParamAnnotationHandler());
-        handlers.put(MatrixParam.class, new MatrixParamAnnotationHandler());
-        handlers.put(OPTIONS.class, new OPTIONSAnnotationHandler());
-        handlers.put(Path.class, new PathAnnotationHandler());
-        handlers.put(PathParam.class, new PathParamAnnotationHandler());
-        handlers.put(POST.class, new POSTAnnotationHandler());
-        handlers.put(Produces.class, new ProducesAnnotationHandler());
-        handlers.put(PUT.class, new PUTAnnotationHandler());
-        handlers.put(QueryParam.class, new QueryParamAnnotationHandler());
-        handlers.put(DefaultValue.class, new DefaultValueAnnotationHandler());
-        return handlers;
+    static {
+        Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> handlers = new HashMap<Class<? extends Annotation>, Class<? extends AnnotationHandler>>();
+        handlers.put(Consumes.class, ConsumesAnnotationHandler.class);
+        handlers.put(CookieParam.class, CookieParamAnnotationHandler.class);
+        handlers.put(DELETE.class, DELETEAnnotationHandler.class);
+        handlers.put(Encoded.class, EncodedAnnotationHandler.class);
+        handlers.put(FormParam.class, FormParamAnnotationHandler.class);
+        handlers.put(GET.class, GETAnnotationHandler.class);
+        handlers.put(HEAD.class, HEADAnnotationHandler.class);
+        handlers.put(HeaderParam.class, HeaderParamAnnotationHandler.class);
+        handlers.put(MatrixParam.class, MatrixParamAnnotationHandler.class);
+        handlers.put(OPTIONS.class, OPTIONSAnnotationHandler.class);
+        handlers.put(Path.class, PathAnnotationHandler.class);
+        handlers.put(PathParam.class, PathParamAnnotationHandler.class);
+        handlers.put(POST.class, POSTAnnotationHandler.class);
+        handlers.put(Produces.class, ProducesAnnotationHandler.class);
+        handlers.put(PUT.class, PUTAnnotationHandler.class);
+        handlers.put(QueryParam.class, QueryParamAnnotationHandler.class);
+        handlers.put(DefaultValue.class, DefaultValueAnnotationHandler.class);
+        MAPPING = Collections.unmodifiableMap(handlers);
     }
 }

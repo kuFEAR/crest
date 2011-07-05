@@ -28,9 +28,8 @@ import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.AnnotationHandlers;
 import org.codegist.crest.config.annotate.CRestAnnotationHandlers;
-import org.codegist.crest.config.annotate.DefaultAnnotationHandlers;
+import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotationHandlers;
 import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
@@ -58,7 +57,6 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.codegist.common.collect.Maps.putIfNotPresent;
-import static org.codegist.common.collect.Maps.sub;
 import static org.codegist.crest.CRestProperty.*;
 
 /**
@@ -303,13 +301,19 @@ public class CRestBuilder {
         return new AnnotationDrivenInterfaceConfigFactory(customProperties, buildAnnotationHandlers(), false, false);
     }
 
-    private AnnotationHandlers buildAnnotationHandlers(){
-        Map<Class<? extends Annotation>, AnnotationHandler<?>> mappings = new LinkedHashMap<Class<? extends Annotation>, AnnotationHandler<?>>(CRestAnnotationHandlers.getHandlersMap());
-        if(enableJaxRsSupport) {
-            mappings.putAll(JaxRsAnnotationHandlers.getHandlersMap());
+    private Registry<Class<? extends Annotation>,AnnotationHandler> buildAnnotationHandlers(){
+        Registry.Builder<Class<? extends Annotation>,AnnotationHandler> registryBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(customProperties, AnnotationHandler.class);
+        registryBuilder.defaultAs(new NoOpAnnotationHandler());
+        for(Map.Entry<Class<? extends Annotation>, Class<? extends AnnotationHandler>> entry : CRestAnnotationHandlers.MAPPING.entrySet()){
+            registryBuilder.register(entry.getValue(), entry.getKey());
         }
-        mappings.putAll(customAnnotationHandlers);
-        return new DefaultAnnotationHandlers(mappings);
+        if(enableJaxRsSupport) {
+            for(Map.Entry<Class<? extends Annotation>, Class<? extends AnnotationHandler>> entry : JaxRsAnnotationHandlers.MAPPING.entrySet()){
+                registryBuilder.register(entry.getValue(), entry.getKey());
+            }
+        }
+
+        return registryBuilder.build();
     }
 
     private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
