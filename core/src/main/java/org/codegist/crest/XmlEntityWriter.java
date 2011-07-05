@@ -40,6 +40,6 @@ public class XmlEntityWriter extends SerializingEntityWriter {
 
     private static Serializer<List<HttpParam>> getSerializer(Map<String,Object> customProperties){
         Registry<String,Serializer> registryMime = (Registry<String,Serializer>) customProperties.get(Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.getFor(MIME);
+        return registryMime.get(MIME);
     }
 }

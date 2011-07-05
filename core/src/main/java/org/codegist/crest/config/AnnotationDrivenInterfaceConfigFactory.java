@@ -59,13 +59,13 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
         InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, customProperties);
         
         for(Annotation annotation : interfaze.getAnnotations()){
-            handlersRegistry.getFor(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);
+            handlersRegistry.get(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);
         }
 
         for (Method meth : interfaze.getDeclaredMethods()) {
             MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
             for(Annotation methAnnotation : meth.getAnnotations()){
-                handlersRegistry.getFor(methAnnotation.annotationType()).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
+                handlersRegistry.get(methAnnotation.annotationType()).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
             }
 
             for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
@@ -84,7 +84,7 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
                 arraycopy(highAnnotations, 0, annotations, lowAnnotations.length, highAnnotations.length);
 
                 for(Annotation paramAnnotation : annotations){
-                    handlersRegistry.getFor(paramAnnotation.annotationType()).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
+                    handlersRegistry.get(paramAnnotation.annotationType()).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
                 }
             }
         }

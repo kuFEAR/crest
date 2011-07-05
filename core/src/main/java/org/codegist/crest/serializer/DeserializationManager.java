@@ -67,7 +67,7 @@ public final class DeserializationManager {
 
             /* Either the user hasn't specified an expected mime type or deserialization attempts failed, we fallback to the server's Content-Type*/
             LOG.debug("Trying to deserialize response to server's Mime Type: %s.", mimeType);
-            return registryMime.getFor(mimeType).<T>deserialize(type, genericType, stream, charset);
+            return registryMime.get(mimeType).<T>deserialize(type, genericType, stream, charset);
         } finally {
             IOs.close(stream);
         }

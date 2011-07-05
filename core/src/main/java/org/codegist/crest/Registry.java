@@ -36,16 +36,16 @@ public class Registry<K,T> {
     private final Map<K, Object> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
     protected final Map<String,Object> customProperties;
-    private final Object defaultIfNotFound;
+    private final T defaultIfNotFound;
 
-    protected Registry(Class<T> clazz, Map<K, Object> mapping, Object defaultIfNotFound, Map<String, Object> customProperties) {
+    protected Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound, Map<String, Object> customProperties) {
         this.clazz = clazz;
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
         this.customProperties = customProperties;
     }
 
-    public T getFor(K key) {
+    public T get(K key) {
         T item = cache.get(key);
         if (item == null) {
             synchronized (cache) {
@@ -87,7 +87,7 @@ public class Registry<K,T> {
     }
 
 
-    static class ItemDescriptor<T> {
+    private static class ItemDescriptor<T> {
         final Class<? extends T> clazz;
         final Map<String, Object> config;
 
@@ -144,7 +144,7 @@ public class Registry<K,T> {
         protected final Map<K, Object> mapping = new HashMap<K, Object>();
         protected final Class<T> clazz;
         protected final Map<String,Object> customProperties;
-        protected Object defaultIfNotFound;
+        protected T defaultIfNotFound;
 
         public Builder(Map<String,Object> customProperties, Class<T> clazz) {
             this.customProperties = customProperties;

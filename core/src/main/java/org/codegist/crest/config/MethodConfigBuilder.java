@@ -161,7 +161,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         String[] mimes = new String[mimeTypes.length];
         for (int i = 0; i < mimeTypes.length; i++) {
             String mMime = replacePlaceholders(mimeTypes[i]);
-            this.deserializers.add(mimeDeserializerRegistry.getFor(mMime));
+            this.deserializers.add(mimeDeserializerRegistry.get(mMime));
             mimes[i] = mMime;
         }
         this.accept = join(",", mimes);

@@ -71,7 +71,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
             if (serializer == null) {
                 State.notNull(classSerializerRegistry, "Can't lookup a serializer by type. Please provide a ClassSerializerRegistry");
                 // if null, then choose which serializer to apply using default rules
-                serializer = classSerializerRegistry.getFor(clazz);
+                serializer = classSerializerRegistry.get(clazz);
             }
         }
 
