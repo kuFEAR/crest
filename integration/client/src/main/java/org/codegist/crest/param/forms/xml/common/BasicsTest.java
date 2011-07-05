@@ -60,7 +60,7 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     public void assertSend(String actual) {
         StringBuilder expected = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
         expected.append("<form-data/>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
         expected.append("<p1>").append(xml(p1)).append("</p1>");
         expected.append("<p2>").append(p2).append("</p2>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 }

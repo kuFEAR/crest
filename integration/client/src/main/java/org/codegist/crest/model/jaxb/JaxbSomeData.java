@@ -18,21 +18,15 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.security.http;
+package org.codegist.crest.model.jaxb;
 
-import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.model.SomeData;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-public interface HttpEntityParamsParser {
-
-    List<Pair> parse(String contentType, Charset charset, InputStream httpEntity) throws IOException;
-
+@XmlRootElement(name = "someData")
+public class JaxbSomeData extends SomeData {
 }

@@ -20,10 +20,10 @@
 
 package org.codegist.crest.http;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -33,7 +33,7 @@ public final class Pairs {
         throw new IllegalStateException();
     }
 
-    public static List<Pair> parseUrlEncoded(String urlEncoded){
+    public static List<Pair> fromUrlEncoded(String urlEncoded){
         List<Pair> pairs = new ArrayList<Pair>();
         String[] split = urlEncoded.split("&");
         for(String param : split){
@@ -47,6 +47,84 @@ public final class Pairs {
        List<Pair> sorted = new ArrayList<Pair>(map);
        Collections.sort(sorted, HTTP_PAIR__NAME_VALUE_COMPARATOR);
        return sorted;
+    }
+
+     public static String join(Collection<Pair> pairs, char pairSep){
+        return join(pairs, pairSep, '=', false, false);
+    }
+
+    public static String join(Collection<Pair> pairs, char pairSep, char nameValSep){
+        return join(pairs, pairSep, nameValSep, false, false);
+    }
+
+    public static String join(Collection<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
+        return join(pairs.iterator(), pairSep, nameValSep, quoteName,quoteVal);
+    }
+
+    public static String join(Iterator<Pair> pairs, char pairSep){
+        return join(pairs, pairSep, '=', false, false);
+    }
+
+    public static String join(Iterator<Pair> pairs, char pairSep, char nameValSep){
+        return join(pairs, pairSep, nameValSep, false, false);
+    }
+
+    public static String join(Iterator<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
+        StringWriter sw = new StringWriter();
+        try {
+            join(sw, pairs,pairSep, nameValSep,quoteName,quoteVal);
+        } catch (IOException e) {
+            //ignore
+        }
+        return sw.toString();
+    }
+
+    public static void join(Writer writer, Collection<Pair> pairs, char pairSep) throws IOException {
+        join(writer, pairs, pairSep, '=', false, false);
+    }
+
+    public static void join(Writer writer, Collection<Pair> pairs, char pairSep, char nameValSep) throws IOException {
+        join(writer, pairs, pairSep, nameValSep, false, false);
+    }
+
+    public static void join(Writer writer, Collection<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
+        join(writer, pairs.iterator(), pairSep, nameValSep, quoteName,quoteVal);
+    }
+
+    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep) throws IOException {
+        join(writer, pairs, pairSep, '=', false, false);
+    }
+
+    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep, char nameValSep) throws IOException {
+        join(writer, pairs, pairSep, nameValSep, false, false);
+    }
+
+    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
+
+        boolean first = true;
+
+        while(pairs.hasNext()) {
+            Pair pair = pairs.next();
+            if(!first) {
+                writer.append(pairSep);
+            }
+
+            if(quoteName) {
+                writer.append('\"').append(pair.getName()).append('\"');
+            }else{
+                writer.append(pair.getName());
+            }
+
+            writer.append(nameValSep);
+
+            if(quoteVal) {
+                writer.append('\"').append(pair.getValue()).append('\"');
+            }else{
+                writer.append(pair.getValue());
+            }
+
+            first = false;
+        }
     }
 
 

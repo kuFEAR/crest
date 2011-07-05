@@ -21,13 +21,14 @@
 package org.codegist.crest.security.oauth;
 
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.http.HttpEntityWriter;
 import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.Pair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
 import java.util.List;
+
+import static org.codegist.crest.http.Pairs.join;
 
 /**
  * OAuth authentification manager implementation.
@@ -48,26 +49,11 @@ public class OAuthorization implements Authorization {
 
     public AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters) {
         List<Pair> oauthParams = oauth.oauth(this.accessOAuthToken, method, url, parameters);
-        return new AuthorizationToken("OAuth", asString(oauthParams));
+        return new AuthorizationToken("OAuth", join(oauthParams, ',', '=', false, true));
     }
 
     public void refresh() {
         this.accessOAuthToken = oauth.refreshAccessToken(this.accessOAuthToken, this.accessOAuthToken.getAttribute("oauth_session_handle"));
-    }
-
-    private static String asString(List<Pair> oauthParams){
-        StringBuilder value = new StringBuilder();
-        boolean first = true;
-        for(Pair oauth : oauthParams){
-            if(!first) {
-                value.append(",");
-            }
-            value.append(oauth.getName());
-            value.append("=");
-            value.append("\"").append(oauth.getValue()).append("\"");
-            first = false;
-        }
-        return value.toString();
     }
 
 }

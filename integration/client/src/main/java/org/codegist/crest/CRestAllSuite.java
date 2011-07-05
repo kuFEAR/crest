@@ -20,6 +20,8 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.deserialization.DeserializationsCRestSuite;
+import org.codegist.crest.deserialization.DeserializationsJaxRsSuite;
 import org.codegist.crest.param.ParamsBaseSuite;
 import org.codegist.crest.param.ParamsCRestSuite;
 import org.codegist.crest.param.ParamsJaxRsSuite;
@@ -34,7 +36,9 @@ import org.junit.runners.Suite;
         ParamsCRestSuite.class,
         ParamsJaxRsSuite.class,
         RequestsCRestSuite.class,
-        RequestsJaxRsSuite.class
+        RequestsJaxRsSuite.class,
+        DeserializationsCRestSuite.class,
+        DeserializationsJaxRsSuite.class
 })
 public class CRestAllSuite {
 }

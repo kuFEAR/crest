@@ -68,7 +68,7 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
         expected.append("<p2>").append(xml(p21)).append("</p2>");
         expected.append("<p2>").append(xml(p22)).append("</p2>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
     // todo PreEncoded for xml should consider it as XML preencoded!
@@ -81,6 +81,6 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
         expected.append("<p2>").append(url(p21)).append("</p2>");
         expected.append("<p2>").append(url(p22)).append("</p2>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 }

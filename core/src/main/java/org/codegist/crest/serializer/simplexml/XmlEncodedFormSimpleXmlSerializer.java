@@ -33,6 +33,7 @@ import org.simpleframework.xml.stream.OutputNode;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +63,8 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
     public void serialize(List<HttpParam> params, Charset charset, OutputStream out) {
         try {
             String prolog = "<?xml version=\"1.0\" encoding=\""+charset.toString()+"\" standalone=\"yes\"?>";
-            OutputNode node = NodeBuilder.write(new OutputStreamWriter(out, charset), new Format(0, prolog));
+            Writer writer = new OutputStreamWriter(out, charset);
+            OutputNode node = NodeBuilder.write(writer, new Format(0, prolog));
             OutputNode root =  node.getChild(rootElement);
 
             for(HttpParam param : params){
@@ -84,6 +86,7 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
                 }
             }
             node.commit();
+            writer.flush();
         } catch (Exception e) {
             throw CRestException.handle(e);
         }

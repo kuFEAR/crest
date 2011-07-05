@@ -34,7 +34,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.forms.jaxrs.DefaultValuesTest.class,
         org.codegist.crest.param.forms.jaxrs.EncodingsTest.class,
         org.codegist.crest.param.forms.jaxrs.NullsTest.class,
-        org.codegist.crest.param.forms.jaxrs.SerializersTest.class
+        org.codegist.crest.param.forms.jaxrs.SerializersTest.class ,
+        org.codegist.crest.param.forms.jaxrs.SpecialParamsTest.class
 })
 public class FormsJaxRsSuite {
 }

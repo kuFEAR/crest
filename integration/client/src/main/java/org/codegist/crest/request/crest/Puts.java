@@ -20,8 +20,6 @@
 
 package org.codegist.crest.request.crest;
 
-import org.codegist.crest.JsonEntityWriter;
-import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.request.common.EntityRequests;
 
@@ -45,21 +43,31 @@ public interface Puts extends EntityRequests {
     String contentType();
 
     @Path("entity-writer/xml")
-    @EntityWriter(XmlEntityWriter.class)
-    String xmlEntityWriter();
+    @XmlEntity
+    String xmlEntity();
 
     @Path("entity-writer/xml/produces")
     @Produces("application/custom")
-    @EntityWriter(XmlEntityWriter.class)
-    String xmlEntityWriterWithProduces();
+    @XmlEntity
+    String xmlEntityWithProduces();
 
     @Path("entity-writer/json")
-    @EntityWriter(JsonEntityWriter.class)
-    String jsonEntityWriter();
+    @JsonEntity
+    String jsonEntity();
 
     @Path("entity-writer/json/produces")
     @Produces("application/custom")
-    @EntityWriter(JsonEntityWriter.class)
-    String jsonEntityWriterWithProduces();
+    @JsonEntity
+    String jsonEntityWithProduces();
 
+    @Path("entity-writer/multipart")
+    @MultiPartEntity
+    @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
+    String multipartEntity();
+
+    @Path("entity-writer/multipart/produces")
+    @Produces("application/custom")
+    @MultiPartEntity
+    @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
+    String multipartEntityWithProduces();
 }

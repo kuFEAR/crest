@@ -21,8 +21,6 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.AnnotationHandlers;
-import org.codegist.crest.config.annotate.DefaultAnnotationHandlers;
 
 import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
@@ -36,10 +34,6 @@ public final class JaxRsAnnotationHandlers {
 
     private JaxRsAnnotationHandlers(){
         throw new IllegalStateException();
-    }
-
-    public static AnnotationHandlers getInstance(){
-        return new DefaultAnnotationHandlers(getHandlersMap());
     }
 
     public static Map<Class<? extends Annotation>, AnnotationHandler<?>> getHandlersMap(){

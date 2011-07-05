@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target({ElementType.TYPE,ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 public @interface EntityWriter {
 
     Class<? extends org.codegist.crest.EntityWriter> value();

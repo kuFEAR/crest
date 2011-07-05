@@ -37,10 +37,10 @@ public final class DeserializationManager {
 
     private static final Logger LOG = Logger.getLogger(DeserializationManager.class);
 
-    private final DeserializerRegistry registry;
+    private final Registry<String,Deserializer> registryMime;
 
-    public DeserializationManager(DeserializerRegistry registry) {
-        this.registry = registry;
+    public DeserializationManager(Registry<String,Deserializer> registryMime) {
+        this.registryMime = registryMime;
     }
 
     public <T> T deserializeTo(Class<T> type, Type genericType, InputStream stream, String mimeType, Charset charset, Deserializer... deserializers) {
@@ -66,7 +66,7 @@ public final class DeserializationManager {
 
             /* Either the user hasn't specified an expected mime type or deserialization attempts failed, we fallback to the server's Content-Type*/
             LOG.debug("Trying to deserialize response to server's Mime Type: %s.", mimeType);
-            return registry.getForMimeType(mimeType).<T>deserialize(type, genericType, stream, charset);
+            return registryMime.getFor(mimeType).<T>deserialize(type, genericType, stream, charset);
         } finally {
             IOs.close(stream);
         }

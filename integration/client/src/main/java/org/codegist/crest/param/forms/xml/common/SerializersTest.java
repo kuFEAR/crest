@@ -126,7 +126,7 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
         // todo Do something about it
         actual = actual.replaceAll(Pattern.quote("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"data\""), "");
         actual = actual.replaceAll("class=\"org\\.codegist\\.crest\\.model\\.\\w+.\\w+\"", "");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
     @Override
@@ -136,6 +136,6 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
 
     @Override
     public void assertSerializeNulls(String expectedSerializedBof, String expectedSerializedBof2, String expectedSerializedBof3, String actual) {
-        assertXMLEqual("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
+        assertXmlEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
     }
 }

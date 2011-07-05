@@ -20,10 +20,7 @@
 
 package org.codegist.crest.request.jaxrs;
 
-import org.codegist.crest.JsonEntityWriter;
-import org.codegist.crest.XmlEntityWriter;
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.annotate.EntityWriter;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.request.common.EntityRequests;
 
 import javax.ws.rs.Consumes;
@@ -54,24 +51,36 @@ public interface Puts extends EntityRequests {
 
     @PUT
     @Path("entity-writer/xml")
-    @EntityWriter(XmlEntityWriter.class)
-    String xmlEntityWriter();
+    @XmlEntity
+    String xmlEntity();
 
     @PUT
     @Path("entity-writer/xml/produces")
     @Consumes("application/custom")
-    @EntityWriter(XmlEntityWriter.class)
-    String xmlEntityWriterWithProduces();
+    @XmlEntity
+    String xmlEntityWithProduces();
 
     @PUT
     @Path("entity-writer/json")
-    @EntityWriter(JsonEntityWriter.class)
-    String jsonEntityWriter();
+    @JsonEntity
+    String jsonEntity();
 
     @PUT
     @Path("entity-writer/json/produces")
     @Consumes("application/custom")
-    @EntityWriter(JsonEntityWriter.class)
-    String jsonEntityWriterWithProduces();
+    @JsonEntity
+    String jsonEntityWithProduces();
 
+    @PUT
+    @Path("entity-writer/multipart")
+    @MultiPartEntity
+    @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
+    String multipartEntity();
+
+    @PUT
+    @Path("entity-writer/multipart/produces")
+    @Consumes("application/custom")
+    @MultiPartEntity
+    @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
+    String multipartEntityWithProduces();
 }

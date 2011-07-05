@@ -34,7 +34,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.matrixes.jaxrs.DefaultValuesTest.class,
         org.codegist.crest.param.matrixes.jaxrs.EncodingsTest.class,
         org.codegist.crest.param.matrixes.jaxrs.NullsTest.class,
-        org.codegist.crest.param.matrixes.jaxrs.SerializersTest.class
+        org.codegist.crest.param.matrixes.jaxrs.SerializersTest.class,
+        org.codegist.crest.param.matrixes.jaxrs.SpecialParamsTest.class
 })
 public class MatrixesJaxRsSuite {
 }

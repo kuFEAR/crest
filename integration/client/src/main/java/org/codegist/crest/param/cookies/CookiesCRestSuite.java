@@ -35,7 +35,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.cookies.crest.DefaultValuesTest.class,
         org.codegist.crest.param.cookies.crest.EncodingsTest.class,
         org.codegist.crest.param.cookies.crest.NullsTest.class,
-        org.codegist.crest.param.cookies.crest.SerializersTest.class
+        org.codegist.crest.param.cookies.crest.SerializersTest.class ,
+        org.codegist.crest.param.cookies.crest.SpecialParamsTest.class
 })
 public class CookiesCRestSuite {
 }

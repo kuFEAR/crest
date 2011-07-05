@@ -61,12 +61,12 @@ public class NullsTest extends INullsTest<NullsTest.Nulls> {
 
     @Override
     public void assertNulls(String actual) {
-        assertXMLEqual("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
+        assertXmlEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
     }
 
     @Override
     public void assertNullsMerging(String actual) {
-        assertXMLEqual("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
+        assertXmlEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><form-data/>", actual);
     }
 
 }

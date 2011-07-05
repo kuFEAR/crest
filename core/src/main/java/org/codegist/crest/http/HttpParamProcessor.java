@@ -26,10 +26,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.codegist.common.lang.Strings.isNotBlank;
-import static org.codegist.common.lang.Strings.isNotEmpty;
+import static java.util.Collections.singletonList;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -93,7 +91,7 @@ public abstract class HttpParamProcessor {
             if(sb.length() == 0) {
                 return emptyList();
             }else{
-                return asList(new Pair(param.getConfig().getName(), sb.toString(), charset, isEncoded));
+                return singletonList(new Pair(param.getConfig().getName(), sb.toString(), charset, isEncoded));
             }
         }
     };

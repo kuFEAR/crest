@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
+import static org.codegist.crest.http.Pairs.join;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -84,16 +85,7 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         }
 
         for(HttpParam header : request.getCookieParams()){
-            StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for(Pair encoded : process(header, charset)){
-                if(!first) {
-                    sb.append(",");
-                }
-                sb.append(encoded.getName()).append("=").append(encoded.getValue());
-                first = false;
-            }
-            String cookie = sb.toString();
+            String cookie = join(process(header, charset), ',');
             if(cookie.length() > 0) {
                 LOGGER.debug("Cookie: %s ", cookie);
                 httpChannel.addHeader("Cookie", cookie);
@@ -126,8 +118,8 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         PathBuilder pathBuilder = request.getPathBuilder();
 
         Charset charset = request.getCharset();
-        String matrix = buildUrl(request.iterateProcessedMatrixes(), ";");
-        String query = buildUrl(request.iterateProcessedQueries(), "&");
+        String matrix = join(request.iterateProcessedMatrixes(), ';');
+        String query = join(request.iterateProcessedQueries(), '&');
 
         for(HttpParam param : request.getPathParams()){
             for(Pair encoded : process(param, charset)){
@@ -144,19 +136,5 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         }
 
         return pathBuilder.build() + matrix + query;
-    }
-    private String buildUrl(Iterator<Pair> params, String sep){
-        boolean first = true;
-        StringBuilder sb = new StringBuilder();
-        while(params.hasNext()){
-            Pair encoded = params.next();
-            if(!first) {
-                sb.append(sep);
-            }
-            sb.append(encoded.getName()).append("=").append(encoded.getValue());
-            first = false;
-
-        }
-        return sb.toString();
     }
 }

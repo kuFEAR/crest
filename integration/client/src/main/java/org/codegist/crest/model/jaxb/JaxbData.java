@@ -38,4 +38,8 @@ public class JaxbData extends Data {
         super(val1,val2);
     }
 
+    
+
+
+    
 }

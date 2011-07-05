@@ -38,5 +38,7 @@ public class JaxbBunchOfData<T> extends BunchOfData<T> {
     public JaxbBunchOfData() {
     }
 
+
+
 }
 

@@ -5,8 +5,8 @@ import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.serializer.Registry;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.serializer.SerializerRegistry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -23,7 +23,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
 
     private final Class<?> clazz;
     private final Type genericType;
-    private final SerializerRegistry serializerRegistry;
+    private final Registry<Class<?>, Serializer> classSerializerRegistry;
     private final Map<Class<? extends Annotation>, Annotation> paramAnnotation;
 
     private String name;
@@ -42,7 +42,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
         this.clazz = Types.getComponentClass(clazz, genericType);
         this.genericType = Types.getComponentType(clazz, genericType);
         this.paramAnnotation = paramAnnotation;
-        this.serializerRegistry = (SerializerRegistry) customProperties.get(SerializerRegistry.class.getName());
+        this.classSerializerRegistry = (Registry<Class<?>, Serializer>) customProperties.get(Registry.class.getName() + "#serializers-per-class");
     }
 
     /**
@@ -69,9 +69,9 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
             serializer = defaultIfUndefined(serializer, CRestProperty.CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(ParamConfig.DEFAULT_SERIALIZER));
             encoded = defaultIfUndefined(encoded, CRestProperty.CONFIG_PARAM_DEFAULT_ENCODED, (HttpRequest.DEST_COOKIE.equals(dest) || HttpRequest.DEST_HEADER.equals(dest)) ? Boolean.TRUE : ParamConfig.DEFAULT_ENCODED);
             if (serializer == null) {
-                State.notNull(serializerRegistry, "Can't lookup a serializer by type. Please provide a SerializerFactory");
+                State.notNull(classSerializerRegistry, "Can't lookup a serializer by type. Please provide a ClassSerializerRegistry");
                 // if null, then choose which serializer to apply using default rules
-                serializer = serializerRegistry.getForType(genericType);
+                serializer = classSerializerRegistry.getFor(clazz);
             }
         }
 

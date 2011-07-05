@@ -34,6 +34,7 @@ import org.junit.runners.Suite;
         org.codegist.crest.request.crest.DeletesTest.class,
         org.codegist.crest.request.crest.HeadsTest.class,
         org.codegist.crest.request.crest.OptionsTest.class
+
 })
 public class RequestsCRestSuite {
 }

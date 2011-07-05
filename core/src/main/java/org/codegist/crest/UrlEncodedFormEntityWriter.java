@@ -21,12 +21,13 @@
 package org.codegist.crest;
 
 import org.codegist.crest.http.HttpRequest;
-import org.codegist.crest.http.Pair;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Iterator;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import static org.codegist.crest.http.Pairs.join;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -42,18 +43,9 @@ public class UrlEncodedFormEntityWriter implements EntityWriter {
     }
 
     public void writeTo(HttpRequest request, OutputStream out) throws IOException {
-        PrintStream print = new PrintStream(out);
-        
-        boolean first = true;
-        Iterator<Pair> headers = request.iterateProcessedForms();
-        while(headers.hasNext()){
-            Pair encoded = headers.next();
-            if(!first) {
-                print.append("&");
-            }
-            print.append(encoded.getName()).append("=").append(encoded.getValue());
-            first = false;
-        }
+        Writer writer = new OutputStreamWriter(out, request.getCharset());
+        join(writer, request.iterateProcessedForms(), '&');
+        writer.flush();
     }
 
 }

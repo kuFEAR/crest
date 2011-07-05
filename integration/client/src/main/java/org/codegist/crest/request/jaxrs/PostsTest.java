@@ -40,5 +40,4 @@ public class PostsTest extends CommonEntityRequestsTest<Posts> {
         return crest(byRestServicesAndCustomContentTypes());
     }
 
-
 }

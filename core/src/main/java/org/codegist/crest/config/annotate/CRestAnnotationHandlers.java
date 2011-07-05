@@ -34,9 +34,6 @@ public final class CRestAnnotationHandlers {
     private CRestAnnotationHandlers(){
         throw new IllegalStateException();
     }
-    public static AnnotationHandlers getInstance(){
-        return new DefaultAnnotationHandlers(getHandlersMap());
-    }
 
     public static Map<Class<? extends Annotation>, AnnotationHandler<?>> getHandlersMap(){
         Map<Class<? extends Annotation>, AnnotationHandler<?>> handlers = new HashMap<Class<? extends Annotation>, AnnotationHandler<?>>();
@@ -75,6 +72,9 @@ public final class CRestAnnotationHandlers {
         handlers.put(RetryHandler.class, new RetryHandlerAnnotationHandler());
         handlers.put(Serializer.class, new SerializerAnnotationHandler());
         handlers.put(SocketTimeout.class, new SocketTimeoutAnnotationHandler());
+        handlers.put(JsonEntity.class, new JsonEntityAnnotationHandler());
+        handlers.put(XmlEntity.class, new XmlEntityAnnotationHandler());
+        handlers.put(MultiPartEntity.class, new MultiPartEntityAnnotationHandler());
         return handlers;
     }
 }

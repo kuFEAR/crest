@@ -261,7 +261,7 @@ public class HttpRequest {
             }
             return this;
         }
-
+        
         public Builder addParam(String name, String value, String dest, boolean encoded) {
             return addParam(new StringParamConfig(name, value, dest, encoded));
         }

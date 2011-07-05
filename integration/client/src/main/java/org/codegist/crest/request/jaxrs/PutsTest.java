@@ -40,5 +40,4 @@ public class PutsTest extends CommonEntityRequestsTest<Puts> {
         return crest(byRestServicesAndCustomContentTypes());
     }
 
-
 }

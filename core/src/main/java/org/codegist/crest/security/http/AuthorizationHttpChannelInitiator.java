@@ -36,9 +36,9 @@ public class AuthorizationHttpChannelInitiator implements HttpChannelInitiator {
 
     private final HttpChannelInitiator delegate;
     private final Authorization authorization;
-    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers;
+    private final Map<String, HttpEntityParamExtractor> httpEntityParamsParsers;
 
-    public AuthorizationHttpChannelInitiator(HttpChannelInitiator delegate, Authorization authorization, Map<String,HttpEntityParamsParser> httpEntityParamsParsers) {
+    public AuthorizationHttpChannelInitiator(HttpChannelInitiator delegate, Authorization authorization, Map<String, HttpEntityParamExtractor> httpEntityParamsParsers) {
         this.delegate = delegate;
         this.authorization = authorization;
         this.httpEntityParamsParsers = httpEntityParamsParsers;

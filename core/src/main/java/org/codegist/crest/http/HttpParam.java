@@ -22,12 +22,12 @@ package org.codegist.crest.http;
 
 import org.codegist.common.lang.EqualsBuilder;
 import org.codegist.common.lang.HashCodeBuilder;
-import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.config.StringParamConfig;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class HttpParam {
 
@@ -35,11 +35,12 @@ public class HttpParam {
     private final ParamConfig config;
 
     public HttpParam(String name, String value, String dest, boolean encoded) {
-        this(new StringParamConfig(name, value, dest, encoded), Objects.<Object>asCollection(value));
+        this(new StringParamConfig(name, value, dest, encoded), Collections.<Object>singleton(value));
     }
+    
     public HttpParam(ParamConfig config, Collection<Object> value) {
         this.config = config;
-        this.value = value.isEmpty() ? Objects.<Object>asCollection(config.getDefaultValue()) : value;
+        this.value = value.isEmpty() ? Collections.<Object>singleton(config.getDefaultValue()) : value;
     }
 
     public Collection<Object> getValue() {

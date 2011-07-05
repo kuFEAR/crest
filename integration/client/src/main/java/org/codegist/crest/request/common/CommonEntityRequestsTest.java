@@ -22,6 +22,7 @@ package org.codegist.crest.request.common;
 
 import org.junit.Test;
 
+import static java.util.regex.Pattern.quote;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -53,27 +54,39 @@ public abstract class CommonEntityRequestsTest<T extends EntityRequests> extends
 
 
     @Test
-    public void testXmlEntityWriter() {
-        String actual = toTest.xmlEntityWriter();
-        assertEquals("xmlEntityWriter() content-type-header=[application/xml] accepts-header=[*/*]", actual);
+    public void testXmlEntity() {
+        String actual = toTest.xmlEntity();
+        assertEquals("xmlEntity() content-type-header=[application/xml] accepts-header=[*/*]", actual);
     }
 
     @Test
-    public void testXmlEntityWriterWithProduces() {
-        String actual = toTest.xmlEntityWriterWithProduces();
-        assertEquals("xmlEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
+    public void testXmlEntityWithProduces() {
+        String actual = toTest.xmlEntityWithProduces();
+        assertEquals("xmlEntityWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 
     @Test
-    public void testJsonEntityWriter() {
-        String actual = toTest.jsonEntityWriter();
-        assertEquals("jsonEntityWriter() content-type-header=[application/json] accepts-header=[*/*]", actual);
+    public void testJsonEntity() {
+        String actual = toTest.jsonEntity();
+        assertEquals("jsonEntity() content-type-header=[application/json] accepts-header=[*/*]", actual);
     }
 
     @Test
-    public void testJsonEntityWriterWithProduces() {
-        String actual = toTest.jsonEntityWriterWithProduces();
-        assertEquals("jsonEntityWriterWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
+    public void testJsonEntityWithProduces() {
+        String actual = toTest.jsonEntityWithProduces();
+        assertEquals("jsonEntityWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
+    }
+
+    @Test
+    public void testMultipartEntity() {
+        String actual = toTest.multipartEntity();
+        assertMatches(quote("multipartEntity() content-type-header=[multipart/form-data; boundary=") + "\\w+" + quote("] accepts-header=[*/*]"), actual);
+    }
+
+    @Test
+    public void testMultipartEntityWithProduces() {
+        String actual = toTest.multipartEntityWithProduces();
+        assertEquals("multipartEntityWithProduces() content-type-header=[application/custom] accepts-header=[*/*]", actual);
     }
 
 }

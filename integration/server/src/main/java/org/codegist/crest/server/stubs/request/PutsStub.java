@@ -66,40 +66,59 @@ public class PutsStub {
 
     @PUT
     @Path("entity-writer/xml")
-    public String xmlEntityWriter(
+    public String xmlEntity(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("xmlEntityWriter", contentTypes, accepts);
+        return asResponse("xmlEntity", contentTypes, accepts);
     }
 
     @PUT
     @Path("entity-writer/xml/produces")
     @Produces("application/custom")
-    public String xmlEntityWriterWithProduces(
+    public String xmlEntityWithProduces(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("xmlEntityWriterWithProduces", contentTypes, accepts);
+        return asResponse("xmlEntityWithProduces", contentTypes, accepts);
     }
 
     @PUT
     @Path("entity-writer/json")
-    public String jsonEntityWriter(
+    public String jsonEntity(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("jsonEntityWriter", contentTypes, accepts);
+        return asResponse("jsonEntity", contentTypes, accepts);
     }
 
     @PUT
     @Path("entity-writer/json/produces")
     @Produces("application/custom")
-    public String jsonEntityWriterWithProduces(
+    public String jsonEntityWithProduces(
             @HeaderParam("Content-Type") List<String> contentTypes,
             @HeaderParam("Accept") List<String> accepts
     ) {
-        return asResponse("jsonEntityWriterWithProduces", contentTypes, accepts);
+        return asResponse("jsonEntityWithProduces", contentTypes, accepts);
+    }
+
+    @PUT
+    @Path("entity-writer/multipart")
+    public String multipartEntity(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ) {
+        return asResponse("multipartEntity", contentTypes, accepts);
+    }
+
+    @PUT
+    @Path("entity-writer/multipart/produces")
+    @Produces("application/custom")
+    public String multipartEntityWithProduces(
+            @HeaderParam("Content-Type") List<String> contentTypes,
+            @HeaderParam("Accept") List<String> accepts
+    ) {
+        return asResponse("multipartEntityWithProduces", contentTypes, accepts);
     }
 
     private static String asResponse(String from, List<String> contentTypes, List<String> accepts) {

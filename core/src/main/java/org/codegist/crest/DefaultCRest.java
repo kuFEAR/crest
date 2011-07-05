@@ -39,7 +39,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.util.Map;
 
 /**
  * <p>On top of the behavior described in {@link org.codegist.crest.CRest}, this implementation adds :
@@ -51,17 +50,16 @@ import java.util.Map;
  */
 public class DefaultCRest extends CRest implements Disposable {
 
-    private final HttpRequestExecutor httpRequestExecutor;
     private final ProxyFactory proxyFactory;
+    private final HttpRequestExecutor httpRequestExecutor;
     private final InterfaceConfigFactory configFactory;
-    private final Map<String, Object> customProperties;
+    private final DeserializationManager deserializationManager;
 
-
-    public DefaultCRest(HttpRequestExecutor httpRequestExecutor, ProxyFactory proxyFactory, InterfaceConfigFactory configFactory, Map<String, Object> customProperties) {
-        this.httpRequestExecutor = httpRequestExecutor;
+    public DefaultCRest(ProxyFactory proxyFactory, HttpRequestExecutor httpRequestExecutor, InterfaceConfigFactory configFactory, DeserializationManager deserializationManager) {
         this.proxyFactory = proxyFactory;
+        this.httpRequestExecutor = httpRequestExecutor;
         this.configFactory = configFactory;
-        this.customProperties = customProperties;
+        this.deserializationManager = deserializationManager;
     }
 
     /**
@@ -79,7 +77,6 @@ public class DefaultCRest extends CRest implements Disposable {
     class RestInterfacer<T> extends ObjectMethodsAwareInvocationHandler {
 
         private final InterfaceConfig interfaceConfig;
-        private final DeserializationManager deserializationManager = (DeserializationManager) customProperties.get(DeserializationManager.class.getName());
 
         private RestInterfacer(Class<T> interfaze) {
             this.interfaceConfig = configFactory.newConfig(interfaze);

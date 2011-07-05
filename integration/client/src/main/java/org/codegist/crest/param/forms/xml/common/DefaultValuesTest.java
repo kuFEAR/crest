@@ -68,7 +68,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
         expected.append("<p1>").append(defaultP1).append("</p1>");
         expected.append("<p2>").append(defaultP2).append("</p2>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
         expected.append("<p1>").append(p12).append("</p1>");
         expected.append("<p3>").append(p3).append("</p3>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
 }

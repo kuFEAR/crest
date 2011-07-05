@@ -25,11 +25,15 @@ package org.codegist.crest.request.common;
  */
 public interface EntityRequests extends Requests {
 
-    String xmlEntityWriter();
+    String xmlEntity();
 
-    String xmlEntityWriterWithProduces();
+    String xmlEntityWithProduces();
 
-    String jsonEntityWriter();
+    String jsonEntity();
 
-    String jsonEntityWriterWithProduces();
+    String jsonEntityWithProduces();
+
+    String multipartEntity();
+
+    String multipartEntityWithProduces();
 }

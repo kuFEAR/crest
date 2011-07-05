@@ -35,7 +35,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.cookies.jaxrs.DefaultValuesTest.class,
         org.codegist.crest.param.cookies.jaxrs.EncodingsTest.class,
         org.codegist.crest.param.cookies.jaxrs.NullsTest.class,
-        org.codegist.crest.param.cookies.jaxrs.SerializersTest.class
+        org.codegist.crest.param.cookies.jaxrs.SerializersTest.class,
+        org.codegist.crest.param.cookies.jaxrs.SpecialParamsTest.class
 })
 public class CookiesJaxRsSuite {
 }

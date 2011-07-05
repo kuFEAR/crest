@@ -36,7 +36,7 @@ import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
-import org.codegist.crest.security.http.HttpEntityParamsParser;
+import org.codegist.crest.security.http.HttpEntityParamExtractor;
 import org.codegist.crest.security.oauth.*;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
@@ -49,12 +49,16 @@ import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static org.codegist.common.collect.Maps.putIfNotPresent;
+import static org.codegist.common.collect.Maps.sub;
 import static org.codegist.crest.CRestProperty.*;
 
 /**
@@ -85,14 +89,6 @@ public class CRestBuilder {
 
     private final static String DEFAULT_XML_WRAPPER_ELEMENT_NAME = "formdata";
 
-    private final static int RET_TYPE_JSON = 0;
-    private final static int RET_TYPE_XML = 1;
-//    private final static int RET_TYPE_CUSTOM = 2;
-    private final static int RET_TYPE_RAW = 3;
-
-    private final static int PROXY_TYPE_JDK = 0;
-    private final static int PROXY_TYPE_CGLIB = 1;
-
     private final static int DESERIALIZER_XML_JAXB = 1;
     private final static int DESERIALIZER_XML_SIMPLEXML = 2;
     private final static int DESERIALIZER_XML_CUSTOM = 3;
@@ -109,19 +105,29 @@ public class CRestBuilder {
 
     private String xmlWrapperElementName = DEFAULT_XML_WRAPPER_ELEMENT_NAME;
 
-    private int retType = RET_TYPE_RAW;
-    private int proxyType = PROXY_TYPE_JDK;
+    private ProxyFactory proxyFactory = new JdkProxyFactory();
+
     private int xmlDeserializer = DESERIALIZER_XML_JAXB;
     private int jsonDeserializer = DESERIALIZER_JSON_JACKSON;
     private int xmlSerializer = SERIALIZER_XML_JAXB;
     private int jsonSerializer = SERIALIZER_JSON_JACKSON;
 
+    private final Map<String, Object> customProperties = new HashMap<String, Object>();
+
     private Deserializer customXmlDeserializer;
     private Deserializer customJsonDeserializer;
     private Serializer customXmlSerializer;
     private Serializer customJsonSerializer;
-    private final DeserializerRegistry.Builder deserializerBuilder = new DeserializerRegistry.Builder();
-    private final SerializerRegistry.Builder serializerBuilder = new SerializerRegistry.Builder();
+    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>(customProperties, Deserializer.class);
+    private final Registry.Builder<String,Serializer> mimeSerializerBuilder = new Registry.Builder<String,Serializer>(customProperties, Serializer.class);
+    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>(customProperties, Serializer.class)
+                                                                                            .defaultAs(new ToStringSerializer())
+                                                                                            .register(DateSerializer.class, Date.class)
+                                                                                            .register(BooleanSerializer.class, Boolean.class, boolean.class)
+                                                                                            .register(FileSerializer.class, File.class)
+                                                                                            .register(InputStreamSerializer.class, InputStream.class)
+                                                                                            .register(ReaderSerializer.class, Reader.class);
+
     private final Map<String, Object> xmlDeserializerConfig = new HashMap<String, Object>();
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
     private final Map<String, Object> xmlSerializerConfig = new HashMap<String, Object>();
@@ -129,14 +135,10 @@ public class CRestBuilder {
     private final Set<String> plainTextMimes = new HashSet<String>(asList(DEFAULT_PLAINTEXT_MIMETYPES));
     private final Set<String> xmlMimes = new HashSet<String>(asList(DEFAULT_XML_MIMETYPES));
     private final Set<String> jsonMimes = new HashSet<String>(asList(DEFAULT_JSON_MIMETYPES));
-    private final Map<String, Object> customProperties = new HashMap<String, Object>();
     private final Map<String, String> placeholders = new HashMap<String, String>();
-    private final Map<Type, Serializer> serializersMap = new HashMap<Type, Serializer>();
     private final Map<String,Object> oauthConfig = new HashMap<String, Object>();
-    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers = new HashMap<String, HttpEntityParamsParser>();
-    {
-         httpEntityParamsParsers.put("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamsParser());
-    }
+    private final Map<String, HttpEntityParamExtractor> httpEntityParamExtrators = new HashMap<String, HttpEntityParamExtractor>(Collections.singletonMap("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamExtractor()));
+    private final Map<Class<? extends Annotation>, AnnotationHandler<? extends Annotation>> customAnnotationHandlers = new HashMap<Class<? extends Annotation>, AnnotationHandler<? extends Annotation>>();
 
     private HttpChannelInitiator httpChannelInitiator;
 
@@ -144,52 +146,33 @@ public class CRestBuilder {
     private String auth;
     private String username;
     private String password;
-    private boolean enableJaxRsSupport;
+    private boolean enableJaxRsSupport = false;
 
     public CRest build() {
-        ProxyFactory proxyFactory = buildProxyFactory();
-        Maps.putIfNotPresent(customProperties, ProxyFactory.class.getName(), proxyFactory);
+        Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry();
+        Registry<String,Serializer> mimeSerializerRegistry = buildMimeSerializerRegistry();
+        Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build();
 
-        DeserializerRegistry deserializerRegistry = buildDeserializerRegistry();
-        DeserializationManager deserializationManager = new DeserializationManager(deserializerRegistry);
-        Maps.putIfNotPresent(customProperties, DeserializerRegistry.class.getName(), deserializerRegistry);
-        Maps.putIfNotPresent(customProperties, DeserializationManager.class.getName(), deserializationManager);
-
-        SerializerRegistry serializerRegistry = buildSerializerRegistry();
-        Maps.putIfNotPresent(customProperties, SerializerRegistry.class.getName(), serializerRegistry);
+        DeserializationManager deserializationManager = new DeserializationManager(mimeDeserializerRegistry);
 
         HttpChannelInitiator plainChannelInitiator = buildHttpChannelInitiator();
         Authorization authorization = buildAuthorization(plainChannelInitiator);
         HttpRequestExecutor httpRequestExecutor = buildHttpRequestExecutor(plainChannelInitiator, authorization);
 
-        Maps.putIfNotPresent(customProperties, HttpRequestExecutor.class.getName(), httpRequestExecutor);
-        Maps.putIfNotPresent(customProperties, Authorization.class.getName(), authorization);
-
         InterfaceConfigFactory configFactory = buildInterfaceConfigFactory();
 
-        Maps.putIfNotPresent(customProperties, InterfaceConfigFactory.class.getName(), configFactory);
+        putIfNotPresent(customProperties, ProxyFactory.class.getName(), proxyFactory);
+        putIfNotPresent(customProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
+        putIfNotPresent(customProperties, Registry.class.getName() + "#serializers-per-mime", mimeSerializerRegistry);
+        putIfNotPresent(customProperties, Registry.class.getName() + "#serializers-per-class", classSerializerRegistry);  
+        putIfNotPresent(customProperties, DeserializationManager.class.getName(), deserializationManager);
+        putIfNotPresent(customProperties, HttpRequestExecutor.class.getName(), httpRequestExecutor);
+        putIfNotPresent(customProperties, Authorization.class.getName(), authorization);
+        putIfNotPresent(customProperties, InterfaceConfigFactory.class.getName(), configFactory);
+        putIfNotPresent(customProperties, CONFIG_PLACEHOLDERS_MAP, Maps.unmodifiable(placeholders));
+        putIfNotPresent(customProperties, SERIALIZER_XML_WRAPPER_ELEMENT_NAME, xmlWrapperElementName);
 
-        /* Put then in the properties. These are not part of the API */
-        Maps.putIfNotPresent(customProperties, CRestProperty.SERIALIZER_CUSTOM_SERIALIZER_MAP, Maps.unmodifiable(serializersMap));
-        Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_PLACEHOLDERS_MAP, Maps.unmodifiable(placeholders));
-        Maps.putIfNotPresent(customProperties, CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME, xmlWrapperElementName);
-
-        /* Defaults the deserializer for all methods */
-        switch (retType) {
-            case RET_TYPE_JSON:
-                Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(DEFAULT_JSON_ACCEPT_HEADER));
-                break;
-            case RET_TYPE_XML:
-                Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(DEFAULT_XML_ACCEPT_HEADER));
-                break;
-//            case RET_TYPE_CUSTOM:
-//                Maps.putIfNotPresent(customProperties, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, deserializerRegistry.getForMimeType(customMime));
-//                break;
-            case RET_TYPE_RAW:
-                break;
-        }
-
-        return new DefaultCRest(httpRequestExecutor, proxyFactory, configFactory, customProperties);
+        return new DefaultCRest(proxyFactory, httpRequestExecutor, configFactory, deserializationManager);
     }
 
     private HttpChannelInitiator buildHttpChannelInitiator() {
@@ -207,7 +190,7 @@ public class CRestBuilder {
     private HttpRequestExecutor buildHttpRequestExecutor(HttpChannelInitiator plainChannelInitiator, Authorization authorization){
         HttpRequestExecutor httpRequestExecutor;
         if(authorization != null) {
-            HttpChannelInitiator authenticationChannelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization, httpEntityParamsParsers);
+            HttpChannelInitiator authenticationChannelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization, httpEntityParamExtrators);
             httpRequestExecutor = new DefaultHttpRequestExecutor(authenticationChannelInitiator);
         }else{
             httpRequestExecutor = new DefaultHttpRequestExecutor(plainChannelInitiator);
@@ -215,72 +198,55 @@ public class CRestBuilder {
         return httpRequestExecutor;
     }
 
-    private ProxyFactory buildProxyFactory() {
-        switch (proxyType) {
-            default:
-            case PROXY_TYPE_JDK:
-                return new JdkProxyFactory();
-            case PROXY_TYPE_CGLIB:
-                return new CglibProxyFactory();
-        }
-    }
-
-    private DeserializerRegistry buildDeserializerRegistry() {
+    private Registry<String,Deserializer> buildDeserializerRegistry() {
         Class<? extends Deserializer> jsonDeserializer = getJsonDeserializerClass();
         Class<? extends Deserializer> xmlDeserializer = getXmlDeserializerClass();
 
-        Map<String,Object> jsonConfig = copyProperties(customProperties, jsonDeserializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
-        Map<String,Object> xmlConfig = copyProperties(customProperties, xmlDeserializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+        Map<String,Object> commonProps = sub(customProperties, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT);
+        jsonDeserializerConfig.putAll(commonProps);
+        xmlDeserializerConfig.putAll(commonProps);
 
         if (jsonDeserializer != null) {
-            deserializerBuilder.register(jsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonConfig);
+            mimeDeserializerBuilder.register(jsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonDeserializerConfig);
         } else {
-            deserializerBuilder.register(customJsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]));
+            mimeDeserializerBuilder.register(customJsonDeserializer, jsonMimes.toArray(new String[jsonMimes.size()]));
         }
         if (xmlDeserializer != null) {
-            deserializerBuilder.register(xmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlConfig);
+            mimeDeserializerBuilder.register(xmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlDeserializerConfig);
         } else {
-            deserializerBuilder.register(customXmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]));
+            mimeDeserializerBuilder.register(customXmlDeserializer, xmlMimes.toArray(new String[xmlMimes.size()]));
         }
 
-        deserializerBuilder.register(PlainTextDeserializer.class, plainTextMimes.toArray(new String[plainTextMimes.size()]));
+        mimeDeserializerBuilder.register(PlainTextDeserializer.class, plainTextMimes.toArray(new String[plainTextMimes.size()]));
 
-        return deserializerBuilder.build(customProperties);
+        return mimeDeserializerBuilder.build();
     }
 
-    private SerializerRegistry buildSerializerRegistry() {
+    private Registry<String,Serializer> buildMimeSerializerRegistry() {
         Class<? extends Serializer> jsonSerializer = getJsonSerializerClass();
         Class<? extends Serializer> xmlSerializer = getXmlSerializerClass();
 
-        Map<String,Object> jsonConfig = copyProperties(customProperties, jsonSerializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
-        Map<String,Object> xmlConfig = copyProperties(customProperties, xmlSerializerConfig, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT); // todo why just don't pass the custom properties ??
+        Map<String,Object> commonProps = sub(customProperties, CREST_CONCURRENCY_LEVEL, CREST_BOOLEAN_FALSE, CREST_BOOLEAN_TRUE, CREST_DATE_FORMAT);
+        jsonSerializerConfig.putAll(commonProps);
+        xmlSerializerConfig.putAll(commonProps);
 
         if (jsonSerializer != null) {
-            serializerBuilder.register(jsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonConfig);
+            mimeSerializerBuilder.register(jsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]), jsonSerializerConfig);
         } else {
-            serializerBuilder.register(customJsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]));
+            mimeSerializerBuilder.register(customJsonSerializer, jsonMimes.toArray(new String[jsonMimes.size()]));
         }
         if (xmlSerializer != null) {
-            serializerBuilder.register(xmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlConfig);
+            mimeSerializerBuilder.register(xmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]), xmlSerializerConfig);
         } else {
-            serializerBuilder.register(customXmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]));
+            mimeSerializerBuilder.register(customXmlSerializer, xmlMimes.toArray(new String[xmlMimes.size()]));
         }
 
-        // TODO make it configurable
-        serializerBuilder.register(getXmlEncodedFormSerializerClass(), FORM_XML_ENCODED_MIME_TYPES, xmlConfig);
-        serializerBuilder.register(getJsonEncodedFormSerializerClass(), FORM_JSON_ENCODED_MIME_TYPES, jsonConfig);
-
-        return serializerBuilder.build(customProperties);
+        mimeSerializerBuilder.register(getXmlEncodedFormSerializerClass(), FORM_XML_ENCODED_MIME_TYPES, xmlSerializerConfig);
+        mimeSerializerBuilder.register(getJsonEncodedFormSerializerClass(), FORM_JSON_ENCODED_MIME_TYPES, jsonSerializerConfig);
+        
+        return mimeSerializerBuilder.build();
     }
 
-    private static Map<String, Object> copyProperties(Map<String, Object> src, Map<String, Object> dest, String... props) {
-        dest = new HashMap<String, Object>(dest);
-        for (String prop : props) {
-            if (!src.containsKey(prop)) continue;
-            dest.put(prop, src.get(prop));
-        }
-        return dest;
-    }
 
     private Class<? extends Deserializer> getXmlDeserializerClass() {
         switch (this.xmlDeserializer) {
@@ -336,17 +302,16 @@ public class CRestBuilder {
     }
 
     private InterfaceConfigFactory buildInterfaceConfigFactory() {
-        AnnotationHandlers annotationHandlers;
+        return new AnnotationDrivenInterfaceConfigFactory(customProperties, buildAnnotationHandlers(), false, false);
+    }
+
+    private AnnotationHandlers buildAnnotationHandlers(){
+        Map<Class<? extends Annotation>, AnnotationHandler<?>> mappings = new LinkedHashMap<Class<? extends Annotation>, AnnotationHandler<?>>(CRestAnnotationHandlers.getHandlersMap());
         if(enableJaxRsSupport) {
-            Map<Class<? extends Annotation>, AnnotationHandler<?>> handlers = new LinkedHashMap<Class<? extends Annotation>, AnnotationHandler<?>>();
-            handlers.putAll(CRestAnnotationHandlers.getHandlersMap());
-            handlers.putAll(JaxRsAnnotationHandlers.getHandlersMap());
-            annotationHandlers = new DefaultAnnotationHandlers(handlers);
-        }else{
-            annotationHandlers = CRestAnnotationHandlers.getInstance();
+            mappings.putAll(JaxRsAnnotationHandlers.getHandlersMap());
         }
-        customProperties.put(AnnotationDrivenInterfaceConfigFactory.PROP_HANDLERS, annotationHandlers);
-        return new AnnotationDrivenInterfaceConfigFactory(customProperties);
+        mappings.putAll(customAnnotationHandlers);
+        return new DefaultAnnotationHandlers(mappings);
     }
 
     private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
@@ -387,6 +352,20 @@ public class CRestBuilder {
         return new OAuthorization(authenticator, accessOAuthToken);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public CRestBuilder useHttpClientRestService() {
         this.useHttpClient = true;
         return this;
@@ -394,6 +373,11 @@ public class CRestBuilder {
 
     public CRestBuilder enableJaxRsSupport(){
         this.enableJaxRsSupport = true;
+        return this;
+    }
+
+    public <A extends Annotation> CRestBuilder handleAnnotationWith(Class<A> annotationCls, AnnotationHandler<A> handler){
+        customAnnotationHandlers.put(annotationCls, handler);
         return this;
     }
 
@@ -421,19 +405,6 @@ public class CRestBuilder {
      */
     public CRestBuilder setProperty(String name, Object value) {
         customProperties.put(name, value);
-        return this;
-    }
-
-    /**
-     * Sets a custom serializer for the given type the resulting CRest instance will use to serialize method arguments.
-     * <p>The given type reflects the given Interface type, polymorphism is not considered.
-     *
-     * @param type       Type to seralize
-     * @param serializer Serializer
-     * @return current builder
-     */
-    public CRestBuilder setSerializer(Type type, Serializer serializer) {
-        serializersMap.put(type, serializer);
         return this;
     }
 
@@ -467,7 +438,7 @@ public class CRestBuilder {
      * @see org.codegist.common.reflect.JdkProxyFactory
      */
     public CRestBuilder useJdkProxies() {
-        this.proxyType = PROXY_TYPE_JDK;
+        this.proxyFactory = new JdkProxyFactory();
         return this;
     }
 
@@ -478,7 +449,7 @@ public class CRestBuilder {
      * @see org.codegist.common.reflect.CglibProxyFactory
      */
     public CRestBuilder useCglibProxies() {
-        this.proxyType = PROXY_TYPE_CGLIB;
+        this.proxyFactory = new CglibProxyFactory();
         return this;
     }
 
@@ -494,15 +465,18 @@ public class CRestBuilder {
     public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
         return authenticatesWithOAuth(consumerKey,consumerSecret,accessToken, accessTokenSecret, Collections.<String, String>emptyMap());
     }
-    public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> attributes) {
+
+    public CRestBuilder authenticatesWithOAuth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes) {
         this.auth = "oauth";
+        this.oauthConfig.clear();
         this.oauthConfig.put(OAUTH_CONSUMER_KEY, consumerKey);
         this.oauthConfig.put(OAUTH_CONSUMER_SECRET, consumerSecret);
         this.oauthConfig.put(OAUTH_ACCESS_TOKEN, accessToken);
         this.oauthConfig.put(OAUTH_ACCESS_TOKEN_SECRET, accessTokenSecret);
-        this.oauthConfig.put(OAUTH_ACCESS_TOKEN_ATTRIBUTES, attributes);
+        this.oauthConfig.put(OAUTH_ACCESS_TOKEN_ATTRIBUTES, accessTokenAttributes);
         return this;
     }
+
     public CRestBuilder authenticatesWithBasic(String username, String password) {
         this.auth = "basic";
         this.username = username;
@@ -510,12 +484,12 @@ public class CRestBuilder {
         return this;
     }
 
-    public CRestBuilder parseAuthenticatedMultiPartEntityWith(HttpEntityParamsParser httpEntityParamsParser){
-        return parseAuthenticatedEntityWith("multipart/form-data", httpEntityParamsParser);
+    public CRestBuilder extractAuthorizationParamsFromMultiPartEntityWith(HttpEntityParamExtractor httpEntityParamExtractor){
+        return extractAuthorizationParamsFromEntityWith("multipart/form-data", httpEntityParamExtractor);
     }
 
-    public CRestBuilder parseAuthenticatedEntityWith(String entityContentType, HttpEntityParamsParser httpEntityParamsParser){
-        this.httpEntityParamsParsers.put(entityContentType, httpEntityParamsParser);
+    public CRestBuilder extractAuthorizationParamsFromEntityWith(String entityContentType, HttpEntityParamExtractor httpEntityParamExtractor){
+        this.httpEntityParamExtrators.put(entityContentType, httpEntityParamExtractor);
         return this;
     }
 
@@ -527,7 +501,7 @@ public class CRestBuilder {
      * @return current builder
      * @see CRestProperty#CREST_DATE_FORMAT
      */
-    public CRestBuilder setDateFormat(String format) {
+    public CRestBuilder dateFormat(String format) {
         return setProperty(CREST_DATE_FORMAT, format);
     }
 
@@ -543,7 +517,7 @@ public class CRestBuilder {
      * @see CRestProperty#CREST_BOOLEAN_TRUE
      * @see CRestProperty#CREST_BOOLEAN_FALSE
      */
-    public CRestBuilder setBooleanFormat(String trueSerialized, String falseSerialized) {
+    public CRestBuilder booleanFormat(String trueSerialized, String falseSerialized) {
         return setProperty(CREST_BOOLEAN_TRUE, trueSerialized)
                 .setProperty(CREST_BOOLEAN_FALSE, falseSerialized);
     }
@@ -567,7 +541,7 @@ public class CRestBuilder {
      * @return current builder
      * @see CRestProperty#CONFIG_PLACEHOLDERS_MAP
      */
-    public CRestBuilder setConfigPlaceholder(String placeholder, String value) {
+    public CRestBuilder configPlaceholder(String placeholder, String value) {
         placeholders.put(placeholder, value);
         return this;
     }
@@ -593,7 +567,7 @@ public class CRestBuilder {
     }
 
     public CRestBuilder bindDeserializer(Deserializer deserializer, String... mimeTypes) {
-        this.deserializerBuilder.register(deserializer, mimeTypes);
+        this.mimeDeserializerBuilder.register(deserializer, mimeTypes);
         return this;
     }
 
@@ -604,32 +578,26 @@ public class CRestBuilder {
     }
 
     public CRestBuilder deserializeXmlWithJaxb() {
-        this.xmlDeserializer = DESERIALIZER_XML_JAXB;
-        this.xmlDeserializerConfig.clear();
-        return this;
+        return deserializeXmlWithJaxb(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder deserializeXmlWithJaxb(Map<String, Object> jaxbConfig) {
-        deserializeXmlWithJaxb();
+        this.xmlDeserializer = DESERIALIZER_XML_JAXB;
         this.xmlDeserializerConfig.clear();
         this.xmlDeserializerConfig.putAll(jaxbConfig);
         return this;
     }
 
     public CRestBuilder deserializeXmlWithSimpleXml() {
-        this.xmlDeserializer = DESERIALIZER_XML_SIMPLEXML;
-        this.xmlDeserializerConfig.clear();
-        return this;
+        return deserializeXmlWithSimpleXml(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder deserializeXmlWithSimpleXml(boolean strict) {
-        deserializeXmlWithSimpleXml();
-        this.xmlDeserializerConfig.put(SimpleXmlDeserializer.STRICT_PROP, strict);
-        return this;
+        return deserializeXmlWithSimpleXml(Collections.<String, Object>singletonMap(SimpleXmlDeserializer.STRICT_PROP, strict));
     }
 
     public CRestBuilder deserializeXmlWithSimpleXml(Map<String, Object> config) {
-        deserializeXmlWithSimpleXml();
+        this.xmlDeserializer = DESERIALIZER_XML_SIMPLEXML;
         this.xmlDeserializerConfig.clear();
         this.xmlDeserializerConfig.putAll(config);
         return this;
@@ -642,13 +610,11 @@ public class CRestBuilder {
     }
 
     public CRestBuilder deserializerJsonWithJackson() {
-        this.jsonDeserializer = DESERIALIZER_JSON_JACKSON;
-        this.jsonDeserializerConfig.clear();
-        return this;
+        return deserializerJsonWithJackson(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder deserializerJsonWithJackson(Map<String, Object> config) {
-        deserializerJsonWithJackson();
+        this.jsonDeserializer = DESERIALIZER_JSON_JACKSON;
         this.jsonDeserializerConfig.clear();
         this.jsonDeserializerConfig.putAll(config);
         return this;
@@ -662,32 +628,26 @@ public class CRestBuilder {
     }
 
     public CRestBuilder serializeXmlWithJaxb() {
-        this.xmlSerializer = SERIALIZER_XML_JAXB;
-        this.xmlSerializerConfig.clear();
-        return this;
+        return serializeXmlWithJaxb(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder serializeXmlWithJaxb(Map<String, Object> jaxbConfig) {
-        serializeXmlWithJaxb();
+        this.xmlSerializer = SERIALIZER_XML_JAXB;
         this.xmlSerializerConfig.clear();
         this.xmlSerializerConfig.putAll(jaxbConfig);
         return this;
     }
 
     public CRestBuilder serializeXmlWithSimpleXml() {
-        this.xmlSerializer = SERIALIZER_XML_SIMPLEXML;
-        this.xmlSerializerConfig.clear();
-        return this;
+        return serializeXmlWithSimpleXml(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder serializeXmlWithSimpleXml(boolean strict) {
-        serializeXmlWithSimpleXml();
-        this.xmlSerializerConfig.put(SimpleXmlDeserializer.STRICT_PROP, strict);
-        return this;
+        return serializeXmlWithSimpleXml(Collections.<String, Object>singletonMap(SimpleXmlDeserializer.STRICT_PROP, strict));
     }
 
     public CRestBuilder serializeXmlWithSimpleXml(Map<String, Object> config) {
-        serializeXmlWithSimpleXml();
+        this.xmlSerializer = SERIALIZER_XML_SIMPLEXML;
         this.xmlSerializerConfig.clear();
         this.xmlSerializerConfig.putAll(config);
         return this;
@@ -701,15 +661,19 @@ public class CRestBuilder {
     }
 
     public CRestBuilder serializerJsonWithJackson() {
-        this.jsonSerializer = SERIALIZER_JSON_JACKSON;
-        this.jsonSerializerConfig.clear();
-        return this;
+        return serializerJsonWithJackson(Collections.<String, Object>emptyMap());
     }
 
     public CRestBuilder serializerJsonWithJackson(Map<String, Object> config) {
-        serializerJsonWithJackson();
+        this.jsonSerializer = SERIALIZER_JSON_JACKSON;
         this.jsonSerializerConfig.clear();
         this.jsonSerializerConfig.putAll(config);
         return this;
     }
+
+    public CRestBuilder bindSerializer(Serializer serializer, Class<?>... classes){
+        classSerializerBuilder.register(serializer, classes);
+        return this;
+    }
+
 }

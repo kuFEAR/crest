@@ -11,7 +11,7 @@ import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.serializer.DeserializerRegistry;
+import org.codegist.crest.serializer.Registry;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.annotation.Annotation;
@@ -27,7 +27,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     private final InterfaceConfigBuilder parent;
     private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();
     private final ParamConfigBuilder[] methodParamConfigBuilders;
-    private final DeserializerRegistry deserializerRegistry;
+    private final Registry<String,Deserializer> mimeDeserializerRegistry;
     private final ArrayList<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
 
@@ -45,7 +45,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
 
     MethodConfigBuilder(InterfaceConfigBuilder parent, Method method, Map<String, Object> customProperties) {
         super(customProperties);
-        this.deserializerRegistry = getProperty(DeserializerRegistry.class.getName());
+        this.mimeDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-mime");
         this.parent = parent;
         this.method = method;
         this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
@@ -156,12 +156,12 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
 
     public MethodConfigBuilder setConsumes(String... mimeTypes) {
         if (ignore(mimeTypes)) return this;
-        State.notNull(deserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
+        State.notNull(mimeDeserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
 
         String[] mimes = new String[mimeTypes.length];
         for (int i = 0; i < mimeTypes.length; i++) {
             String mMime = replacePlaceholders(mimeTypes[i]);
-            this.deserializers.add(deserializerRegistry.getForMimeType(mMime));
+            this.deserializers.add(mimeDeserializerRegistry.getFor(mMime));
             mimes[i] = mMime;
         }
         this.accept = join(",", mimes);

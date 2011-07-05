@@ -21,7 +21,6 @@
 package org.codegist.crest.http;
 
 import org.apache.http.*;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;

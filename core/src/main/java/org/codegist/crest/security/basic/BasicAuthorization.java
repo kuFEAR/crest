@@ -20,7 +20,6 @@
 
 package org.codegist.crest.security.basic;
 
-import org.codegist.crest.http.HttpEntityWriter;
 import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.Pair;
 import org.codegist.crest.security.Authorization;

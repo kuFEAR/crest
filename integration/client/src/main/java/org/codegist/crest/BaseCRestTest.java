@@ -62,13 +62,13 @@ public abstract class BaseCRestTest<T> {
     }};
 
     // TODO this is to handle the fact we CANNOT override the way jaxb serialize types!
-    private static final Map<String,Object> JAXB_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
+    public static final Map<String,Object> JAXB_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
         put(CRestProperty.CREST_DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss+00:00");
         put(CRestProperty.CREST_BOOLEAN_TRUE, "true");
         put(CRestProperty.CREST_BOOLEAN_FALSE, "false");
         put(Serializer.class.getName(), Serializer.JAXB);
     }};
-    private static final Map<String,Object> SIMPLEXML_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
+    public static final Map<String,Object> SIMPLEXML_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
         put(Serializer.class.getName(), Serializer.SIMPLEXML);
     }};
 
@@ -145,7 +145,7 @@ public abstract class BaseCRestTest<T> {
         return value.replace("&", "&amp;");
     }
 
-    public static void assertXMLEqual(String control, String actual) {
+    public static void assertXmlEquals(String control, String actual) {
         try {
             XMLUnit.setIgnoreWhitespace(true);
             Diff diff = XMLUnit.compareXML(control, actual);
@@ -157,11 +157,14 @@ public abstract class BaseCRestTest<T> {
         }
     }
 
+    public static void assertMatches(String controlPattern, String actual) {
+        assertTrue(actual.matches(controlPattern));
+    }
 
     // this represent the real root builder shared by all tests
     private static CRestBuilder baseBuilder() {
         CRestBuilder builder = new CRestBuilder()
-                    .setConfigPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
+                    .configPlaceholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                     .addProperties(DEFAULT_PROPERTIES)
                     .bindPlainTextDeserializerWith("text/html");
         if(TEST_JAXRS) {
@@ -249,6 +252,7 @@ public abstract class BaseCRestTest<T> {
         }
         return arrify(holders);
     }
+
 
     public static CRestHolder[] byJsonSerializersAndRestServices() {
         return byRestServices();

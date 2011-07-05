@@ -30,46 +30,52 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-abstract class Registry<T> {
+public class Registry<K,T> {
 
     private final Class<T> clazz;
-    private final Map<String, Object> mimeTypeRegistry;
-    private final Map<String, T> cache = new HashMap<String, T>();
+    private final Map<K, Object> mapping;
+    private final Map<K, T> cache = new HashMap<K, T>();
     protected final Map<String,Object> customProperties;
+    private final Object defaultIfNotFound;
 
-    protected Registry(Class<T> clazz, Map<String, Object> mimeTypeRegistry, Map<String, Object> customProperties) {
+    protected Registry(Class<T> clazz, Map<K, Object> mapping, Object defaultIfNotFound, Map<String, Object> customProperties) {
         this.clazz = clazz;
-        this.mimeTypeRegistry = mimeTypeRegistry;
+        this.defaultIfNotFound = defaultIfNotFound;
+        this.mapping = mapping;
         this.customProperties = customProperties;
     }
 
-    public T getForMimeType(String mimeType) {
-        T iten = cache.get(mimeType);
-        if (iten == null) {
+    public T getFor(K key) {
+        T item = cache.get(key);
+        if (item == null) {
             synchronized (cache) {
-                iten = cache.get(mimeType);
-                if(iten == null) {
-                    iten = build(mimeType);
-                    cache(mimeType, iten);
+                item = cache.get(key);
+                if(item == null) {
+                    item = build(key);
+                    cache(key, item);
                 }
             }
         }
-        return iten;
+        return item;
     }
 
-    private void cache(String mimeType, T item) {
-        cache.put(mimeType, item);
-        for(Map.Entry<String,Object> entry : mimeTypeRegistry.entrySet()){
+    private void cache(K key, T item) {
+        cache.put(key, item);
+        for(Map.Entry<K,Object> entry : mapping.entrySet()){
             if(entry.getValue() instanceof Class && entry.getValue().equals(entry.getClass())) {
                 cache.put(entry.getKey(), item);
             }
         }
     }
 
-    private T build(String mimeType) {
-        Object item = mimeTypeRegistry.get(mimeType);
+    private T build(K key) {
+        Object item = mapping.get(key);
         if (item == null) {
-            throw new CRestException("No item bound to mime type: " + mimeType);
+            if(defaultIfNotFound == null) {
+                throw new CRestException("No item bound to key: " + key);
+            }else{
+                item = defaultIfNotFound;
+            }
         }
         if (clazz.isAssignableFrom(item.getClass())) {
             return (T) item;
@@ -109,26 +115,42 @@ abstract class Registry<T> {
         }
     }
 
-    public static abstract class Builder<T> {
+    public static class Builder<K,T> {
 
-        protected final Map<String, Object> mimeTypeRegistry = new HashMap<String, Object>();
+        protected final Map<K, Object> mapping = new HashMap<K, Object>();
+        protected final Class<T> clazz;
+        protected final Map<String,Object> customProperties;
+        protected Object defaultIfNotFound;
 
-        public abstract Registry<T> build(Map<String,Object> customProperties);
-
-        public Builder<T> register(Class<? extends T> item, String... mimeTypes) {
-            return register(item, mimeTypes, Collections.<String, Object>emptyMap());
+        public Builder(Map<String,Object> customProperties, Class<T> clazz) {
+            this.customProperties = customProperties;
+            this.clazz = clazz;
         }
-        public Builder<T> register(Class<? extends T> item, String[] mimeTypes, Map<String, Object> itemConfig) {
-            for (String mt : mimeTypes) {
-                mimeTypeRegistry.put(mt, new ItemDescriptor<T>(item, itemConfig));
+
+        public Registry<K,T> build() {
+            return new Registry<K,T>(clazz, mapping, defaultIfNotFound, customProperties);
+        }
+
+        public Builder<K,T> register(Class<? extends T> item, K... keys) {
+            return register(item, keys, customProperties);
+        }
+
+        public Builder<K,T> register(Class<? extends T> item, K[] keys, Map<String, Object> itemConfig) {
+            for (K mt : keys) {
+                mapping.put(mt, new ItemDescriptor<T>(item, itemConfig));
             }
             return this;
         }
 
-        public Builder<T> register(T item, String... mimeTypes) {
-            for (String mt : mimeTypes) {
-                mimeTypeRegistry.put(mt, item);
+        public Builder<K,T> register(T item, K... keys) {
+            for (K mt : keys) {
+                mapping.put(mt, item);
             }
+            return this;
+        }
+
+        public Builder<K,T> defaultAs(T item) {
+            this.defaultIfNotFound = item;
             return this;
         }
 

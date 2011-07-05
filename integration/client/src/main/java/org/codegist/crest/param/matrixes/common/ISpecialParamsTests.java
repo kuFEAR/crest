@@ -13,28 +13,20 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
-
-import java.util.Map;
+package org.codegist.crest.param.matrixes.common;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public final class DeserializerRegistry extends Registry<Deserializer> {
+public class ISpecialParamsTests<T extends ISpecialParamsTests.ISpecialParams> extends org.codegist.crest.param.common.ISpecialParamsTests<T> {
 
-    private DeserializerRegistry(Map<String, Object> mimeTypeRegistry, Map<String, Object> customProperties) {
-        super(Deserializer.class, mimeTypeRegistry, customProperties);
+    public ISpecialParamsTests(CRestHolder crest, Class<T> clazz) {
+        super(crest, clazz);
     }
 
-    public static class Builder extends Registry.Builder<Deserializer> {
-        @Override
-        public DeserializerRegistry build(Map<String, Object> customProperties) {
-            return new DeserializerRegistry(mimeTypeRegistry, customProperties);
-        }
-    }
 }

@@ -18,31 +18,25 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.security.oauth;
+package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.http.Pair;
-import org.codegist.crest.http.Pairs;
-import org.codegist.crest.security.http.HttpEntityParamsParser;
+import org.codegist.crest.CRestException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.codegist.common.lang.Strings.isNotBlank;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-public class UrlEncodedFormEntityParamsParser implements HttpEntityParamsParser {
-    public List<Pair> parse(String contentType, Charset charset, InputStream httpEntity) throws IOException {
-        List<Pair> params = new ArrayList<Pair>();
-        String formContent = IOs.toString(httpEntity, charset);
-        if(isNotBlank(formContent)) {
-            params.addAll(Pairs.parseUrlEncoded(formContent));
+public class InputStreamSerializer extends StreamingSerializer<InputStream> {
+    public void serialize(InputStream value, Charset charset, OutputStream out) throws CRestException {
+        try {
+            IOs.copy(value, out, true);
+        } catch (IOException e) {
+            throw CRestException.handle(e);
         }
-        return params;
     }
 }

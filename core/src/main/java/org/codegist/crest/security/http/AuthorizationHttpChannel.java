@@ -25,14 +25,14 @@ import org.codegist.crest.http.*;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static org.codegist.common.lang.Strings.isNotBlank;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -40,7 +40,7 @@ import static org.codegist.common.lang.Strings.isNotBlank;
 public class AuthorizationHttpChannel implements HttpChannel {
 
     private final Authorization authenticatorManager;
-    private final Map<String,HttpEntityParamsParser> httpEntityParamsParsers;
+    private final Map<String, HttpEntityParamExtractor> httpEntityParamExtrator;
     private final HttpChannel delegate;
     private final List<Pair> parameters = new ArrayList<Pair>();
     private final String url;
@@ -50,16 +50,16 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private String fullContentType = "";
     private HttpEntityWriter httpEntityWriter;
 
-    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset, Map<String,HttpEntityParamsParser> httpEntityParamsParsers) {
+    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset, Map<String, HttpEntityParamExtractor> httpEntityParamExtrator) {
         this.url = url;
         this.method = method;
         this.charset = charset;
         this.delegate = delegate;
-        this.httpEntityParamsParsers = httpEntityParamsParsers;
+        this.httpEntityParamExtrator = httpEntityParamExtrator;
         this.authenticatorManager = authenticatorManager;
         String[] split = url.split("\\?");
         if(split.length == 2) {
-            this.parameters.addAll(Pairs.parseUrlEncoded(split[1]));
+            this.parameters.addAll(Pairs.fromUrlEncoded(split[1]));
         }
     }
 
@@ -69,10 +69,10 @@ public class AuthorizationHttpChannel implements HttpChannel {
     }
 
     public Response send() throws IOException {
-        if(hasEntityParser()) {
+        if(hasEntityParamExtrator()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             httpEntityWriter.writeEntityTo(out);
-            List<Pair> entityParams = httpEntityParamsParsers.get(contentType).parse(fullContentType, charset, new ByteArrayInputStream(out.toByteArray()));
+            List<Pair> entityParams = httpEntityParamExtrator.get(contentType).extract(fullContentType, charset, new ByteArrayInputStream(out.toByteArray()));
             this.parameters.addAll(entityParams);
         }
         authenticate();
@@ -86,7 +86,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
     }
 
     public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
-        this.httpEntityWriter = hasEntityParser() ? new CachingHttpEntityWriter(httpEntityWriter) : httpEntityWriter;
+        this.httpEntityWriter = hasEntityParamExtrator() ? new RewritableHttpEntityWriter(httpEntityWriter) : httpEntityWriter;
         this.delegate.writeEntityWith(this.httpEntityWriter);
     }
 
@@ -114,18 +114,17 @@ public class AuthorizationHttpChannel implements HttpChannel {
         this.delegate.setConnectionTimeout(timeout);
     }
 
-    private boolean hasEntityParser(){
-        return httpEntityParamsParsers.containsKey(contentType);
+    private boolean hasEntityParamExtrator(){
+        return httpEntityParamExtrator.containsKey(contentType);
     }
 
-
-    private class CachingHttpEntityWriter implements HttpEntityWriter {
+    private class RewritableHttpEntityWriter implements HttpEntityWriter {
 
         private final HttpEntityWriter delegate;
         private Integer contentLength;
         private byte[] entityContent;
 
-        private CachingHttpEntityWriter(HttpEntityWriter delegate) {
+        private RewritableHttpEntityWriter(HttpEntityWriter delegate) {
             this.delegate = delegate;
         }
 

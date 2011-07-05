@@ -79,7 +79,7 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
         expected.append("<p4>").append(p41).append("</p4>");
         expected.append("<p4>").append(p42).append("</p4>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 
     @Override

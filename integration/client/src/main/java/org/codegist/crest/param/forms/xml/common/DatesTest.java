@@ -62,6 +62,6 @@ public class DatesTest extends IDatesTest<DatesTest.Dates> {
         expected.append("<p2>").append(p21).append("</p2>");
         expected.append("<p2>").append(p22).append("</p2>");
         expected.append("</form-data>");
-        assertXMLEqual(expected.toString(), actual);
+        assertXmlEquals(expected.toString(), actual);
     }
 }

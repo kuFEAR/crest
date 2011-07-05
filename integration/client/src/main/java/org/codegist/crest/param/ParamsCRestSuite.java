@@ -21,6 +21,7 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.param.cookies.CookiesCRestSuite;
+import org.codegist.crest.param.forms.FormsCRestSuite;
 import org.codegist.crest.param.headers.HeadersCRestSuite;
 import org.codegist.crest.param.matrixes.MatrixesCRestSuite;
 import org.codegist.crest.param.paths.PathsCRestSuite;
@@ -35,6 +36,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         CookiesCRestSuite.class,
+        FormsCRestSuite.class,
         HeadersCRestSuite.class,
         MatrixesCRestSuite.class,
         PathsCRestSuite.class,

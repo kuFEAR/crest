@@ -21,26 +21,28 @@
 package org.codegist.crest.flickr.security;
 
 import org.codegist.crest.http.Pair;
-import org.codegist.crest.security.http.HttpEntityParamsParser;
+import org.codegist.crest.security.http.HttpEntityParamExtractor;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class MultiPartEntityParamsParser implements HttpEntityParamsParser {
+public class MultiPartEntityParamExtractor implements HttpEntityParamExtractor {
 
     private static final Pattern BOUNDARY_EXTRACTOR = Pattern.compile("boundary=(.*)");
     private static final Pattern PARAM_PATTERN = Pattern.compile("Content-Disposition:\\s*[^;]+\\s*;\\s*name=\"([^\"]+)\"(?:;[^\r]+)?\r\nContent-Type:\\s*([^;]+)\\s*(?:;\\s*charset=[^\r]+)?\r\n\r\n(.*)\r\n");
 
-    public List<Pair> parse(String contentType, Charset charset, InputStream httpEntity) throws IOException {
+    public List<Pair> extract(String contentType, Charset charset, InputStream httpEntity) throws IOException {
         String boundary = getBoundary(contentType);
         BufferedReader reader = new BufferedReader(new InputStreamReader(httpEntity, charset));
         Scanner partsScanner = new Scanner(reader).useDelimiter(Pattern.quote(boundary));

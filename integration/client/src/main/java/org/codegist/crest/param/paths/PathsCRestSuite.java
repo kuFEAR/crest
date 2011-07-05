@@ -33,7 +33,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.paths.crest.DatesTest.class,
         org.codegist.crest.param.paths.crest.DefaultValuesTest.class,
         org.codegist.crest.param.paths.crest.EncodingsTest.class,
-        org.codegist.crest.param.paths.crest.SerializersTest.class
+        org.codegist.crest.param.paths.crest.SerializersTest.class,
+        org.codegist.crest.param.paths.crest.SpecialParamsTest.class
 })
 public class PathsCRestSuite {
 }

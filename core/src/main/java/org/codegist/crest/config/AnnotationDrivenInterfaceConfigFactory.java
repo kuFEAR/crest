@@ -42,20 +42,16 @@ import static java.lang.System.arraycopy;
  */
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
-    public static final String PROP_BUILD_TEMPLATE = AnnotationDrivenInterfaceConfigFactory.class + "#build-template";
-    public static final String PROP_MODEL_PRIORITY = AnnotationDrivenInterfaceConfigFactory.class + "#model-priority";
-    public static final String PROP_HANDLERS = AnnotationDrivenInterfaceConfigFactory.class + "#handlers";
-
     private final Map<String,Object> customProperties;
     private final AnnotationHandlers handlers;
     private final boolean buildTemplates;
     private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties) {
+    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties, AnnotationHandlers handlers, boolean buildTemplates, boolean modelPriority) {
+        this.handlers = handlers;
+        this.buildTemplates = buildTemplates;
+        this.modelPriority = modelPriority;
         this.customProperties = customProperties;
-        this.buildTemplates = Boolean.valueOf((String) customProperties.get(PROP_BUILD_TEMPLATE));
-        this.modelPriority = Boolean.valueOf((String) customProperties.get(PROP_MODEL_PRIORITY));
-        this.handlers = (AnnotationHandlers) customProperties.get(PROP_HANDLERS);
     }
 
     public InterfaceConfig newConfig(Class<?> interfaze) {

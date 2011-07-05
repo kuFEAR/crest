@@ -22,6 +22,7 @@ package org.codegist.crest;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Randoms;
+import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.Pair;
@@ -57,38 +58,30 @@ public class MultiPartEntityWriter implements EntityWriter {
             Charset charset = request.getCharset();
 
             for (HttpParam param: request.getFormParams()) {
-                Class<?> paramClass = param.getConfig().getValueClass();
-                String partName = param.getConfig().getName();
+                ParamConfig pc = param.getConfig();
+                Class<?> paramClass = pc.getValueClass();
+                String partName = pc.getName();
                 String partContentType = MultiParts.getContentType(param);
                 String partFileName = MultiParts.getFileName(param);
 
                 String partialPontentDiposition = FULL_BOUNDARY + "\r\nContent-Disposition: form-data; name=\"" + partName + "\"";
 
-                if(paramClass.isAssignableFrom(File.class) || paramClass.isAssignableFrom(InputStream.class)) {
+                if(isBinary(paramClass)) {
                     String contentType = defaultIfBlank(partContentType, "application/octet-stream");
                     for(Object value : param.getValue()){
                         if(value == null) continue;
 
-                        InputStream upload = null;
-                        String fileName = partFileName;
-
-                        if (value instanceof InputStream) {
-                            upload = (InputStream) value;
-                        } else if (value instanceof File) {
-                            upload = new FileInputStream((File) value);
+                        String fileName;
+                        if (value instanceof File) {
                             fileName = defaultIfBlank(partFileName, ((File) value).getName());
+                        }else{
+                            fileName = partFileName;
                         }
 
                         out.writeBytes(partialPontentDiposition);
                         out.writeBytes(isNotBlank(fileName) ? "; filename=\"" + fileName + "\"\r\n" : "\r\n");
                         out.writeBytes("Content-Type: " + contentType + "\r\n\r\n");
-                        BufferedInputStream in = null;
-                        try {
-                            in = (BufferedInputStream) (upload instanceof BufferedInputStream ? upload : new BufferedInputStream(upload));
-                            IOs.copy(in, out);
-                        } finally {
-                            IOs.close(in);
-                        }
+                        pc.getSerializer().serialize(value, charset, out);
                         out.writeBytes("\r\n");
                     }
                 } else {
@@ -108,4 +101,7 @@ public class MultiPartEntityWriter implements EntityWriter {
     }
 
 
+    private static boolean isBinary(Class<?> paramClass){
+        return (paramClass.isAssignableFrom(File.class) || paramClass.isAssignableFrom(InputStream.class));
+    }
 }

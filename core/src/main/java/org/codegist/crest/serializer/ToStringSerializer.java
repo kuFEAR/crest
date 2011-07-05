@@ -28,7 +28,7 @@ import java.nio.charset.Charset;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class ToStringSerializer<T> extends StringSerializer<T> {
-
+    
     /**
      * Simple serializer that returns the toString() value of the given value or empty string if null.
      *

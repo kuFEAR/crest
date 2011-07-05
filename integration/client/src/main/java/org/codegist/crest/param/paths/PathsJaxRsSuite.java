@@ -33,7 +33,8 @@ import org.junit.runners.Suite;
         org.codegist.crest.param.paths.jaxrs.DatesTest.class,
         org.codegist.crest.param.paths.jaxrs.DefaultValuesTest.class,
         org.codegist.crest.param.paths.jaxrs.EncodingsTest.class,
-        org.codegist.crest.param.paths.jaxrs.SerializersTest.class
+        org.codegist.crest.param.paths.jaxrs.SerializersTest.class,
+        org.codegist.crest.param.paths.jaxrs.SpecialParamsTest.class
 })
 public class PathsJaxRsSuite {
 }

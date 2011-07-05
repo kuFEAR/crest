@@ -35,11 +35,15 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.codegist.common.net.Urls.parseQueryString;
+import static org.codegist.crest.http.Pairs.join;
 import static org.codegist.crest.http.Pairs.sortByNameAndValues;
 
 public class OAuthenticatorV1 implements OAuthenticator {
@@ -229,17 +233,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
         String signMeth = method.toString();
         String signUri = constructRequestURL(url);
-
-        StringBuilder signParams = new StringBuilder();
-        boolean first = true;
-        for(Pair pair : sorted){
-            if(!first) {
-                signParams.append("&");
-            }
-            signParams.append(pair.getName()).append("=").append(pair.getValue());
-            first = false;
-        }
-
+        String signParams = join(sorted, '&', '=', false, false);
         String signature = consumerOAuthToken.getSecret() + "&" + accessOAuthToken.getSecret();
 
         try {

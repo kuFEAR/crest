@@ -21,8 +21,10 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
-import org.codegist.crest.param.multiparts.MiscsTest;
-import org.codegist.crest.param.multiparts.MultiPartsSuite;
+import org.codegist.crest.deserialization.DeserializationsCRestSuite;
+import org.codegist.crest.param.forms.FormsCRestSuite;
+import org.codegist.crest.param.forms.FormsJaxRsSuite;
+import org.codegist.crest.param.headers.crest.SpecialParamsTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

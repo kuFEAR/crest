@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * @author laurent.gilles@codegist.org
- */
+ */       
 public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collections> {
 
     public CollectionsTest(CRestHolder crest) {
