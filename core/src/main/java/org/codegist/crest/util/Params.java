@@ -18,28 +18,28 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.util;
 
-import org.codegist.crest.http.HttpParam;
-import org.codegist.crest.serializer.Serializer;
+import org.codegist.common.lang.Objects;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class XmlEntityWriter extends SerializingEntityWriter {
+public final class Params {
 
-    private static final String MIME  = "application/form-xmlencoded";
-    private static final String CONTENT_TYPE  = "application/xml";
-
-    public XmlEntityWriter(Map<String,Object> customProperties) {
-        super(getSerializer(customProperties), CONTENT_TYPE);
+    private Params(){
+        throw new IllegalStateException();
     }
 
-    private static Serializer<List<HttpParam>> getSerializer(Map<String,Object> customProperties){
-        Registry<String,Serializer> registryMime = (Registry<String,Serializer>) customProperties.get(Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME);
+    public static boolean isNull(Object value){
+        Iterator<Object> iter = Objects.iterate(value);
+        while(iter.hasNext()){
+            if(iter.next() != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

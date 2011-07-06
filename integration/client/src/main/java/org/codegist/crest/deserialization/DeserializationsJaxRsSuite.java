@@ -20,7 +20,10 @@
 
 package org.codegist.crest.deserialization;
 
-import org.codegist.crest.deserialization.jaxrs.*;
+import org.codegist.crest.deserialization.jaxrs.ComplexObjectDeserializationsWithJacksonTest;
+import org.codegist.crest.deserialization.jaxrs.ComplexObjectDeserializationsWithJaxbTest;
+import org.codegist.crest.deserialization.jaxrs.ComplexObjectDeserializationsWithSimpleXmlTest;
+import org.codegist.crest.deserialization.jaxrs.DeserializationsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

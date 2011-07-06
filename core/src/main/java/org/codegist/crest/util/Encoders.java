@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.http;
+package org.codegist.crest.util;
 
 import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestException;
@@ -30,14 +30,15 @@ import java.nio.charset.Charset;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public final class Encoders {
+
     private Encoders(){
         throw new IllegalStateException();
     }
 
-
     public static String encode(String value, Charset charset){
         return encode(value, charset, false);
     }
+
     public static String encode(String value, Charset charset, boolean quote){
         try {
             String val =  Urls.encode(value, charset.displayName());

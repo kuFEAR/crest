@@ -20,21 +20,19 @@
 
 package org.codegist.crest.http;
 
-import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.EntityWriter;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.config.PathTemplate;
 import org.codegist.crest.config.StringParamConfig;
+import org.codegist.crest.entity.EntityWriter;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static org.codegist.common.lang.Objects.asCollection;
 import static org.codegist.crest.http.HttpParamProcessor.iterateProcess;
 
 /**
@@ -191,26 +189,26 @@ public class HttpRequest {
         private Long socketTimeout = null;
         private Long connectionTimeout = null;
 
-        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter) throws UnsupportedEncodingException {
+        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter) {
             this(pathTemplate, entityWriter, ENCODING);
         }
 
-        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter, String encoding) throws UnsupportedEncodingException {
+        public Builder(PathTemplate pathTemplate, EntityWriter entityWriter, String encoding) {
             this.pathBuilder = pathTemplate.getBuilder(encoding);
             this.entityWriter = entityWriter;
             this.encoding = encoding;
             this.charset = Charset.forName(encoding);
         }
 
-        public Builder(String url, EntityWriter entityWriter) throws UnsupportedEncodingException {
+        public Builder(String url, EntityWriter entityWriter) {
             this(url, entityWriter, ENCODING);
         }
 
-        public Builder(String url, EntityWriter entityWriter, String encoding) throws UnsupportedEncodingException {
+        public Builder(String url, EntityWriter entityWriter, String encoding) {
             this(new SimplePathTemplate(url), entityWriter, encoding);
         }
 
-        public HttpRequest build() throws URISyntaxException {
+        public HttpRequest build() {
             return new HttpRequest(
                     meth,
                     pathBuilder,
@@ -290,8 +288,7 @@ public class HttpRequest {
         }
 
         private Builder addHttpParam(List<HttpParam> params, ParamConfig paramConfig, Object value){
-            if(value == null && paramConfig.getDefaultValue() == null) return this;
-            params.add(new HttpParam(paramConfig, Objects.asCollection(value)));
+            params.add(new HttpParam(paramConfig, asCollection(value)));
             return this;
         }
 

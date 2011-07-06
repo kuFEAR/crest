@@ -32,7 +32,7 @@ public class PlainTextDeserializer implements Deserializer {
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         try {
-            return (T) IOs.toString(stream, charset);
+            return (T) IOs.toString(stream, charset, true);
         } catch (IOException e) {
             throw CRestException.handle(e);
         }

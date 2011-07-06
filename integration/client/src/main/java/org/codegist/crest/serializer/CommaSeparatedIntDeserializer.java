@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 public class CommaSeparatedIntDeserializer implements Deserializer  {
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
         try {
-            String[] ints = IOs.toString(stream, charset).split(",");
+            String[] ints = IOs.toString(stream, charset, true).split(",");
             int[] intPrims = new int[ints.length];
             int i = 0;
             for(String in : ints){

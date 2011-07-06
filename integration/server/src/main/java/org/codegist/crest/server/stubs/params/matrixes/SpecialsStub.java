@@ -20,7 +20,10 @@
 
 package org.codegist.crest.server.stubs.params.matrixes;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.MatrixParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 import static org.codegist.crest.server.utils.ToStrings.string;

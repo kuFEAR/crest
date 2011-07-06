@@ -18,14 +18,14 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.entity;
 
-import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Randoms;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.http.HttpParam;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.Pair;
+import org.codegist.crest.util.MultiParts;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -69,8 +69,6 @@ public class MultiPartEntityWriter implements EntityWriter {
                 if(isBinary(paramClass)) {
                     String contentType = defaultIfBlank(partContentType, "application/octet-stream");
                     for(Object value : param.getValue()){
-                        if(value == null) continue;
-
                         String fileName;
                         if (value instanceof File) {
                             fileName = defaultIfBlank(partFileName, ((File) value).getName());

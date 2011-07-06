@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * InputStream backed by a HttpResource object.
  * <p>On close, this input stream release underlying http network resources
  * @see HttpResource
- * @see org.codegist.crest.HttpResource#release()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HttpResourceInputStream extends InputStreamWrapper {
@@ -54,7 +53,7 @@ public class HttpResourceInputStream extends InputStreamWrapper {
             super.close();
         } finally {
             LOGGER.debug("Releasing underlying network resources.");
-            resource.release();
+            resource.close();
         }
     }
 

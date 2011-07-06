@@ -18,38 +18,19 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.deserialization.jaxrs;
+package org.codegist.crest.serializer;
 
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.deserialization.common.IDeserializations;
+import org.codegist.crest.CRestException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import java.io.InputStream;
-import java.io.Reader;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-@EndPoint("{crest.server.end-point}")
-@Path("deserialization")
-public interface Deserializations extends IDeserializations {
-
-    @GET
-    @Path("reader")
-    Reader reader(@QueryParam("value") String value);
-
-    @GET
-    @Path("inputstream")
-    InputStream inputStream(@QueryParam("value") String value);
-
-    @GET
-    @Path("primitive")
-    int primitive(@QueryParam("value") int value);
-
-    @GET
-    @Path("primitives")
-    int[] primitives(@QueryParam("value") int[] values);
-
+public class NoOpDeserializer implements Deserializer {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
+        return (T) stream;
+    }
 }

@@ -49,7 +49,7 @@ public class DeliciousSample implements Runnable {
         this.consumerSecret = consumerSecret;
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;
-        this.sessionHandle = sessionHandle;
+        this.sessionHandle = sessionHandle;      
     }
 
     public void run() {

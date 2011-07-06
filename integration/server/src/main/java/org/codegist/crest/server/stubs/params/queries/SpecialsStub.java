@@ -26,7 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.List;
 
-import static java.lang.String.format;
 import static org.codegist.crest.server.utils.ToStrings.string;
 
 /**

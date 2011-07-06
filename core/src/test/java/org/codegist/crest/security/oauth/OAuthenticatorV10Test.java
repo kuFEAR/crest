@@ -23,7 +23,7 @@
 //import org.codegist.crest.http.HttpRequest;
 //import org.codegist.crest.http.HttpResponse;
 //import org.codegist.crest.RestService;
-//import org.codegist.crest.UrlEncodedFormEntityWriter;
+//import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
 //import org.codegist.crest.security.oauth.OAuthenticatorV10.VariantProvider;
 //import org.hamcrest.Description;
 //import org.junit.Test;

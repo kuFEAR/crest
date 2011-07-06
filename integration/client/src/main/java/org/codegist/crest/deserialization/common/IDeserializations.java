@@ -36,4 +36,10 @@ public interface IDeserializations {
 
     int[] primitives(int[] values);
 
+    String get();
+
+    void nothing(String value);
+
+    Void nothing2(String value);
+    
 }

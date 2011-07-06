@@ -23,7 +23,7 @@ package org.codegist.crest.config;
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.reflect.Annotations;
-import org.codegist.crest.EntityWriter;
+import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;

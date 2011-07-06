@@ -40,7 +40,7 @@ public class DateSerializer extends StringSerializer<Date> {
     private final FormatType formatType;
 
     public DateSerializer() {
-        this(DEFAULT_DATEFORMAT);
+        this(DEFAULT_DATEFORMAT);  
     }
 
     public DateSerializer(Map<String,Object> customProperties) {

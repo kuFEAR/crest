@@ -18,35 +18,19 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.deserialization.crest;
-
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.Path;
-import org.codegist.crest.annotate.QueryParam;
-import org.codegist.crest.deserialization.common.IDeserializations;
-
-import java.io.InputStream;
-import java.io.Reader;
+package org.codegist.crest.error;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-@EndPoint("{crest.server.end-point}")
-@Path("deserialization")
-@GET
-public interface Deserializations extends IDeserializations {
+public interface ErrorHandlers {
 
-    @Path("reader")
-    Reader reader(@QueryParam("value") String value);
+    String failAndRetry(String value);
 
-    @Path("inputstream")
-    InputStream inputStream(@QueryParam("value") String value);
+    String retryButFail(String value);
 
-    @Path("primitive")
-    int primitive(@QueryParam("value") int value);
+    String failAndHandle(String value);
 
-    @Path("primitives")
-    int[] primitives(@QueryParam("value") int[] values);
+    String failDefault(String value);
 
 }

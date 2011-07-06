@@ -20,7 +20,7 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.RequestContext;
 
 /**
  * Error handler that always delegate the given exception to the caller.
@@ -28,7 +28,7 @@ import org.codegist.crest.ResponseContext;
  */
 public class ErrorDelegatorHandler implements ErrorHandler {
 
-    public <T> T handle(ResponseContext context, Exception e) throws Exception {
+    public <T> T handle(RequestContext requestContext, Exception e) throws Exception {
         throw e;
     }
 }

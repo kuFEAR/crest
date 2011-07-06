@@ -21,8 +21,8 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.Registry;
 import org.codegist.crest.config.annotate.AnnotationHandler;
+import org.codegist.crest.util.Registry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

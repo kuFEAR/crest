@@ -30,13 +30,11 @@ import java.io.IOException;
  * <p>- Marshalling occurs only when a marshaller have been set in the custom properties (key="org.codegist.common.marshal.Marshaller")
  * <p>- Response is just ignored for voids methods.
  *
- * @see org.codegist.crest.InterfaceContext#getProperties()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class DefaultResponseHandler implements ResponseHandler {
 
     public final Object handle(ResponseContext context) throws IOException {
-        if (void.class.equals(context.getExpectedType()) || Void.class.equals(context.getExpectedType())) return null;
         return context.deserialize();
     }
 }

@@ -24,7 +24,7 @@ import org.codegist.common.lang.ToStringBuilder;
 
 import java.nio.charset.Charset;
 
-import static org.codegist.crest.http.Encoders.encode;
+import static org.codegist.crest.util.Encoders.encode;
 
 /**
  * @author laurent.gilles@codegist.org

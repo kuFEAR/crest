@@ -22,9 +22,6 @@ package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
 import org.codegist.crest.deserialization.DeserializationsCRestSuite;
-import org.codegist.crest.param.forms.FormsCRestSuite;
-import org.codegist.crest.param.forms.FormsJaxRsSuite;
-import org.codegist.crest.param.headers.crest.SpecialParamsTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,7 +32,7 @@ import java.io.IOException;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses(CRestAllSuite.class)
+@Suite.SuiteClasses(DeserializationsCRestSuite.class)
 public class CRestSuiteTest {
     private static int PORT = 8080;
 //    static {  for some reason this works when ran within an IDE, but not within maven...

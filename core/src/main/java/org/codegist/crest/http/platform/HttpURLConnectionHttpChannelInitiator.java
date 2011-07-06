@@ -18,20 +18,26 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.annotate;
+package org.codegist.crest.http.platform;
 
-import org.codegist.crest.entity.MultiPartEntityWriter;
+import org.codegist.crest.http.HttpChannel;
+import org.codegist.crest.http.HttpChannelInitiator;
+import org.codegist.crest.http.HttpMethod;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
- * @author laurent.gilles@codegist.org
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
-@EntityWriter(MultiPartEntityWriter.class)
-public @interface MultiPartEntity {
+* @author Laurent Gilles (laurent.gilles@codegist.org)
+*/
+public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiator {
+
+    public HttpChannel initiate(HttpMethod method, String url, Charset charset) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+        con.setRequestMethod(method.name());
+        return new HttpURLConnectionHttpChannel(con, method);
+    }
+
 }

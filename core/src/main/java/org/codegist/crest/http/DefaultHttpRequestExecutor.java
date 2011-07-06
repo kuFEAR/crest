@@ -20,6 +20,8 @@
 
 package org.codegist.crest.http;
 
+import org.codegist.common.lang.Disposable;
+import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.config.PathBuilder;
 
@@ -29,12 +31,12 @@ import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.http.HttpParamProcessor.process;
-import static org.codegist.crest.http.Pairs.join;
+import static org.codegist.crest.util.Pairs.join;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
+public class DefaultHttpRequestExecutor implements HttpRequestExecutor, Disposable {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultHttpRequestExecutor.class);
     private final HttpChannelInitiator channelInitiator;
@@ -136,5 +138,9 @@ public class DefaultHttpRequestExecutor implements HttpRequestExecutor {
         }
 
         return pathBuilder.build() + matrix + query;
+    }
+
+    public void dispose() {
+        Disposables.dispose(channelInitiator);
     }
 }

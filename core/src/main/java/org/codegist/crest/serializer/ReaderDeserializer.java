@@ -18,19 +18,20 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.serializer;
 
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.CRestException;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
-
-public interface EntityWriter {
-
-    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
-
-    String getContentType(HttpRequest request);
-
-    int getContentLength(HttpRequest httpRequest);
+/**
+ * @author laurent.gilles@codegist.org
+ */
+public class ReaderDeserializer implements Deserializer {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
+        return (T) new InputStreamReader(stream, charset);
+    }
 }

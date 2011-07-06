@@ -18,20 +18,27 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.annotate;
+package org.codegist.crest.entity;
 
-import org.codegist.crest.entity.MultiPartEntityWriter;
+import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.Registry;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
-@EntityWriter(MultiPartEntityWriter.class)
-public @interface MultiPartEntity {
+public class JsonEntityWriter extends SerializingEntityWriter {
+
+    private static final String MIME  = "application/form-jsonencoded";
+    private static final String CONTENT_TYPE = "application/json";
+
+    public JsonEntityWriter(Map<String,Object> customProperties) {
+        super(getSerializer(customProperties), CONTENT_TYPE);
+    }
+
+    private static Serializer getSerializer(Map<String,Object> customProperties){
+        Registry<String,Serializer> registryMime = (Registry<String,Serializer>) customProperties.get(Registry.class.getName() + "#serializers-per-mime");
+        return registryMime.get(MIME);
+    }
 }

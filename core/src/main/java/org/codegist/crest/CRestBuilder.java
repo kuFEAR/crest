@@ -28,10 +28,14 @@ import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.CRestAnnotationHandlers;
+import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
-import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotationHandlers;
-import org.codegist.crest.http.*;
+import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.http.DefaultHttpRequestExecutor;
+import org.codegist.crest.http.HttpChannelInitiator;
+import org.codegist.crest.http.HttpRequestExecutor;
+import org.codegist.crest.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.http.platform.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
@@ -47,6 +51,7 @@ import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
 import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.serializer.simplexml.SimpleXmlSerializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
+import org.codegist.crest.util.Registry;
 
 import java.io.File;
 import java.io.InputStream;
@@ -116,7 +121,16 @@ public class CRestBuilder {
     private Deserializer customJsonDeserializer;
     private Serializer customXmlSerializer;
     private Serializer customJsonSerializer;
+    private final Registry.Builder<Class<? extends Annotation>,AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(customProperties, AnnotationHandler.class)
+                                                                                                                        .defaultAs(new NoOpAnnotationHandler())
+                                                                                                                        .register(CRestAnnotations.MAPPING);
+
     private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>(customProperties, Deserializer.class);
+    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>(customProperties, Deserializer.class)
+                                                                                                                        .register(VoidDeserializer.class, Void.class, void.class)
+                                                                                                                        .register(NoOpDeserializer.class, InputStream.class)
+                                                                                                                        .register(ReaderDeserializer.class, Reader.class);
+
     private final Registry.Builder<String,Serializer> mimeSerializerBuilder = new Registry.Builder<String,Serializer>(customProperties, Serializer.class);
     private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>(customProperties, Serializer.class)
                                                                                             .defaultAs(new ToStringSerializer())
@@ -136,7 +150,6 @@ public class CRestBuilder {
     private final Map<String, String> placeholders = new HashMap<String, String>();
     private final Map<String,Object> oauthConfig = new HashMap<String, Object>();
     private final Map<String, HttpEntityParamExtractor> httpEntityParamExtrators = new HashMap<String, HttpEntityParamExtractor>(Collections.singletonMap("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamExtractor()));
-    private final Map<Class<? extends Annotation>, AnnotationHandler<? extends Annotation>> customAnnotationHandlers = new HashMap<Class<? extends Annotation>, AnnotationHandler<? extends Annotation>>();
 
     private HttpChannelInitiator httpChannelInitiator;
 
@@ -144,12 +157,12 @@ public class CRestBuilder {
     private String auth;
     private String username;
     private String password;
-    private boolean enableJaxRsSupport = false;
 
     public CRest build() {
         Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry();
         Registry<String,Serializer> mimeSerializerRegistry = buildMimeSerializerRegistry();
         Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build();
+        Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build();
 
         DeserializationManager deserializationManager = new DeserializationManager(mimeDeserializerRegistry);
 
@@ -157,10 +170,11 @@ public class CRestBuilder {
         Authorization authorization = buildAuthorization(plainChannelInitiator);
         HttpRequestExecutor httpRequestExecutor = buildHttpRequestExecutor(plainChannelInitiator, authorization);
 
-        InterfaceConfigFactory configFactory = buildInterfaceConfigFactory();
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(customProperties, annotationHandlerBuilder.build(), false, false);
 
         putIfNotPresent(customProperties, ProxyFactory.class.getName(), proxyFactory);
         putIfNotPresent(customProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
+        putIfNotPresent(customProperties, Registry.class.getName() + "#deserializers-per-class", classDeserializerRegistry);
         putIfNotPresent(customProperties, Registry.class.getName() + "#serializers-per-mime", mimeSerializerRegistry);
         putIfNotPresent(customProperties, Registry.class.getName() + "#serializers-per-class", classSerializerRegistry);  
         putIfNotPresent(customProperties, DeserializationManager.class.getName(), deserializationManager);
@@ -297,25 +311,6 @@ public class CRestBuilder {
         }
     }
 
-    private InterfaceConfigFactory buildInterfaceConfigFactory() {
-        return new AnnotationDrivenInterfaceConfigFactory(customProperties, buildAnnotationHandlers(), false, false);
-    }
-
-    private Registry<Class<? extends Annotation>,AnnotationHandler> buildAnnotationHandlers(){
-        Registry.Builder<Class<? extends Annotation>,AnnotationHandler> registryBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(customProperties, AnnotationHandler.class);
-        registryBuilder.defaultAs(new NoOpAnnotationHandler());
-        for(Map.Entry<Class<? extends Annotation>, Class<? extends AnnotationHandler>> entry : CRestAnnotationHandlers.MAPPING.entrySet()){
-            registryBuilder.register(entry.getValue(), entry.getKey());
-        }
-        if(enableJaxRsSupport) {
-            for(Map.Entry<Class<? extends Annotation>, Class<? extends AnnotationHandler>> entry : JaxRsAnnotationHandlers.MAPPING.entrySet()){
-                registryBuilder.register(entry.getValue(), entry.getKey());
-            }
-        }
-
-        return registryBuilder.build();
-    }
-
     private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
         if("oauth".equals(auth)) {
             return buildOAuthorization(channelInitiator);
@@ -374,12 +369,12 @@ public class CRestBuilder {
     }
 
     public CRestBuilder enableJaxRsSupport(){
-        this.enableJaxRsSupport = true;
+        this.annotationHandlerBuilder.register(JaxRsAnnotations.MAPPING);
         return this;
     }
 
     public <A extends Annotation> CRestBuilder handleAnnotationWith(Class<A> annotationCls, AnnotationHandler<A> handler){
-        customAnnotationHandlers.put(annotationCls, handler);
+        annotationHandlerBuilder.register(handler, annotationCls);
         return this;
     }
 
@@ -570,6 +565,11 @@ public class CRestBuilder {
 
     public CRestBuilder bindDeserializer(Deserializer deserializer, String... mimeTypes) {
         this.mimeDeserializerBuilder.register(deserializer, mimeTypes);
+        return this;
+    }
+
+    public CRestBuilder bindDeserializer(Deserializer deserializer, Class<?>... classes) {
+        this.classDeserializerBuilder.register(deserializer, classes);
         return this;
     }
 

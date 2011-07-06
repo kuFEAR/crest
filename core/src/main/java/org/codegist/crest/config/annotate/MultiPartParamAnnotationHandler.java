@@ -25,7 +25,7 @@ import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
 
-import static org.codegist.crest.MultiParts.toMetaDatas;
+import static org.codegist.crest.util.MultiParts.toMetaDatas;
 
 /**
  * @author laurent.gilles@codegist.org

@@ -22,8 +22,8 @@ package org.codegist.crest.security.oauth;
 
 import org.codegist.common.io.IOs;
 import org.codegist.crest.http.Pair;
-import org.codegist.crest.http.Pairs;
 import org.codegist.crest.security.http.HttpEntityParamExtractor;
+import org.codegist.crest.util.Pairs;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -3,7 +3,10 @@ package org.codegist.crest.config;
 import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
 import org.codegist.common.reflect.Methods;
-import org.codegist.crest.*;
+import org.codegist.crest.CRestProperty;
+import org.codegist.crest.entity.EntityWriter;
+import org.codegist.crest.entity.MultiPartEntityWriter;
+import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
@@ -11,8 +14,9 @@ import org.codegist.crest.http.HttpMethod;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.Registry;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.MultiParts;
+import org.codegist.crest.util.Registry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -28,6 +32,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();
     private final ParamConfigBuilder[] methodParamConfigBuilders;
     private final Registry<String,Deserializer> mimeDeserializerRegistry;
+    private final Registry<Class<?>,Deserializer> classDeserializerRegistry;
     private final ArrayList<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
 
@@ -46,9 +51,16 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     MethodConfigBuilder(InterfaceConfigBuilder parent, Method method, Map<String, Object> customProperties) {
         super(customProperties);
         this.mimeDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-mime");
+        this.classDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-class");
         this.parent = parent;
         this.method = method;
         this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
+
+        Class<?> retType = method.getReturnType();
+        if(classDeserializerRegistry.contains(retType)) {
+            Deserializer deserializer = classDeserializerRegistry.get(retType);
+            deserializers.add(deserializer);
+        }
 
         for (int i = 0; i < this.methodParamConfigBuilders.length; i++) {
             Map<Class<? extends Annotation>, Annotation> paramAnnotation = Methods.getParamsAnnotation(method, i);
@@ -117,6 +129,8 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
                 }
                 entityWriter = newInstance(entityWriterCls);
             }
+
+
         }
         
         return new DefaultMethodConfig(

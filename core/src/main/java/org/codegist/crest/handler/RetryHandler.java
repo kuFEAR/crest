@@ -20,16 +20,15 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.RequestContext;
 
 /**
  * Retry handlers are used to control whether a method execution that has failed during the HTTP call should be re-executed or not
  * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
- * @see org.codegist.crest.InterfaceContext#getProperties()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface RetryHandler {
 
-    boolean retry(ResponseContext response, Exception exception, int retryNumber);
+    boolean retry(RequestContext requestContext, Exception exception, int retryNumber);
 
 }

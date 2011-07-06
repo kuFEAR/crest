@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.JsonEntityWriter;
+import org.codegist.crest.entity.JsonEntityWriter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -20,10 +20,7 @@
 
 package org.codegist.crest.server.stubs.deserilizations;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.util.List;
 
 import static java.lang.String.valueOf;
@@ -35,6 +32,8 @@ import static org.codegist.common.collect.Collections.join;
 @Produces("text/html;charset=UTF-8")
 @Path("deserialization")
 public class DeserializationsStub {
+
+    private String value;
 
     @GET
     @Path("reader")
@@ -57,10 +56,21 @@ public class DeserializationsStub {
 
     @GET
     @Path("primitives")
-    @Produces("text/ints")
     public String primitives(@QueryParam("value") List<Integer> values) {
         return join(",", values);
     }
 
+
+    @GET
+    @Path("get")
+    public String get() {
+        return value;
+    }
+
+    @HEAD
+    @Path("void")
+    public void nothing(@QueryParam("value") String value) {
+        this.value = value;
+    }
 
 }

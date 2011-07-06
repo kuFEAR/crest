@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.XmlEntityWriter;
+import org.codegist.crest.entity.XmlEntityWriter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.http;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -29,7 +30,7 @@ import java.nio.charset.Charset;
  *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface HttpResource {
+public interface HttpResource extends Closeable {
 
     /**
      * @return the underlying http resource data stream
@@ -42,12 +43,5 @@ public interface HttpResource {
     Charset getCharset() throws IOException;
 
     String getContentEncoding() throws IOException;
-
-    /**
-     * Release the network resources used by the resource
-     *
-     * @throws HttpException
-     */
-    void release() throws IOException;
 
 }

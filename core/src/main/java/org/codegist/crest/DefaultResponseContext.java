@@ -37,6 +37,9 @@ class DefaultResponseContext implements ResponseContext {
     private final RequestContext context;
     private final DeserializationManager deserializationManager;
 
+    public DefaultResponseContext(DeserializationManager deserializationManager, RequestContext context) {
+        this(deserializationManager, context, null);
+    }
     public DefaultResponseContext(DeserializationManager deserializationManager, RequestContext context, HttpResponse response) {
         this.deserializationManager = deserializationManager;
         this.context = context;

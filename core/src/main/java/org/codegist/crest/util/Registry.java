@@ -18,7 +18,9 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.util;
+
+import org.codegist.crest.CRestException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -43,6 +45,10 @@ public class Registry<K,T> {
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
         this.customProperties = customProperties;
+    }
+
+    public boolean contains(K key) {
+        return mapping.containsKey(key);
     }
 
     public T get(K key) {
@@ -169,6 +175,13 @@ public class Registry<K,T> {
         public Builder<K,T> register(T item, K... keys) {
             for (K mt : keys) {
                 mapping.put(mt, item);
+            }
+            return this;
+        }
+
+        public Builder<K,T> register(Map<K, Class<? extends T>> mapping) {
+            for (Map.Entry<K, Class<? extends T>> e : mapping.entrySet()) {
+                register(e.getValue(), e.getKey());
             }
             return this;
         }

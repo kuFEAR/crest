@@ -23,7 +23,6 @@ package org.codegist.crest.server.stubs.params.cookies;
 import javax.ws.rs.*;
 import java.util.List;
 
-import static org.codegist.crest.server.utils.ToStrings.string;
 import static org.codegist.crest.server.utils.ToStrings.stringCookie;
 
 /**

@@ -21,15 +21,20 @@
 package org.codegist.crest.deserialization.crest;
 
 import org.codegist.crest.CRestBuilder;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
+import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.handler.SimpleXmlSomeDatasResponseHandler;
+import org.codegist.crest.model.simplexml.SimpleXmlSomeData;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ComplexObjectDeserializationsWithSimpleXmlTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithSimpleXml> {
+public class ComplexObjectDeserializationsWithSimpleXmlTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithSimpleXmlTest.ComplexObjectDeserializationsWithSimpleXml> {
 
     public ComplexObjectDeserializationsWithSimpleXmlTest(CRestHolder crest) {
         super(crest, ComplexObjectDeserializationsWithSimpleXml.class);
@@ -42,5 +47,42 @@ public class ComplexObjectDeserializationsWithSimpleXmlTest extends CommonComple
                 return new CRestHolder(builder.deserializeXmlWithSimpleXml().build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
         })));
+    }
+
+    /**
+     * @author laurent.gilles@codegist.org
+     */
+    @EndPoint("{crest.server.end-point}")
+    @Path("deserialization/complexobject")
+    @GET
+    public static interface ComplexObjectDeserializationsWithSimpleXml extends IComplexObjectDeserializations {
+
+
+        @Path("xml")
+        SimpleXmlSomeData someDataGuessed(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Consumes("application/xml")
+        SimpleXmlSomeData someDataForced(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("xmls")
+        @ResponseHandler(SimpleXmlSomeDatasResponseHandler.class)
+        SimpleXmlSomeData[] someDatas(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("xmls")
+        @ResponseHandler(SimpleXmlSomeDatasResponseHandler.class)
+        List<SimpleXmlSomeData> someDatas2(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
     }
 }

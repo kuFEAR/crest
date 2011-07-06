@@ -20,6 +20,7 @@
 
 package org.codegist.crest.serializer.jaxb;
 
+import org.codegist.common.io.IOs;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.io.InputStream;
@@ -45,7 +46,11 @@ public class JaxbDeserializer implements Deserializer {
     }
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
-        return jaxb.<T>unmarshal(type, genericType, new InputStreamReader(stream, charset));
+        try {
+            return jaxb.<T>unmarshal(type, genericType, new InputStreamReader(stream, charset));
+        }finally{
+            IOs.close(stream);
+        }
     }
 
 

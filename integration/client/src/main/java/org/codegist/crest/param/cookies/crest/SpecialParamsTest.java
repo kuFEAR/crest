@@ -20,17 +20,14 @@
 
 package org.codegist.crest.param.cookies.crest;
 
-import org.codegist.crest.annotate.*;
-import org.codegist.crest.model.BunchOfData;
-import org.codegist.crest.model.Data;
-import org.codegist.crest.param.cookies.common.ISerializersTest;
+import org.codegist.crest.annotate.CookieParam;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.cookies.common.ISpecialParamsTests;
-import org.codegist.crest.serializer.BunchOfDataSerializer;
-import org.codegist.crest.serializer.DataSerializer;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collection;
 
 /**
  * @author laurent.gilles@codegist.org

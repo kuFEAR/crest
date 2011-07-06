@@ -62,7 +62,6 @@ public abstract class HttpParamProcessor {
             Collection<Pair> pairs = new ArrayList<Pair>();
             boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
             for(Object value : param.getValue()){
-                if(value == null) continue;
                 String serializedValue = param.getConfig().getSerializer().serialize(value, charset);
                 pairs.add(new Pair(param.getConfig().getName(), serializedValue, charset, isEncoded));
             }
@@ -79,7 +78,6 @@ public abstract class HttpParamProcessor {
             boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
             boolean first = true;
             for(Object value : param.getValue()){
-                if(value == null) continue;
                 String serializedValue = param.getConfig().getSerializer().serialize(value, charset);
                 if(!first) {
                     sb.append(separator);

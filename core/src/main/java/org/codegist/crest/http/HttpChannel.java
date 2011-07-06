@@ -20,15 +20,14 @@
 
 package org.codegist.crest.http;
 
-import org.codegist.common.lang.Disposable;
-
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface HttpChannel extends Disposable {
+public interface HttpChannel {
 
     void setSocketTimeout(int timeout) throws IOException;
 
@@ -46,7 +45,7 @@ public interface HttpChannel extends Disposable {
 
     Response send() throws IOException;
 
-    interface Response extends Disposable {
+    interface Response extends Closeable {
 
         int getStatusCode() throws IOException;
 

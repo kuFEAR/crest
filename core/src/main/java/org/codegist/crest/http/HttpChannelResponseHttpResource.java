@@ -61,8 +61,8 @@ class HttpChannelResponseHttpResource implements HttpResource {
         return !zipped ? response.getStream() : new GZIPInputStream(response.getStream());
     }
 
-    public void release() throws IOException {
-        response.dispose();
+    public void close() throws IOException {
+        response.close();
     }
 
     private static final class ContentType {

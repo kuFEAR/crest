@@ -20,7 +20,10 @@
 
 package org.codegist.crest.server.stubs.params.forms;
 
-import javax.ws.rs.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 import static org.codegist.crest.server.utils.ToStrings.string;

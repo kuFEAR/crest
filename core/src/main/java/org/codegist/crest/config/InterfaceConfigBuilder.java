@@ -1,7 +1,7 @@
 package org.codegist.crest.config;
 
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.EntityWriter;
+import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
@@ -20,10 +20,6 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
     private final Map<Method, MethodConfigBuilder> builderCache;
     private String encoding;
 
-    // todo can we do without it ?
-    public InterfaceConfigBuilder() {
-        this(null,null);
-    }
     /**
      * Given properties map can contains user-defined default values, that override interface predefined defauts.
      *

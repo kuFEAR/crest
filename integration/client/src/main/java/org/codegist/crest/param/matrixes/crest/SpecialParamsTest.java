@@ -20,7 +20,10 @@
 
 package org.codegist.crest.param.matrixes.crest;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.MatrixParam;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.matrixes.common.ISpecialParamsTests;
 
 import java.io.InputStream;

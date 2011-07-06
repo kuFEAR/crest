@@ -20,24 +20,22 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.RequestContext;
 
 /**
  * Error handler gets invoked when an exception occurs during the request firing.
  * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
- * @see org.codegist.crest.InterfaceContext#getProperties()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface ErrorHandler {
 
     /**
-     * @param context Current response context. Inner HttpResponse if not guaranteed to be available as an error could have occured during request generation lifecycle step.
      * @param e       Exception occured
      * @param <T>     Expected return type
      * @return any value of the expected error type when exception is ignored
      * @throws Exception Any thrown exception while be delegated to the client using the relative rest interface.
      * @see ErrorHandler
      */
-    <T> T handle(ResponseContext context, Exception e) throws Exception;
+    <T> T handle(RequestContext requestContext, Exception e) throws Exception;
 
 }

@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.common.collect.Maps;
+import org.codegist.common.io.IOs;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.serializer.Deserializer;
 
@@ -60,6 +61,8 @@ public class SimpleXmlDeserializer implements Deserializer {
             return serializer.read(type, new InputStreamReader(stream, charset), strict);
         } catch (Exception e) {
             throw CRestException.handle(e);
+        } finally {
+            IOs.close(stream);
         }
     }
 

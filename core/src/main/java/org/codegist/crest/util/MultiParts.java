@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.util;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
@@ -59,6 +59,7 @@ public final class MultiParts {
     public static boolean hasMultiPart(Map<String,Object> metadatas){
         return metadatas != null && metadatas.containsKey(MULTIPART_FLAG);
     }
+    
     public static boolean hasMultiPart(HttpParam param){
         return hasMultiPart(param.getConfig().getMetaDatas());
     }

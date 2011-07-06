@@ -23,10 +23,9 @@ package org.codegist.crest.http;
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.ToStringBuilder;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.Charset;
 
 /**
@@ -37,7 +36,7 @@ import java.nio.charset.Charset;
  *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpResponse {
+public class HttpResponse implements Closeable {
 
     private final HttpRequest request;
     private final InputStream inputStream;
@@ -51,14 +50,6 @@ public class HttpResponse {
         this.statusCode = statusCode;
         this.resource = resource;
         this.inputStream = new HttpResourceInputStream(resource);
-    }
-
-    public Reader asReader() throws IllegalStateException, IOException {
-        if (inputStream == null) return null;
-        if (responseString != null) {
-            throw new IllegalStateException("Stream as already been consumed");
-        }
-        return new InputStreamReader(inputStream, resource.getCharset());
     }
 
     public InputStream asStream() {

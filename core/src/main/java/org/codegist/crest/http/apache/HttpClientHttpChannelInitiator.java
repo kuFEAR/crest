@@ -18,10 +18,9 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.http;
+package org.codegist.crest.http.apache;
 
-import org.apache.http.*;
-import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.ClientConnectionManager;
@@ -31,23 +30,19 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.codegist.common.io.EmptyInputStream;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Objects;
-import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.http.HttpChannel;
+import org.codegist.crest.http.HttpChannelInitiator;
+import org.codegist.crest.http.HttpMethod;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ProxySelector;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -94,6 +89,7 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
     public static HttpChannelInitiator newHttpChannelInitiator() {
         return newHttpChannelInitiator(Collections.<String, Object>emptyMap());
     }
+    
     public static HttpChannelInitiator newHttpChannelInitiator(Map<String, Object> customProperties) {
         int concurrencyLevel = Objects.defaultIfNull((Integer) customProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), 1);
         return newHttpChannelInitiator(concurrencyLevel, concurrencyLevel);
@@ -128,147 +124,6 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
 
     public void dispose() {
         client.getConnectionManager().shutdown();
-    }
-
-
-
-
-
-    private static class HttpClientHttpChannel implements HttpChannel, Disposable {
-
-        private static final Logger LOGGER = Logger.getLogger(HttpClientHttpChannel.class);
-        private final HttpClient client;
-        private final HttpUriRequest request;
-        private volatile Response response;
-
-        private HttpClientHttpChannel(HttpClient client, HttpUriRequest request){
-            this.request = request;
-            this.client = client;
-        }
-
-        public void setConnectionTimeout(int timeout) throws IOException {
-            HttpConnectionParams.setConnectionTimeout(request.getParams(), timeout);
-        }
-
-        public void setSocketTimeout(int timeout) throws IOException  {
-            HttpConnectionParams.setSoTimeout(request.getParams(), timeout);
-        }
-
-        public void setHeader(String name, String value) throws IOException  {
-            request.setHeader(name, value);
-        }
-
-        public void addHeader(String name, String value) throws IOException  {
-            request.addHeader(name, value);
-        }
-
-        public void setContentType(String value) throws IOException {
-            setHeader("Content-Type", value);
-        }
-
-        public void setAccept(String value) throws IOException {
-            setHeader("Accept", value);
-        }
-
-        public void writeEntityWith(HttpEntityWriter httpEntityWriter)  throws IOException {
-            ((HttpEntityEnclosingRequest) request).setEntity(new HttpEntityWriterHttpEntity(httpEntityWriter));
-        }
-
-        public Response send()  throws IOException {
-            response = new HttpClientResponse(request, client.execute(request));
-            return response;
-        }
-
-
-        public void dispose() {
-            response.dispose();
-        }
-
-        private static class HttpClientResponse implements Response {
-
-            private final HttpUriRequest request;
-            private final org.apache.http.HttpResponse response;
-
-            private HttpClientResponse(HttpUriRequest request, HttpResponse response) {
-                this.request = request;
-                this.response = response;
-            }
-
-            public InputStream getStream() throws IOException  {
-                HttpEntity entity = response.getEntity();
-                return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
-            }
-
-            public String getContentType() {
-                Header header = response.getFirstHeader("Content-Type");
-                if(header != null) {
-                    return header.getValue();
-                }else{
-                    return null;
-                }
-            }
-
-            public String getContentEncoding() {
-                Header header = response.getFirstHeader("Content-Encoding");
-                if(header != null) {
-                    return header.getValue();
-                }else{
-                    return null;
-                }
-            }
-
-            public int getStatusCode() throws IOException {
-                return response.getStatusLine().getStatusCode();
-            }
-
-            public String getStatusMessage() throws IOException {
-                return response.getStatusLine().getReasonPhrase();
-            }
-
-            public void dispose() {
-                try {
-                if(response.getEntity() != null) {
-                        response.getEntity().consumeContent();
-                    }
-
-                } catch (IOException e) {
-                    LOGGER.warn(e, "Failed to consume content for request %s", request);
-                } finally {
-                    request.abort();
-                }
-            }
-        }
-
-        private class HttpEntityWriterHttpEntity extends AbstractHttpEntity {
-
-            private final HttpEntityWriter writer;
-
-            private HttpEntityWriterHttpEntity(HttpEntityWriter writer) {
-                this.writer = writer;
-            }
-
-            public boolean isRepeatable() {
-                return false;
-            }
-
-            public long getContentLength() {
-                return writer.getContentLength();
-            }
-
-            public InputStream getContent() throws IOException, IllegalStateException {
-                throw new UnsupportedOperationException();
-            }
-
-            public void writeTo(OutputStream outstream) throws IOException {
-                writer.writeEntityTo(outstream);
-            }
-
-            public boolean isStreaming() {
-                return true;
-            }
-        }
-
-
     }
 
 }

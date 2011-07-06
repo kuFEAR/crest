@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.entity;
 
 import org.codegist.common.lang.Validate;
 import org.codegist.crest.http.HttpParam;

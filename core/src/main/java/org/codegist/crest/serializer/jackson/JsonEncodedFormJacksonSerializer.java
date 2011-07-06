@@ -41,43 +41,57 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
         this.jackson = JacksonProvider.createSerializer(config);
     }
 
-    // todo clean that....
     public void serialize(List<HttpParam> value, Charset charset, OutputStream out) {
         try {
-            Map<String, Object> map = new LinkedHashMap<String, Object>();
-            for(HttpParam p : value){
-                if(areAllNull(p.getValue())) continue;
-
-                String key = p.getConfig().getName();
-                Object existing = map.get(key);
-                if(existing == null) {
-                    map.put(p.getConfig().getName(), p.getValue().size() == 1 ? p.getValue().iterator().next() : p.getValue());
-                }else{
-                    if(existing instanceof Collection) {
-                        if(p.getValue().size() == 1) {
-                            ((Collection)existing).add(p.getValue().iterator().next());
-                        }   else{
-                            ((Collection)existing).addAll(p.getValue());
-                        }
-                    }else{
-                        Object saved = existing;
-                        ArrayList<Object> list = new ArrayList<Object>();
-                        list.add(saved);
-                        if(p.getValue().size() == 1) {
-                            list.add(p.getValue().iterator().next());
-                        }   else{
-                            list.addAll(p.getValue());
-                        }
-                        map.put(key, list);
-                    }
-                }
-            }
-            jackson.writeValue(out, map);
+            JsonObject json = JsonObject.toJsonObject(value);
+            jackson.writeValue(out, json);
         } catch (IOException e) {
             throw CRestException.handle(e);
         }
     }
-    private boolean areAllNull(Collection<Object> objects){
+
+    private static class JsonObject extends LinkedHashMap<String,Object> {
+
+        static JsonObject toJsonObject(List<HttpParam> value){
+            JsonObject json = new JsonObject();
+            for(HttpParam p : value){
+                String name = p.getConfig().getName();
+                for(Object o : p.getValue()){
+                    json.put(name, o);
+                }
+            }
+            return json;
+        }
+
+        @Override
+        public Object put(String key, Object value) {
+            if(containsKey(key)) {
+                Object o = get(key);
+                Object prev = o;
+                Collection<Object> dest;
+                if(o instanceof Collection) {
+                    dest = (Collection<Object>) o;
+                }else{
+                    dest = new ArrayList<Object>();
+                    dest.add(o);
+                    prev = super.put(key, dest);
+                }
+                dest.add(value);
+                return prev;
+            }else{
+                return super.put(key, value);
+            }
+        }
+
+        @Override
+        public void putAll(Map<? extends String, ? extends Object> m) {
+            for(Map.Entry<? extends String, ? extends Object> e : m.entrySet()){
+                put(e.getKey(), e.getValue());
+            }
+        }
+    }
+
+    private static boolean areAllNull(Collection<Object> objects){
         for(Object o : objects){
             if(o != null) return false;
         }

@@ -51,7 +51,7 @@ public class CommonDeserializationsTest<T extends IDeserializations> extends Bas
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
                         .bindDeserializer(new IntDeserializer(), "text/int")
-                        .bindDeserializer(new CommaSeparatedIntDeserializer(), "text/ints")
+                        .bindDeserializer(new CommaSeparatedIntDeserializer(), int[].class)
                         .build());
             }
         })));
@@ -85,6 +85,20 @@ public class CommonDeserializationsTest<T extends IDeserializations> extends Bas
         int[] data = {-56,0,10,22,34};
         int[] actual = toTest.primitives(data);
         assertArrayEquals(data, actual);
+    }
+
+    @Test
+    public void testNothing() throws IOException {
+        String data = "data-nothing";
+        toTest.nothing(data);
+        assertEquals(data, toTest.get());
+    }
+
+    @Test
+    public void testNothing2() throws IOException {
+        String data = "data-nothing2";
+        toTest.nothing2(data);
+        assertEquals(data, toTest.get());
     }
 
 }

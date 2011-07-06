@@ -27,8 +27,8 @@ import org.codegist.common.lang.Validate;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.EntityWriter;
-import org.codegist.crest.UrlEncodedFormEntityWriter;
+import org.codegist.crest.entity.EntityWriter;
+import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
 import org.codegist.crest.http.*;
 
 import javax.crypto.Mac;
@@ -43,8 +43,8 @@ import java.util.Random;
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.codegist.common.net.Urls.parseQueryString;
-import static org.codegist.crest.http.Pairs.join;
-import static org.codegist.crest.http.Pairs.sortByNameAndValues;
+import static org.codegist.crest.util.Pairs.join;
+import static org.codegist.crest.util.Pairs.sortByNameAndValues;
 
 public class OAuthenticatorV1 implements OAuthenticator {
 

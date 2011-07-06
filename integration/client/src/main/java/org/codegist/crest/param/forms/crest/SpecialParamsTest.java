@@ -20,7 +20,10 @@
 
 package org.codegist.crest.param.forms.crest;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.FormParam;
+import org.codegist.crest.annotate.POST;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.forms.common.ISpecialParamsTests;
 
 import java.io.InputStream;

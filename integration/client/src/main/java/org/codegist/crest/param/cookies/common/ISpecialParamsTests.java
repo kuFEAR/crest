@@ -20,16 +20,7 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.codegist.crest.BaseCRestTest;
-import org.junit.runners.Parameterized;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.Collection;
-
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
-import static org.codegist.common.collect.Collections.join;
 import static org.junit.Assert.assertEquals;
 
 /**

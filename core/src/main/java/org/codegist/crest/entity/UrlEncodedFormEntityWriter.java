@@ -18,26 +18,34 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.entity;
 
-import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.http.HttpRequest;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import static org.codegist.crest.util.Pairs.join;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class JsonEntityWriter extends SerializingEntityWriter {
+public class UrlEncodedFormEntityWriter implements EntityWriter {
 
-    private static final String MIME  = "application/form-jsonencoded";
-    private static final String CONTENT_TYPE = "application/json";
-
-    public JsonEntityWriter(Map<String,Object> customProperties) {
-        super(getSerializer(customProperties), CONTENT_TYPE);
+    public String getContentType(HttpRequest request) {
+        return "application/x-www-form-urlencoded; charset=" + request.getEncoding();
     }
 
-    private static Serializer getSerializer(Map<String,Object> customProperties){
-        Registry<String,Serializer> registryMime = (Registry<String,Serializer>) customProperties.get(Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME);
+    public int getContentLength(HttpRequest httpRequest) {
+        return -1;
     }
+
+    public void writeTo(HttpRequest request, OutputStream out) throws IOException {
+        Writer writer = new OutputStreamWriter(out, request.getCharset());
+        join(writer, request.iterateProcessedForms(), '&');
+        writer.flush();
+    }
+
 }

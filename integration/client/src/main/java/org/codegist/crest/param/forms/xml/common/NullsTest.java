@@ -20,8 +20,8 @@
 
 package org.codegist.crest.param.forms.xml.common;
 
-import org.codegist.crest.XmlEntityWriter;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.entity.XmlEntityWriter;
 import org.codegist.crest.param.common.INullsTest;
 import org.junit.runners.Parameterized;
 

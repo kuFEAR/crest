@@ -18,20 +18,21 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.annotate;
+package org.codegist.crest.serializer;
 
-import org.codegist.crest.entity.MultiPartEntityWriter;
+import org.codegist.common.io.IOs;
+import org.codegist.crest.CRestException;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
-@EntityWriter(MultiPartEntityWriter.class)
-public @interface MultiPartEntity {
+public class VoidDeserializer implements Deserializer {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
+        IOs.close(stream);
+        return null;
+    }
 }

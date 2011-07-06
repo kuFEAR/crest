@@ -18,34 +18,19 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest;
+package org.codegist.crest.entity;
 
 import org.codegist.crest.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
-import static org.codegist.crest.http.Pairs.join;
 
-/**
- * @author laurent.gilles@codegist.org
- */
-public class UrlEncodedFormEntityWriter implements EntityWriter {
+public interface EntityWriter {
 
-    public String getContentType(HttpRequest request) {
-        return "application/x-www-form-urlencoded; charset=" + request.getEncoding();
-    }
+    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
 
-    public int getContentLength(HttpRequest httpRequest) {
-        return -1;
-    }
+    String getContentType(HttpRequest request);
 
-    public void writeTo(HttpRequest request, OutputStream out) throws IOException {
-        Writer writer = new OutputStreamWriter(out, request.getCharset());
-        join(writer, request.iterateProcessedForms(), '&');
-        writer.flush();
-    }
-
+    int getContentLength(HttpRequest httpRequest);
 }

@@ -18,7 +18,9 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.http;
+package org.codegist.crest.util;
+
+import org.codegist.crest.http.Pair;
 
 import java.io.IOException;
 import java.io.StringWriter;

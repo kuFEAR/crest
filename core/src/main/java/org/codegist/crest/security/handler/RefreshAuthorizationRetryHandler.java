@@ -24,7 +24,7 @@ import org.codegist.common.lang.Numbers;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.RequestContext;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.http.HttpException;
 import org.codegist.crest.security.Authorization;
@@ -49,7 +49,7 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
         Validate.notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=" + Authorization.class.getName() + ")");
     }
 
-    public boolean retry(ResponseContext response, Exception exception, int retryNumber) {
+    public boolean retry(RequestContext requestContext, Exception exception, int retryNumber) {
         if (retryNumber > max
                 || !(exception instanceof HttpException)
                 || ((HttpException) exception).getResponse().getStatusCode() != 401) {

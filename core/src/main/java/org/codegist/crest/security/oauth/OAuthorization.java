@@ -28,7 +28,7 @@ import org.codegist.crest.security.AuthorizationToken;
 
 import java.util.List;
 
-import static org.codegist.crest.http.Pairs.join;
+import static org.codegist.crest.util.Pairs.join;
 
 /**
  * OAuth authentification manager implementation.

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 public class IntDeserializer implements Deserializer  {
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
         try {
-            return (T) Integer.valueOf(IOs.toString(stream, charset));
+            return (T) Integer.valueOf(IOs.toString(stream, charset, true));
         } catch (IOException e) {
             throw CRestException.handle(e);
         }

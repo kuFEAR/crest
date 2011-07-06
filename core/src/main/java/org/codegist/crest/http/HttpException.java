@@ -20,42 +20,43 @@
 
 package org.codegist.crest.http;
 
+import org.codegist.common.lang.Disposable;
+
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpException extends RuntimeException {
+public class HttpException extends RuntimeException implements Closeable, Disposable {
 
     private final HttpResponse response;
-    private final String responseString;
 
-    public HttpException(Throwable cause) throws IOException {
-        this(null,null,cause);
-    }
     public HttpException(String message, HttpResponse response) throws IOException {
         super(message);
         this.response = response;
-        this.responseString = response.asString();
-    }
-
-    public HttpException(Throwable cause, HttpResponse response) throws IOException {
-        super(cause);
-        this.response = response;
-        this.responseString = response.asString();
-    }
-
-    public HttpException(String message, HttpResponse response, Throwable cause) throws IOException {
-        super(message, cause);
-        this.response = response;
-        this.responseString = response.asString();
     }
 
     public HttpResponse getResponse() {
         return response;
     }
 
-    public String getResponseString() {
-        return responseString;
+    public void dispose() {
+        close();
+    }
+
+    public void close() {
+        if(response != null) {
+            response.close();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            close();
+        }finally{
+            super.finalize();
+        }
     }
 }

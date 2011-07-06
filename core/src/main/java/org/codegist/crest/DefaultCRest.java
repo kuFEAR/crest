@@ -27,18 +27,17 @@ import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.http.HttpException;
 import org.codegist.crest.http.HttpRequest;
 import org.codegist.crest.http.HttpRequestExecutor;
-import org.codegist.crest.http.HttpResponse;
 import org.codegist.crest.serializer.DeserializationManager;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+
+import static org.codegist.crest.util.Params.isNull;
 
 /**
  * <p>On top of the behavior described in {@link org.codegist.crest.CRest}, this implementation adds :
@@ -68,17 +67,17 @@ public class DefaultCRest extends CRest implements Disposable {
     @SuppressWarnings("unchecked")
     public <T> T build(Class<T> interfaze) throws CRestException {
         try {
-            return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new RestInterfacer(interfaze), new Class[]{interfaze});
+            return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new CRestInvocationHandler(interfaze), new Class[]{interfaze});
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
     }
 
-    class RestInterfacer<T> extends ObjectMethodsAwareInvocationHandler {
+    class CRestInvocationHandler<T> extends ObjectMethodsAwareInvocationHandler {
 
         private final InterfaceConfig interfaceConfig;
 
-        private RestInterfacer(Class<T> interfaze) {
+        private CRestInvocationHandler(Class<T> interfaze) {
             this.interfaceConfig = configFactory.newConfig(interfaze);
         }
 
@@ -94,74 +93,51 @@ public class DefaultCRest extends CRest implements Disposable {
         private Object doInvoke(Method method, Object[] args) throws Throwable {
             MethodConfig mc = interfaceConfig.getMethodConfig(method);
             RequestContext requestContext = new DefaultRequestContext(interfaceConfig, method, args);
+            ResponseContext responseContext;
 
+            try {
+                responseContext = fire(requestContext);
+            }catch(Exception e){
+                try {
+                    return mc.getErrorHandler().handle(requestContext, e);
+                } finally {
+                    Disposables.dispose(e);
+                }
+            }
+
+            try {
+                return mc.getResponseHandler().handle(responseContext);
+            } catch (Exception e) {
+                Disposables.dispose(responseContext.getResponse());
+                throw CRestException.handle(e);
+            }
+        }
+
+        private ResponseContext fire(RequestContext requestContext) throws Exception {
+            RetryHandler retryHandler = requestContext.getMethodConfig().getRetryHandler();
             int attemptCount = 0;
             ResponseContext responseContext = null;
-            Exception exception;
-            RetryHandler retryHandler = mc.getRetryHandler();
+            Exception exception = null;
             do {
-                if(responseContext != null && responseContext.getResponse() != null) {
-                    responseContext.getResponse().close();
+                if(exception != null && exception instanceof HttpException) {
+                    ((HttpException) exception).close();
                 }
                 exception = null;
                 // build the request, can throw exception but that should not be part of the retry policy
                 HttpRequest request = buildRequest(requestContext);
                 try {
                     // doInvoke the request
-                    HttpResponse response = httpRequestExecutor.execute(request);
-                    // wrap the response in response context
-                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, response);
-                } catch (HttpException e) {
-                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, e.getResponse());
-                    exception = e;
+                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, httpRequestExecutor.execute(request));
                 } catch (Exception e) {
-                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, null);
                     exception = e;
                 }
                 // loop until an exception has been thrown and the retry handle ask for retry
-            }while(exception != null && retryHandler.retry(responseContext, exception, ++attemptCount));
+            }while(responseContext == null && retryHandler.retry(requestContext, exception, ++attemptCount));
 
             if (exception != null) {
-                // An exception has been thrown during request execution, invoke the error handler and return
-                return mc.getErrorHandler().handle(responseContext, exception);
-            }else{
-                // all good, handle the response
-                return handle(responseContext);
-            }
-        }
-
-        /**
-         * Response handling base implementation, returns raw response if InputStream or Reader is the requested return type.
-         * <p>Otherwise delegate response handling to the given response handler.
-         * @param responseContext current response context
-         * @return response
-         */
-        private Object handle(ResponseContext responseContext) throws IOException {
-            boolean closeResponse = false;
-            MethodConfig mc = responseContext.getRequestContext().getMethodConfig();
-            HttpResponse response = responseContext.getResponse();
-            Class<?> returnTypeClass = mc.getMethod().getReturnType();
-            try {
-                if (InputStream.class.equals(returnTypeClass)) {
-                    // If InputStream return type, then return raw response ()
-                    return response.asStream();
-                } else if (Reader.class.equals(returnTypeClass)) {
-                    // If Reader return type, then return raw response
-                    return response.asReader();
-                } else {
-                    // otherwise, delegate to response handler
-                    return mc.getResponseHandler().handle(responseContext);
-                }
-            } catch (RuntimeException e) {
-                closeResponse = true;
-                throw e;
-            } catch (IOException e) {
-                closeResponse = true;
-                throw e;
-            } finally {
-                if (closeResponse && response != null) {
-                    response.close();
-                }
+                throw exception;
+            } else {
+                return responseContext;
             }
         }
 
@@ -184,7 +160,12 @@ public class DefaultCRest extends CRest implements Disposable {
                     .withParams(mc.getExtraParams());
 
             for (int i = 0; i < mc.getParamCount(); i++) {
-                builder.addParam(mc.getParamConfig(i), requestContext.getValue(i));
+                Object value = requestContext.getValue(i);
+                ParamConfig pc = mc.getParamConfig(i);
+                if(isNull(value) && pc.getDefaultValue() == null) {
+                    continue;
+                }
+                builder.addParam(mc.getParamConfig(i), value);
             }
 
             // Notify interceptor
@@ -196,6 +177,9 @@ public class DefaultCRest extends CRest implements Disposable {
 
 
     public void dispose() {
+        Disposables.dispose(proxyFactory);
         Disposables.dispose(httpRequestExecutor);
+        Disposables.dispose(configFactory);
+        Disposables.dispose(deserializationManager);
     }
 }

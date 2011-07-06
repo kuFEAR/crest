@@ -21,7 +21,7 @@
 package org.codegist.crest;
 
 import org.codegist.crest.http.DefaultHttpRequestExecutor;
-import org.codegist.crest.http.HttpClientHttpChannelInitiator;
+import org.codegist.crest.http.apache.HttpClientHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthenticator;
 import org.codegist.crest.security.oauth.OAuthenticatorV1;

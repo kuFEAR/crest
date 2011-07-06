@@ -21,15 +21,20 @@
 package org.codegist.crest.deserialization.crest;
 
 import org.codegist.crest.CRestBuilder;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
+import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.handler.JaxbSomeDatasResponseHandler;
+import org.codegist.crest.model.jaxb.JaxbSomeData;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ComplexObjectDeserializationsWithJaxbTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithJaxb> {
+public class ComplexObjectDeserializationsWithJaxbTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithJaxbTest.ComplexObjectDeserializationsWithJaxb> {
 
     public ComplexObjectDeserializationsWithJaxbTest(CRestHolder crest) {
         super(crest, ComplexObjectDeserializationsWithJaxb.class);
@@ -45,4 +50,40 @@ public class ComplexObjectDeserializationsWithJaxbTest extends CommonComplexObje
     }
 
 
+    /**
+     * @author laurent.gilles@codegist.org
+     */
+    @EndPoint("{crest.server.end-point}")
+    @Path("deserialization/complexobject")
+    @GET
+    public static interface ComplexObjectDeserializationsWithJaxb extends IComplexObjectDeserializations {
+
+
+        @Path("xml")
+        JaxbSomeData someDataGuessed(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Consumes("application/xml")
+        JaxbSomeData someDataForced(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("xmls")
+        @ResponseHandler(JaxbSomeDatasResponseHandler.class)
+        JaxbSomeData[] someDatas(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("xmls")
+        @ResponseHandler(JaxbSomeDatasResponseHandler.class)
+        List<JaxbSomeData> someDatas2(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+    }
 }

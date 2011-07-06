@@ -21,15 +21,19 @@
 package org.codegist.crest.deserialization.crest;
 
 import org.codegist.crest.CRestBuilder;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
+import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.model.jackson.JacksonSomeData;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ComplexObjectDeserializationsWithJacksonTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithJackson> {
+public class ComplexObjectDeserializationsWithJacksonTest extends CommonComplexObjectDeserializationsTest<ComplexObjectDeserializationsWithJacksonTest.ComplexObjectDeserializationsWithJackson> {
 
     public ComplexObjectDeserializationsWithJacksonTest(CRestHolder crest) {
         super(crest, ComplexObjectDeserializationsWithJackson.class);
@@ -45,4 +49,38 @@ public class ComplexObjectDeserializationsWithJacksonTest extends CommonComplexO
     }
 
 
+    /**
+     * @author laurent.gilles@codegist.org
+     */
+    @EndPoint("{crest.server.end-point}")
+    @Path("deserialization/complexobject")
+    @GET
+    public static interface ComplexObjectDeserializationsWithJackson extends IComplexObjectDeserializations {
+
+        @Path("json")
+        JacksonSomeData someDataGuessed(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Consumes("application/json")
+        JacksonSomeData someDataForced(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("jsons")
+        JacksonSomeData[] someDatas(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+        @Path("jsons")
+        List<JacksonSomeData> someDatas2(
+                @QueryParam("date-format") String dateFormat,
+                @QueryParam("boolean-true") String booleanTrue,
+                @QueryParam("boolean-false") String booleanFalse);
+
+
+    }
 }
