@@ -33,6 +33,8 @@ import org.codegist.crest.security.Authorization;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.codegist.common.lang.Validate.notNull;
+
 /**
  * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
  * <p>Requires an {@link org.codegist.crest.security.Authorization} instance to be present in the custom properties.
@@ -48,7 +50,7 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
     public RefreshAuthorizationRetryHandler(Map<String, Object> crestProperties) {
         this.max = Numbers.parse((String) crestProperties.get(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX_ATTEMPTS);
         authorization = (Authorization) crestProperties.get(Authorization.class.getName());
-        Validate.notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=" + Authorization.class.getName() + ")");
+        notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=%s)", Authorization.class.getName());
     }
 
     public boolean retry(RequestException exception, int retryNumber) {

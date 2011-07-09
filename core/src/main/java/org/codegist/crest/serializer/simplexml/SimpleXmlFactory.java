@@ -48,7 +48,7 @@ class SimpleXmlFactory {
         return create(cfg, SERIALIZER_PREFIX);
     }
 
-    Serializer createDeserializer(Map<String,Object> cfg){
+    static Serializer createDeserializer(Map<String,Object> cfg){
         return create(cfg, DESERIALIZER_PREFIX);
     }
 

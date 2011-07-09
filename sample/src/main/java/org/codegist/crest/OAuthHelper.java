@@ -25,10 +25,15 @@ import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthenticator;
 import org.codegist.crest.security.oauth.OAuthenticatorV1;
+import org.codegist.crest.serializer.DeserializationManager;
+import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.serializer.StringDeserializer;
+import org.codegist.crest.util.Registry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +42,7 @@ import java.util.Map;
  */
 public class OAuthHelper {
 
+    // TODO broken, fix it
     public static void main(String[] args) throws IOException {
         // Flickr
         OAuthHelper.doAccessTokenRetrievalWorkflow(
@@ -70,7 +76,7 @@ public class OAuthHelper {
         config.put(OAuthenticatorV1.CONFIG_TOKEN_REQUEST_URL, requestUrl);
         config.put(OAuthenticatorV1.CONFIG_TOKEN_ACCESS_URL, accessUrl);
 
-        OAuthenticator oauth = new OAuthenticatorV1(new HttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator()), consumerOAuthToken, config);
+        OAuthenticator oauth = new OAuthenticatorV1(new HttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator(), getStringDeserializationManager()), consumerOAuthToken, config);
 
         OAuthToken tok = oauth.getRequestToken();
 
@@ -80,5 +86,15 @@ public class OAuthHelper {
         System.out.println("Input verifier :");
         OAuthToken accessOAuthToken = oauth.getAccessToken(tok, br.readLine());
         System.out.println("Token  =" + accessOAuthToken);
+    }
+
+    private static DeserializationManager getStringDeserializationManager(){
+
+        Registry<String, Deserializer> mimeDeserializers = new Registry.Builder<String, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class).build();
+        Registry<Class<?>, Deserializer> classDeserializers = new Registry.Builder<Class<?>, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class)
+                .defaultAs(new StringDeserializer())
+                .build();
+
+        return new DeserializationManager(mimeDeserializers, classDeserializers);
     }
 }

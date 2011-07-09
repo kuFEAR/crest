@@ -145,14 +145,14 @@ public class OAuthenticatorV1 implements OAuthenticator {
     }
 
     public OAuthToken getRequestToken() {
-        Validate.notBlank(this.requestTokenUrl, "No io token url as been configured, please pass it in the config map, key=" + CONFIG_TOKEN_REQUEST_URL);
+        Validate.notBlank(this.requestTokenUrl, "No io token url as been configured, please pass it in the config map, key=%s", CONFIG_TOKEN_REQUEST_URL);
         OAuthToken token = getAccessToken(IGNORE_POISON, this.requestTokenUrl, requestTokenMeth, pair("oauth_callback", callback));
         LOGGER.debug("Request token token=%s", token);
         return token;
     }
 
     public OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) {
-        Validate.notBlank(this.accessTokenUrl, "No access token url as been configured, please pass it in the config map, key=" + CONFIG_TOKEN_ACCESS_URL);
+        Validate.notBlank(this.accessTokenUrl, "No access token url as been configured, please pass it in the config map, key=%s", CONFIG_TOKEN_ACCESS_URL);
 
         OAuthToken token = getAccessToken(requestOAuthToken, this.accessTokenUrl, this.accessTokenMeth, pair("oauth_verifier", verifier));
         LOGGER.debug("Received access token=%s", token);
@@ -160,7 +160,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     }
 
     public OAuthToken refreshAccessToken(OAuthToken requestOAuthToken, Pair... extrasOAuthParams) {
-        Validate.notBlank(this.refreshAccessTokenUrl, "No refresh access token url as been configured, please pass it in the config map, key=" + CONFIG_TOKEN_ACCESS_REFRESH_URL);
+        Validate.notBlank(this.refreshAccessTokenUrl, "No refresh access token url as been configured, please pass it in the config map, key=%s", CONFIG_TOKEN_ACCESS_REFRESH_URL);
 
         OAuthToken token = getAccessToken(requestOAuthToken, this.refreshAccessTokenUrl, this.refreshAccessTokenMeth, extrasOAuthParams);
         LOGGER.debug("Refreshed access token=%s", token);

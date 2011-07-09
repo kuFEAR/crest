@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.codegist.common.lang.Validate.isTrue;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -144,7 +146,7 @@ public class RegexPathTemplate implements PathTemplate {
             }
         }
         String url = baseUrl.toString();
-        Validate.isTrue(!Urls.hasQueryString(url), "Given url contains a query string:" + url);
+        isTrue(!Urls.hasQueryString(url), "Given url contains a query string: %s", url);
         return new RegexPathTemplate(url, templates);
     }
 
