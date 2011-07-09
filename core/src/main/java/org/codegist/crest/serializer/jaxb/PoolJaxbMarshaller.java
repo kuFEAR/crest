@@ -38,11 +38,11 @@ class PooledJaxb implements Jaxb {
     private final BlockingQueue<Jaxb> pool;
     private final long maxWait;
 
-    public PooledJaxb(Map<String,Object> customProperties, JAXBContext jaxbContext, int poolSize, long maxWait) {
+    public PooledJaxb(Map<String,Object> crestProperties, JAXBContext jaxbContext, int poolSize, long maxWait) {
         this.maxWait = maxWait;
         this.pool = new ArrayBlockingQueue<Jaxb>(poolSize);
         for (int i = 0; i < poolSize; i++) {
-            this.pool.add(new SimpleJaxb(customProperties, jaxbContext));
+            this.pool.add(new SimpleJaxb(crestProperties, jaxbContext));
         }
     }
 

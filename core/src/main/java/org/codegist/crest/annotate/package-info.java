@@ -33,8 +33,8 @@
  * }
  * CRest crest = new CRestBuilder().build();
  * FooInterface fooInstance = crest.build(FooInterface.class);
- * MyModel m = fooInstance.getModel(5); // a GET request is fired to http://my-server/rest/model/5, response is automatically marshalled and returned as an object.
- * MyModel m2 = fooInstance.get(); // a GET request is fired to http://my-server/rest, response is automatically marshalled and returned as an object.
+ * MyModel m = fooInstance.getModel(5); // a GET io is fired to http://my-server/rest/model/5, response is automatically marshalled and returned as an object.
+ * MyModel m2 = fooInstance.get(); // a GET io is fired to http://my-server/rest, response is automatically marshalled and returned as an object.
  * </pre>
  * </code>
  * <br/>

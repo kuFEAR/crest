@@ -23,8 +23,11 @@ package org.codegist.crest.param.paths.common;
 import org.codegist.crest.annotate.*;
 import org.junit.Test;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.codegist.crest.param.common.ICollectionsTest.Tests.DefaultLists;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -52,8 +55,8 @@ public class ICollectionsTest<T extends ICollectionsTest.ICollections> extends o
     }
 
     @Override
-    @Test
-    public void testDefaultLists() {
-        // "N/A - Path params do not support list by default")
+    public EnumSet<Tests> ignores() {
+        return EnumSet.of(DefaultLists);
     }
+
 }

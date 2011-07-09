@@ -46,11 +46,11 @@
 //    public void testOAuthentificationManagerSign(){
 //        OAuthenticator authenticator = mock(OAuthenticator.class);
 //        Token accessToken = mock(Token.class);
-//        HttpRequest.Builder request = mock(HttpRequest.Builder.class);
+//        HttpRequest.Builder io = mock(HttpRequest.Builder.class);
 //        Pair<String,String>[] properties = (Pair<String,String>[]) new Pair[]{mock(Pair.class), mock(Pair.class)};
 //        OAuthentificationManager manager = new OAuthentificationManager(authenticator, accessToken);
-//        manager.sign(request, properties);
-//        verify(authenticator).sign(accessToken, request, properties);
+//        manager.sign(io, properties);
+//        verify(authenticator).sign(accessToken, io, properties);
 //    }
 //    @Test
 //    public void testOAuthentificationManagerRefresh(){

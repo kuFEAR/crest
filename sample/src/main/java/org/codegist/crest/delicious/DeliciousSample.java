@@ -22,7 +22,6 @@ package org.codegist.crest.delicious;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
-import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.delicious.model.Posts;
 import org.codegist.crest.delicious.service.Delicious;
 
@@ -59,11 +58,10 @@ public class DeliciousSample implements Runnable {
         LOG.debug("accessTokenSecret = %s", accessTokenSecret);
         LOG.debug("sessionHandle     = %s", sessionHandle);
 
-        CRest crest = new CRestBuilder()
-                .setProperty(OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
-                .authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret, singletonMap("oauth_session_handle", sessionHandle))
-                .booleanFormat("yes", "no")
-                .build();
+        CRest crest = CRest.oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, singletonMap("oauth_session_handle", sessionHandle))
+                           .setProperty(OAUTH_ACCESS_TOKEN_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
+                           .booleanFormat("yes", "no")
+                           .build();
 
         /* Build service instance */
         Delicious delicious = crest.build(Delicious.class);

@@ -28,7 +28,7 @@ import org.codegist.crest.request.common.Requests;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/option")
+@Path("io/option")
 @OPTIONS
 public interface Options extends Requests {
 

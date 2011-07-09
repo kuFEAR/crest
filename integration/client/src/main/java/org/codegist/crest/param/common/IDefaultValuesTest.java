@@ -25,10 +25,14 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
+import static org.codegist.crest.param.common.IDefaultValuesTest.Tests.DefaultParams;
+import static org.codegist.crest.param.common.IDefaultValuesTest.Tests.DefaultValue;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -44,8 +48,21 @@ public abstract class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultVa
         return crest(byRestServices());
     }
 
+    public enum Tests {
+        DefaultValue,DefaultParams
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
+    }
+
     @Test
     public void testDefaultValue() {
+        assumeThatTestIsEnabled(DefaultValue);
         String actual = toTest.value(null, null);
         assertDefaultValue("default-p1", 123, actual);
     }
@@ -56,6 +73,7 @@ public abstract class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultVa
 
     @Test
     public void testDefaultParams() {
+        assumeThatTestIsEnabled(DefaultParams);
         String p1 = "p1";
         String actual = toTest.param(p1);
         assertParamsValue("p1-val", p1, "p2-val", "p3-val", actual);

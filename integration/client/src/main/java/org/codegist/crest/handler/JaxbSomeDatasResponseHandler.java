@@ -22,7 +22,7 @@ package org.codegist.crest.handler;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.io.Response;
 import org.codegist.crest.model.jaxb.JaxbSomeData;
 import org.codegist.crest.model.jaxb.JaxbSomeDatas;
 
@@ -33,13 +33,13 @@ import java.util.Collection;
  * @author laurent.gilles@codegist.org
  */
 public class JaxbSomeDatasResponseHandler implements ResponseHandler {
-    public Object handle(ResponseContext responseContext) throws CRestException, IOException {
+    public Object handle(Response response) throws CRestException, IOException {
 
-        if(responseContext.getExpectedType().isArray() && responseContext.getExpectedType().getComponentType().equals(JaxbSomeData.class)){
-            JaxbSomeDatas datas = responseContext.deserializeTo(JaxbSomeDatas.class, JaxbSomeDatas.class);
+        if(response.getExpectedType().isArray() && response.getExpectedType().getComponentType().equals(JaxbSomeData.class)){
+            JaxbSomeDatas datas = response.deserializeTo(JaxbSomeDatas.class);
             return datas.getSomeData().toArray(new JaxbSomeData[datas.getSomeData().size()]);
-        }else if (Collection.class.isAssignableFrom(responseContext.getExpectedType()) && Types.getComponentClass(responseContext.getExpectedType(), responseContext.getExpectedGenericType()).equals(JaxbSomeData.class)){
-            JaxbSomeDatas datas = responseContext.deserializeTo(JaxbSomeDatas.class, JaxbSomeDatas.class);
+        }else if (Collection.class.isAssignableFrom(response.getExpectedType()) && Types.getComponentClass(response.getExpectedType(), response.getExpectedGenericType()).equals(JaxbSomeData.class)){
+            JaxbSomeDatas datas = response.deserializeTo(JaxbSomeDatas.class);
             return datas.getSomeData();
         }else{
             throw new IllegalStateException("Should not be here");

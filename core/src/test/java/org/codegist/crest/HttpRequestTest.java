@@ -38,21 +38,21 @@
 //
 //    @Test
 //    public void testHttpRequestUriNoParams() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
-//        HttpRequest request = new HttpRequest.Builder("http://127.0.0.1:8080/test").build();
-//        assertEquals(new URL("http://127.0.0.1:8080/test"), request.getUrl());
-//        assertEquals(new URL("http://127.0.0.1:8080/test"), request.getUrl(true));
-//        assertEquals(("http://127.0.0.1:8080/test"), request.getUrlString(true));
-//        assertEquals(new URL("http://127.0.0.1:8080/test"), request.getUrl(false));
-//        assertEquals(("http://127.0.0.1:8080/test"), request.getUrlString(false));
+//        HttpRequest io = new HttpRequest.Builder("http://127.0.0.1:8080/test").build();
+//        assertEquals(new URL("http://127.0.0.1:8080/test"), io.getUrl());
+//        assertEquals(new URL("http://127.0.0.1:8080/test"), io.getUrl(true));
+//        assertEquals(("http://127.0.0.1:8080/test"), io.getUrlString(true));
+//        assertEquals(new URL("http://127.0.0.1:8080/test"), io.getUrl(false));
+//        assertEquals(("http://127.0.0.1:8080/test"), io.getUrlString(false));
 //    }
 //    @Test
 //    public void testHttpRequestUriWithParams() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
-//        HttpRequest request = new HttpRequest.Builder("http://127.0.0.1:8080/test").addQueryParam("p2","v2").build();
-//        assertEquals(new URL("http://127.0.0.1:8080/test"), request.getUrl());
-//        assertEquals(new URL("http://127.0.0.1:8080/test?p2=v2"), request.getUrl(true));
-//        assertEquals(("http://127.0.0.1:8080/test?p2=v2"), request.getUrlString(true));
-//        assertEquals(new URL("http://127.0.0.1:8080/test"), request.getUrl(false));
-//        assertEquals(("http://127.0.0.1:8080/test"), request.getUrlString(false));
+//        HttpRequest io = new HttpRequest.Builder("http://127.0.0.1:8080/test").addQueryParam("p2","v2").build();
+//        assertEquals(new URL("http://127.0.0.1:8080/test"), io.getUrl());
+//        assertEquals(new URL("http://127.0.0.1:8080/test?p2=v2"), io.getUrl(true));
+//        assertEquals(("http://127.0.0.1:8080/test?p2=v2"), io.getUrlString(true));
+//        assertEquals(new URL("http://127.0.0.1:8080/test"), io.getUrl(false));
+//        assertEquals(("http://127.0.0.1:8080/test"), io.getUrlString(false));
 //    }
 //
 //    private static final String PLACEHOLDERS_URI =  "http://127.0.0.1:8080/{p1}/{p2}/{p1}/test";

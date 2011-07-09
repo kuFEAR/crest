@@ -20,8 +20,8 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.http.DefaultHttpRequestExecutor;
-import org.codegist.crest.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.io.http.HttpRequestExecutor;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthenticator;
 import org.codegist.crest.security.oauth.OAuthenticatorV1;
@@ -70,7 +70,7 @@ public class OAuthHelper {
         config.put(OAuthenticatorV1.CONFIG_TOKEN_REQUEST_URL, requestUrl);
         config.put(OAuthenticatorV1.CONFIG_TOKEN_ACCESS_URL, accessUrl);
 
-        OAuthenticator oauth = new OAuthenticatorV1(new DefaultHttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator()), consumerOAuthToken, config);
+        OAuthenticator oauth = new OAuthenticatorV1(new HttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator()), consumerOAuthToken, config);
 
         OAuthToken tok = oauth.getRequestToken();
 

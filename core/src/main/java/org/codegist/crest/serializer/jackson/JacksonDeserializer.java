@@ -40,11 +40,12 @@ public class JacksonDeserializer implements Deserializer {
     private final ObjectMapper jackson;
 
     public JacksonDeserializer(Map<String, Object> config) {
-        this.jackson = JacksonProvider.createDeserializer(config);
+        this.jackson = JacksonFactory.createDeserializer(config);
     }
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         try {
+
             return jackson.<T>readValue(new InputStreamReader(stream, charset), TypeFactory.type(genericType));
         } catch (IOException e) {
             throw CRestException.handle(e);

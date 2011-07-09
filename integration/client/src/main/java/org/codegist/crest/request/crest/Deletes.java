@@ -28,7 +28,7 @@ import org.codegist.crest.request.common.Requests;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/delete")
+@Path("io/delete")
 @DELETE
 public interface Deletes extends Requests {
 

@@ -33,7 +33,7 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/delete")
+@Path("io/delete")
 public class DeletesStub {
 
     @DELETE

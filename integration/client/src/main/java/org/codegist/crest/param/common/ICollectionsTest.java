@@ -24,15 +24,15 @@ import org.codegist.crest.BaseCRestTest;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.codegist.crest.param.common.ICollectionsTest.Tests.DefaultLists;
+import static org.codegist.crest.param.common.ICollectionsTest.Tests.MergingLists;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -46,10 +46,23 @@ public abstract class ICollectionsTest<T extends ICollectionsTest.ICollections> 
     @Parameterized.Parameters
     public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
+    }         
+
+    public enum Tests {
+        DefaultLists,MergingLists
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
     }
 
     @Test
     public void testDefaultLists() {
+        assumeThatTestIsEnabled(DefaultLists);
         String p11 = "p1-val1", p12 = "my-value";
         boolean p21 = true, p22 = false;
         Integer p31 = 31, p32 = 32;
@@ -72,6 +85,7 @@ public abstract class ICollectionsTest<T extends ICollectionsTest.ICollections> 
 
     @Test
     public void testMergingLists() {
+        assumeThatTestIsEnabled(MergingLists);
         String p1Sep = "(def)";
         String p2Sep = "(p2)";
         String p3Sep = "(p3)";

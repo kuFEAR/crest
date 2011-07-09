@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/delete")
+@Path("io/delete")
 public interface Deletes extends Requests {
 
     @DELETE

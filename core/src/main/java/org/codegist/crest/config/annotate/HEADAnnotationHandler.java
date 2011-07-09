@@ -32,12 +32,12 @@ class HEADAnnotationHandler extends NoOpAnnotationHandler<HEAD> {
 
     @Override
     public void handleInterfaceAnnotation(HEAD annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsHttpMethod(org.codegist.crest.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsHttpMethod(org.codegist.crest.io.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
     @Override
     public void handleMethodAnnotation(HEAD annotation, MethodConfigBuilder builder) {
-        builder.setHttpMethod(org.codegist.crest.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setHttpMethod(org.codegist.crest.io.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
 }

@@ -48,9 +48,9 @@ public abstract class BunchOfData<T> {
     public BunchOfData() {
     }
 
-    public static <T> BunchOfData<T> create(org.codegist.crest.model.Serializer serializer, Date val1, Boolean val2, T val3){
+    public static <T> BunchOfData<T> create(SerializerTypes serializerTypes, Date val1, Boolean val2, T val3){
         String klass;
-        switch(serializer){
+        switch(serializerTypes){
             case JACKSON:
                 klass = "org.codegist.crest.model.jackson.JacksonBunchOfData";
                 break;

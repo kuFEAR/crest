@@ -51,16 +51,55 @@ public abstract class CRest {
         return new CRestBuilder().build();
     }
 
+    public static CRest getHttpClientInstance(){
+        return useHttpClient().build();
+    }
+
+    public static CRest getJaxrsAwareInstance(){
+        return jaxrsAware().build();
+    }
+
     public static CRest getInstance(Map<String,String> placeholders){
-        return new CRestBuilder().setConfigPlaceholders(placeholders).build();
+        return placeholders(placeholders).build();
     }
 
     public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret){
-        return new CRestBuilder().authenticatesWithOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret).build();
+        return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret).build();
+    }
+
+    public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes){
+        return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, accessTokenAttributes).build();
     }
 
     public static CRest getBasicAuthInstance(String username, String password){
-        return new CRestBuilder().authenticatesWithBasic(username, password).build();
+        return basicAuth(username, password).build();
     }
 
+    public static CRestBuilder jaxrsAware(){
+        return new CRestBuilder().jaxrsAware();
+    }
+
+    public static CRestBuilder useHttpClient(){
+        return new CRestBuilder().useHttpClient();
+    }
+
+    public static CRestBuilder placeholder(String name, String value){
+        return new CRestBuilder().placeholder(name, value);
+    }
+
+    public static CRestBuilder placeholders(Map<String,String> placeholders){
+        return new CRestBuilder().setPlaceholders(placeholders);
+    }
+
+    public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret){
+        return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret);
+    }
+
+    public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes){
+        return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, accessTokenAttributes);
+    }
+
+    public static CRestBuilder basicAuth(String username, String password){
+        return new CRestBuilder().basicAuth(username, password);
+    }
 }

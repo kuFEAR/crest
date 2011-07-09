@@ -43,20 +43,20 @@ import static java.lang.System.arraycopy;
  */
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
-    private final Map<String,Object> customProperties;
+    private final Map<String,Object> crestProperties;
     private final Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry;
     private final boolean buildTemplates;
     private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> customProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean buildTemplates, boolean modelPriority) {
+    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> crestProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean buildTemplates, boolean modelPriority) {
         this.handlersRegistry = handlersRegistry;
         this.buildTemplates = buildTemplates;
         this.modelPriority = modelPriority;
-        this.customProperties = customProperties;
+        this.crestProperties = crestProperties;
     }
 
     public InterfaceConfig newConfig(Class<?> interfaze) {
-        InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, customProperties);
+        InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, crestProperties);
         
         for(Annotation annotation : interfaze.getAnnotations()){
             handlersRegistry.get(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);

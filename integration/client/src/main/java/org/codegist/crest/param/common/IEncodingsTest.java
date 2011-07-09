@@ -26,11 +26,15 @@ import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static org.codegist.crest.param.common.IEncodingsTest.Tests.Defaults;
+import static org.codegist.crest.param.common.IEncodingsTest.Tests.Encoded;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -46,6 +50,18 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
         return crest(byRestServices());
     }
 
+    public enum Tests {
+        Defaults,Encoded
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
+    }
+
     public static interface IEncodings {
 
         String defaults(String p1, Collection<String> p2);
@@ -58,6 +74,7 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
 
     @Test
     public void testDefaults() throws UnsupportedEncodingException {
+        assumeThatTestIsEnabled(Defaults);
         String actual = toTest.defaults(NASTY, asList(NASTY, NASTY));
         assertDefault(NASTY, NASTY, NASTY, actual);
     }
@@ -69,6 +86,7 @@ public abstract class IEncodingsTest<T extends IEncodingsTest.IEncodings> extend
 
     @Test
     public void testEncoded() throws UnsupportedEncodingException {
+        assumeThatTestIsEnabled(Encoded);
         String actual = toTest.encoded(url(NASTY), asList(url(NASTY), url(NASTY)));
         assertEncoded(NASTY, NASTY, NASTY, actual);
     }

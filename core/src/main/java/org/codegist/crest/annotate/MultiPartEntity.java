@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.entity.MultiPartEntityWriter;
+import org.codegist.crest.io.http.entity.MultiPartEntityWriter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

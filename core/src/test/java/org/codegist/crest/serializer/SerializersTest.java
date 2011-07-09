@@ -41,35 +41,35 @@
 //        assertEquals("2010-11-23T14:28:14+0000", dateSerializer.serialize(new Date(1290522494365l)));
 //        assertEquals("2010-11-23T14:28:14+0000,2010-12-05T04:14:54+0000", datesSerializer.serialize(new Date[]{new Date(1290522494365l),new Date(1291522494365l)}));
 //
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(CREST_DATE_FORMAT, "dd/yyyy/MM");
 //        }};
-//        datesSerializer = Serializers.getFor(customProperties, Date[].class);
-//        dateSerializer = Serializers.getFor(customProperties, Date.class);
+//        datesSerializer = Serializers.getFor(crestProperties, Date[].class);
+//        dateSerializer = Serializers.getFor(crestProperties, Date.class);
 //        assertEquals("23/2010/11", dateSerializer.serialize(new Date(1290522494365l)));
 //        assertEquals("23/2010/11-05/2010/12", datesSerializer.serialize(new Date[]{new Date(1290522494365l),new Date(1291522494365l)}));
 //
-//        customProperties = new HashMap<String, Object>(){{
+//        crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(CREST_DATE_FORMAT, "Seconds");
 //        }};
-//        datesSerializer = Serializers.getFor(customProperties, Date[].class);
-//        dateSerializer = Serializers.getFor(customProperties, Date.class);
+//        datesSerializer = Serializers.getFor(crestProperties, Date[].class);
+//        dateSerializer = Serializers.getFor(crestProperties, Date.class);
 //        assertEquals("1290522494", dateSerializer.serialize(new Date(1290522494365l)));
 //        assertEquals("1290522494-1291522494", datesSerializer.serialize(new Date[]{new Date(1290522494365l),new Date(1291522494365l)}));
 //    }
 //    @Test
 //    public void testSerialization(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(int.class, new IntSerializer());
 //                put(boolean.class, new BooleanSerializer());
 //            }});
 //        }};
-//        Serializer intSerializer = Serializers.getFor(customProperties, int[].class);
-//        Serializer boolSerializer = Serializers.getFor(customProperties, boolean[].class);
+//        Serializer intSerializer = Serializers.getFor(crestProperties, int[].class);
+//        Serializer boolSerializer = Serializers.getFor(crestProperties, boolean[].class);
 //        assertEquals("2-4-6-8", intSerializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", intSerializer.serialize(new Integer[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", intSerializer.serialize(new Integer[]{Integer.valueOf(1),Integer.valueOf(2),Integer.valueOf(3),Integer.valueOf(4)}));
@@ -82,10 +82,10 @@
 //
 //    @Test
 //    public void testSerialization1(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, int[].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, int[].class);
 //        assertEquals("1-2-3-4", serializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("1-2-3-4", serializer.serialize(new Integer[]{1,2,3,4}));
 //        assertEquals("1-2-3-4", serializer.serialize(Arrays.<Integer>asList(1,2,3,4)));
@@ -97,13 +97,13 @@
 //
 //    @Test
 //    public void testSerialization2(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(int.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, int[].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, int[].class);
 //
 //        assertEquals("2-4-6-8", serializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(new Integer[]{1,2,3,4}));
@@ -112,13 +112,13 @@
 //
 //    @Test
 //    public void testSerialization3(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, Integer[].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, Integer[].class);
 //        assertEquals("2-4-6-8", serializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(new Integer[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(Arrays.<Integer>asList(1,2,3,4)));
@@ -134,13 +134,13 @@
 //
 //    @Test
 //    public void testSerialization5(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties,  Types.newType(List.class, Integer.class));
+//        Serializer serializer = Serializers.getFor(crestProperties,  Types.newType(List.class, Integer.class));
 //        assertEquals("2-4-6-8", serializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(new Integer[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(Arrays.<Integer>asList(1,2,3,4)));
@@ -148,13 +148,13 @@
 //
 //    @Test
 //    public void testSerialization6(){
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties,  Types.newType(List.class, Integer.class));
+//        Serializer serializer = Serializers.getFor(crestProperties,  Types.newType(List.class, Integer.class));
 //        assertEquals("2-4-6-8", serializer.serialize(new int[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(new Integer[]{1,2,3,4}));
 //        assertEquals("2-4-6-8", serializer.serialize(Arrays.<Integer>asList(1,2,3,4)));
@@ -177,13 +177,13 @@
 //    @Test
 //    public void testSerializerArray2() {
 //
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(int.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, int[].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, int[].class);
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(IntSerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -192,13 +192,13 @@
 //    @Test
 //    public void testSerializerArray3() {
 //
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(int.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, int[][].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, int[][].class);
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(ToStringSerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -207,14 +207,14 @@
 //    @Test
 //    public void testSerializerArray4() {
 //
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(int.class, new IntSerializer());
 //                put(int[].class, new ArraySerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, int[][].class);
+//        Serializer serializer = Serializers.getFor(crestProperties, int[][].class);
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(ArraySerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -224,10 +224,10 @@
 //   @Test
 //    public void testSerializerList1() {
 //
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, Types.newType(List.class, Object.class));
+//        Serializer serializer = Serializers.getFor(crestProperties, Types.newType(List.class, Object.class));
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(ToStringSerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -235,13 +235,13 @@
 //
 //    @Test
 //    public void testSerializerList2() {
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, Types.newType(List.class, Integer.class));
+//        Serializer serializer = Serializers.getFor(crestProperties, Types.newType(List.class, Integer.class));
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(IntSerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -249,13 +249,13 @@
 //
 //    @Test
 //    public void testSerializerList3() {
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, Types.newType(List.class, Types.newType(List.class, Integer.class)));
+//        Serializer serializer = Serializers.getFor(crestProperties, Types.newType(List.class, Types.newType(List.class, Integer.class)));
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(ToStringSerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);
@@ -263,14 +263,14 @@
 //
 //    @Test
 //    public void testSerializerList4() {
-//        Map<String,Object> customProperties = new HashMap<String, Object>(){{
+//        Map<String,Object> crestProperties = new HashMap<String, Object>(){{
 //            put(SERIALIZER_LIST_SEPARATOR, "-");
 //            put(SERIALIZER_CUSTOM_SERIALIZER_MAP, new HashMap<Type, Serializer>() {{
 //                put(Integer.class, new IntSerializer());
 //                put(Types.newType(List.class, Integer.class), new ArraySerializer());
 //            }});
 //        }};
-//        Serializer serializer = Serializers.getFor(customProperties, Types.newType(List.class, Types.newType(List.class, Integer.class)));
+//        Serializer serializer = Serializers.getFor(crestProperties, Types.newType(List.class, Types.newType(List.class, Integer.class)));
 //        assertEquals(ArraySerializer.class, serializer.getClass());
 //        assertEquals(ArraySerializer.class, ((ArraySerializer) serializer).itemSerializer.getClass());
 //        assertEquals("-", ((ArraySerializer) serializer).separator);

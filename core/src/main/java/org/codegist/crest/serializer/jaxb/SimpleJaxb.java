@@ -40,7 +40,7 @@ class SimpleJaxb implements Jaxb {
     private final Marshaller marshaller;
     private final Unmarshaller unmarshaller;
 
-    public SimpleJaxb(Map<String,Object> customProperties, JAXBContext jaxbContext) {
+    public SimpleJaxb(Map<String,Object> crestProperties, JAXBContext jaxbContext) {
         try {
             this.marshaller = jaxbContext.createMarshaller();
             this.unmarshaller = jaxbContext.createUnmarshaller();

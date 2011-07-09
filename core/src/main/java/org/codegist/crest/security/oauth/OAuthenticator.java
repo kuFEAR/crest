@@ -20,8 +20,8 @@
 
 package org.codegist.crest.security.oauth;
 
-import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.io.http.HttpMethod;
 
 import java.util.List;
 
@@ -33,20 +33,20 @@ import java.util.List;
 public interface OAuthenticator {
 
     /**
-     * Signs the given request using the given access token and the optional additional oauth headers.
+     * Signs the given io using the given access token and the optional additional oauth headers.
      * @param accessOAuthToken Access token to be used
      */
     List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters);
 
     /**
-     * Fires a get request token to the preconfigured url
-     * @return A new request token
+     * Fires a get io token to the preconfigured url
+     * @return A new io token
      */
     OAuthToken getRequestToken();
 
     /**
-     * Exchanges the given request token with a new access token using the given verifier
-     * @param requestOAuthToken request token to exchange
+     * Exchanges the given io token with a new access token using the given verifier
+     * @param requestOAuthToken io token to exchange
      * @param verifier verifier
      * @return new access token
      */

@@ -20,7 +20,7 @@
 
 package org.codegist.crest.annotate;
 
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.io.http.HttpRequest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,7 +40,7 @@ public @interface MultiPartParam {
     /**
      * Indicates the parameter default value to use.
      * <p>At method parameter level, this value is used if the parameter is null
-     * <p>At interface/method levels, this value is used to specifie the value of the parameter to add for each request
+     * <p>At interface/method levels, this value is used to specifie the value of the parameter to add for each io
      * @return parameter default value
      */
     String defaultValue() default "";

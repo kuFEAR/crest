@@ -20,9 +20,9 @@
 
 package org.codegist.crest.security.http;
 
-import org.codegist.crest.http.HttpChannel;
-import org.codegist.crest.http.HttpChannelInitiator;
-import org.codegist.crest.http.HttpMethod;
+import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.io.http.HttpChannelInitiator;
+import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.security.Authorization;
 
 import java.io.IOException;

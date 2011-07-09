@@ -20,8 +20,8 @@
 
 package org.codegist.crest.security;
 
-import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.Pair;
 
 /**
  * AuthentificationManager interface
@@ -30,7 +30,7 @@ import org.codegist.crest.http.Pair;
 public interface Authorization {
 
     /**
-     * Sign the request
+     * Sign the io
      */
     AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters);
 

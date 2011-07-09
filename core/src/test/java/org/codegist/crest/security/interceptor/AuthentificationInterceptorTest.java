@@ -20,7 +20,7 @@
 //
 //package org.codegist.crest.security.interceptor;
 //
-//import org.codegist.crest.http.HttpRequest;
+//import org.codegist.crest.io.http.HttpRequest;
 //import org.codegist.crest.RequestContext;
 //import org.codegist.crest.security.AuthentificationManager;
 //import org.junit.Test;
@@ -50,14 +50,14 @@
 //
 //    @Test
 //    public void testIntercept() throws Exception {
-//        HttpRequest.Builder request = mock(HttpRequest.Builder.class);
+//        HttpRequest.Builder io = mock(HttpRequest.Builder.class);
 //        RequestContext context = mock(RequestContext.class);
 //        AuthentificationManager manager = mock(AuthentificationManager.class);
 //        AuthentificationInterceptor interceptor = new AuthentificationInterceptor(manager);
-//        interceptor.beforeParamsInjectionHandle(request, context);
-//        verify(manager, times(0)).sign(request);
-//        interceptor.afterParamsInjectionHandle(request, context);
-//        verify(manager, times(1)).sign(request);
+//        interceptor.beforeParamsInjectionHandle(io, context);
+//        verify(manager, times(0)).sign(io);
+//        interceptor.afterParamsInjectionHandle(io, context);
+//        verify(manager, times(1)).sign(io);
 //    }
 //
 //

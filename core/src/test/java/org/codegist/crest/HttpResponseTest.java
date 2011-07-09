@@ -310,11 +310,11 @@
 //    }
 //
 //    private static HttpResponse buildResponseForStream(byte[] data, String contentType) throws IOException {
-//        HttpRequest request = mock(HttpRequest.class);
+//        HttpRequest io = mock(HttpRequest.class);
 //        Map<String, List<String>> headers = new HashMap<String, List<String>>();
 //        headers.put("Content-Type", Arrays.asList(contentType));
 //        final InputStream stream = data != null ? new ByteArrayInputStream(data) : null;
-//        return new HttpResponse(request, 212, headers, stream == null ? null : (new HttpResource() {
+//        return new HttpResponse(io, 212, headers, stream == null ? null : (new HttpResource() {
 //            public InputStream getContent() throws HttpException {
 //                return stream;
 //            }

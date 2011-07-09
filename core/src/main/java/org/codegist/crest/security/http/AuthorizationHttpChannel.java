@@ -21,10 +21,10 @@
 package org.codegist.crest.security.http;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.http.HttpChannel;
-import org.codegist.crest.http.HttpEntityWriter;
-import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.io.http.HttpEntityWriter;
+import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 import org.codegist.crest.util.Pairs;

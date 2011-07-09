@@ -8,7 +8,7 @@ import org.codegist.crest.request.common.Requests;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/get")
+@Path("io/get")
 @GET
 public interface Gets extends Requests {
 

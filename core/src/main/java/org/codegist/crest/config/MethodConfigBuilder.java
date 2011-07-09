@@ -2,26 +2,25 @@ package org.codegist.crest.config;
 
 import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
-import org.codegist.common.reflect.Methods;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.entity.EntityWriter;
-import org.codegist.crest.entity.MultiPartEntityWriter;
-import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
+import org.codegist.crest.io.http.entity.EntityWriter;
+import org.codegist.crest.io.http.entity.MultiPartEntityWriter;
+import org.codegist.crest.io.http.entity.UrlEncodedFormEntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.http.HttpMethod;
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.HttpRequest;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.MultiParts;
 import org.codegist.crest.util.Registry;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Arrays.join;
 
 @SuppressWarnings("unchecked")
@@ -32,8 +31,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     private final Map<String, ParamConfigBuilder> extraParamBuilders = new LinkedHashMap<String, ParamConfigBuilder>();
     private final ParamConfigBuilder[] methodParamConfigBuilders;
     private final Registry<String,Deserializer> mimeDeserializerRegistry;
-    private final Registry<Class<?>,Deserializer> classDeserializerRegistry;
-    private final ArrayList<String> pathParts = new ArrayList<String>();
+    private final List<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
 
     private HttpMethod meth;
@@ -48,23 +46,15 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     private String endPoint;
     private EntityWriter entityWriter;
 
-    MethodConfigBuilder(InterfaceConfigBuilder parent, Method method, Map<String, Object> customProperties) {
-        super(customProperties);
-        this.mimeDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-mime");
-        this.classDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-class");
+    MethodConfigBuilder(InterfaceConfigBuilder parent, Method method, Map<String, Object> crestProperties) {
+        super(crestProperties);
         this.parent = parent;
         this.method = method;
         this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
-
-        Class<?> retType = method.getReturnType();
-        if(classDeserializerRegistry.contains(retType)) {
-            Deserializer deserializer = classDeserializerRegistry.get(retType);
-            deserializers.add(deserializer);
-        }
+        this.mimeDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-mime");
 
         for (int i = 0; i < this.methodParamConfigBuilders.length; i++) {
-            Map<Class<? extends Annotation>, Annotation> paramAnnotation = Methods.getParamsAnnotation(method, i);
-            this.methodParamConfigBuilders[i] = new ParamConfigBuilder(this, customProperties, method.getParameterTypes()[i], method.getGenericParameterTypes()[i], paramAnnotation);
+            this.methodParamConfigBuilders[i] = new ParamConfigBuilder(this, crestProperties, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
         }
     }
 
@@ -82,44 +72,46 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
             extraParams.put(bpc.getName(), bpc);
         }
 
-        List<String> fullPathPart = (List<String>) pathParts.clone();
+        List<String> fullPathPart = new ArrayList<String>(pathParts);
         fullPathPart.add(0, endPoint);
-        String[] paths = fullPathPart.toArray(new String[fullPathPart.size()]);
+        String[] paths = arrify(fullPathPart, String.class);
 
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
         String path = Urls.normalizeSlashes(join("/", paths));
-        String contentType = this.contentType;
-        String accept = this.accept;
-        HttpMethod meth = this.meth;
-        Long socketTimeout = this.socketTimeout;
-        Long connectionTimeout = this.connectionTimeout;
-        RequestInterceptor requestInterceptor = this.requestInterceptor;
-        ResponseHandler responseHandler = this.responseHandler;
-        ErrorHandler errorHandler = this.errorHandler;
-        RetryHandler retryHandler = this.retryHandler;
-        EntityWriter entityWriter = this.entityWriter;
-        Deserializer[] deserializers = this.deserializers.toArray(new Deserializer[this.deserializers.size()]);
+        String pContentType = this.contentType;
+        String pAccept = this.accept;
+        HttpMethod pMeth = this.meth;
+        Long pSocketTimeout = this.socketTimeout;
+        Long pConnectionTimeout = this.connectionTimeout;
+        RequestInterceptor pRequestInterceptor = this.requestInterceptor;
+        ResponseHandler pResponseHandler = this.responseHandler;
+        ErrorHandler pErrorHandler = this.errorHandler;
+        RetryHandler pRetryHandler = this.retryHandler;
+        EntityWriter pEntityWriter = this.entityWriter;
+        Deserializer[] pDeserializers = this.deserializers.toArray(new Deserializer[this.deserializers.size()]);
 
         if (!isTemplate) {
             path = defaultIfUndefined(path, CRestProperty.CONFIG_METHOD_DEFAULT_PATH, MethodConfig.DEFAULT_PATH);
-            meth = defaultIfUndefined(meth, CRestProperty.CONFIG_METHOD_DEFAULT_HTTP_METHOD, MethodConfig.DEFAULT_HTTP_METHOD);
-            contentType = defaultIfUndefined(contentType, CRestProperty.CONFIG_METHOD_DEFAULT_CONTENT_TYPE, MethodConfig.DEFAULT_CONTENT_TYPE);
-            accept = defaultIfUndefined(accept, CRestProperty.CONFIG_METHOD_DEFAULT_ACCEPT, MethodConfig.DEFAULT_ACCEPT);
+            pMeth = defaultIfUndefined(pMeth, CRestProperty.CONFIG_METHOD_DEFAULT_HTTP_METHOD, MethodConfig.DEFAULT_HTTP_METHOD);
+            pContentType = defaultIfUndefined(pContentType, CRestProperty.CONFIG_METHOD_DEFAULT_CONTENT_TYPE, MethodConfig.DEFAULT_CONTENT_TYPE);
+            pAccept = defaultIfUndefined(pAccept, CRestProperty.CONFIG_METHOD_DEFAULT_ACCEPT, MethodConfig.DEFAULT_ACCEPT);
             ParamConfig[] defs = defaultIfUndefined(null, CRestProperty.CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, MethodConfig.DEFAULT_EXTRA_PARAMs);
             for (ParamConfig def : defs) {
-                if (extraParams.containsKey(def.getName())) continue;
+                if (extraParams.containsKey(def.getName())) {
+                    continue;
+                }
                 extraParams.put(def.getName(), def);
             }
-            socketTimeout = defaultIfUndefined(socketTimeout, CRestProperty.CONFIG_METHOD_DEFAULT_SO_TIMEOUT, MethodConfig.DEFAULT_SO_TIMEOUT);
-            connectionTimeout = defaultIfUndefined(connectionTimeout, CRestProperty.CONFIG_METHOD_DEFAULT_CO_TIMEOUT, MethodConfig.DEFAULT_CO_TIMEOUT);
-            requestInterceptor = defaultIfUndefined(requestInterceptor, CRestProperty.CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR, newInstance(MethodConfig.DEFAULT_REQUEST_INTERCEPTOR));
-            responseHandler = defaultIfUndefined(responseHandler, CRestProperty.CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER, newInstance(MethodConfig.DEFAULT_RESPONSE_HANDLER));
-            errorHandler = defaultIfUndefined(errorHandler, CRestProperty.CONFIG_METHOD_DEFAULT_ERROR_HANDLER, newInstance(MethodConfig.DEFAULT_ERROR_HANDLER));
-            retryHandler = defaultIfUndefined(retryHandler, CRestProperty.CONFIG_METHOD_DEFAULT_RETRY_HANDLER, newInstance(MethodConfig.DEFAULT_RETRY_HANDLER));
-            entityWriter = defaultIfUndefined(entityWriter, CRestProperty.CONFIG_PARAM_DEFAULT_BODY_WRITER, newInstance(MethodConfig.DEFAULT_BODY_WRITER));
-            deserializers = defaultIfUndefined(deserializers, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, newInstance(MethodConfig.DEFAULT_DESERIALIZERS));
+            pSocketTimeout = defaultIfUndefined(pSocketTimeout, CRestProperty.CONFIG_METHOD_DEFAULT_SO_TIMEOUT, MethodConfig.DEFAULT_SO_TIMEOUT);
+            pConnectionTimeout = defaultIfUndefined(pConnectionTimeout, CRestProperty.CONFIG_METHOD_DEFAULT_CO_TIMEOUT, MethodConfig.DEFAULT_CO_TIMEOUT);
+            pRequestInterceptor = defaultIfUndefined(pRequestInterceptor, CRestProperty.CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR, newInstance(MethodConfig.DEFAULT_REQUEST_INTERCEPTOR));
+            pResponseHandler = defaultIfUndefined(pResponseHandler, CRestProperty.CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER, newInstance(MethodConfig.DEFAULT_RESPONSE_HANDLER));
+            pErrorHandler = defaultIfUndefined(pErrorHandler, CRestProperty.CONFIG_METHOD_DEFAULT_ERROR_HANDLER, newInstance(MethodConfig.DEFAULT_ERROR_HANDLER));
+            pRetryHandler = defaultIfUndefined(pRetryHandler, CRestProperty.CONFIG_METHOD_DEFAULT_RETRY_HANDLER, newInstance(MethodConfig.DEFAULT_RETRY_HANDLER));
+            pEntityWriter = defaultIfUndefined(pEntityWriter, CRestProperty.CONFIG_PARAM_DEFAULT_BODY_WRITER, newInstance(MethodConfig.DEFAULT_BODY_WRITER));
+            pDeserializers = defaultIfUndefined(pDeserializers, CRestProperty.CONFIG_METHOD_DEFAULT_DESERIALIZERS, newInstance(MethodConfig.DEFAULT_DESERIALIZERS));
 
-            if(entityWriter == null && meth.hasEntity()) {
+            if(pEntityWriter == null && pMeth.hasEntity()) {
                 Class<? extends EntityWriter> entityWriterCls = UrlEncodedFormEntityWriter.class;
                 for(ParamConfig cfg : pConfigMethod){
                     if(MultiParts.hasMultiPart(cfg.getMetaDatas())) {
@@ -127,26 +119,24 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
                         break;
                     }
                 }
-                entityWriter = newInstance(entityWriterCls);
+                pEntityWriter = newInstance(entityWriterCls);
             }
-
-
         }
         
         return new DefaultMethodConfig(
                 method,
                 RegexPathTemplate.create(path),
-                contentType,
-                accept,
-                meth,
-                socketTimeout,
-                connectionTimeout,
-                entityWriter,
-                requestInterceptor,
-                responseHandler,
-                errorHandler,
-                retryHandler,
-                deserializers,
+                pContentType,
+                pAccept,
+                pMeth,
+                pSocketTimeout,
+                pConnectionTimeout,
+                pEntityWriter,
+                pRequestInterceptor,
+                pResponseHandler,
+                pErrorHandler,
+                pRetryHandler,
+                pDeserializers,
                 pConfigMethod,
                 extraParams.values().toArray(new ParamConfig[extraParams.size()])
         );
@@ -156,20 +146,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         return parent;
     }
 
-    @Override
-    public MethodConfigBuilder setIgnoreNullOrEmptyValues(boolean ignoreNullOrEmptyValues) {
-        for (ParamConfigBuilder b : methodParamConfigBuilders) {
-            b.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
-        }
-        for (ParamConfigBuilder b : extraParamBuilders.values()) {
-            b.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
-        }
-        super.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
-        return this;
-    }
-
     public MethodConfigBuilder setConsumes(String... mimeTypes) {
-        if (ignore(mimeTypes)) return this;
         State.notNull(mimeDeserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
 
         String[] mimes = new String[mimeTypes.length];
@@ -183,7 +160,6 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     }
 
     public MethodConfigBuilder setProduces(String contentType) {
-        if (ignore(contentType)) return this;
         this.contentType = replacePlaceholders(contentType);
         return this;
     }
@@ -220,7 +196,6 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         return addExtraParam(name, defaultValue, dest, Collections.<String, Object>emptyMap());
     }
     public MethodConfigBuilder addExtraParam(String name, String defaultValue, String dest, Map<String,Object> metaDatas) {
-        if (ignore(name) && ignore(defaultValue) && ignore(dest)) return this;
         return startExtraParamConfig(name)
                 .setDefaultValue(defaultValue)
                 .setDestination(dest)
@@ -236,67 +211,58 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     public ParamConfigBuilder startExtraParamConfig(String name) {
         ParamConfigBuilder builder = extraParamBuilders.get(name);
         if (builder == null) {
-            extraParamBuilders.put(name, builder = new ParamConfigBuilder(this, customProperties).setName(name));
+            builder = new ParamConfigBuilder(this, getCRestProperties()).setName(name);
+            extraParamBuilders.put(name, builder);
         }
         return builder;
     }
 
     public MethodConfigBuilder appendPath(String path) {
-        if (ignore(path)) return this;
         pathParts.add(replacePlaceholders(path));
         return this;
     }
 
     public MethodConfigBuilder setEndPoint(String endPoint) {
-        if (ignore(endPoint)) return this;
         this.endPoint = replacePlaceholders(endPoint);
         return this;
     }
 
     public MethodConfigBuilder setHttpMethod(HttpMethod meth) {
-        if (ignore(meth)) return this;
         this.meth = meth;
         return this;
     }
 
     public MethodConfigBuilder setSocketTimeout(Long socketTimeout) {
-        if (ignore(socketTimeout)) return this;
         this.socketTimeout = socketTimeout;
         return this;
     }
 
     public MethodConfigBuilder setConnectionTimeout(Long connectionTimeout) {
-        if (ignore(connectionTimeout)) return this;
         this.connectionTimeout = connectionTimeout;
         return this;
     }
 
     public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls) {
-        if (ignore(interceptorCls)) return this;
         this.requestInterceptor = newInstance(interceptorCls);
         return this;
     }
 
     public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) {
-        if (ignore(responseHandlerClass)) return this;
         this.responseHandler  = newInstance(responseHandlerClass);
         return this;
     }
 
     public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass) {
-        if (ignore(methodHandlerClass)) return this;
         this.errorHandler = newInstance(methodHandlerClass);
         return this;
     }
 
     public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass) {
-        if (ignore(retryHandlerClass)) return this;
         this.retryHandler = newInstance(retryHandlerClass);
         return this;
     }
 
     public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass) {
-        if (ignore(bodyWriterClass)) return this;
         this.entityWriter = newInstance(bodyWriterClass);
         return this;
     }

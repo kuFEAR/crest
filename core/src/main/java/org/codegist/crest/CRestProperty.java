@@ -315,12 +315,12 @@ public interface CRestProperty {
     String CONFIG_METHOD_DEFAULT_ERROR_HANDLER = "config.method.default.error-handler";
 
     /**
-     * override the default request interceptor {@link org.codegist.crest.config.MethodConfig#DEFAULT_REQUEST_INTERCEPTOR}.
+     * override the default io interceptor {@link org.codegist.crest.config.MethodConfig#DEFAULT_REQUEST_INTERCEPTOR}.
      * <p>Expects an instance of {@link org.codegist.crest.interceptor.RequestInterceptor}.
      *
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR = "config.method.default.request-interceptor";
+    String CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR = "config.method.default.io-interceptor";
 
     /**
      * override the default method retry handler {@link org.codegist.crest.config.MethodConfig#DEFAULT_RETRY_HANDLER}.

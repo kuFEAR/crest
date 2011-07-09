@@ -71,5 +71,4 @@ public interface InterfaceConfig {
      */
     MethodConfig getMethodConfig(Method meth);
 
-    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

@@ -22,7 +22,7 @@ package org.codegist.crest.security.oauth;
 
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.Pair;
 
 import java.util.Map;
 

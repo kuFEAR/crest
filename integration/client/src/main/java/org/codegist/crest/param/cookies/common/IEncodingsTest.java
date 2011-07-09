@@ -25,7 +25,9 @@ import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.EnumSet;
 
+import static org.codegist.crest.param.common.IEncodingsTest.Tests.Encoded;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -50,10 +52,10 @@ public class IEncodingsTest<T extends IEncodingsTest.IEncodings> extends org.cod
                 encodeHeader("default(cookies(count:2):[p1=£\"(')? &£d&f{/p3=}:,;£\"(')? &£d&f{/pp3=},p2=£\"(')? &£d&f{/p3=}:,;£\"(')? &£d&f{/pp3=},p2=£\"(')? &£d&f{/p3=}:,;£\"(')? &£d&f{/pp3=}]) p1=£\"(')? &£d&f{/p3=}: p2=£\"(')? &£d&f{/p3=}:"),  actual);
     }
 
+
     @Override
-    @Test
-    public void testEncoded() throws UnsupportedEncodingException {
-        // N/A - @Encoded does not applies to cookie param
+    public EnumSet<Tests> ignores() {
+        return EnumSet.of(Encoded); // @Encoded does not applies to cookie param
     }
 
 }

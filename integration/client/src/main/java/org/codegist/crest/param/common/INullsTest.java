@@ -25,9 +25,11 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -41,22 +43,37 @@ public abstract class INullsTest<T extends INullsTest.INulls> extends BaseCRestT
     @Parameterized.Parameters
     public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
+    }               
+
+    public enum Tests {
+        Nulls,NullsInCollection,NullsInArray,NullsMerging,NullsMergingInCollection,NullsMergingInArray
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
     }
 
     @Test
     public void testNulls() {
+        assumeThatTestIsEnabled(Tests.Nulls);
         String actual = toTest.nulls(null, null, null);
         assertNulls(actual);
     }
 
     @Test
     public void testNullsInCollection() {
+        assumeThatTestIsEnabled(Tests.NullsInCollection);
         String actual = toTest.nulls(null, asList((String) null, (String) null), null);
         assertNulls(actual);
     }
 
     @Test
     public void testNullsInArray() {
+        assumeThatTestIsEnabled(Tests.NullsInArray);
         String actual = toTest.nulls(null, null, new String[]{null, null});
         assertNulls(actual);
     }
@@ -68,18 +85,22 @@ public abstract class INullsTest<T extends INullsTest.INulls> extends BaseCRestT
 
     @Test
     public void testNullsMerging() {
+        assumeThatTestIsEnabled(Tests.NullsMerging);
         String actual = toTest.merging(null, null, null);
         assertNullsMerging(actual);
     }
 
+
     @Test
     public void testNullsMergingInCollection() {
+        assumeThatTestIsEnabled(Tests.NullsMergingInCollection);
         String actual = toTest.merging(null, asList((String) null, (String) null), null);
         assertNullsMerging(actual);
     }
 
     @Test
     public void testNullsMergingInArray() {
+        assumeThatTestIsEnabled(Tests.NullsMergingInArray);
         String actual = toTest.merging(null, null, new String[]{null, null});
         assertNullsMerging(actual);
     }

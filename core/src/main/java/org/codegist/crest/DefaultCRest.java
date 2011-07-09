@@ -27,17 +27,13 @@ import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.http.HttpException;
-import org.codegist.crest.http.HttpRequest;
-import org.codegist.crest.http.HttpRequestExecutor;
+import org.codegist.crest.io.Request;
+import org.codegist.crest.io.RequestException;
+import org.codegist.crest.io.RequestExecutor;
+import org.codegist.crest.io.Response;
 import org.codegist.crest.serializer.DeserializationManager;
 
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-
-import static org.codegist.crest.util.Params.isNull;
 
 /**
  * <p>On top of the behavior described in {@link org.codegist.crest.CRest}, this implementation adds :
@@ -50,13 +46,13 @@ import static org.codegist.crest.util.Params.isNull;
 public class DefaultCRest extends CRest implements Disposable {
 
     private final ProxyFactory proxyFactory;
-    private final HttpRequestExecutor httpRequestExecutor;
+    private final RequestExecutor requestExecutor;
     private final InterfaceConfigFactory configFactory;
     private final DeserializationManager deserializationManager;
 
-    public DefaultCRest(ProxyFactory proxyFactory, HttpRequestExecutor httpRequestExecutor, InterfaceConfigFactory configFactory, DeserializationManager deserializationManager) {
+    public DefaultCRest(ProxyFactory proxyFactory, RequestExecutor requestExecutor, InterfaceConfigFactory configFactory, DeserializationManager deserializationManager) {
         this.proxyFactory = proxyFactory;
-        this.httpRequestExecutor = httpRequestExecutor;
+        this.requestExecutor = requestExecutor;
         this.configFactory = configFactory;
         this.deserializationManager = deserializationManager;
     }
@@ -83,103 +79,53 @@ public class DefaultCRest extends CRest implements Disposable {
 
         @Override
         protected Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
-            try {
-                return doInvoke(method, args);
-            } catch (Throwable e) {
-                return CRestException.handle(e);
-            }
-        }
-
-        private Object doInvoke(Method method, Object[] args) throws Throwable {
             MethodConfig mc = interfaceConfig.getMethodConfig(method);
-            RequestContext requestContext = new DefaultRequestContext(interfaceConfig, method, args);
-            ResponseContext responseContext;
-
+            Request request = new SimpleRequest(interfaceConfig, mc, args);
+            Response response = null;
             try {
-                responseContext = fire(requestContext);
+                mc.getRequestInterceptor().beforeFire(request);
+                response = requestExecutor.execute(request);
+                return mc.getResponseHandler().handle(response);
             }catch(Exception e){
                 try {
-                    return mc.getErrorHandler().handle(requestContext, e);
+                    return mc.getErrorHandler().handle(request, e);
                 } finally {
-                    Disposables.dispose(e);
+                    Disposables.dispose(response);
+                    if(e instanceof RequestException) {
+                        Disposables.dispose(e);
+                    }
                 }
             }
-
-            try {
-                return mc.getResponseHandler().handle(responseContext);
-            } catch (Exception e) {
-                Disposables.dispose(responseContext.getResponse());
-                throw CRestException.handle(e);
-            }
-        }
-
-        private ResponseContext fire(RequestContext requestContext) throws Exception {
-            RetryHandler retryHandler = requestContext.getMethodConfig().getRetryHandler();
-            int attemptCount = 0;
-            ResponseContext responseContext = null;
-            Exception exception = null;
-            do {
-                if(exception != null && exception instanceof HttpException) {
-                    ((HttpException) exception).close();
-                }
-                exception = null;
-                // build the request, can throw exception but that should not be part of the retry policy
-                HttpRequest request = buildRequest(requestContext);
-                try {
-                    // doInvoke the request
-                    responseContext = new DefaultResponseContext(deserializationManager, requestContext, httpRequestExecutor.execute(request));
-                } catch (Exception e) {
-                    exception = e;
-                }
-                // loop until an exception has been thrown and the retry handle ask for retry
-            }while(responseContext == null && retryHandler.retry(requestContext, exception, ++attemptCount));
-
-            if (exception != null) {
-                throw exception;
-            } else {
-                return responseContext;
-            }
-        }
-
-        /**
-         *
-         * @param requestContext
-         * @return
-         * @throws URISyntaxException
-         */
-        private HttpRequest buildRequest(RequestContext requestContext) throws Exception {
-            MethodConfig mc = requestContext.getMethodConfig();
-
-            // Build base request
-            HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), interfaceConfig.getEncoding())
-                    .timeoutSocketAfter(mc.getSocketTimeout())
-                    .timeoutConnectionAfter(mc.getConnectionTimeout())
-                    .ofContentType(mc.getContentType())
-                    .thatAccepts(mc.getAccept())
-                    .withAction(mc.getHttpMethod())
-                    .withParams(mc.getExtraParams());
-
-            for (int i = 0; i < mc.getParamCount(); i++) {
-                Object value = requestContext.getValue(i);
-                ParamConfig pc = mc.getParamConfig(i);
-                if(isNull(value) && pc.getDefaultValue() == null) {
-                    continue;
-                }
-                builder.addParam(mc.getParamConfig(i), value);
-            }
-
-            // Notify interceptor
-            mc.getRequestInterceptor().beforeFire(builder, requestContext);
-
-            return builder.build();
         }
     }
 
+    private static class SimpleRequest implements Request {
+
+        private static final Object[] EMPTY = new Object[0];
+        private final InterfaceConfig interfaceConfig;
+        private final MethodConfig methodConfig;
+        private final Object[] args;
+
+        public SimpleRequest(InterfaceConfig interfaceConfig, MethodConfig methodConfig, Object[] args) {
+            this.interfaceConfig = interfaceConfig;
+            this.methodConfig = methodConfig;
+            this.args = args != null ? args.clone() : EMPTY;
+        }
+
+        public InterfaceConfig getInterfaceConfig(){
+            return interfaceConfig;
+        }
+
+        public MethodConfig getMethodConfig() {
+            return methodConfig;
+        }
+
+        public Object[] getArgs() {
+            return args != null ? args.clone() : EMPTY;
+        }
+    }
 
     public void dispose() {
-        Disposables.dispose(proxyFactory);
-        Disposables.dispose(httpRequestExecutor);
-        Disposables.dispose(configFactory);
-        Disposables.dispose(deserializationManager);
+        Disposables.dispose(proxyFactory, requestExecutor, configFactory, deserializationManager);
     }
 }

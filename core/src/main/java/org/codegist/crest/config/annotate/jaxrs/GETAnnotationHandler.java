@@ -33,7 +33,7 @@ class GETAnnotationHandler extends NoOpAnnotationHandler<GET> {
 
     @Override
     public void handleMethodAnnotation(GET annotation, MethodConfigBuilder builder) {
-        builder.setHttpMethod(org.codegist.crest.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setHttpMethod(org.codegist.crest.io.http.HttpMethod.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
 }

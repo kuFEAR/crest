@@ -45,10 +45,9 @@ class DefaultParamConfig implements ParamConfig {
     private final Map<String,Object> metadatas;
     private final Serializer serializer;
     private final Boolean encoded;
-    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
 
-    DefaultParamConfig(Type type, Class<?> clazz, String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded, Map<Class<? extends Annotation>, Annotation> annotations) {
+    DefaultParamConfig(Type type, Class<?> clazz, String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded) {
         this.genericType = type;
         this.clazz = clazz;
         this.name = name;
@@ -57,7 +56,6 @@ class DefaultParamConfig implements ParamConfig {
         this.listSeparator = listSeparator;
         this.serializer = serializer;
         this.encoded = encoded;
-        this.annotations = Maps.unmodifiable(annotations, false);
         this.metadatas = Maps.unmodifiable(metadatas, false);
     }
 
@@ -97,46 +95,6 @@ class DefaultParamConfig implements ParamConfig {
         return encoded;
     }
 
-    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DefaultParamConfig that = (DefaultParamConfig) o;
-
-        return new EqualsBuilder()
-                .append(clazz, that.clazz)
-                .append(genericType, that.genericType)
-                .append(name, that.name)
-                .append(defaultValue, that.defaultValue)
-                .append(destination, that.destination)
-                .append(listSeparator, that.listSeparator)
-                .append(metadatas, that.metadatas)
-                .append(serializer, that.serializer)
-                .append(encoded, that.encoded)
-                .append(annotations, that.annotations)
-                .equals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(clazz)
-                .append(genericType)
-                .append(name)
-                .append(defaultValue)
-                .append(destination)
-                .append(listSeparator)
-                .append(metadatas)
-                .append(serializer)
-                .append(encoded)
-                .append(annotations)
-                .hashCode();
-    }
-
     public String toString() {
         return new ToStringBuilder(this)
                 .append("clazz", clazz)
@@ -148,7 +106,6 @@ class DefaultParamConfig implements ParamConfig {
                 .append("metadatas", metadatas)
                 .append("serializer", serializer)
                 .append("encoded", encoded)
-                .append("annotations", annotations)
                 .toString();
     }
 }

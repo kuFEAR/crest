@@ -39,11 +39,10 @@ import org.codegist.common.log.Logger;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
+import static org.codegist.common.collect.Collections.asSet;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -70,7 +69,7 @@ public class JerseyServer implements Server {
 
             @Override
             public Set<Object> getSingletons() {
-                return new HashSet<Object>(asList(JerseyServer.this.services));
+                return asSet(JerseyServer.this.services);
             }
         };
 
@@ -123,13 +122,13 @@ public class JerseyServer implements Server {
             if (authHeader == null || !authHeader.toUpperCase().startsWith(OAuthParameters.SCHEME.toUpperCase())) {
                 return containerRequest;
             }
-            // Read the OAuth parameters from the request
+            // Read the OAuth parameters from the io
             OAuthServerRequest request = new OAuthServerRequest(containerRequest);
             OAuthParameters params = new OAuthParameters();
             params.readRequest(request);
 
 
-            // Set the secret(s), against which we will verify the request
+            // Set the secret(s), against which we will verify the io
             OAuthSecrets secrets = new OAuthSecrets();
             secrets.setConsumerSecret(OAUTH_CONSUMER_SECRET);
             secrets.setTokenSecret(OAUTH_ACCESS_SECRET);
@@ -156,7 +155,7 @@ public class JerseyServer implements Server {
                 throw newBadRequestException();
             }
 
-            // Return the request
+            // Return the io
             return containerRequest;
         }
         private static AuthException newBadRequestException() throws OAuthException {

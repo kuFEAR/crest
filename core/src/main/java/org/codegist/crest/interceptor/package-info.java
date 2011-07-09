@@ -19,6 +19,6 @@
  */
 
 /**
- * Interceptors are notified before and after the parameters have been added to the request. 
+ * Interceptors are notified before and after the parameters have been added to the io.
  */
 package org.codegist.crest.interceptor;

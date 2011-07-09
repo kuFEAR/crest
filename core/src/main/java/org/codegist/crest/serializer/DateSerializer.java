@@ -43,8 +43,8 @@ public class DateSerializer extends StringSerializer<Date> {
         this(DEFAULT_DATEFORMAT);  
     }
 
-    public DateSerializer(Map<String,Object> customProperties) {
-        this(Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
+    public DateSerializer(Map<String,Object> crestProperties) {
+        this(Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
     }
     
     public DateSerializer(String dateFormat) {

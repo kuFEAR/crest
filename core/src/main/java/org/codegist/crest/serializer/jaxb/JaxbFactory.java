@@ -40,45 +40,45 @@ class JaxbFactory {
     static final String MODEL_PACKAGE = "jaxb.model.package";
     static final String MODEL_FACTORY_CLASS = "jaxb.model.factory-class";
 
-    static Jaxb create(Map<String,Object> customProperties) {
-        Jaxb jaxb = (Jaxb) customProperties.get(CUSTOM_JAXB);
+    static Jaxb create(Map<String,Object> crestProperties) {
+        Jaxb jaxb = (Jaxb) crestProperties.get(CUSTOM_JAXB);
         if(jaxb != null) {
             return jaxb;
         }
 
-        String modelPackage = (String) customProperties.get(MODEL_PACKAGE);
-        Class<?> modelFactory = (Class<?>) customProperties.get(MODEL_FACTORY_CLASS);
+        String modelPackage = (String) crestProperties.get(MODEL_PACKAGE);
+        Class<?> modelFactory = (Class<?>) crestProperties.get(MODEL_FACTORY_CLASS);
 
         if(modelPackage != null) {
-            return create(customProperties, modelPackage);
+            return create(crestProperties, modelPackage);
         }else if(modelFactory != null)  {
-            return create(customProperties, modelFactory);
+            return create(crestProperties, modelFactory);
         }else{
-            return new TypeCachingJaxb(customProperties);
+            return new TypeCachingJaxb(crestProperties);
         }
     }
-    static Jaxb create(Map<String,Object> customProperties, String context) {
+    static Jaxb create(Map<String,Object> crestProperties, String context) {
         try {
-            return create(JAXBContext.newInstance(context), customProperties);
+            return create(JAXBContext.newInstance(context), crestProperties);
         } catch (JAXBException e) {
             throw CRestException.handle(e);
         }
     }
-    static Jaxb create(Map<String,Object> customProperties, Class<?>... classToBeBound) {
+    static Jaxb create(Map<String,Object> crestProperties, Class<?>... classToBeBound) {
         try {
-            return create(JAXBContext.newInstance(classToBeBound), customProperties);
+            return create(JAXBContext.newInstance(classToBeBound), crestProperties);
         } catch (JAXBException e) {
             throw CRestException.handle(e);
         }
     }
-    static Jaxb create(JAXBContext jaxb, Map<String,Object> customProperties) {
-        int poolSize = Objects.defaultIfNull((Integer) customProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), DEFAULT_POOL_SIZE);
-        long maxWait = Objects.defaultIfNull((Long) customProperties.get(POOL_RETRIEVAL_MAX_WAIT_PROP), DEFAULT_MAX_WAIT);
+    static Jaxb create(JAXBContext jaxb, Map<String,Object> crestProperties) {
+        int poolSize = Objects.defaultIfNull((Integer) crestProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), DEFAULT_POOL_SIZE);
+        long maxWait = Objects.defaultIfNull((Long) crestProperties.get(POOL_RETRIEVAL_MAX_WAIT_PROP), DEFAULT_MAX_WAIT);
 
         if (poolSize == 1) {
-            return new SimpleJaxb(customProperties, jaxb);
+            return new SimpleJaxb(crestProperties, jaxb);
         } else {
-            return new PooledJaxb(customProperties, jaxb, poolSize, maxWait);
+            return new PooledJaxb(crestProperties, jaxb, poolSize, maxWait);
         }
     }
 }

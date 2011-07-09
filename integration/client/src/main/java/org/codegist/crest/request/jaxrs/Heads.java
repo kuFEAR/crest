@@ -30,7 +30,7 @@ import javax.ws.rs.*;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/head")
+@Path("io/head")
 public interface Heads {
 
     @GET

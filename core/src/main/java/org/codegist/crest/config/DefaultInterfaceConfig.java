@@ -37,13 +37,11 @@ class DefaultInterfaceConfig implements InterfaceConfig {
     private final Class<?> interfaze;
     private final String encoding;
     private final Map<Method, MethodConfig> cache;
-    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
     DefaultInterfaceConfig(Class<?> interfaze, String encoding, Map<Method, MethodConfig> cache) {
         this.interfaze = interfaze;
         this.encoding = encoding;
         this.cache = Maps.unmodifiable(cache);
-        this.annotations = interfaze != null ? Maps.unmodifiable(Annotations.toMap(interfaze.getAnnotations())) : null;
     }
 
     public Class<?> getInterface() {
@@ -60,10 +58,6 @@ class DefaultInterfaceConfig implements InterfaceConfig {
 
     public MethodConfig getMethodConfig(Method meth) {
         return cache != null ? cache.get(meth) : null;
-    }
-
-    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
-        return annotations;
     }
 
     public String toString() {

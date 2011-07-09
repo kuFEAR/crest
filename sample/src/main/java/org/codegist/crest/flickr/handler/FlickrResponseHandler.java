@@ -22,10 +22,9 @@ package org.codegist.crest.flickr.handler;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.io.Response;
 import org.codegist.crest.flickr.model.Error;
 import org.codegist.crest.flickr.model.Payload;
-import org.codegist.crest.flickr.model.Response;
 import org.codegist.crest.flickr.model.SimplePayload;
 import org.codegist.crest.handler.ResponseHandler;
 
@@ -36,9 +35,9 @@ import java.io.IOException;
  */
 public class FlickrResponseHandler implements ResponseHandler {
 
-    public final Object handle(ResponseContext context) throws IOException {
+    public final Object handle(Response context) throws IOException {
         /* Marshall the response */
-        Response res = context.deserializeTo(Response.class, Types.newType(Response.class, Types.newType(SimplePayload.class, context.getExpectedGenericType())));
+        org.codegist.crest.flickr.model.Response res = context.deserializeTo(org.codegist.crest.flickr.model.Response.class, Types.newType(org.codegist.crest.flickr.model.Response.class, Types.newType(SimplePayload.class, context.getExpectedGenericType())));
         /* Check for flickr OK status */
         if ("ok".equals(res.getStatus())) {
             /* Get the nested payload and returns it */

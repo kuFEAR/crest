@@ -42,7 +42,7 @@
 //
 //    public static class RestService1 implements RestService {
 //        public static final RestService1 INSTANCE = new RestService1();
-//        public HttpResponse exec(HttpRequest request) throws HttpException {
+//        public HttpResponse exec(HttpRequest io) throws HttpException {
 //            return null;
 //        }
 //    }

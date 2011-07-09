@@ -21,12 +21,12 @@
 package org.codegist.crest.handler;
 
 import org.codegist.crest.CRestException;
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.io.Response;
 
 import java.io.IOException;
 
 /**
- * Response handler is invoked for each request's as long as the interface doesn't specifically requested for the raw response (Reader or InputStream method return types.)
+ * Response handler is invoked for each io's as long as the interface doesn't specifically requested for the raw response (Reader or InputStream method return types.)
  * <p>Response handler role is to check for thridparties specific error formatted content in the response, and returns the expected return type for method calls.
  * <p>NB: if the response code if different from HTTP 200, this handler won't be called, error handler will be directly invoked
  * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
@@ -35,6 +35,6 @@ import java.io.IOException;
  */
 public interface ResponseHandler {
 
-    Object handle(ResponseContext responseContext) throws CRestException, IOException;
+    Object handle(Response response) throws CRestException, IOException;
 
 }

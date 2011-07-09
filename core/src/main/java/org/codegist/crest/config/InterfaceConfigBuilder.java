@@ -1,11 +1,11 @@
 package org.codegist.crest.config;
 
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.entity.EntityWriter;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.http.HttpMethod;
+import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Serializer;
 
@@ -24,15 +24,15 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
      * Given properties map can contains user-defined default values, that override interface predefined defauts.
      *
      * @param interfaze        interface to bind the config to
-     * @param customProperties default values holder
+     * @param crestProperties default values holder
      */
-    public InterfaceConfigBuilder(Class interfaze, Map<String, Object> customProperties) {
-        super(customProperties);
+    public InterfaceConfigBuilder(Class interfaze, Map<String, Object> crestProperties) {
+        super(crestProperties);
         this.interfaze = interfaze;
         this.builderCache = new HashMap<Method, MethodConfigBuilder>();
         if (interfaze != null) {
             for (Method m : interfaze.getDeclaredMethods()) {
-                this.builderCache.put(m, new MethodConfigBuilder(this, m, customProperties));
+                this.builderCache.put(m, new MethodConfigBuilder(this, m, crestProperties));
             }
         }
     }
@@ -46,26 +46,17 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
             mConfig.put(entry.getKey(), entry.getValue().build(validateConfig, isTemplate));
         }
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String encoding = this.encoding;
+        String pEncoding = this.encoding;
 
         if (!isTemplate) {
-            encoding = defaultIfUndefined(encoding, CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING, InterfaceConfig.DEFAULT_ENCODING);
+            pEncoding = defaultIfUndefined(pEncoding, CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING, InterfaceConfig.DEFAULT_ENCODING);
         }
         
         return new DefaultInterfaceConfig(
                 interfaze,
-                encoding,
+                pEncoding,
                 mConfig
         );
-    }
-
-    @Override
-    public InterfaceConfigBuilder setIgnoreNullOrEmptyValues(boolean ignoreNullOrEmptyValues) {
-        for (MethodConfigBuilder b : builderCache.values()) {
-            b.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
-        }
-        super.setIgnoreNullOrEmptyValues(ignoreNullOrEmptyValues);
-        return this;
     }
 
     public MethodConfigBuilder startMethodConfig(Method meth) {
@@ -73,7 +64,6 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
     }
 
     public InterfaceConfigBuilder setEncoding(String encoding) {
-        if (ignore(encoding)) return this;
         this.encoding = replacePlaceholders(encoding);
         return this;
     }
@@ -219,7 +209,6 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
 
 
     /* PARAMS SETTINGS METHODS */
-
     public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setParamsSerializer(paramSerializerCls);

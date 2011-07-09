@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/get")
+@Path("io/get")
 public interface Gets extends Requests {
 
     @GET

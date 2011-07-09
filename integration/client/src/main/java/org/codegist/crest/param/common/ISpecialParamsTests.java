@@ -29,10 +29,12 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -48,8 +50,21 @@ public class ISpecialParamsTests<T extends ISpecialParamsTests.ISpecialParams> e
         return crest(byRestServices());
     }
 
+    public enum Tests {
+        InputStream,Reader
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
+    }
+
     @Test
     public void testInputStream(){
+        assumeThatTestIsEnabled(Tests.InputStream);
         String p1 = "p1-value";
         String p21 = "p21-value";
         String p22 = "p22-value";
@@ -66,8 +81,10 @@ public class ISpecialParamsTests<T extends ISpecialParamsTests.ISpecialParams> e
         assertEquals(format("inputStream() p1=%s p2=%s", p1, string(p21, p22)), actual);
     }
 
+
     @Test
     public void testReader(){
+        assumeThatTestIsEnabled(Tests.Reader);
         String p1 = "p1-value";
         String p21 = "p21-value";
         String p22 = "p22-value";

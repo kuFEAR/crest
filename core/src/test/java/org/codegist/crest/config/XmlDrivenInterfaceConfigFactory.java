@@ -59,7 +59,7 @@
 //        &lt;global-interceptor&gt;my.rest.interface.MyRequestInterceptor1&lt;/global-interceptor&gt;
 //        &lt;methods&gt;
 //            &lt;default socket-timeout="1" connection-timeout="2" method="DELETE"&gt;
-//                &lt;request-interceptor&gt;my.rest.interface.MyRequestInterceptor1&lt;/request-interceptor&gt;
+//                &lt;io-interceptor&gt;my.rest.interface.MyRequestInterceptor1&lt;/io-interceptor&gt;
 //                &lt;response-handler&gt;my.rest.interface.MyResponseHandler1&lt;/response-handler&gt;
 //                &lt;error-handler&gt;my.rest.interface.MyErrorHandler1&lt;/error-handler&gt;
 //                &lt;retry-handler&gt;my.rest.interface.MyRetryHandler1&lt;/retry-handler&gt;
@@ -84,7 +84,7 @@
 //            &lt;method match="m1\(\)" socket-timeout="3" connection-timeout="4" method="PUT"&gt;
 //                &lt;path&gt;/m1&lt;/path&gt;
 //                &lt;consumes&gt;application/xml&lt;/consumes&gt;
-//                &lt;request-interceptor&gt;my.rest.interface.MyRequestInterceptor3&lt;/request-interceptor&gt;
+//                &lt;io-interceptor&gt;my.rest.interface.MyRequestInterceptor3&lt;/io-interceptor&gt;
 //                &lt;response-handler&gt;my.rest.interface.MyResponseHandler1&lt;/response-handler&gt;
 //                &lt;error-handler&gt;my.rest.interface.MyErrorHandler2&lt;/error-handler&gt;
 //                &lt;retry-handler&gt;my.rest.interface.MyRetryHandler2&lt;/retry-handler&gt;
@@ -97,7 +97,7 @@
 //            &lt;/method&gt;
 //            &lt;method match="m1\(java\.lang\.String\)" socket-timeout="5" connection-timeout="6" method="POST"&gt;
 //                &lt;path&gt;/m1&lt;/path&gt;
-//                &lt;request-interceptor&gt;my.rest.interface.MyRequestInterceptor2&lt;/request-interceptor&gt;
+//                &lt;io-interceptor&gt;my.rest.interface.MyRequestInterceptor2&lt;/io-interceptor&gt;
 //                &lt;response-handler&gt;my.rest.interface.MyResponseHandler2&lt;/response-handler&gt;
 //                &lt;params&gt;
 //                    &lt;serializer&gt;my.rest.interface.MySerializer2&lt;/serializer&gt;
@@ -161,7 +161,7 @@
 //                    .setMethodsHttpMethod(getString(interfaceConfig, "methods/default/@method"))
 //                    .setMethodsResponseHandler(getString(interfaceConfig, "methods/default/response-handler"))
 //                    .setMethodsErrorHandler(getString(interfaceConfig, "methods/default/error-handler"))
-//                    .setMethodsRequestInterceptor(getString(interfaceConfig, "methods/default/request-interceptor"))
+//                    .setMethodsRequestInterceptor(getString(interfaceConfig, "methods/default/io-interceptor"))
 //                    .setMethodsRetryHandler(getString(interfaceConfig, "methods/default/retry-handler"))
 //                    .setMethodsEntityWriter(getString(interfaceConfig, "methods/default/body-writer"))
 //                    .setMethodsAccepts(getString(interfaceConfig, "methods/default/consumes"))
@@ -208,7 +208,7 @@
 //                                .setHttpMethod(getString(methodNode, "@method"))
 //                                .setSocketTimeout(getString(methodNode, "@socket-timeout"))
 //                                .setConnectionTimeout(getString(methodNode, "@connection-timeout"))
-//                                .setRequestInterceptor(getString(methodNode, "request-interceptor"))
+//                                .setRequestInterceptor(getString(methodNode, "io-interceptor"))
 //                                .setResponseHandler(getString(methodNode, "response-handler"))
 //                                .setErrorHandler(getString(methodNode, "error-handler"))
 //                                .setRetryHandler(getString(methodNode, "retry-handler"))

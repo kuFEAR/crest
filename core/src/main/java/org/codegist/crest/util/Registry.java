@@ -26,25 +26,28 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.codegist.common.collect.Maps.merge;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class Registry<K,T> {
+public final class Registry<K,T> {
 
     private final Class<T> clazz;
     private final Map<K, Object> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
-    protected final Map<String,Object> customProperties;
+    private final Map<String,Object> crestProperties;
     private final T defaultIfNotFound;
 
-    protected Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound, Map<String, Object> customProperties) {
+    private Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound, Map<String, Object> crestProperties) {
         this.clazz = clazz;
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
-        this.customProperties = customProperties;
+        this.crestProperties = crestProperties;
     }
 
     public boolean contains(K key) {
@@ -54,15 +57,33 @@ public class Registry<K,T> {
     public T get(K key) {
         T item = cache.get(key);
         if (item == null) {
-            synchronized (cache) {
-                item = cache.get(key);
-                if(item == null) {
-                    item = build(key);
-                    cache(key, item);
-                }
-            }
+            item = buildAndCache(key);
         }
         return item;
+    }
+
+    private synchronized T buildAndCache(K key) {
+        T val = cache.get(key);
+        if(val != null) {
+            return val;
+        }
+        Object item = mapping.get(key);
+        if (item == null) {
+            if(defaultIfNotFound == null) {
+                throw new CRestException("No item bound to key: " + key);
+            }else{
+                item = defaultIfNotFound;
+            }
+        }
+        if (clazz.isAssignableFrom(item.getClass())) {
+            val = (T) item;
+        } else if (item instanceof ItemDescriptor) {
+            val = ((ItemDescriptor<T>) item).instanciate(crestProperties);
+        } else {
+            throw new IllegalStateException("Shouldn't be here");
+        }
+        cache(key, val);
+        return val;
     }
 
     private void cache(K key, T item) {
@@ -74,37 +95,19 @@ public class Registry<K,T> {
         }
     }
 
-    private T build(K key) {
-        Object item = mapping.get(key);
-        if (item == null) {
-            if(defaultIfNotFound == null) {
-                throw new CRestException("No item bound to key: " + key);
-            }else{
-                item = defaultIfNotFound;
-            }
-        }
-        if (clazz.isAssignableFrom(item.getClass())) {
-            return (T) item;
-        } else if (item instanceof ItemDescriptor) {
-            return ((ItemDescriptor<T>) item).instanciate();
-        } else {
-            throw new IllegalStateException("Shouldn't be here");
-        }
-    }
-
 
     private static class ItemDescriptor<T> {
-        final Class<? extends T> clazz;
-        final Map<String, Object> config;
+        private final Class<? extends T> clazz;
+        private final Map<String, Object> config;
 
         ItemDescriptor(Class<? extends T> clazz, Map<String, Object> config) {
             this.clazz = clazz;
             this.config = config;
         }
 
-        public T instanciate() {
+        public T instanciate(Map<String,Object> crestProperties) {
             try {
-                return accessible(clazz.getDeclaredConstructor(Map.class)).newInstance(config);
+                return accessible(clazz.getDeclaredConstructor(Map.class)).newInstance(merge(crestProperties,config));
             } catch (InvocationTargetException e) {
                 throw CRestException.handle(e);
             } catch (NoSuchMethodException e) {
@@ -145,24 +148,24 @@ public class Registry<K,T> {
         }
     }
 
-    public static class Builder<K,T> {
+    public final static class Builder<K,T> {
 
-        protected final Map<K, Object> mapping = new HashMap<K, Object>();
-        protected final Class<T> clazz;
-        protected final Map<String,Object> customProperties;
-        protected T defaultIfNotFound;
+        private final Map<K, Object> mapping = new HashMap<K, Object>();
+        private final Class<T> clazz;
+        private final Map<String,Object> crestProperties;
+        private T defaultIfNotFound;
 
-        public Builder(Map<String,Object> customProperties, Class<T> clazz) {
-            this.customProperties = customProperties;
+        public Builder(Map<String,Object> crestProperties, Class<T> clazz) {
+            this.crestProperties = crestProperties;
             this.clazz = clazz;
         }
 
         public Registry<K,T> build() {
-            return new Registry<K,T>(clazz, mapping, defaultIfNotFound, customProperties);
+            return new Registry<K,T>(clazz, mapping, defaultIfNotFound, crestProperties);
         }
 
         public Builder<K,T> register(Class<? extends T> item, K... keys) {
-            return register(item, keys, customProperties);
+            return register(item, keys, Collections.<String, Object>emptyMap());
         }
 
         public Builder<K,T> register(Class<? extends T> item, K[] keys, Map<String, Object> itemConfig) {

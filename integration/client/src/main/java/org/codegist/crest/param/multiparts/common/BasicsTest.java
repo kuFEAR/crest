@@ -26,6 +26,8 @@ import org.codegist.crest.annotate.POST;
 import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.common.IBasicsTest;
 
+import java.util.EnumSet;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -47,7 +49,7 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     }
 
     @Override
-    public void testSend() {
-        // no sens to send multipart with no params
+    public EnumSet<Tests> ignores() {
+        return EnumSet.of(Tests.Send);
     }
 }

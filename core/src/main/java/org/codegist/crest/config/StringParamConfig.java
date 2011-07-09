@@ -77,8 +77,4 @@ public class StringParamConfig implements ParamConfig {
     public Map<String, Object> getMetaDatas() {
         return null;
     }
-
-    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
-        return null;
-    }
 }

@@ -22,7 +22,6 @@ package org.codegist.crest.google.handler;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.ResponseContext;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -34,9 +33,9 @@ import java.io.IOException;
  */
 public class GoogleResponseHandler implements ResponseHandler {
 
-    public final Object handle(ResponseContext context) throws IOException {
+    public final Object handle(org.codegist.crest.io.Response context) throws IOException {
         /* Marshall the response */
-        Response<?> res = context.deserializeTo(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
+        Response res = context.deserializeTo(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
         /* Check for google OK status */
         if (res.status == 200) {
             return res.data; /* Returns the nested payload */

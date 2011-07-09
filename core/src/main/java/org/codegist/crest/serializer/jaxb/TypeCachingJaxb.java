@@ -37,11 +37,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 class TypeCachingJaxb implements Jaxb {
 
-    private final Map<String,Object> customProperties;
+    private final Map<String,Object> crestProperties;
     private final ConcurrentMap<Set<Class<?>>, Jaxb> cache = new ConcurrentHashMap<Set<Class<?>>, Jaxb>();
 
-    TypeCachingJaxb(Map<String, Object> customProperties) {
-        this.customProperties = customProperties;
+    TypeCachingJaxb(Map<String, Object> crestProperties) {
+        this.crestProperties = crestProperties;
     }
 
     public <T> void marshal(T object, OutputStream out, Charset charset) {
@@ -69,7 +69,7 @@ class TypeCachingJaxb implements Jaxb {
     private Jaxb get(Set<Class<?>> key){
         Jaxb jaxb = cache.get(key);
         if(jaxb == null) {
-            jaxb = JaxbFactory.create(customProperties, key.toArray(new Class<?>[key.size()]));
+            jaxb = JaxbFactory.create(crestProperties, key.toArray(new Class<?>[key.size()]));
             cache.putIfAbsent(key, jaxb);
         }
         return jaxb;

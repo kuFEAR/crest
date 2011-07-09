@@ -22,7 +22,7 @@ package org.codegist.crest.util;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.http.HttpParam;
+import org.codegist.crest.io.http.HttpParam;
 
 import java.util.HashMap;
 import java.util.Map;

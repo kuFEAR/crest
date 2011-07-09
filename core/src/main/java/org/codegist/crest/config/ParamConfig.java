@@ -20,10 +20,9 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.io.http.HttpRequest;
 import org.codegist.crest.serializer.Serializer;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -71,5 +70,4 @@ public interface ParamConfig {
 
     Boolean isEncoded();
 
-    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

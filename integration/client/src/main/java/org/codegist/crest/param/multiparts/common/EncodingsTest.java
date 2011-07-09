@@ -29,6 +29,9 @@ import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.EnumSet;
+
+import static org.codegist.crest.param.common.IEncodingsTest.Tests.Encoded;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -52,8 +55,7 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
     }
 
     @Override
-    @Test
-    public void testEncoded() throws UnsupportedEncodingException {
-        // N/A - @Encoded does not applies to multipart param
+    public EnumSet<Tests> ignores() {
+        return EnumSet.of(Encoded); // @Encoded does not applies to multipart param
     }
 }

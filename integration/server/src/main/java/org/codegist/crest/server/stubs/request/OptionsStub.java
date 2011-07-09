@@ -33,7 +33,7 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/option")
+@Path("io/option")
 public class OptionsStub {
 
     @OPTIONS

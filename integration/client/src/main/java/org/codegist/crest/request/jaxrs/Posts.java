@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("request/post")
+@Path("io/post")
 public interface Posts extends EntityRequests {
 
     @POST

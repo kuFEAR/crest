@@ -45,9 +45,9 @@
 //    }
 //    @Test
 //    public void testTimeouts() throws URISyntaxException {
-//        HttpRequest.Builder request = new HttpRequest.Builder("http://test").timeoutAfter(100l);
-//        assertEquals(Long.valueOf(100l), request.getSocketTimeout());
-//        assertEquals(Long.valueOf(100l), request.getConnectionTimeout());
+//        HttpRequest.Builder io = new HttpRequest.Builder("http://test").timeoutAfter(100l);
+//        assertEquals(Long.valueOf(100l), io.getSocketTimeout());
+//        assertEquals(Long.valueOf(100l), io.getConnectionTimeout());
 //    }
 //
 //    @Test
@@ -59,13 +59,13 @@
 //
 //    @Test
 //    public void testMeth() throws URISyntaxException {
-//        HttpRequest.Builder request = new HttpRequest.Builder("http://test").using("PUT");
-//        assertEquals("PUT", request.getMeth());
+//        HttpRequest.Builder io = new HttpRequest.Builder("http://test").using("PUT");
+//        assertEquals("PUT", io.getMeth());
 //    }
 //
 //    @Test
 //    public void testParams() throws URISyntaxException {
-//        HttpRequest.Builder request = new HttpRequest.Builder("http://test")
+//        HttpRequest.Builder io = new HttpRequest.Builder("http://test")
 //                .addFormParams(new LinkedHashMap<String, Object>() {{
 //                    put("dropped1", "value2");
 //                    put("dropped2", "value3");
@@ -132,71 +132,71 @@
 //            put("f3", "vf3");
 //            put("f4", "vf4");
 //            put("f5", "vf5");
-//        }}, request.getFormParams());
+//        }}, io.getFormParams());
 //        assertEquals(new LinkedHashMap<String, String>() {{
 //            put("f1", "vf1");
 //            put("f2", "vf2");
 //            put("f3", "vf3");
 //            put("f4", "vf4");
 //            put("f5", "vf5");
-//        }}, request.getQueryParams());
+//        }}, io.getQueryParams());
 //        assertEquals(new LinkedHashMap<String, String>() {{
 //            put("f1", "vf1");
 //            put("f2", "vf2");
 //            put("f3", "vf3");
 //            put("f4", "vf4");
 //            put("f5", "vf5");
-//        }}, request.getPathParams());
+//        }}, io.getPathParams());
 //        assertEquals(new LinkedHashMap<String, String>() {{
 //            put("f1", "vf1");
 //            put("f2", "vf2");
 //            put("f3", "vf3");
 //            put("f4", "vf4");
 //            put("f5", "vf5");
-//        }}, request.getHeaderParams());
+//        }}, io.getHeaderParams());
 //
 //    }
 //
 //    @Test
 //    public void testGetUrl() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
-//        HttpRequest.Builder request = new HttpRequest.Builder("http://127.0.0.1/{p1}/{p2}/")
+//        HttpRequest.Builder io = new HttpRequest.Builder("http://127.0.0.1/{p1}/{p2}/")
 //                .addPathParam("p1", "vp1")
 //                .addPathParam("p2", "vp2")
 //                .addQueryParam("q1", "vq1")
 //                .addQueryParam("q2", "vq2")
 //                .addQueryParam("q3", "vq3");
-//        assertEquals("http://127.0.0.1/vp1/vp2/", request.getBaseUrl());
-//        assertEquals(new URL("http://127.0.0.1/vp1/vp2/?q1=vq1&q2=vq2&q3=vq3"), request.getUrl(true));
-//        assertEquals(new URL("http://127.0.0.1/vp1/vp2/"), request.getUrl(false));
-//        assertEquals("http://127.0.0.1/vp1/vp2/?q1=vq1&q2=vq2&q3=vq3", request.getUrlString(true));
-//        assertEquals("http://127.0.0.1/vp1/vp2/", request.getUrlString(false));
+//        assertEquals("http://127.0.0.1/vp1/vp2/", io.getBaseUrl());
+//        assertEquals(new URL("http://127.0.0.1/vp1/vp2/?q1=vq1&q2=vq2&q3=vq3"), io.getUrl(true));
+//        assertEquals(new URL("http://127.0.0.1/vp1/vp2/"), io.getUrl(false));
+//        assertEquals("http://127.0.0.1/vp1/vp2/?q1=vq1&q2=vq2&q3=vq3", io.getUrlString(true));
+//        assertEquals("http://127.0.0.1/vp1/vp2/", io.getUrlString(false));
 //    }
 //
 //    @Test
 //    public void testGetUrlWithUnresolved() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
-//        HttpRequest.Builder request = new HttpRequest.Builder("http://127.0.0.1/{p1}/{p2}/");
+//        HttpRequest.Builder io = new HttpRequest.Builder("http://127.0.0.1/{p1}/{p2}/");
 //        try {
-//            request.getBaseUrl();
+//            io.getBaseUrl();
 //            fail("should have failed");
 //        } catch (IllegalStateException e) {
 //        }
 //        try {
-//            request.getUrl(true);
+//            io.getUrl(true);
 //            fail("should have failed");
 //        } catch (IllegalStateException e) {
 //        }
 //        try {
-//            request.getUrl(false);
+//            io.getUrl(false);
 //            fail("should have failed");
 //        } catch (IllegalStateException e) {
 //        }
 //        try {
-//            request.getUrlString(true);
+//            io.getUrlString(true);
 //            fail("should have failed");
 //        } catch (IllegalStateException e) {
 //        }
 //        try {
-//            request.getUrlString(false);
+//            io.getUrlString(false);
 //            fail("should have failed");
 //        } catch (IllegalStateException e) {
 //        }
@@ -204,34 +204,34 @@
 //    @Test
 //    public void testDefaultBuild1() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
 //        HttpRequest.Builder builder = new HttpRequest.Builder("http://127.0.0.1", "ISO-8859-1");
-//        HttpRequest request = builder.build();
-//        assertEquals("GET", request.getMeth());
-//        assertEquals(new URL("http://127.0.0.1"), request.getUrl());
-//        assertEquals("http://127.0.0.1", request.getUrlString(true));
-//        assertEquals(new URL("http://127.0.0.1"), request.getUrl(true));
-//        assertNull(null, request.getConnectionTimeout());
-//        assertNull(null, request.getSocketTimeout());
-//        assertEquals("ISO-8859-1", request.getEncoding());
-//        assertEquals(Charset.forName("ISO-8859-1"), request.getEncodingAsCharset());
-//        assertEquals(Collections.<String, String>emptyMap(), request.getHeaderParams());
-//        assertEquals(Collections.<String, String>emptyMap(), request.getQueryParams());
-//        assertEquals(Collections.<String, Object>emptyMap(), request.getFormParams());
+//        HttpRequest io = builder.build();
+//        assertEquals("GET", io.getMeth());
+//        assertEquals(new URL("http://127.0.0.1"), io.getUrl());
+//        assertEquals("http://127.0.0.1", io.getUrlString(true));
+//        assertEquals(new URL("http://127.0.0.1"), io.getUrl(true));
+//        assertNull(null, io.getConnectionTimeout());
+//        assertNull(null, io.getSocketTimeout());
+//        assertEquals("ISO-8859-1", io.getEncoding());
+//        assertEquals(Charset.forName("ISO-8859-1"), io.getEncodingAsCharset());
+//        assertEquals(Collections.<String, String>emptyMap(), io.getHeaderParams());
+//        assertEquals(Collections.<String, String>emptyMap(), io.getQueryParams());
+//        assertEquals(Collections.<String, Object>emptyMap(), io.getFormParams());
 //    }
 //
 //    @Test
 //    public void testDefaultBuild2() throws URISyntaxException, MalformedURLException, UnsupportedEncodingException {
 //        HttpRequest.Builder builder = new HttpRequest.Builder("http://127.0.0.1", "iso");
-//        HttpRequest request = builder.build();
-//        assertEquals("GET", request.getMeth());
-//        assertEquals(new URL("http://127.0.0.1"), request.getUrl());
-//        assertEquals("http://127.0.0.1", request.getUrlString(true));
-//        assertEquals(new URL("http://127.0.0.1"), request.getUrl(true));
-//        assertNull(null, request.getConnectionTimeout());
-//        assertNull(null, request.getSocketTimeout());
-//        assertEquals("iso", request.getEncoding());
-//        assertEquals(Collections.<String, String>emptyMap(), request.getHeaderParams());
-//        assertEquals(Collections.<String, String>emptyMap(), request.getQueryParams());
-//        assertEquals(Collections.<String, Object>emptyMap(), request.getFormParams());
+//        HttpRequest io = builder.build();
+//        assertEquals("GET", io.getMeth());
+//        assertEquals(new URL("http://127.0.0.1"), io.getUrl());
+//        assertEquals("http://127.0.0.1", io.getUrlString(true));
+//        assertEquals(new URL("http://127.0.0.1"), io.getUrl(true));
+//        assertNull(null, io.getConnectionTimeout());
+//        assertNull(null, io.getSocketTimeout());
+//        assertEquals("iso", io.getEncoding());
+//        assertEquals(Collections.<String, String>emptyMap(), io.getHeaderParams());
+//        assertEquals(Collections.<String, String>emptyMap(), io.getQueryParams());
+//        assertEquals(Collections.<String, Object>emptyMap(), io.getFormParams());
 //    }
 //
 //    @Test(expected = NullPointerException.class)

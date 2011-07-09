@@ -27,10 +27,13 @@ import org.junit.runners.Parameterized;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
+import static org.codegist.crest.param.common.IDatesTest.Tests.Dates;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -46,8 +49,21 @@ public abstract class IDatesTest<T extends IDatesTest.IDates> extends BaseCRestT
         return crest(byRestServices());
     }
 
+    public enum Tests {
+        Dates
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
+    }
+
     @Test
     public void testDates() throws ParseException {
+        assumeThatTestIsEnabled(Dates);
         Date p1 = date("1969/07/20T02:56:00+0000", "yyyy/MM/dd'T'HH:mm:ssZ");
         Date p21 = date("1983/03/13T00:35:00+0100", "yyyy/MM/dd'T'HH:mm:ssZ");
         Date p22 = date("2010/10/31T13:56:21-0700", "yyyy/MM/dd'T'HH:mm:ssZ");

@@ -41,9 +41,9 @@ public abstract class Data {
         this.val2 = val2;
     }
 
-    public static Data create(org.codegist.crest.model.Serializer serializer, int val1, String val2){
+    public static Data create(SerializerTypes serializerTypes, int val1, String val2){
         String klass;
-        switch(serializer){
+        switch(serializerTypes){
             case JACKSON:
                 klass = "org.codegist.crest.model.jackson.JacksonData";
                 break;

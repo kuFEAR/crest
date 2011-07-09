@@ -30,11 +30,13 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -48,10 +50,23 @@ public abstract class ISerializersTest<T extends ISerializersTest.ISerializers> 
     @Parameterized.Parameters
     public static Collection<CRestHolder[]> getData() {
         return crest(byRestServices());
+    }                      
+
+    public enum Tests {
+        DefaultSerialize,ConfiguredSerialize,SerializeNulls
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
     }
 
     @Test
     public void testDefaultSerialize() {
+        assumeThatTestIsEnabled(Tests.DefaultSerialize);
         Data bof = newData(123, "val-456");
         BunchOfData<Data> bof21 = newBunchOfData(date("31/12/2010", "dd/MM/yyyy"), false, newData(456, "val-789"));
         BunchOfData<Data> bof22 = newBunchOfData(date("20/01/2010", "dd/MM/yyyy"), false, newData(789, "val-123"));
@@ -96,8 +111,10 @@ public abstract class ISerializersTest<T extends ISerializersTest.ISerializers> 
         assertEquals(expected, actual);
     }
 
+
     @Test
     public void testConfiguredSerialize() {
+        assumeThatTestIsEnabled(Tests.ConfiguredSerialize);
         Data bof = newData(123, "val-456");
         BunchOfData<Data> bof21 = newBunchOfData(date("31/12/2010", "dd/MM/yyyy"), false, newData(456, "val-789"));
         BunchOfData<Data> bof22 = newBunchOfData(date("20/01/2010", "dd/MM/yyyy"), false, newData(789, "val-123"));
@@ -143,8 +160,10 @@ public abstract class ISerializersTest<T extends ISerializersTest.ISerializers> 
         assertEquals(expected, actual);
     }
 
+
     @Test
     public void testSerializeNulls() {
+        assumeThatTestIsEnabled(Tests.SerializeNulls);
         String actual = toTest.nulls(null, null, null);
         assertSerializeNulls(null, null, null, actual);
     }

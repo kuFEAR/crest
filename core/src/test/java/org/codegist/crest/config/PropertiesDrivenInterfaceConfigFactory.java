@@ -66,7 +66,7 @@
 // * service.test.params.path.path-param2=path-value2
 // * service.test.socket-timeout=1
 // * service.test.connection-timeout=2
-// * service.test.request-interceptor=my.rest.interface.MyRequestInterceptor1
+// * service.test.io-interceptor=my.rest.interface.MyRequestInterceptor1
 // * service.test.response-handler=my.rest.interface.MyResponseHandler1
 // * service.test.error-handler=my.rest.interface.MyErrorHandler1
 // * service.test.retry-handler=my.rest.interface.MyRetryHandler1
@@ -84,7 +84,7 @@
 // * service.test.method.m1.http-method=PUT
 // * service.test.method.m1.socket-timeout=3
 // * service.test.method.m1.connection-timeout=4
-// * service.test.method.m1.request-interceptor=my.rest.interface.MyRequestInterceptor3
+// * service.test.method.m1.io-interceptor=my.rest.interface.MyRequestInterceptor3
 // * service.test.method.m1.response-handler=my.rest.interface.MyResponseHandler1
 // * service.test.method.m1.error-handler=my.rest.interface.MyErrorHandler2
 // * service.test.method.m1.retry-handler=my.rest.interface.MyRetryHandler2
@@ -99,7 +99,7 @@
 // * service.test.method.m2.http-method=POST
 // * service.test.method.m2.socket-timeout=5
 // * service.test.method.m2.connection-timeout=6
-// * service.test.method.m2.request-interceptor=my.rest.interface.MyRequestInterceptor2
+// * service.test.method.m2.io-interceptor=my.rest.interface.MyRequestInterceptor2
 // * service.test.method.m2.response-handler=my.rest.interface.MyResponseHandler2
 // * #default params
 // * service.test.method.m2.serializer=my.rest.interface.MySerializer2
@@ -154,7 +154,7 @@
 //                    .setMethodsSocketTimeout(getServiceProp(serviceAlias, "socket-timeout"))
 //                    .setMethodsResponseHandler(getServiceProp(serviceAlias, "response-handler"))
 //                    .setMethodsErrorHandler(getServiceProp(serviceAlias, "error-handler"))
-//                    .setMethodsRequestInterceptor(getServiceProp(serviceAlias, "request-interceptor"))
+//                    .setMethodsRequestInterceptor(getServiceProp(serviceAlias, "io-interceptor"))
 //                    .setMethodsRetryHandler(getServiceProp(serviceAlias, "retry-handler"))
 //                    .setMethodsAccepts(getServiceProp(serviceAlias, "consumes"))
 //                    .setMethodsHttpMethod(getServiceProp(serviceAlias, "http-method"))
@@ -200,7 +200,7 @@
 //                                .setHttpMethod(getMethodProp(serviceAlias, methAlias, "http-method"))
 //                                .setSocketTimeout(getMethodProp(serviceAlias, methAlias, "socket-timeout"))
 //                                .setConnectionTimeout(getMethodProp(serviceAlias, methAlias, "connection-timeout"))
-//                                .setRequestInterceptor(getMethodProp(serviceAlias, methAlias, "request-interceptor"))
+//                                .setRequestInterceptor(getMethodProp(serviceAlias, methAlias, "io-interceptor"))
 //                                .setResponseHandler(getMethodProp(serviceAlias, methAlias, "response-handler"))
 //                                .setErrorHandler(getMethodProp(serviceAlias, methAlias, "error-handler"))
 //                                .setRetryHandler(getMethodProp(serviceAlias, methAlias, "retry-handler"))

@@ -20,23 +20,22 @@
 
 package org.codegist.crest.interceptor;
 
-import org.codegist.crest.RequestContext;
-import org.codegist.crest.http.HttpRequest;
+import org.codegist.crest.io.Request;
 
 /**
- * Interceptors are notified before and after the parameters have been added to the request.
- * <p>They can be used to cancel a request from being fired by returning false, or arbitrary modify the request.
+ * Interceptors are notified before and after the parameters have been added to the io.
+ * <p>They can be used to cancel a io from being fired by returning false, or arbitrary modify the io.
  * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface RequestInterceptor {
 
     /**
-     * Called after general parameter have been added to the request, but before parameters are injected into it.
+     * Called after general parameter have been added to the io, but before parameters are injected into it.
      *
-     * @param builder The current http request being build
-     * @param context The current request context
+     * @param builder The current http io being build
+     * @param context The current io context
      */
-    void beforeFire(HttpRequest.Builder builder, RequestContext context) throws Exception;
+    void beforeFire(Request request) throws Exception;
 
 }

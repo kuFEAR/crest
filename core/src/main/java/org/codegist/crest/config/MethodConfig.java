@@ -20,16 +20,14 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.entity.EntityWriter;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.*;
-import org.codegist.crest.http.HttpMethod;
+import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * Method configuration holder object.
@@ -99,7 +97,7 @@ public interface MethodConfig {
     Class<? extends ErrorHandler> DEFAULT_ERROR_HANDLER = ErrorDelegatorHandler.class;
 
     /**
-     * Default request interceptor applied when non specified.
+     * Default io interceptor applied when non specified.
      *
      * @see MethodConfig#getRequestInterceptor()
      */
@@ -177,5 +175,4 @@ public interface MethodConfig {
      */
     Integer getParamCount();
 
-    Map<Class<? extends Annotation>, Annotation> getAnnotations();
 }

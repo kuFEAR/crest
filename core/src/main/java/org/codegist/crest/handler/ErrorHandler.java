@@ -20,10 +20,10 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.RequestContext;
+import org.codegist.crest.io.Request;
 
 /**
- * Error handler gets invoked when an exception occurs during the request firing.
+ * Error handler gets invoked when an exception occurs during the io firing.
  * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -36,6 +36,6 @@ public interface ErrorHandler {
      * @throws Exception Any thrown exception while be delegated to the client using the relative rest interface.
      * @see ErrorHandler
      */
-    <T> T handle(RequestContext requestContext, Exception e) throws Exception;
+    <T> T handle(Request request, Exception e) throws Exception;
 
 }

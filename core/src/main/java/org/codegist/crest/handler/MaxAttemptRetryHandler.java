@@ -23,7 +23,7 @@ package org.codegist.crest.handler;
 import org.codegist.common.lang.Numbers;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.RequestContext;
+import org.codegist.crest.io.RequestException;
 
 import java.util.Map;
 
@@ -51,12 +51,12 @@ public class MaxAttemptRetryHandler implements RetryHandler {
         this(DEFAULT_MAX);
     }
 
-    public MaxAttemptRetryHandler(Map<String, Object> customProperties) {
-        this.max = Numbers.parse((String) customProperties.get(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX);
+    public MaxAttemptRetryHandler(Map<String, Object> crestProperties) {
+        this.max = Numbers.parse((String) crestProperties.get(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX);
     }
 
 
-    public boolean retry(RequestContext requestContext, Exception exception, int retryNumber) {
+    public boolean retry(RequestException exception, int retryNumber) {
         boolean retry = retryNumber < max;
         LOG.debug("Retrying attempt=%d,max=%d,retry=%b,reason=%s", retryNumber, max, retry, exception != null ? exception.getMessage() : "unknown");
         return retry;

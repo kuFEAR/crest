@@ -21,8 +21,8 @@
 //package org.codegist.crest.security.handler;
 //
 //import org.codegist.crest.CRestProperty;
-//import org.codegist.crest.http.HttpException;
-//import org.codegist.crest.http.HttpResponse;
+//import org.codegist.crest.io.http.HttpException;
+//import org.codegist.crest.io.http.HttpResponse;
 //import org.codegist.crest.ResponseContext;
 //import org.codegist.crest.security.AuthentificationManager;
 //import org.junit.Test;

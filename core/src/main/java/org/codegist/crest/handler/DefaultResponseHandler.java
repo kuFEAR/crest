@@ -20,7 +20,7 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.ResponseContext;
+import org.codegist.crest.io.Response;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 public class DefaultResponseHandler implements ResponseHandler {
 
-    public final Object handle(ResponseContext context) throws IOException {
-        return context.deserialize();
+    public final Object handle(Response response) throws IOException {
+        return response.deserialize();
     }
 }

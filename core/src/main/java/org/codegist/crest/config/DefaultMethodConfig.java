@@ -20,20 +20,16 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.common.reflect.Annotations;
-import org.codegist.crest.entity.EntityWriter;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.http.HttpMethod;
+import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * Default immutable in-memory implementation of {@link org.codegist.crest.config.MethodConfig}
@@ -56,7 +52,6 @@ class DefaultMethodConfig implements MethodConfig {
     private final Deserializer[] deserializers;
     private final ParamConfig[] extraParams;
     private final ParamConfig[] methodParamConfigs;
-    private final Map<Class<? extends Annotation>, Annotation> annotations;
 
     DefaultMethodConfig(Method method, PathTemplate path, String contentType, String accept, HttpMethod httpMethod, Long socketTimeout, Long connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
         this.method = method;
@@ -74,7 +69,6 @@ class DefaultMethodConfig implements MethodConfig {
         this.deserializers = deserializers != null ? deserializers.clone() : null;
         this.methodParamConfigs = methodParamConfigs != null ? methodParamConfigs.clone() : null;
         this.extraParams = extraParams != null ? extraParams.clone() : null;
-        this.annotations = method != null ? Maps.unmodifiable(Annotations.toMap(method.getAnnotations())) : null;
     }
 
     public PathTemplate getPathTemplate() {
@@ -139,10 +133,6 @@ class DefaultMethodConfig implements MethodConfig {
 
     public ParamConfig[] getExtraParams() {
         return extraParams != null ? extraParams.clone() : null;
-    }
-
-    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
-        return this.annotations;
     }
 
     public String toString() {

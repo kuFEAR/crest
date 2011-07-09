@@ -23,6 +23,7 @@ package org.codegist.crest.config;
 import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.Strings;
+import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static org.codegist.common.lang.Objects.defaultIfNull;
+import static org.codegist.common.lang.Strings.defaultIfEmpty;
 import static org.codegist.common.lang.Strings.isEmpty;
 
 /**
@@ -44,16 +47,16 @@ import static org.codegist.common.lang.Strings.isEmpty;
  */
 abstract class ConfigBuilder<T> {
 
-    protected final Map<String, Object> customProperties;
-    protected final Map<Pattern, String> placeholders;
-    private boolean ignoreNullOrEmptyValues;
+    private final Logger logger = Logger.getLogger(getClass());
+    private final Map<String, Object> crestProperties;
+    private final Map<Pattern, String> placeholders;
 
-    ConfigBuilder(Map<String, Object> customProperties) {
-        this.customProperties = Maps.unmodifiable(customProperties);
+    ConfigBuilder(Map<String, Object> crestProperties) {
+        this.crestProperties = crestProperties;
 
-        Map<String, String> placeholders = Maps.defaultsIfNull((Map<String, String>) this.customProperties.get(CRestProperty.CONFIG_PLACEHOLDERS_MAP));
+        Map<String, String> pPlaceholders = Maps.defaultsIfNull((Map<String, String>) crestProperties.get(CRestProperty.CONFIG_PLACEHOLDERS_MAP));
         this.placeholders = new HashMap<Pattern, String>();
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+        for (Map.Entry<String, String> entry : pPlaceholders.entrySet()) {
             String placeholder = entry.getKey();
             String value = entry.getValue().replaceAll("\\$", "\\\\\\$");
             this.placeholders.put(Pattern.compile("\\{" + Pattern.quote(placeholder) + "\\}"), value);
@@ -109,46 +112,40 @@ abstract class ConfigBuilder<T> {
     public abstract T build(boolean validateConfig, boolean isTemplate);
 
 
-    public ConfigBuilder setIgnoreNullOrEmptyValues(boolean ignoreNullOrEmptyValues) {
-        this.ignoreNullOrEmptyValues = ignoreNullOrEmptyValues;
-        return this;
+    public Map<String, Object> getCRestProperties() {
+        return crestProperties;
     }
 
     protected String replacePlaceholders(String str) {
-        if (Strings.isBlank(str)) return str;
+        if (Strings.isBlank(str)) {
+            return str;
+        }
+        String replaced = str;
         for (Map.Entry<Pattern, String> entry : placeholders.entrySet()) {
             Pattern placeholder = entry.getKey();
             String value = entry.getValue();
-            str = placeholder.matcher(str).replaceAll(value);
+            replaced = placeholder.matcher(replaced).replaceAll(value);
         }
-        str = str.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}"); // replace escaped with non escaped
-        return str;
+        return replaced.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}"); // replace escaped with non escaped
     }
 
     protected <T> T getProperty(String key) {
-        return (T) customProperties.get(key);
+        return (T) crestProperties.get(key);
     }
 
     protected <T> T defaultIfUndefined(T value, String defProp, T def) {
         if (value instanceof String || def instanceof String) {
-            String defs = Strings.defaultIfEmpty((String) customProperties.get(defProp), (String) def);
-            return (T) Strings.defaultIfEmpty((String) value, defs);
+            String defs = defaultIfEmpty((String) crestProperties.get(defProp), (String) def);
+            return (T) defaultIfEmpty((String) value, defs);
         } else {
-            def = Objects.defaultIfNull((T) customProperties.get(defProp), def);
-            return Objects.defaultIfNull(value, def);
+            return defaultIfNull(value, defaultIfNull((T) crestProperties.get(defProp), def));
         }
-    }
-
-    protected <K, V> Map<K, V> newInstance(Map<K, Class<? extends V>> model) {
-        Map<K, V> map = new HashMap<K, V>();
-        for (Map.Entry<K, Class<? extends V>> entry : model.entrySet()) {
-            map.put(entry.getKey(), newInstance(entry.getValue()));
-        }
-        return map;
     }
 
     protected <T> T[] newInstance(Class<T>[] classes) {
-        if (classes == null) return null;
+        if (classes == null) {
+            return null;
+        }
         try {
             T[] instances = (T[]) java.lang.reflect.Array.newInstance(classes.getClass().getComponentType(), classes.length);
             for (int i = 0; i < instances.length; i++) {
@@ -160,18 +157,12 @@ abstract class ConfigBuilder<T> {
         }
     }
 
-    protected <T> Class<? extends T> forName(String clazz){
-        try {
-            return (Class<T>) Class.forName(replacePlaceholders(clazz));
-        } catch (ClassNotFoundException e) {
-            throw CRestException.handle(e);
-        }
-    }
-
     protected <T> T newInstance(Class<T> clazz) {
-        if (clazz == null) return null;
+        if (clazz == null) {
+            return null;
+        }
         try {
-            return newInstance(clazz.getConstructor(Map.class), customProperties);
+            return newInstance(clazz.getConstructor(Map.class), crestProperties);
         } catch (CRestException e) {
             throw e;
         } catch (Exception e) {
@@ -189,11 +180,6 @@ abstract class ConfigBuilder<T> {
         } catch (InvocationTargetException e) {
             throw CRestException.handle(e);
         }
-    }
-
-    protected boolean ignore(Object value) {
-        if (!ignoreNullOrEmptyValues) return false;
-        return (value == null || (value instanceof String && isEmpty((String) value)));
     }
 
 }

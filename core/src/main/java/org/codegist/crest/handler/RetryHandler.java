@@ -20,7 +20,7 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.RequestContext;
+import org.codegist.crest.io.RequestException;
 
 /**
  * Retry handlers are used to control whether a method execution that has failed during the HTTP call should be re-executed or not
@@ -29,6 +29,6 @@ import org.codegist.crest.RequestContext;
  */
 public interface RetryHandler {
 
-    boolean retry(RequestContext requestContext, Exception exception, int retryNumber);
+    boolean retry(RequestException exception, int retryNumber);
 
 }

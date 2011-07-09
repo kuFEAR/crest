@@ -28,6 +28,7 @@ import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,18 +37,18 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class SimpleXmlFactory {
+class SimpleXmlFactory {
 
     private static final String SERIALIZER_PREFIX = "simplexml-serializer";
     private static final String DESERIALIZER_PREFIX = "simplexml-deserializer";
 
     static final String USER_SERIALIZER_PROP =  "user-serializer";
 
-    public static Serializer createSerializer(Map<String,Object> cfg){
+    static Serializer createSerializer(Map<String,Object> cfg){
         return create(cfg, SERIALIZER_PREFIX);
     }
 
-    static Serializer createDeserializer(Map<String,Object> cfg){
+    Serializer createDeserializer(Map<String,Object> cfg){
         return create(cfg, DESERIALIZER_PREFIX);
     }
 
@@ -76,7 +77,7 @@ public class SimpleXmlFactory {
         return serializer;
     }
 
-    private static class MatcherRegistry implements Matcher {
+    private static final class MatcherRegistry implements Matcher {
         private final Map<Class, Transform> transformerMap;
 
         private MatcherRegistry(Map<Class, Transform> transformerMap) {
@@ -114,11 +115,11 @@ public class SimpleXmlFactory {
             this.falseVal = falseVal;
         }
 
-        public Boolean read(String value) throws Exception {
+        public Boolean read(String value) {
             return !falseVal.equals(value);
         }
 
-        public String write(Boolean value) throws Exception {
+        public String write(Boolean value) {
             return Boolean.TRUE.equals(value) ? trueVal : falseVal;
         }
     }
@@ -130,11 +131,11 @@ public class SimpleXmlFactory {
             this.DF = new SimpleDateFormat(format);
         }
 
-        public synchronized Date read(String value) throws Exception {
+        public synchronized Date read(String value) throws ParseException {
             return DF.parse(value);
         }
 
-        public synchronized String write(Date value) throws Exception {
+        public synchronized String write(Date value) {
             return DF.format(value);
         }
     }

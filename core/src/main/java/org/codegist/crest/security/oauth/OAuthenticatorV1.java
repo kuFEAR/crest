@@ -22,14 +22,18 @@ package org.codegist.crest.security.oauth;
 
 import org.codegist.common.codec.Base64;
 import org.codegist.common.collect.Maps;
+import org.codegist.common.lang.Disposables;
 import org.codegist.common.lang.Strings;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.entity.EntityWriter;
-import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
-import org.codegist.crest.http.*;
+import org.codegist.crest.io.Response;
+import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.io.RequestExecutor;
+import org.codegist.crest.io.http.entity.EntityWriter;
+import org.codegist.crest.io.http.entity.UrlEncodedFormEntityWriter;
+import org.codegist.crest.io.http.*;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,15 +56,15 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
     public static final String CONFIG_TOKEN_ACCESS_REFRESH_URL_METHOD = CRestProperty.OAUTH_TOKEN_ACCESS_REFRESH_URL_METHOD;
 
-    public static final String CONFIG_TOKEN_REQUEST_URL = "authentification.oauth.access.request-url";
+    public static final String CONFIG_TOKEN_REQUEST_URL = "authentification.oauth.access.io-url";
 
-    public static final String CONFIG_TOKEN_REQUEST_URL_METHOD = "authentification.oauth.access.request-url.method";
+    public static final String CONFIG_TOKEN_REQUEST_URL_METHOD = "authentification.oauth.access.io-url.method";
 
     public static final String CONFIG_TOKEN_ACCESS_URL = "authentification.oauth.access.access-url";
 
     public static final String CONFIG_TOKEN_ACCESS_URL_METHOD = "authentification.oauth.access.access-url.method";
 
-    public static final String CONFIG_OAUTH_CALLBACK = "authentification.oauth.request.callback";
+    public static final String CONFIG_OAUTH_CALLBACK = "authentification.oauth.io.callback";
 
     private static final Logger LOGGER = Logger.getLogger(OAuthenticatorV1.class);
 
@@ -78,7 +82,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private final VariantProvider variant;
 
     private final OAuthToken consumerOAuthToken;
-    private final HttpRequestExecutor httpRequestExecutor;
+    private final RequestExecutor httpRequestExecutor;
     private final String callback;
 
     private final String requestTokenUrl;
@@ -90,39 +94,41 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private final String refreshAccessTokenUrl;
     private final HttpMethod refreshAccessTokenMeth;
 
-    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant) {
+    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant) {
         this(httpRequestExecutor, consumerOAuthToken, variant, null);
     }
 
-    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, Map<String,Object> customProperties) {
-        this(httpRequestExecutor, consumerOAuthToken, new DefaultVariantProvider(), customProperties);
+    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, Map<String,Object> crestProperties) {
+        this(httpRequestExecutor, consumerOAuthToken, new DefaultVariantProvider(), crestProperties);
     }
 
-    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant, Map<String, Object> customProperties) {
+    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant, Map<String, Object> crestProperties) {
         this.variant = variant;
         this.consumerOAuthToken = consumerOAuthToken;
         this.httpRequestExecutor = httpRequestExecutor;
-        customProperties = Maps.defaultsIfNull(customProperties);
 
-        this.callback = Strings.defaultIfBlank((String) customProperties.get(CONFIG_OAUTH_CALLBACK), "oob");
+        this.callback = Strings.defaultIfBlank((String) crestProperties.get(CONFIG_OAUTH_CALLBACK), "oob");
 
-        this.requestTokenUrl = (String) customProperties.get(CONFIG_TOKEN_REQUEST_URL);
-        if (Strings.isNotBlank((String) customProperties.get(CONFIG_TOKEN_REQUEST_URL_METHOD)))
-            requestTokenMeth = HttpMethod.valueOf(((String) customProperties.get(CONFIG_TOKEN_REQUEST_URL_METHOD)));
-        else
+        this.requestTokenUrl = (String) crestProperties.get(CONFIG_TOKEN_REQUEST_URL);
+        if (Strings.isNotBlank((String) crestProperties.get(CONFIG_TOKEN_REQUEST_URL_METHOD))) {
+            requestTokenMeth = HttpMethod.valueOf(((String) crestProperties.get(CONFIG_TOKEN_REQUEST_URL_METHOD)));
+        }else{
             requestTokenMeth = HttpMethod.POST;
+        }
 
-        this.accessTokenUrl = (String) customProperties.get(CONFIG_TOKEN_ACCESS_URL);
-        if (Strings.isNotBlank((String) customProperties.get(CONFIG_TOKEN_ACCESS_URL_METHOD)))
-            accessTokenMeth = HttpMethod.valueOf((String) customProperties.get(CONFIG_TOKEN_ACCESS_URL_METHOD));
-        else
+        this.accessTokenUrl = (String) crestProperties.get(CONFIG_TOKEN_ACCESS_URL);
+        if (Strings.isNotBlank((String) crestProperties.get(CONFIG_TOKEN_ACCESS_URL_METHOD))){
+            accessTokenMeth = HttpMethod.valueOf((String) crestProperties.get(CONFIG_TOKEN_ACCESS_URL_METHOD));
+        }else{
             accessTokenMeth =  HttpMethod.POST;
+        }
 
-        this.refreshAccessTokenUrl = (String) customProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL);
-        if (Strings.isNotBlank((String) customProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL_METHOD)))
-            refreshAccessTokenMeth = HttpMethod.valueOf((String) customProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL_METHOD));
-        else
+        this.refreshAccessTokenUrl = (String) crestProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL);
+        if (Strings.isNotBlank((String) crestProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL_METHOD))){
+            refreshAccessTokenMeth = HttpMethod.valueOf((String) crestProperties.get(CONFIG_TOKEN_ACCESS_REFRESH_URL_METHOD));
+        }else{
             refreshAccessTokenMeth =  HttpMethod.POST;
+        }
     }
 
     public List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) {
@@ -139,7 +145,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     }
 
     public OAuthToken getRequestToken() {
-        Validate.notBlank(this.requestTokenUrl, "No request token url as been configured, please pass it in the config map, key=" + CONFIG_TOKEN_REQUEST_URL);
+        Validate.notBlank(this.requestTokenUrl, "No io token url as been configured, please pass it in the config map, key=" + CONFIG_TOKEN_REQUEST_URL);
         OAuthToken token = getAccessToken(IGNORE_POISON, this.requestTokenUrl, requestTokenMeth, pair("oauth_callback", callback));
         LOGGER.debug("Request token token=%s", token);
         return token;
@@ -163,20 +169,20 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
 
     private OAuthToken getAccessToken(OAuthToken requestOAuthToken, String url, HttpMethod meth, Pair... extrasOAuthParams) {
-        HttpResponse refreshTokenResponse = null;
+        Response refreshTokenResponse = null;
         try {
             List<Pair> oauthParams = oauth(requestOAuthToken, meth, url, EMPTY_PAIRS, extrasOAuthParams);
 
             String dest = HttpMethod.GET.equals(meth) ? HttpRequest.DEST_QUERY : HttpRequest.DEST_FORM;
 
-            HttpRequest.Builder request = new HttpRequest.Builder(url, ENTITY_WRITER, ENC).withAction(meth);
+            HttpRequest.Builder request = new HttpRequest.Builder(url, ENTITY_WRITER, ENC).action(meth);
             for(Pair param : oauthParams){
                 request.addParam(param.getName(), param.getValue(), dest, true);
             }
 
             refreshTokenResponse = httpRequestExecutor.execute(request.build());
 
-            Map<String,String> result = parseQueryString(refreshTokenResponse.asString());
+            Map<String,String> result = parseQueryString(refreshTokenResponse.deserializeTo(String.class));
             return new OAuthToken(
                     result.get("oauth_token"),
                     result.get("oauth_token_secret"),
@@ -186,18 +192,18 @@ public class OAuthenticatorV1 implements OAuthenticator {
             throw CRestException.handle(e);
         } finally {
             if (refreshTokenResponse != null) {
-                refreshTokenResponse.close();
+                Disposables.dispose(refreshTokenResponse);
             }
         }
     }
 
 
     /**
-     * The Signature Base String includes the request absolute URL, tying the signature to a specific endpoint. The URL used in the Signature Base String MUST include the scheme, authority, and path, and MUST exclude the query and fragment as defined by [RFC3986] section 3.<br>
-     * If the absolute request URL is not available to the Service Provider (it is always available to the Consumer), it can be constructed by combining the scheme being used, the HTTP Host header, and the relative HTTP request URL. If the Host header is not available, the Service Provider SHOULD use the host name communicated to the Consumer in the documentation or other means.<br>
+     * The Signature Base String includes the io absolute URL, tying the signature to a specific endpoint. The URL used in the Signature Base String MUST include the scheme, authority, and path, and MUST exclude the query and fragment as defined by [RFC3986] section 3.<br>
+     * If the absolute io URL is not available to the Service Provider (it is always available to the Consumer), it can be constructed by combining the scheme being used, the HTTP Host header, and the relative HTTP io URL. If the Host header is not available, the Service Provider SHOULD use the host name communicated to the Consumer in the documentation or other means.<br>
      * The Service Provider SHOULD document the form of URL used in the Signature Base String to avoid ambiguity due to URL normalization. Unless specified, URL scheme and authority MUST be lowercase and include the port number; http default port 80 and https default port 443 MUST be excluded.<br>
      * <br>
-     * For example, the request:<br>
+     * For example, the io:<br>
      * HTTP://Example.com:80/resource?id=123<br>
      * Is included in the Signature Base String as:<br>
      * http://example.com/resource
@@ -207,7 +213,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
      * @see <a href="http://oauth.net/core/1.0#rfc.section.9.1.2">OAuth Core - 9.1.2.  Construct Request URL</a>
      */
     private static String constructRequestURL(String url) {
-        int index = url.indexOf("?");
+        int index = url.indexOf('?');
         if (-1 != index) {
             url = url.substring(0, index);
         }
@@ -240,7 +246,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
             Mac mac = Mac.getInstance(SIGN_METH_4_J);
             mac.init(new SecretKeySpec(signature.getBytes(ENC), SIGN_METH_4_J));
 
-            String data = signMeth + "&" + encode(signUri, ENC) + "&" + encode(signParams.toString(), ENC);
+            String data = signMeth + "&" + encode(signUri, ENC) + "&" + encode(signParams, ENC);
             String encoded = new String(Base64.encodeToByte(mac.doFinal(data.getBytes(ENC))), ENC);
 
             LOGGER.debug("Signature[data=\"%s\",signature=\"%s\",result=\"%s\"]", data, signature, encoded);
@@ -282,14 +288,14 @@ public class OAuthenticatorV1 implements OAuthenticator {
     }
 
     static class DefaultVariantProvider implements VariantProvider {
-        private final Random RDM = new SecureRandom();
+        private final Random rdm = new SecureRandom();
 
         public String timestamp() {
             return String.valueOf(System.currentTimeMillis() / 1000l);
         }
 
         public String nonce() {
-            return String.valueOf(System.currentTimeMillis() + RDM.nextLong());
+            return String.valueOf(System.currentTimeMillis() + rdm.nextLong());
         }
     }
 

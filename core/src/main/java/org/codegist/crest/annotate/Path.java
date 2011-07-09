@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 /**
  * <p>Optional method level annotation, sets the method specific path. If not specified, defaults to the method config default value.
  * <p>Can be set at interface level to define the service base path used by all methods (method's specific paths gets concatenated to it).
- * <p>Can also contain placeholder that will be replace by any value found in the given placeholder config, see {@link org.codegist.crest.CRestBuilder#configPlaceholder(String, String)}
+ * <p>Can also contain placeholder that will be replace by any value found in the given placeholder config, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}
  * @author Laurent Gilles (laurent.gilles@codegist.org)
- * @see org.codegist.crest.CRestBuilder#configPlaceholder(String, String)
+ * @see org.codegist.crest.CRestBuilder#placeholder(String, String)
  * @see org.codegist.crest.config.MethodConfig#DEFAULT_PATH
  * @see org.codegist.crest.config.MethodConfig#getPathTemplate()
  */
@@ -54,9 +54,9 @@ public @interface Path {
      * // then a call as
      * myInterface.meth("article", 234l);
      * <p/>
-     * // will fire a GET request at  (...)/article/234
+     * // will fire a GET io at  (...)/article/234
      * </pre></code>
-     * <p>Can also contain placeholder that will be replace by any value found in the given placeholder config, see {@link org.codegist.crest.CRestBuilder#configPlaceholder(String, String)}
+     * <p>Can also contain placeholder that will be replace by any value found in the given placeholder config, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}
      * @return path
      */
     String value();

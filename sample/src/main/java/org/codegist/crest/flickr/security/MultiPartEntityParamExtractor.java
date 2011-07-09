@@ -20,7 +20,7 @@
 
 package org.codegist.crest.flickr.security;
 
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.Pair;
 import org.codegist.crest.security.http.HttpEntityParamExtractor;
 
 import java.io.BufferedReader;

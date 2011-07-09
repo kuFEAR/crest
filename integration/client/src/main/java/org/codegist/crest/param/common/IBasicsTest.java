@@ -21,18 +21,25 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
+import static org.codegist.crest.param.common.IBasicsTest.Tests.Send;
+import static org.codegist.crest.param.common.IBasicsTest.Tests.SendWithParams;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public abstract class IBasicsTest<T extends IBasicsTest.IBasics> extends BaseCRestTest<T> {
+
 
     public IBasicsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
@@ -43,8 +50,21 @@ public abstract class IBasicsTest<T extends IBasicsTest.IBasics> extends BaseCRe
         return crest(byRestServices());
     }
 
+    public enum Tests {
+        Send,SendWithParams
+    }
+
+    public EnumSet<Tests> ignores(){
+        return EnumSet.noneOf(Tests.class);
+    }
+
+    public void assumeThatTestIsEnabled(Tests test){
+        assumeTrue(!ignores().contains(test));
+    }
+
     @Test
     public void testSend() {
+        assumeThatTestIsEnabled(Send);
         String actual = toTest.send();
         assertSend(actual);
     }
@@ -56,6 +76,7 @@ public abstract class IBasicsTest<T extends IBasicsTest.IBasics> extends BaseCRe
 
     @Test
     public void testSendWithParams() {
+        assumeThatTestIsEnabled(SendWithParams);
         String p1 = "my-value";
         int p2 = 1983;
 

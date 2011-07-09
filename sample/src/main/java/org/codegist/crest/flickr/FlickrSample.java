@@ -22,7 +22,6 @@ package org.codegist.crest.flickr;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRest;
-import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.flickr.model.FlickrModelFactory;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.model.Uploader;
@@ -58,12 +57,11 @@ public class FlickrSample implements Runnable {
         LOG.debug("accessTokenSecret = %s", accessTokenSecret);
 
         /* Get the factory */
-        CRest crest = new CRestBuilder()
-                .extractAuthorizationParamsFromMultiPartEntityWith(new MultiPartEntityParamExtractor())
-                .authenticatesWithOAuth(consumerKey,consumerSecret,accessToken,accessTokenSecret)
-                .deserializeXmlWithJaxb(Collections.<String,Object>singletonMap(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class))
-                .dateFormat("Seconds").booleanFormat("1", "0")
-                .build();
+        CRest crest = CRest.oauth(consumerKey,consumerSecret,accessToken,accessTokenSecret)
+                           .extractsEntityAuthParamsWith("multipart/form-data", new MultiPartEntityParamExtractor())
+                           .deserializeXmlWithJaxb(Collections.<String,Object>singletonMap(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class))
+                           .dateFormat("Seconds").booleanFormat("1", "0")
+                           .build();
 
         /* Build service instance */
         Flickr flickr = crest.build(Flickr.class);

@@ -20,7 +20,7 @@
 
 package org.codegist.crest.security.http;
 
-import org.codegist.crest.http.Pair;
+import org.codegist.crest.io.http.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;

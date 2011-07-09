@@ -39,10 +39,10 @@ public class BooleanSerializer extends StringSerializer<Boolean> {
     public BooleanSerializer() {
         this(DEFAULT_TRUE, DEFAULT_FALSE);
     }
-    public BooleanSerializer(Map<String,Object> customProperties) {
+    public BooleanSerializer(Map<String,Object> crestProperties) {
         this(
-                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_BOOLEAN_TRUE), DEFAULT_TRUE),
-                Strings.defaultIfBlank((String) customProperties.get(CRestProperty.CREST_BOOLEAN_FALSE), DEFAULT_FALSE)
+                Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_BOOLEAN_TRUE), DEFAULT_TRUE),
+                Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_BOOLEAN_FALSE), DEFAULT_FALSE)
         );
     }
     public BooleanSerializer(String trueString, String falseString) {

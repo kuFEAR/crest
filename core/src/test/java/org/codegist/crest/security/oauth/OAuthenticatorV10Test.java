@@ -21,9 +21,9 @@
 //package org.codegist.crest.security.oauth;
 //
 //import org.codegist.crest.http.HttpRequest;
-//import org.codegist.crest.http.HttpResponse;
+//import org.codegist.crest.io.http.HttpResponse;
 //import org.codegist.crest.RestService;
-//import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
+//import org.codegist.crest.io.http.entity.UrlEncodedFormEntityWriter;
 //import org.codegist.crest.security.oauth.OAuthenticatorV10.VariantProvider;
 //import org.hamcrest.Description;
 //import org.junit.Test;
@@ -50,7 +50,7 @@
 //public class OAuthenticatorV10Test {
 //
 //    // TODO ADD TEST FOR MULTI-VALUED PARAMS
-//    private final String requestTokUrl = "http://127.0.0.1/request";
+//    private final String requestTokUrl = "http://127.0.0.1/io";
 //    private final String accessTokUrl = "http://127.0.0.1/access";
 //    private final String refreshTokUrl = "http://127.0.0.1/refresh";
 //    private final Token consumer = new Token("dpf43f3p2l4k3l03", "kd94hf93k423kf44");
@@ -262,14 +262,14 @@
 //                .addQueryParam("size", "original");
 //
 //        oauth.sign(access, requestBuilder);
-//        HttpRequest request = requestBuilder.build();
+//        HttpRequest io = requestBuilder.build();
 //
 //
-//        assertNotNull(request.getHeaderParams());
-//        assertEquals(2, request.getHeaderParams().size());
-//        assertNotNull(request.getHeaderParamMap().get("Authorization"));
-//        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original", request.getUrl());
-//        assertEquals("OAuth oauth_consumer_key=\"dpf43f3p2l4k3l03\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1191242096\",oauth_nonce=\"kllo9940pd9333jh\",oauth_version=\"1.0\",oauth_token=\"nnch734d00sl2jdk\",oauth_signature=\"tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D\"", request.getHeaderParamMap().get("Authorization").get(0).getValue().asString());
+//        assertNotNull(io.getHeaderParams());
+//        assertEquals(2, io.getHeaderParams().size());
+//        assertNotNull(io.getHeaderParamMap().get("Authorization"));
+//        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original", io.getUrl());
+//        assertEquals("OAuth oauth_consumer_key=\"dpf43f3p2l4k3l03\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1191242096\",oauth_nonce=\"kllo9940pd9333jh\",oauth_version=\"1.0\",oauth_token=\"nnch734d00sl2jdk\",oauth_signature=\"tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D\"", io.getHeaderParamMap().get("Authorization").get(0).getValue().asString());
 //    }
 //
 //    /**
@@ -286,12 +286,12 @@
 //                .addQueryParam("size", "original");
 //
 //        oauth.sign(access, requestBuilder);
-//        HttpRequest request = requestBuilder.build();
+//        HttpRequest io = requestBuilder.build();
 //
 //
-//        assertNotNull(request.getHeaderParams());
-//        assertEquals(1, request.getHeaderParams().size());
-//        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_nonce=kllo9940pd9333jh&oauth_version=1.0&oauth_token=nnch734d00sl2jdk&oauth_signature=tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", request.getUrl());
+//        assertNotNull(io.getHeaderParams());
+//        assertEquals(1, io.getHeaderParams().size());
+//        assertEquals("http://photos.example.net/photos?file=vacation.jpg&size=original&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_nonce=kllo9940pd9333jh&oauth_version=1.0&oauth_token=nnch734d00sl2jdk&oauth_signature=tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", io.getUrl());
 //    }
 //
 //

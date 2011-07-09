@@ -34,7 +34,7 @@ import static org.codegist.common.collect.Collections.join;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("request/get")
+@Path("io/get")
 public class GetsStub {
 
     @GET

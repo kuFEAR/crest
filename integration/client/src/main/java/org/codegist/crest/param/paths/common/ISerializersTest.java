@@ -28,8 +28,10 @@ import org.codegist.crest.serializer.DataSerializer;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 import static java.lang.String.format;
+import static org.codegist.crest.param.common.ISerializersTest.Tests.SerializeNulls;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -81,10 +83,9 @@ public class ISerializersTest<T extends ISerializersTest.ISerializers> extends o
                 expectSerializedBof32), actual);
     }
 
-
     @Override
-    @Test
-    public void testSerializeNulls() {
-        // N/A - Path params do not support nulls
+    public EnumSet<Tests> ignores() {
+        return EnumSet.of(SerializeNulls); // N/A - Path params do not support nulls
     }
+
 }
