@@ -42,7 +42,6 @@ import java.util.Map;
  */
 public class OAuthHelper {
 
-    // TODO broken, fix it
     public static void main(String[] args) throws IOException {
         // Flickr
         OAuthHelper.doAccessTokenRetrievalWorkflow(
@@ -89,12 +88,12 @@ public class OAuthHelper {
     }
 
     private static DeserializationManager getStringDeserializationManager(){
-
-        Registry<String, Deserializer> mimeDeserializers = new Registry.Builder<String, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class).build();
+        Registry<String, Deserializer> mimeDeserializers = new Registry.Builder<String, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class)
+                .defaultAs(new StringDeserializer())
+                .build();
         Registry<Class<?>, Deserializer> classDeserializers = new Registry.Builder<Class<?>, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class)
                 .defaultAs(new StringDeserializer())
                 .build();
-
         return new DeserializationManager(mimeDeserializers, classDeserializers);
     }
 }

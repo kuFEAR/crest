@@ -21,17 +21,18 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.common.lang.Validate;
+import org.codegist.crest.annotate.Param;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.config.*;
 import org.codegist.crest.io.http.entity.EntityWriter;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 import static org.codegist.common.lang.Objects.asCollection;
-import static org.codegist.common.lang.Validate.notNull;
 import static org.codegist.crest.io.http.HttpParamProcessor.iterateProcess;
 import static org.codegist.crest.util.Params.isNull;
 
@@ -46,7 +47,6 @@ public class HttpRequest implements Request {
     public static final String DEST_FORM = "form";
     public static final String DEST_HEADER = "header";
     public static final String DEST_COOKIE = "cookie";
-    private static final String[] DESTS = {DEST_QUERY, DEST_PATH, DEST_MATRIX, DEST_FORM, DEST_HEADER, DEST_COOKIE};
 
     private final Request request;
 
@@ -184,7 +184,7 @@ public class HttpRequest implements Request {
 
     public static HttpRequest from(Request request){
         MethodConfig mc = request.getMethodConfig();
-        
+
         HttpRequest.Builder builder = new HttpRequest.Builder(mc.getPathTemplate(), mc.getBodyWriter(), request.getInterfaceConfig().getEncoding())
                 .socketTimeout(mc.getSocketTimeout())
                 .connectionTimeout(mc.getConnectionTimeout())
@@ -213,7 +213,12 @@ public class HttpRequest implements Request {
         private final Charset charset;
         private final EntityWriter entityWriter;
 
-        private final Map<String,List<HttpParam>> paramsMap = new HashMap<String, List<HttpParam>>();
+        private final List<HttpParam> headerParams = new ArrayList<HttpParam>();
+        private final List<HttpParam> matrixParams = new ArrayList<HttpParam>();
+        private final List<HttpParam> queryParams = new ArrayList<HttpParam>();
+        private final List<HttpParam> pathParams = new ArrayList<HttpParam>();
+        private final List<HttpParam> cookieParams = new ArrayList<HttpParam>();
+        private final List<HttpParam> formParams = new ArrayList<HttpParam>();
 
         private String contentType;
         private String accept;
@@ -226,9 +231,6 @@ public class HttpRequest implements Request {
             this.entityWriter = entityWriter;
             this.encoding = encoding;
             this.charset = Charset.forName(encoding);
-            for(String dest : DESTS){
-                this.paramsMap.put(dest, new ArrayList<HttpParam>());
-            }
         }
 
         public Builder(String url, EntityWriter entityWriter, String encoding) {
@@ -251,12 +253,12 @@ public class HttpRequest implements Request {
                     encoding,
                     charset,
                     entityWriter,
-                    paramsMap.get(DEST_HEADER),
-                    paramsMap.get(DEST_MATRIX),
-                    paramsMap.get(DEST_QUERY),
-                    paramsMap.get(DEST_PATH),
-                    paramsMap.get(DEST_COOKIE),
-                    paramsMap.get(DEST_FORM)
+                    headerParams,
+                    matrixParams,
+                    queryParams,
+                    pathParams,
+                    cookieParams,
+                    formParams
             );
         }
 
@@ -291,7 +293,7 @@ public class HttpRequest implements Request {
             }
             return this;
         }
-        
+
         public Builder addParam(String name, String value, String dest, boolean encoded) {
             return addParam(new StringParamConfig(name, value, dest, encoded));
         }
@@ -302,8 +304,22 @@ public class HttpRequest implements Request {
 
         public Builder addParam(ParamConfig paramConfig, Object value) {
             String dest = paramConfig.getDestination().toLowerCase();
-            List<HttpParam> params = paramsMap.get(dest);
-            notNull(params, "Unsupported destination ! (dest=%s)", dest);
+            List<HttpParam> params;
+            if (DEST_QUERY.equals(dest)) {
+                params = queryParams;
+            } else if (DEST_PATH.equals(dest)) {
+                params = pathParams;
+            } else if (DEST_FORM.equals(dest)) {
+                params = formParams;
+            } else if (DEST_HEADER.equals(dest)) {
+                params = headerParams;
+            } else if (DEST_COOKIE.equals(dest)) {
+                params = cookieParams;
+            } else if (DEST_MATRIX.equals(dest)) {
+                params = matrixParams;
+            } else {
+                throw new IllegalStateException("Unsupported destination ! (dest=" + dest + ")");
+            }
             params.add(new HttpParam(paramConfig, asCollection(value)));
             return this;
         }

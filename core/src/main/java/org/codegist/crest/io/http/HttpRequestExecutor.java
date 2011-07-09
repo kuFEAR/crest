@@ -57,7 +57,8 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     public Response execute(Request request) throws RequestException {
         HttpResponse response;
         try {
-            response = doExecute(from(request));
+            HttpRequest httpRequest = request instanceof HttpRequest ? (HttpRequest) request : from(request);
+            response = doExecute(httpRequest);
             if(response.getStatusCode() >= 400) {
                 throw new RequestException(response.getStatusMessage(), response);
             }
