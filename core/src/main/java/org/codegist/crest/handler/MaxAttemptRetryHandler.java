@@ -20,12 +20,13 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.common.lang.Numbers;
+import org.codegist.common.lang.Objects;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.RequestException;
 
 import java.util.Map;
+
+import static org.codegist.crest.CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS;
 
 /**
  * Default retry handler always returns true is the given attempt is strictly less than given max value.
@@ -52,7 +53,7 @@ public class MaxAttemptRetryHandler implements RetryHandler {
     }
 
     public MaxAttemptRetryHandler(Map<String, Object> crestProperties) {
-        this.max = Numbers.parse((String) crestProperties.get(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX);
+        this.max = Objects.defaultIfNull((Integer) crestProperties.get(HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX);
     }
 
 

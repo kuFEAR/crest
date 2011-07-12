@@ -30,12 +30,12 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
-import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.http.HttpChannelInitiator;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
+import org.codegist.crest.io.http.HttpChannelInitiator;
+import org.codegist.crest.io.http.HttpRequestExecutor;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
@@ -44,6 +44,7 @@ import org.codegist.crest.security.oauth.*;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
+import org.codegist.crest.serializer.primitive.*;
 import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.util.Registry;
 
@@ -99,6 +100,22 @@ public class CRestBuilder {
                             .register(VoidDeserializer.class, Void.class, void.class)
                             .register(ByteArrayDeserializer.class, byte[].class)
                             .register(StringDeserializer.class, String.class)
+                            .register(ByteWrapperDeserializer.class, Byte.class)
+                            .register(BytePrimitiveDeserializer.class, byte.class)
+                            .register(ShortWrapperDeserializer.class, Short.class)
+                            .register(ShortPrimitiveDeserializer.class, short.class)
+                            .register(IntegerWrapperDeserializer.class, Integer.class)
+                            .register(IntegerPrimitiveDeserializer.class, int.class)
+                            .register(LongWrapperDeserializer.class, Long.class)
+                            .register(LongPrimitiveDeserializer.class, long.class)
+                            .register(DoubleWrapperDeserializer.class, Double.class)
+                            .register(DoublePrimitiveDeserializer.class, double.class)
+                            .register(FloatWrapperDeserializer.class, Float.class)
+                            .register(FloatPrimitiveDeserializer.class, float.class)
+                            .register(BooleanWrapperDeserializer.class, Boolean.class)
+                            .register(BooleanPrimitiveDeserializer.class, boolean.class)
+                            .register(CharacterWrapperDeserializer.class, Character.class)
+                            .register(CharacterPrimitiveDeserializer.class, char.class)
                             .register(InputStreamDeserializer.class, InputStream.class)
                             .register(ReaderDeserializer.class, Reader.class);
 
@@ -133,7 +150,7 @@ public class CRestBuilder {
         Authorization authorization = buildAuthorization(plainChannelInitiator, deserializationManager);
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelInitiator, authorization, deserializationManager);
 
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(crestProperties, annotationHandlerBuilder.build(), false, false);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(crestProperties, annotationHandlerBuilder.build(), false);
 
         putIfAbsent(crestProperties, ProxyFactory.class.getName(), proxyFactory);
         putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
@@ -194,8 +211,8 @@ public class CRestBuilder {
     }
 
     private Authorization buildOAuthorization(HttpChannelInitiator channelInitiator, DeserializationManager deserializationManager) {
-        RequestExecutor executor = new HttpRequestExecutor(channelInitiator, deserializationManager);
-        OAuthenticator authenticator = new OAuthenticatorV1(executor, consumerOAuthToken, crestProperties);
+        HttpRequestExecutor httpExecutor = new HttpRequestExecutor(channelInitiator, deserializationManager);
+        OAuthenticator authenticator = new OAuthenticatorV1(httpExecutor, consumerOAuthToken, crestProperties);
         return new OAuthorization(authenticator, accessOAuthToken);
     }
 

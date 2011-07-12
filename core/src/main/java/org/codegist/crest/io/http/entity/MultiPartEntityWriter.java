@@ -32,16 +32,16 @@ import java.nio.charset.Charset;
 
 import static org.codegist.common.lang.Strings.defaultIfBlank;
 import static org.codegist.common.lang.Strings.isNotBlank;
-import static org.codegist.crest.io.http.HttpParamProcessor.process;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class MultiPartEntityWriter implements EntityWriter {
 
-    private final static String MULTIPART = "multipart/form-data; boundary=";
-    private final static String BOUNDARY = Randoms.randomAlphaNumeric(24);
-    private final static String FULL_BOUNDARY = "--" + BOUNDARY;
+    private static final String MULTIPART = "multipart/form-data; boundary=";
+    private static final String BOUNDARY = Randoms.randomAlphaNumeric(24);
+    private static final String FULL_BOUNDARY = "--" + BOUNDARY;
+    private static final String LRLN = "\r\n";
 
     public String getContentType(HttpRequest request) {
         return MULTIPART + BOUNDARY;
@@ -64,7 +64,7 @@ public class MultiPartEntityWriter implements EntityWriter {
                 String partContentType = MultiParts.getContentType(param);
                 String partFileName = MultiParts.getFileName(param);
 
-                String partialPontentDiposition = FULL_BOUNDARY + "\r\nContent-Disposition: form-data; name=\"" + partName + "\"";
+                String partialPontentDiposition = FULL_BOUNDARY + LRLN + "Content-Disposition: form-data; name=\"" + partName + "\"";
 
                 if(isBinary(paramClass)) {
                     String contentType = defaultIfBlank(partContentType, "application/octet-stream");
@@ -77,25 +77,25 @@ public class MultiPartEntityWriter implements EntityWriter {
                         }
 
                         out.writeBytes(partialPontentDiposition);
-                        out.writeBytes(isNotBlank(fileName) ? "; filename=\"" + fileName + "\"\r\n" : "\r\n");
-                        out.writeBytes("Content-Type: " + contentType + "\r\n\r\n");
+                        out.writeBytes(isNotBlank(fileName) ? "; filename=\"" + fileName + "\"" + LRLN : LRLN);
+                        out.writeBytes("Content-Type: " + contentType + LRLN + LRLN);
                         pc.getSerializer().serialize(value, charset, out);
-                        out.writeBytes("\r\n");
+                        out.writeBytes(LRLN);
                     }
                 } else {
-                    String contentDisposition = partialPontentDiposition + (isNotBlank(partFileName) ? "; filename=\"" + partFileName + "\"\r\n" : "\r\n");
-                    String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset.displayName() + "\r\n\r\n";
-                    for(Pair pair : process(param, charset, false)){
+                    String contentDisposition = partialPontentDiposition + (isNotBlank(partFileName) ? "; filename=\"" + partFileName + "\"" + LRLN : LRLN);
+                    String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset.displayName() + LRLN + LRLN;
+                    for(Pair pair : pc.getParamProcessor().process(param, charset, false)){
                         out.writeBytes(contentDisposition);
                         out.writeBytes(contentType);
                         out.write(pair.getValue().getBytes(charset));
-                        out.writeBytes("\r\n");
+                        out.writeBytes(LRLN);
                     }
                 }
             }
         }
-        out.writeBytes(FULL_BOUNDARY + "--\r\n");
-        out.writeBytes("\r\n");
+        out.writeBytes(FULL_BOUNDARY + "--" + LRLN);
+        out.writeBytes(LRLN);
         out.flush();
     }
 

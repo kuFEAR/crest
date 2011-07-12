@@ -25,6 +25,7 @@ import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.config.StringParamConfig;
+import org.codegist.crest.io.http.param.ParamType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -34,8 +35,8 @@ public class HttpParam {
     private final Collection<Object> value;
     private final ParamConfig config;
 
-    public HttpParam(String name, String value, String dest, boolean encoded) {
-        this(new StringParamConfig(name, value, dest, encoded), Collections.<Object>singleton(value));
+    public HttpParam(String name, String value, ParamType type, boolean encoded) {
+        this(new StringParamConfig(name, value, type, encoded), Collections.<Object>singleton(value));
     }
     
     public HttpParam(ParamConfig config, Collection<Object> value) {
@@ -59,8 +60,12 @@ public class HttpParam {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (null == o || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (null == o || this.getClass() != o.getClass()) {
+            return false;
+        }
         HttpParam that = (HttpParam) o;
         return new EqualsBuilder()
                 .append(this.value, that.value)

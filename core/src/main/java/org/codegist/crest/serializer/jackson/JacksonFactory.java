@@ -27,11 +27,15 @@ import org.codehaus.jackson.map.SerializationConfig;
 
 import java.util.Map;
 
-class JacksonFactory {
+final class JacksonFactory {
 
     static final String USER_OBJECT_MAPPER_PROP = "user-object-mapper";
     static final String DESERIALIZATION_CONFIG_MAP_PROP = "deserialization-config-map";
     static final String SERIALIZATION_CONFIG_MAP_PROP = "serialization-config-map";
+
+    private JacksonFactory(){
+        throw new IllegalStateException();
+    }
 
     static ObjectMapper createDeserializer(Map<String,Object> config){
         Validate.notNull(config, "Config must not be null");

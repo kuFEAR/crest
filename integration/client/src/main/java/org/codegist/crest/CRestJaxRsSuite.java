@@ -21,6 +21,7 @@
 package org.codegist.crest;
 
 import org.codegist.crest.deserialization.DeserializationsJaxRsSuite;
+import org.codegist.crest.error.ErrorHandlersTest;
 import org.codegist.crest.param.ParamsBaseSuite;
 import org.codegist.crest.param.ParamsJaxRsSuite;
 import org.codegist.crest.request.RequestsJaxRsSuite;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ParamsBaseSuite.class,
+        ErrorHandlersTest.class,
         ParamsJaxRsSuite.class,
         RequestsJaxRsSuite.class,
         DeserializationsJaxRsSuite.class

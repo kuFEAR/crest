@@ -20,15 +20,15 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.collect.Maps;
-import org.codegist.common.lang.EqualsBuilder;
-import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
+import org.codegist.crest.io.http.param.ParamProcessor;
+import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
+
+import static org.codegist.common.collect.Maps.unmodifiable;
 
 /**
  * Default immutable in-memory implementation of {@link ParamConfig}
@@ -40,23 +40,23 @@ class DefaultParamConfig implements ParamConfig {
     private final Class<?> clazz;
     private final String name;
     private final String defaultValue;
-    private final String destination;
-    private final String listSeparator;
+    private final ParamType paramType;
     private final Map<String,Object> metadatas;
     private final Serializer serializer;
     private final Boolean encoded;
+    private final ParamProcessor paramProcessor;
 
 
-    DefaultParamConfig(Type type, Class<?> clazz, String name, String defaultValue, String destination, String listSeparator, Map<String,Object> metadatas, Serializer serializer, Boolean encoded) {
+    DefaultParamConfig(Type type, Class<?> clazz, String name, String defaultValue, ParamType paramType, Map<String,Object> metadatas, Serializer serializer, Boolean encoded, ParamProcessor paramProcessor) {
         this.genericType = type;
         this.clazz = clazz;
         this.name = name;
         this.defaultValue = defaultValue;
-        this.destination = destination;
-        this.listSeparator = listSeparator;
+        this.paramType = paramType;
         this.serializer = serializer;
         this.encoded = encoded;
-        this.metadatas = Maps.unmodifiable(metadatas, false);
+        this.paramProcessor = paramProcessor;
+        this.metadatas = unmodifiable(metadatas, false);
     }
 
     public Type getValueGenericType() {
@@ -75,12 +75,8 @@ class DefaultParamConfig implements ParamConfig {
         return defaultValue;
     }
 
-    public String getDestination() {
-        return destination;
-    }
-
-    public String getListSeparator() {
-        return listSeparator;
+    public ParamType getType() {
+        return paramType;
     }
 
     public Map<String, Object> getMetaDatas() {
@@ -95,17 +91,21 @@ class DefaultParamConfig implements ParamConfig {
         return encoded;
     }
 
+    public ParamProcessor getParamProcessor() {
+        return paramProcessor;
+    }
+
     public String toString() {
         return new ToStringBuilder(this)
                 .append("clazz", clazz)
                 .append("genericType", genericType)
                 .append("name", name)
                 .append("defaultValue", defaultValue)
-                .append("destination", destination)
-                .append("listSeparator", listSeparator)
+                .append("paramType", paramType)
                 .append("metadatas", metadatas)
                 .append("serializer", serializer)
                 .append("encoded", encoded)
+                .append("paramProcessor", paramProcessor)
                 .toString();
     }
 }

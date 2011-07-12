@@ -48,17 +48,17 @@ public class DateSerializer extends StringSerializer<Date> {
     }
     
     public DateSerializer(String dateFormat) {
-        DateFormat formatter;
-        FormatType formatType;
+        DateFormat pFormatter;
+        FormatType pFormatType;
         try {
-            formatType = FormatType.valueOf(dateFormat);
-            formatter = null;
+            pFormatType = FormatType.valueOf(dateFormat);
+            pFormatter = null;
         } catch (IllegalArgumentException e) {
-            formatType = null;
-            formatter = new SimpleDateFormat(dateFormat);
+            pFormatType = null;
+            pFormatter = new SimpleDateFormat(dateFormat);
         }
-        this.formatter = formatter;
-        this.formatType = formatType;
+        this.formatter = pFormatter;
+        this.formatType = pFormatType;
     }
 
     public String serialize(Date value, Charset charset) {

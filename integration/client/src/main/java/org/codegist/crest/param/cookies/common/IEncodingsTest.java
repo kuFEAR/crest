@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.cookies.common;
 
-import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;

@@ -18,25 +18,16 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest.serializer.primitive;
 
-import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
+import static java.lang.Short.valueOf;
+import static org.codegist.common.lang.Strings.isBlank;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class ByteArrayDeserializer implements Deserializer {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        try {
-            return (T) IOs.toByteArray(stream, true);
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+public class ShortWrapperDeserializer extends PrimitiveDeserializer<Short> {
+    public Short deserialize(String value) {
+        return isBlank(value) ?  null : valueOf(value);
     }
 }

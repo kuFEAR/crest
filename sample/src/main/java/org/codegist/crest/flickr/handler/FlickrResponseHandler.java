@@ -22,11 +22,11 @@ package org.codegist.crest.flickr.handler;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.io.Response;
 import org.codegist.crest.flickr.model.Error;
 import org.codegist.crest.flickr.model.Payload;
 import org.codegist.crest.flickr.model.SimplePayload;
 import org.codegist.crest.handler.ResponseHandler;
+import org.codegist.crest.io.Response;
 
 import java.io.IOException;
 

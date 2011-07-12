@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.io.http.HttpRequest;
+import org.codegist.crest.io.http.param.ParamProcessor;
+import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Type;
@@ -39,7 +40,7 @@ import java.util.Map;
  */
 public interface ParamConfig {
 
-    String DEFAULT_DESTINATION = HttpRequest.DEST_QUERY;
+    ParamType DEFAULT_TYPE = ParamType.getDefault();
 
     String DEFAULT_VALUE = null;
 
@@ -51,6 +52,7 @@ public interface ParamConfig {
 
     boolean DEFAULT_ENCODED = false;
 
+    Class<? extends ParamProcessor> DEFAULT_PARAM_PROCESSOR = null;
 
     String getName();
 
@@ -60,14 +62,14 @@ public interface ParamConfig {
 
     String getDefaultValue();
 
-    String getDestination();
-
-    String getListSeparator();
+    ParamType getType();
 
     Map<String, Object> getMetaDatas();
 
     Serializer getSerializer();
 
     Boolean isEncoded();
+
+    ParamProcessor getParamProcessor();
 
 }

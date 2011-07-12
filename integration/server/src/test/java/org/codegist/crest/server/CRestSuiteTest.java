@@ -21,8 +21,6 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
-import org.codegist.crest.deserialization.DeserializationsCRestSuite;
-import org.codegist.crest.param.multiparts.MultiPartsSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

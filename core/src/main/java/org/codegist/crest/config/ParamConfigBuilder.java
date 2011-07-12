@@ -3,14 +3,19 @@ package org.codegist.crest.config;
 import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.CRestProperty;
-import org.codegist.crest.io.http.HttpRequest;
+import org.codegist.crest.io.http.param.ParamProcessor;
+import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
 
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.Map;
+
+import static org.codegist.crest.CRestProperty.*;
+import static org.codegist.crest.config.ParamConfig.*;
+import static org.codegist.crest.io.http.param.ParamProcessors.select;
+import static org.codegist.crest.io.http.param.ParamType.*;
 
 @SuppressWarnings("unchecked")
 public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> {
@@ -25,7 +30,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
 
     private String name;
     private String defaultValue;
-    private String dest;
+    private ParamType type;
     private String listSeparator;
     private Serializer serializer;
     private Boolean encoded;
@@ -44,45 +49,35 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
     /**
      * @inheritDoc
      */
-    public T build(boolean validateConfig, boolean isTemplate) {
-        // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String pName = this.name;
-        String pDefaultValue = this.defaultValue;
-        String pDest = this.dest;
-        String pListSeparator = this.listSeparator;
-        Serializer pSerializer = this.serializer;
-        Boolean pEncoded = this.encoded;
-        Map<String,Object> pMetas = this.metas;
-
-        if (!isTemplate) {
-            pName = defaultIfUndefined(pName, CRestProperty.CONFIG_PARAM_DEFAULT_NAME, ParamConfig.DEFAULT_NAME);
-            pDefaultValue = defaultIfUndefined(pDefaultValue, CRestProperty.CONFIG_PARAM_DEFAULT_VALUE, ParamConfig.DEFAULT_VALUE);
-            pDest = defaultIfUndefined(pDest, CRestProperty.CONFIG_PARAM_DEFAULT_DESTINATION, ParamConfig.DEFAULT_DESTINATION);
-            pMetas = defaultIfUndefined(pMetas, CRestProperty.CONFIG_PARAM_DEFAULT_METAS, ParamConfig.DEFAULT_METADATAS);
-            pListSeparator = defaultIfUndefined(pListSeparator, CRestProperty.CONFIG_PARAM_DEFAULT_LIST_SEPARATOR, null);
-            pSerializer = defaultIfUndefined(pSerializer, CRestProperty.CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(ParamConfig.DEFAULT_SERIALIZER));
-            pEncoded = defaultIfUndefined(pEncoded, CRestProperty.CONFIG_PARAM_DEFAULT_ENCODED, (HttpRequest.DEST_COOKIE.equals(pDest) || HttpRequest.DEST_HEADER.equals(pDest)) ? Boolean.TRUE : ParamConfig.DEFAULT_ENCODED);
-            if (pSerializer == null) {
-                State.notNull(classSerializerRegistry, "Can't lookup a serializer by type. Please provide a ClassSerializerRegistry");
-                // if null, then choose which serializer to apply using default rules
-                pSerializer = classSerializerRegistry.get(clazz);
-            }
+    public T build() {
+        String pName = defaultIfUndefined(this.name, CONFIG_PARAM_DEFAULT_NAME, DEFAULT_NAME);
+        String pDefaultValue = defaultIfUndefined(this.defaultValue, CONFIG_PARAM_DEFAULT_VALUE, DEFAULT_VALUE);
+        ParamType pType = defaultIfUndefined(this.type, CONFIG_PARAM_DEFAULT_TYPE, DEFAULT_TYPE);
+        Map<String,Object> pMetas = defaultIfUndefined(this.metas, CONFIG_PARAM_DEFAULT_METAS, DEFAULT_METADATAS);
+        String pListSeparator = defaultIfUndefined(this.listSeparator, CONFIG_PARAM_DEFAULT_LIST_SEPARATOR, null);
+        Serializer pSerializer = defaultIfUndefined(this.serializer, CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(DEFAULT_SERIALIZER));
+        Boolean pEncoded = defaultIfUndefined(this.encoded, CONFIG_PARAM_DEFAULT_ENCODED, (COOKIE.equals(pType) || HEADER.equals(pType)) ? Boolean.TRUE : DEFAULT_ENCODED);
+        if (pSerializer == null) {
+            State.notNull(classSerializerRegistry, "Can't lookup a serializer by type. Please provide a ClassSerializerRegistry");
+            // if null, then choose which serializer to apply using default rules
+            pSerializer = classSerializerRegistry.get(clazz);
+        }
+        ParamProcessor paramProcessor =  defaultIfUndefined(null, CONFIG_PARAM_DEFAULT_PROCESSOR, newInstance(DEFAULT_PARAM_PROCESSOR));
+        if(paramProcessor == null) {
+            paramProcessor = select(pType, pListSeparator);
         }
 
-        if (validateConfig) {
-            Validate.notBlank(pName, "Parameter must have a name");
-        }
-
+        Validate.notBlank(pName, "Parameter must have a name");
         return (T) new DefaultParamConfig(
                 genericType,
                 clazz,
                 pName,
                 pDefaultValue,
-                pDest,
-                pListSeparator,
+                pType,
                 pMetas,
                 pSerializer,
-                pEncoded);
+                pEncoded,
+                paramProcessor);
     }
 
     public MethodConfigBuilder endParamConfig() {
@@ -90,22 +85,22 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
     }
 
     public ParamConfigBuilder forQuery() {
-        return setDestination(HttpRequest.DEST_QUERY);
+        return setType(QUERY);
     }
     public ParamConfigBuilder forPath() {
-        return setDestination(HttpRequest.DEST_PATH);
+        return setType(PATH);
     }
     public ParamConfigBuilder forMatrix() {
-        return setDestination(HttpRequest.DEST_MATRIX);
+        return setType(MATRIX);
     }
     public ParamConfigBuilder forCookie() {
-        return setDestination(HttpRequest.DEST_COOKIE);
+        return setType(COOKIE);
     }
     public ParamConfigBuilder forHeader() {
-        return setDestination(HttpRequest.DEST_HEADER);
+        return setType(HEADER);
     }
     public ParamConfigBuilder forForm() {
-        return setDestination(HttpRequest.DEST_FORM);
+        return setType(FORM);
     }
     public ParamConfigBuilder forMultiPart() {
         return forForm();
@@ -122,8 +117,8 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
         return this;
     }
 
-    public ParamConfigBuilder setDestination(String dest) {
-        this.dest = replacePlaceholders(dest);
+    public ParamConfigBuilder setType(ParamType type) {
+        this.type = type;
         return this;
     }
 

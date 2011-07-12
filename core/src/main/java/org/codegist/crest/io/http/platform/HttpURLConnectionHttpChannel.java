@@ -30,7 +30,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
-public class HttpURLConnectionHttpChannel implements HttpChannel {
+import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
+
+public final class HttpURLConnectionHttpChannel implements HttpChannel {
 
     private final HttpURLConnection con;
     private final HttpMethod httpMethod;
@@ -86,7 +88,7 @@ public class HttpURLConnectionHttpChannel implements HttpChannel {
         return new HttpURLResponse(con);
     }
 
-    private static class HttpURLResponse implements Response {
+    private final class HttpURLResponse implements Response {
 
         private final HttpURLConnection con;
 
@@ -103,7 +105,7 @@ public class HttpURLConnectionHttpChannel implements HttpChannel {
         }
 
         public InputStream getStream() throws IOException {
-            if(getStatusCode() >= 400) {
+            if(getStatusCode() >= HTTP_BAD_REQUEST) {
                 return EmptyInputStream.INSTANCE;
             }else{
                 return con.getInputStream();

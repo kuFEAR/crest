@@ -359,7 +359,7 @@
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_HTTP_METHOD, "HEAD");
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER, new Stubs.ResponseHandler1());
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, PARAMs);
-//        defaultOverrides.put(CONFIG_PARAM_DEFAULT_DESTINATION, HttpRequest.DEST_FORM);
+//        defaultOverrides.put(CONFIG_PARAM_DEFAULT_TYPE, HttpRequest.DEST_FORM);
 //        defaultOverrides.put(CONFIG_PARAM_DEFAULT_INJECTOR, new Stubs.RequestParameterInjector1());
 //        defaultOverrides.put(CONFIG_PARAM_DEFAULT_SERIALIZER, new Stubs.Serializer1());
 //        defaultOverrides.put(CONFIG_PARAM_DEFAULT_NAME, "name");
@@ -387,7 +387,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_NAME),
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_VALUE),
-//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_DESTINATION),
+//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_TYPE),
 //                                            (Serializer) defaultOverrides.get(CONFIG_PARAM_DEFAULT_SERIALIZER),
 //                                            (Injector) defaultOverrides.get(CONFIG_PARAM_DEFAULT_INJECTOR)
 //                                    )
@@ -409,21 +409,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_NAME),
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_VALUE),
-//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_DESTINATION),
+//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_TYPE),
 //                                            (Serializer) defaultOverrides.get(CONFIG_PARAM_DEFAULT_SERIALIZER),
 //                                            (Injector) defaultOverrides.get(CONFIG_PARAM_DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_NAME),
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_VALUE),
-//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_DESTINATION),
+//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_TYPE),
 //                                            (Serializer) defaultOverrides.get(CONFIG_PARAM_DEFAULT_SERIALIZER),
 //                                            (Injector) defaultOverrides.get(CONFIG_PARAM_DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_NAME),
 //                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_VALUE),
-//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_DESTINATION),
+//                                            (String) defaultOverrides.get(CONFIG_PARAM_DEFAULT_TYPE),
 //                                            (Serializer) defaultOverrides.get(CONFIG_PARAM_DEFAULT_SERIALIZER),
 //                                            (Injector) defaultOverrides.get(CONFIG_PARAM_DEFAULT_INJECTOR)
 //                                    )
@@ -460,12 +460,12 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new ToStringSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    )
 //                            },
-//                            DEFAULT_EXTRA_PARAMs
+//                            DEFAULT_EXTRA_PARAMS
 //                    ));
 //                    put(Interface.B, new DefaultMethodConfig(
 //                            Interface.B,
@@ -482,26 +482,26 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new ToStringSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new ArraySerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new DateSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    )
 //                            },
-//                            DEFAULT_EXTRA_PARAMs
+//                            DEFAULT_EXTRA_PARAMS
 //                    ));
 //                }}
 //        );
@@ -533,7 +533,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -555,21 +555,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -624,7 +624,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -646,21 +646,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    )
@@ -748,21 +748,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer1(),
 //                                            new Stubs.RequestParameterInjector1()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_DESTINATION,
+//                                            DEFAULT_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    )

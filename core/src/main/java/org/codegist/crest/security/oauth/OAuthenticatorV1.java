@@ -29,11 +29,13 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.Response;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.HttpRequest;
+import org.codegist.crest.io.http.HttpRequestExecutor;
 import org.codegist.crest.io.http.Pair;
-import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.io.http.entity.UrlEncodedFormEntityWriter;
-import org.codegist.crest.io.http.*;
+import org.codegist.crest.io.http.param.ParamType;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -47,6 +49,9 @@ import java.util.Random;
 import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.encode;
 import static org.codegist.common.net.Urls.parseQueryString;
+import static org.codegist.crest.io.http.HttpMethod.GET;
+import static org.codegist.crest.io.http.param.ParamType.FORM;
+import static org.codegist.crest.io.http.param.ParamType.QUERY;
 import static org.codegist.crest.util.Pairs.join;
 import static org.codegist.crest.util.Pairs.sortByNameAndValues;
 
@@ -82,7 +87,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private final VariantProvider variant;
 
     private final OAuthToken consumerOAuthToken;
-    private final RequestExecutor httpRequestExecutor;
+    private final HttpRequestExecutor httpRequestExecutor;
     private final String callback;
 
     private final String requestTokenUrl;
@@ -94,15 +99,15 @@ public class OAuthenticatorV1 implements OAuthenticator {
     private final String refreshAccessTokenUrl;
     private final HttpMethod refreshAccessTokenMeth;
 
-    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant) {
+    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant) {
         this(httpRequestExecutor, consumerOAuthToken, variant, null);
     }
 
-    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, Map<String,Object> crestProperties) {
+    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, Map<String,Object> crestProperties) {
         this(httpRequestExecutor, consumerOAuthToken, new DefaultVariantProvider(), crestProperties);
     }
 
-    public OAuthenticatorV1(RequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant, Map<String, Object> crestProperties) {
+    public OAuthenticatorV1(HttpRequestExecutor httpRequestExecutor, OAuthToken consumerOAuthToken, VariantProvider variant, Map<String, Object> crestProperties) {
         this.variant = variant;
         this.consumerOAuthToken = consumerOAuthToken;
         this.httpRequestExecutor = httpRequestExecutor;
@@ -173,14 +178,14 @@ public class OAuthenticatorV1 implements OAuthenticator {
         try {
             List<Pair> oauthParams = oauth(requestOAuthToken, meth, url, EMPTY_PAIRS, extrasOAuthParams);
 
-            String dest = HttpMethod.GET.equals(meth) ? HttpRequest.DEST_QUERY : HttpRequest.DEST_FORM;
+            ParamType type = GET.equals(meth) ? QUERY : FORM;
 
             HttpRequest.Builder request = new HttpRequest.Builder(url, ENTITY_WRITER, ENC).action(meth);
             for(Pair param : oauthParams){
-                request.addParam(param.getName(), param.getValue(), dest, true);
+                request.addParam(param.getName(), param.getValue(), type, true);
             }
 
-            refreshTokenResponse = httpRequestExecutor.execute(request.build());
+            refreshTokenResponse = httpRequestExecutor.execute(request.build());//XXX should not assum the 
 
             Map<String,String> result = parseQueryString(refreshTokenResponse.deserializeTo(String.class));
             return new OAuthToken(
@@ -197,7 +202,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
         }
     }
 
-
+    private static final int AFTER_PROTOCOL_INDEX = 8;
     /**
      * The Signature Base String includes the io absolute URL, tying the signature to a specific endpoint. The URL used in the Signature Base String MUST include the scheme, authority, and path, and MUST exclude the query and fragment as defined by [RFC3986] section 3.<br>
      * If the absolute io URL is not available to the Service Provider (it is always available to the Consumer), it can be constructed by combining the scheme being used, the HTTP Host header, and the relative HTTP io URL. If the Host header is not available, the Service Provider SHOULD use the host name communicated to the Consumer in the documentation or other means.<br>
@@ -214,12 +219,14 @@ public class OAuthenticatorV1 implements OAuthenticator {
      */
     private static String constructRequestURL(String url) {
         int index = url.indexOf('?');
+
+        String retVal = url;
         if (-1 != index) {
-            url = url.substring(0, index);
+            retVal = retVal.substring(0, index);
         }
-        int slashIndex = url.indexOf("/", 8);
-        String baseURL = url.substring(0, slashIndex).toLowerCase();
-        int colonIndex = baseURL.indexOf(":", 8);
+        int slashIndex = retVal.indexOf('/', AFTER_PROTOCOL_INDEX);
+        String baseURL = retVal.substring(0, slashIndex).toLowerCase();
+        int colonIndex = baseURL.indexOf(':', AFTER_PROTOCOL_INDEX);
         if (-1 != colonIndex) {
             // url contains port number
             if (baseURL.startsWith("http://") && baseURL.endsWith(":80")) {
@@ -230,7 +237,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
                 baseURL = baseURL.substring(0, colonIndex);
             }
         }
-        return baseURL + url.substring(slashIndex);
+        return baseURL + retVal.substring(slashIndex);
     }
 
     private String sign(OAuthToken accessOAuthToken, String url, HttpMethod method, List<Pair> oauthParams) {
@@ -279,7 +286,7 @@ public class OAuthenticatorV1 implements OAuthenticator {
         return params;
     }
 
-    static interface VariantProvider {
+    interface VariantProvider {
 
         String timestamp();
 
@@ -289,9 +296,10 @@ public class OAuthenticatorV1 implements OAuthenticator {
 
     static class DefaultVariantProvider implements VariantProvider {
         private final Random rdm = new SecureRandom();
+        private static final long SECONDS_IN_MILLIS = 1000l;
 
         public String timestamp() {
-            return String.valueOf(System.currentTimeMillis() / 1000l);
+            return String.valueOf(System.currentTimeMillis() / SECONDS_IN_MILLIS);
         }
 
         public String nonce() {

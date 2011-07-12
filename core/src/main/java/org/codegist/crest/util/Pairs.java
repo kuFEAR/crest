@@ -47,7 +47,7 @@ public final class Pairs {
 
     public static List<Pair> sortByNameAndValues(List<Pair> map){
        List<Pair> sorted = new ArrayList<Pair>(map);
-       Collections.sort(sorted, HTTP_PAIR__NAME_VALUE_COMPARATOR);
+       Collections.sort(sorted, HTTP_PAIR_NAME_VALUE_COMPARATOR);
        return sorted;
     }
 
@@ -130,7 +130,7 @@ public final class Pairs {
     }
 
 
-    private static final Comparator<Pair> HTTP_PAIR__NAME_VALUE_COMPARATOR = new Comparator<Pair>() {
+    private static final Comparator<Pair> HTTP_PAIR_NAME_VALUE_COMPARATOR = new Comparator<Pair>() {
         public int compare(Pair o1, Pair o2) {
             int i = o1.getName().compareTo(o2.getName());
             return i != 0 ? i : o1.getValue().compareTo(o2.getValue());

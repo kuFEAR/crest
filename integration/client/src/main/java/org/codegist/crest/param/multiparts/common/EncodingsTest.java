@@ -25,9 +25,7 @@ import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.annotate.POST;
 import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.common.IEncodingsTest;
-import org.junit.Test;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.EnumSet;
 

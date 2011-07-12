@@ -18,12 +18,12 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest.serializer.primitive;
 
 import org.codegist.common.io.IOs;
 import org.codegist.crest.CRestException;
+import org.codegist.crest.serializer.Deserializer;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -31,12 +31,9 @@ import java.nio.charset.Charset;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class IntDeserializer implements Deserializer  {
+public class VoidDeserializer implements Deserializer {
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        try {
-            return (T) Integer.valueOf(IOs.toString(stream, charset, true));
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+        IOs.close(stream);
+        return null;
     }
 }

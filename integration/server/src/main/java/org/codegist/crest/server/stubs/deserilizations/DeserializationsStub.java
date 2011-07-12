@@ -23,7 +23,6 @@ package org.codegist.crest.server.stubs.deserilizations;
 import javax.ws.rs.*;
 import java.util.List;
 
-import static java.lang.String.valueOf;
 import static org.codegist.common.collect.Collections.join;
 
 /**
@@ -48,14 +47,7 @@ public class DeserializationsStub {
     }
 
     @GET
-    @Path("primitive")
-    @Produces("text/int")
-    public String primitive(@QueryParam("value") int value) {
-        return valueOf(value);
-    }
-
-    @GET
-    @Path("primitives")
+    @Path("ints")
     public String primitives(@QueryParam("value") List<Integer> values) {
         return join(",", values);
     }
@@ -72,5 +64,62 @@ public class DeserializationsStub {
     public void nothing(@QueryParam("value") String value) {
         this.value = value;
     }
+
+
+    @GET
+    @Path("int")
+    public String getInt(@QueryParam("value") String value) {
+        return value;
+    }
+
+    @GET
+    @Path("byte")
+    public String getByte(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("bytes")
+    public String getBytes(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("short")
+    public String getShort(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("long")
+    public String getLong(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("float")
+    public String getFloat(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("double")
+    public String getDouble(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("char")
+    public String getChar(@QueryParam("value") String value){
+        return value;
+    }
+
+    @GET
+    @Path("boolean")
+    public String getBoolean(@QueryParam("value") String value){
+        return value;
+    }
+
+    
 
 }

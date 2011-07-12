@@ -28,7 +28,6 @@ import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.io.Request;
-import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.serializer.DeserializationManager;
@@ -90,10 +89,7 @@ public class DefaultCRest extends CRest implements Disposable {
                 try {
                     return mc.getErrorHandler().handle(request, e);
                 } finally {
-                    Disposables.dispose(response);
-                    if(e instanceof RequestException) {
-                        Disposables.dispose(e);
-                    }
+                    Disposables.dispose(response, e);
                 }
             }
         }

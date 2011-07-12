@@ -32,14 +32,46 @@ public interface IDeserializations {
 
     InputStream inputStream(String data);
 
-    int primitive(int value);
-
-    int[] primitives(int[] values);
+    int[] getInts(int[] values);
 
     String get();
 
     void nothing(String value);
 
     Void nothing2(String value);
-    
+
+
+    byte getByte(String value);
+
+    byte[] getBytes(String value);
+
+    short getShort(String value);
+
+    int getInt(String value);
+
+    long getLong(String value);
+
+    float getFloat(String value);
+
+    double getDouble(String value);
+
+    char getChar(String value);
+
+    boolean getBoolean(String value);
+
+    Byte getWrappedByte(String value);
+
+    Short getWrappedShort(String value);
+
+    Integer getWrappedInt(String value);
+
+    Long getWrappedLong(String value);
+
+    Float getWrappedFloat(String value);
+
+    Double getWrappedDouble(String value);
+
+    Character getWrappedChar(String value);
+
+    Boolean getWrappedBoolean(String value);
 }

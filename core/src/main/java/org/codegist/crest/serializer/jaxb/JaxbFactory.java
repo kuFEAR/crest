@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-class JaxbFactory {
+final class JaxbFactory {
 
     static final Long DEFAULT_MAX_WAIT = 30000l;
     static final Integer DEFAULT_POOL_SIZE = 1;
@@ -39,6 +39,10 @@ class JaxbFactory {
     static final String CUSTOM_JAXB = "jaxb.custom";
     static final String MODEL_PACKAGE = "jaxb.model.package";
     static final String MODEL_FACTORY_CLASS = "jaxb.model.factory-class";
+
+    private JaxbFactory(){
+        throw new IllegalStateException();
+    }
 
     static Jaxb create(Map<String,Object> crestProperties) {
         Jaxb jaxb = (Jaxb) crestProperties.get(CUSTOM_JAXB);
@@ -76,9 +80,9 @@ class JaxbFactory {
         long maxWait = Objects.defaultIfNull((Long) crestProperties.get(POOL_RETRIEVAL_MAX_WAIT_PROP), DEFAULT_MAX_WAIT);
 
         if (poolSize == 1) {
-            return new SimpleJaxb(crestProperties, jaxb);
+            return new SimpleJaxb(jaxb);
         } else {
-            return new PooledJaxb(crestProperties, jaxb, poolSize, maxWait);
+            return new PooledJaxb(jaxb, poolSize, maxWait);
         }
     }
 }

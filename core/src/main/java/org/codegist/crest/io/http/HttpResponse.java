@@ -59,7 +59,9 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public InputStream asStream() {
-        if (inputStream == null) return null;
+        if (inputStream == null) {
+            return null;
+        }
         if (responseString != null) {
             throw new IllegalStateException("Stream as already been consumed");
         }
@@ -67,7 +69,9 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public String asString() throws IOException {
-        if (inputStream == null) return null;
+        if (inputStream == null) {
+            return null;
+        }
         if (responseString == null) {
             responseString = IOs.toString(inputStream, resource.getCharset(), true);
         }

@@ -50,11 +50,8 @@ public class DeserializationsTest extends CommonDeserializationsTest<Deserializa
         @Path("inputstream")
         InputStream inputStream(@QueryParam("value") String value);
 
-        @Path("primitive")
-        int primitive(@QueryParam("value") int value);
-
-        @Path("primitives")
-        int[] primitives(@QueryParam("value") int[] values);
+        @Path("ints")
+        int[] getInts(@QueryParam("value") int[] values);
 
         @Path("get")
         String get();
@@ -66,5 +63,58 @@ public class DeserializationsTest extends CommonDeserializationsTest<Deserializa
         @HEAD
         @Path("void")
         Void nothing2(@QueryParam("value") String value);
+
+
+
+        @Path("int")
+        int getInt(@QueryParam("value") String value);
+
+        @Path("byte")
+        byte getByte(@QueryParam("value") String value);
+
+        @Path("bytes")
+        byte[] getBytes(@QueryParam("value") String value);
+
+        @Path("short")
+        short getShort(@QueryParam("value") String value);
+
+        @Path("long")
+        long getLong(@QueryParam("value") String value);
+
+        @Path("float")
+        float getFloat(@QueryParam("value") String value);
+
+        @Path("double")
+        double getDouble(@QueryParam("value") String value);
+
+        @Path("char")
+        char getChar(@QueryParam("value") String value);
+
+        @Path("boolean")
+        boolean getBoolean(@QueryParam("value") String value);
+
+        @Path("byte")
+        Byte getWrappedByte(@QueryParam("value") String value);
+
+        @Path("short")
+        Short getWrappedShort(@QueryParam("value") String value);
+
+        @Path("int")
+        Integer getWrappedInt(@QueryParam("value") String value);
+
+        @Path("long")
+        Long getWrappedLong(@QueryParam("value") String value);
+
+        @Path("float")
+        Float getWrappedFloat(@QueryParam("value") String value);
+
+        @Path("double")
+        Double getWrappedDouble(@QueryParam("value") String value);
+
+        @Path("char")
+        Character getWrappedChar(@QueryParam("value") String value);
+
+        @Path("boolean")
+        Boolean getWrappedBoolean(@QueryParam("value") String value);
     }
 }

@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
+import static org.codegist.crest.io.http.param.ParamProcessors.iterate;
 import static org.codegist.crest.util.Pairs.join;
 
 /**
@@ -43,8 +45,9 @@ public class UrlEncodedFormEntityWriter implements EntityWriter {
     }
 
     public void writeTo(HttpRequest request, OutputStream out) throws IOException {
-        Writer writer = new OutputStreamWriter(out, request.getCharset());
-        join(writer, request.iterateProcessedForms(), '&');
+        Charset charset = request.getCharset();
+        Writer writer = new OutputStreamWriter(out, charset);
+        join(writer, iterate(request.getFormParams(), charset), '&');
         writer.flush();
     }
 

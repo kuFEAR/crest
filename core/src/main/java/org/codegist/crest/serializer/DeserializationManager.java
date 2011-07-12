@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.common.io.IOs;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.util.Registry;
@@ -68,9 +67,10 @@ public final class DeserializationManager {
     }
 
     public <T> T deserializeByDeserializers(Class<T> type, Type genericType, InputStream stream, Charset charset, Deserializer[] deserializers) {
+        InputStream pStream = stream;
         if (deserializers.length > 1) {// user specific unique expected mime type, worse scenario, need to dump response in memory to retry if deserialization fails
             try {
-                stream = new ByteArrayInputStream(toByteArray(stream, true));
+                pStream = new ByteArrayInputStream(toByteArray(pStream, true));
             } catch (IOException e) {
                 throw CRestException.handle(e);
             }
@@ -78,7 +78,7 @@ public final class DeserializationManager {
         for (Deserializer deserializer : deserializers) { /*  */
             try {
                 LOG.debug("Trying to deserialize response with user specified deserializer : %s.", deserializer);
-                return deserializer.<T>deserialize(type, genericType, stream, charset);
+                return deserializer.<T>deserialize(type, genericType, pStream, charset);
             } catch (CRestException e) {
                 LOG.warn("Failed to deserialize response with user specified deserializer : %s. Trying next.", deserializer);
             }

@@ -148,7 +148,7 @@ public final class Registry<K,T> {
         }
     }
 
-    public final static class Builder<K,T> {
+    public static final class Builder<K,T> {
 
         private final Map<K, Object> mapping = new HashMap<K, Object>();
         private final Class<T> clazz;

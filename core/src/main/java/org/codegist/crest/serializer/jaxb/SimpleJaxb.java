@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -40,7 +39,7 @@ class SimpleJaxb implements Jaxb {
     private final Marshaller marshaller;
     private final Unmarshaller unmarshaller;
 
-    public SimpleJaxb(Map<String,Object> crestProperties, JAXBContext jaxbContext) {
+    public SimpleJaxb(JAXBContext jaxbContext) {
         try {
             this.marshaller = jaxbContext.createMarshaller();
             this.unmarshaller = jaxbContext.createUnmarshaller();
@@ -49,17 +48,13 @@ class SimpleJaxb implements Jaxb {
         }
     }
 
-    public <T> void marshal(T object, OutputStream out, Charset charset, Class<?>... types) {
+    public <T> void marshal(T object, OutputStream out, Charset charset) {
         try {
             marshaller.setProperty(Marshaller.JAXB_ENCODING, charset.toString());
             marshaller.marshal(object, out);
         } catch (JAXBException e) {
             throw CRestException.handle(e);
         }
-    }
-
-    public <T> void marshal(T object, OutputStream out, Charset charset) {
-        marshal(object, out, charset, null);
     }
 
     public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) {

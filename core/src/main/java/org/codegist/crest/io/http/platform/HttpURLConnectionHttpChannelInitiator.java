@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
 */
-public class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiator {
+public final class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiator {
 
     public HttpChannel initiate(HttpMethod method, String url, Charset charset) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();

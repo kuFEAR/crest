@@ -32,18 +32,18 @@ import java.lang.annotation.Annotation;
  */
 public class NoOpAnnotationHandler<A extends Annotation> implements AnnotationHandler<A> {
 
-    protected final Logger LOG = Logger.getLogger(getClass());
+    private final Logger log = Logger.getLogger(getClass());
 
     public void handleInterfaceAnnotation(A annotation, InterfaceConfigBuilder builder) {
-        LOG.debug("Ignoring interface level annotation %s", annotation);
+        log.debug("Ignoring interface level annotation %s", annotation);
     }
 
     public void handleMethodAnnotation(A annotation, MethodConfigBuilder builder) {
-        LOG.debug("Ignoring method level annotation %s", annotation);
+        log.debug("Ignoring method level annotation %s", annotation);
     }
 
     public void handleParameterAnnotation(A annotation, ParamConfigBuilder builder) {
-        LOG.debug("Ignoring parameter level annotation %s", annotation);
+        log.debug("Ignoring parameter level annotation %s", annotation);
     }
 
 }

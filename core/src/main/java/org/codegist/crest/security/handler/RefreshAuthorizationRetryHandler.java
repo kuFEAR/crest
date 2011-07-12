@@ -21,12 +21,11 @@
 package org.codegist.crest.security.handler;
 
 import org.codegist.common.lang.Numbers;
-import org.codegist.common.lang.Validate;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.io.RequestException;
 import org.codegist.crest.handler.RetryHandler;
+import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.http.HttpResponse;
 import org.codegist.crest.security.Authorization;
 
@@ -34,6 +33,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.codegist.common.lang.Validate.notNull;
+import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
 
 /**
  * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
@@ -41,7 +41,7 @@ import static org.codegist.common.lang.Validate.notNull;
  */
 public class RefreshAuthorizationRetryHandler implements RetryHandler {
 
-    private final static Logger LOGGER = Logger.getLogger(RefreshAuthorizationRetryHandler.class);
+    private static final Logger LOGGER = Logger.getLogger(RefreshAuthorizationRetryHandler.class);
     public static final int DEFAULT_MAX_ATTEMPTS = 1; /* will retry just once in order to refresh the token */
 
     private final Authorization authorization;
@@ -57,7 +57,7 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
         try {
             if (retryNumber > max
                     || !exception.hasResponse()
-                    || ((HttpResponse) exception.getResponse()).getStatusCode() != 401) {
+                    || ((HttpResponse) exception.getResponse()).getStatusCode() != HTTP_UNAUTHORIZED) {
                 LOGGER.debug("Not retrying, maximum failure reached or catched exception is neither a HttpException nor a 401 HTTP error code");
                 return false;
             }

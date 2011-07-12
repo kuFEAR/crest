@@ -82,22 +82,20 @@ class HttpChannelResponseHttpResource implements HttpResource {
         private final Charset charset;
 
         private ContentType(String contentType) {
-            String mimeType = DEFAULT_MIME_TYPE;
-            Charset charset = DEFAULT_CHARSET;
+            String pMimeType = DEFAULT_MIME_TYPE;
+            Charset pCharset = DEFAULT_CHARSET;
             if(contentType != null) {
                 String[] contentTypes = contentType.split(";");
 
                 if (contentTypes.length >= 1) {
-                    mimeType = contentTypes[0];
+                    pMimeType = contentTypes[0];
                 }
-                if (contentTypes.length >= 2) {
-                    if (contentTypes[1].contains("charset")) {
-                        charset = Charset.forName(contentTypes[1].split("=")[1]);
-                    }
+                if (contentTypes.length >= 2 && contentTypes[1].contains("charset")) {
+                    pCharset = Charset.forName(contentTypes[1].split("=")[1]);
                 }
             }
-            this.mimeType = mimeType;
-            this.charset = charset;
+            this.mimeType = pMimeType;
+            this.charset = pCharset;
         }
     }
 }

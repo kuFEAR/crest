@@ -22,9 +22,9 @@ package org.codegist.crest.delicious.handler;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.io.Response;
 import org.codegist.crest.delicious.model.Result;
 import org.codegist.crest.handler.ResponseHandler;
+import org.codegist.crest.io.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

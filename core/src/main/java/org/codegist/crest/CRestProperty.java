@@ -291,7 +291,7 @@ public interface CRestProperty {
     String CONFIG_METHOD_DEFAULT_ACCEPT = "config.method.default.accept";
 
     /**
-     * override the default method extra params {@link org.codegist.crest.config.MethodConfig#DEFAULT_EXTRA_PARAMs}.
+     * override the default method extra params {@link org.codegist.crest.config.MethodConfig#DEFAULT_EXTRA_PARAMS}.
      * <p>Expects an array of {@link org.codegist.crest.config.ParamConfig}
      *
      * @see org.codegist.crest.InterfaceContext#getProperties()
@@ -346,7 +346,7 @@ public interface CRestProperty {
      *
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
-    String CONFIG_PARAM_DEFAULT_DESTINATION = "config.param.default.destination";
+    String CONFIG_PARAM_DEFAULT_TYPE = "config.param.default.type";
 
     String CONFIG_PARAM_DEFAULT_LIST_SEPARATOR = "config.param.default.list-separator";
 
@@ -385,5 +385,7 @@ public interface CRestProperty {
      * @see org.codegist.crest.InterfaceContext#getProperties()
      */
     String CONFIG_PARAM_DEFAULT_NAME = "config.param.default.name";
+
+    String CONFIG_PARAM_DEFAULT_PROCESSOR = "config.param.default.processor";
 }
 

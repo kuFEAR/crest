@@ -25,7 +25,6 @@ import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.serializer.BunchOfDataSerializer;
 import org.codegist.crest.serializer.DataSerializer;
-import org.junit.Test;
 
 import java.util.Collection;
 import java.util.EnumSet;

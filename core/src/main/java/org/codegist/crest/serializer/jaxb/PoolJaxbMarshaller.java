@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -38,19 +37,15 @@ class PooledJaxb implements Jaxb {
     private final BlockingQueue<Jaxb> pool;
     private final long maxWait;
 
-    public PooledJaxb(Map<String,Object> crestProperties, JAXBContext jaxbContext, int poolSize, long maxWait) {
+    public PooledJaxb(JAXBContext jaxbContext, int poolSize, long maxWait) {
         this.maxWait = maxWait;
         this.pool = new ArrayBlockingQueue<Jaxb>(poolSize);
         for (int i = 0; i < poolSize; i++) {
-            this.pool.add(new SimpleJaxb(crestProperties, jaxbContext));
+            this.pool.add(new SimpleJaxb(jaxbContext));
         }
     }
 
     public <T> void marshal(T object, OutputStream out, Charset charset) {
-        marshal(object, out, charset, null);
-    }
-
-    public <T> void marshal(T object, OutputStream out, Charset charset, Class<?>[] types) {
         Jaxb jaxb = get();
         try {
             jaxb.marshal(object, out, charset);
@@ -76,8 +71,9 @@ class PooledJaxb implements Jaxb {
         Jaxb jaxb;
         try {
             jaxb = pool.poll(maxWait, TimeUnit.MILLISECONDS);
-            if (jaxb == null)
+            if (jaxb == null) {
                 throw new CRestException("No jaxb could have been retrieved in the allowed time window");
+            }
         } catch (InterruptedException e) {
             throw CRestException.handle(e);
         }

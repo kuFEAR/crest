@@ -37,12 +37,16 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-class SimpleXmlFactory {
+final class SimpleXmlFactory {
 
     private static final String SERIALIZER_PREFIX = "simplexml-serializer";
     private static final String DESERIALIZER_PREFIX = "simplexml-deserializer";
 
     static final String USER_SERIALIZER_PROP =  "user-serializer";
+
+    private SimpleXmlFactory(){
+        throw new IllegalStateException();
+    }
 
     static Serializer createSerializer(Map<String,Object> cfg){
         return create(cfg, SERIALIZER_PREFIX);
@@ -106,7 +110,7 @@ class SimpleXmlFactory {
         }
     }
 
-    private static class BooleanMatcher implements Transform<Boolean> {
+    private static final class BooleanMatcher implements Transform<Boolean> {
         private final String trueVal;
         private final String falseVal;
 
@@ -124,19 +128,19 @@ class SimpleXmlFactory {
         }
     }
 
-    public static class DateMatcher implements Transform<Date> {
-        private final DateFormat DF;
+    private static final class DateMatcher implements Transform<Date> {
+        private final DateFormat df;
 
         private DateMatcher(String format) {
-            this.DF = new SimpleDateFormat(format);
+            this.df = new SimpleDateFormat(format);
         }
 
         public synchronized Date read(String value) throws ParseException {
-            return DF.parse(value);
+            return df.parse(value);
         }
 
         public synchronized String write(Date value) {
-            return DF.format(value);
+            return df.format(value);
         }
     }
 }

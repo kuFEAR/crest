@@ -20,9 +20,7 @@
 
 package org.codegist.crest.config;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * Interface configuration holder object.

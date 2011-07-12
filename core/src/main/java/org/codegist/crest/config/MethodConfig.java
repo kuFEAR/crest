@@ -20,11 +20,11 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.*;
-import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.lang.reflect.Method;
@@ -73,7 +73,7 @@ public interface MethodConfig {
      *
      * @see org.codegist.crest.config.MethodConfig#getExtraParams()
      */
-    ParamConfig[] DEFAULT_EXTRA_PARAMs = new ParamConfig[0];
+    ParamConfig[] DEFAULT_EXTRA_PARAMS = new ParamConfig[0];
 
     /**
      * Default http method applied when non specified.

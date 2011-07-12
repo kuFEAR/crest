@@ -29,9 +29,7 @@ import org.codegist.crest.entity.JsonEntityWriter;
 import org.codegist.crest.entity.XmlEntityWriter;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
-
 import org.codegist.crest.model.SerializerTypes;
-import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
@@ -46,10 +44,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;

@@ -21,32 +21,23 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.annotate.Param;
-import org.codegist.crest.io.Request;
 import org.codegist.crest.config.*;
+import org.codegist.crest.io.Request;
 import org.codegist.crest.io.http.entity.EntityWriter;
+import org.codegist.crest.io.http.param.ParamType;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 import static org.codegist.common.lang.Objects.asCollection;
-import static org.codegist.crest.io.http.HttpParamProcessor.iterateProcess;
 import static org.codegist.crest.util.Params.isNull;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HttpRequest implements Request {
-
-    public static final String DEST_QUERY = "query";
-    public static final String DEST_PATH = "path";
-    public static final String DEST_MATRIX = "matrix";
-    public static final String DEST_FORM = "form";
-    public static final String DEST_HEADER = "header";
-    public static final String DEST_COOKIE = "cookie";
 
     private final Request request;
 
@@ -156,30 +147,6 @@ public class HttpRequest implements Request {
 
     public List<HttpParam> getFormParams() {
         return formParams;
-    }
-
-    public Iterator<Pair> iterateProcessedHeaders() {
-        return iterateProcess(headerParams, charset);
-    }
-
-    public Iterator<Pair> iterateProcessedMatrixes() {
-        return iterateProcess(matrixParams, charset);
-    }
-
-    public Iterator<Pair> iterateProcessedQueries() {
-        return iterateProcess(queryParams, charset);
-    }
-
-    public Iterator<Pair> iterateProcessedPaths() {
-        return iterateProcess(pathParams, charset);
-    }
-
-    public Iterator<Pair> iterateProcessedCookies() {
-        return iterateProcess(cookieParams, charset);
-    }
-
-    public Iterator<Pair> iterateProcessedForms() {
-        return iterateProcess(formParams, charset);
     }
 
     public static HttpRequest from(Request request){
@@ -294,8 +261,8 @@ public class HttpRequest implements Request {
             return this;
         }
 
-        public Builder addParam(String name, String value, String dest, boolean encoded) {
-            return addParam(new StringParamConfig(name, value, dest, encoded));
+        public Builder addParam(String name, String value, ParamType type, boolean encoded) {
+            return addParam(new StringParamConfig(name, value, type, encoded));
         }
 
         public Builder addParam(ParamConfig paramConfig) {
@@ -303,28 +270,34 @@ public class HttpRequest implements Request {
         }
 
         public Builder addParam(ParamConfig paramConfig, Object value) {
-            String dest = paramConfig.getDestination().toLowerCase();
             List<HttpParam> params;
-            if (DEST_QUERY.equals(dest)) {
-                params = queryParams;
-            } else if (DEST_PATH.equals(dest)) {
-                params = pathParams;
-            } else if (DEST_FORM.equals(dest)) {
-                params = formParams;
-            } else if (DEST_HEADER.equals(dest)) {
-                params = headerParams;
-            } else if (DEST_COOKIE.equals(dest)) {
-                params = cookieParams;
-            } else if (DEST_MATRIX.equals(dest)) {
-                params = matrixParams;
-            } else {
-                throw new IllegalStateException("Unsupported destination ! (dest=" + dest + ")");
+            switch(paramConfig.getType()){
+                case COOKIE:
+                    params = cookieParams;
+                    break;
+                case FORM:
+                    params = formParams;
+                    break;
+                case HEADER:
+                    params = headerParams;
+                    break;
+                case MATRIX:
+                    params = matrixParams;
+                    break;
+                case PATH:
+                    params = pathParams;
+                    break;
+                case QUERY:
+                    params = queryParams;
+                    break;
+                default:
+                    throw new IllegalStateException("Unsupported param type ! (type=" + paramConfig.getType() + ")");
             }
             params.add(new HttpParam(paramConfig, asCollection(value)));
             return this;
         }
 
-        private static class SimplePathTemplate implements PathTemplate {
+        private static final class SimplePathTemplate implements PathTemplate {
             private final String path;
 
             private SimplePathTemplate(String path) {
@@ -340,7 +313,7 @@ public class HttpRequest implements Request {
             }
         }
 
-        private static class SimplePathBuilder implements PathBuilder {
+        private static final class SimplePathBuilder implements PathBuilder {
             private final String path;
 
             private SimplePathBuilder(String path) {

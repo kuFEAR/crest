@@ -23,7 +23,7 @@ package org.codegist.crest.io.http;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.*;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
@@ -36,8 +36,9 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
-import static org.codegist.crest.io.http.HttpParamProcessor.process;
+import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 import static org.codegist.crest.io.http.HttpRequest.from;
+import static org.codegist.crest.io.http.param.ParamProcessors.iterate;
 import static org.codegist.crest.util.Pairs.join;
 
 /**
@@ -55,11 +56,15 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     }
 
     public Response execute(Request request) throws RequestException {
+        HttpRequest httpRequest = request instanceof HttpRequest ? (HttpRequest) request : from(request);
+        return execute(httpRequest);
+    }
+
+    public HttpResponse execute(HttpRequest httpRequest) throws RequestException {
         HttpResponse response;
         try {
-            HttpRequest httpRequest = request instanceof HttpRequest ? (HttpRequest) request : from(request);
             response = doExecute(httpRequest);
-            if(response.getStatusCode() >= 400) {
+            if(response.getStatusCode() >= HTTP_BAD_REQUEST) {
                 throw new RequestException(response.getStatusMessage(), response);
             }
             return response;
@@ -101,7 +106,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
             httpChannel.setAccept(httpRequest.getAccept());
         }
 
-        Iterator<Pair> headers = httpRequest.iterateProcessedHeaders();
+        Iterator<Pair> headers = iterate(httpRequest.getHeaderParams(), charset);
         while(headers.hasNext()){
             Pair encoded = headers.next();
             String name = encoded.getName();
@@ -110,12 +115,13 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
             httpChannel.addHeader(name, value);
         }
 
-        for(HttpParam header : httpRequest.getCookieParams()){
-            String cookie = join(process(header, charset), ',');
-            if(cookie.length() > 0) {
-                LOGGER.debug("Cookie: %s ", cookie);
-                httpChannel.addHeader("Cookie", cookie);
-            }
+        Iterator<Pair> cookies = iterate(httpRequest.getCookieParams(), charset);
+        while(cookies.hasNext()){
+            Pair encoded = cookies.next();
+            String name = encoded.getName();
+            String value = encoded.getValue();
+            LOGGER.debug("%s: %s ", name, value);
+            httpChannel.addHeader(name, value);
         }
 
         if(httpRequest.getMeth().hasEntity()) {
@@ -137,9 +143,10 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
 
 
     private String getUrlFor(HttpRequest request){
-        Iterator<Pair> queryParamsIterator = request.iterateProcessedQueries();
-        Iterator<Pair> matrixesParamsIterator = request.iterateProcessedMatrixes();
-        Iterator<Pair> pathParamsIterator = request.iterateProcessedPaths();
+        Charset charset = request.getCharset();
+        Iterator<Pair> queryParamsIterator = iterate(request.getQueryParams(), charset);
+        Iterator<Pair> matrixesParamsIterator = iterate(request.getMatrixParams(), charset);
+        Iterator<Pair> pathParamsIterator = iterate(request.getPathParams(), charset);
 
         PathBuilder pathBuilder = request.getPathBuilder();
         while(pathParamsIterator.hasNext()){

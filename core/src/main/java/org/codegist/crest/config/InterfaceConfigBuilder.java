@@ -1,17 +1,19 @@
 package org.codegist.crest.config;
 
-import org.codegist.crest.CRestProperty;
-import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.codegist.crest.CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING;
+import static org.codegist.crest.config.InterfaceConfig.DEFAULT_ENCODING;
 
 @SuppressWarnings("unchecked")
 public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
@@ -40,18 +42,13 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
     /**
      * @inheritDoc
      */
-    public InterfaceConfig build(boolean validateConfig, boolean isTemplate) {
+    public InterfaceConfig build() {
         Map<Method, MethodConfig> mConfig = new HashMap<Method, MethodConfig>();
         for (Map.Entry<Method, MethodConfigBuilder> entry : builderCache.entrySet()) {
-            mConfig.put(entry.getKey(), entry.getValue().build(validateConfig, isTemplate));
+            mConfig.put(entry.getKey(), entry.getValue().build());
         }
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String pEncoding = this.encoding;
-
-        if (!isTemplate) {
-            pEncoding = defaultIfUndefined(pEncoding, CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING, InterfaceConfig.DEFAULT_ENCODING);
-        }
-        
+        String pEncoding = defaultIfUndefined(this.encoding, CONFIG_INTERFACE_DEFAULT_ENCODING, DEFAULT_ENCODING);
         return new DefaultInterfaceConfig(
                 interfaze,
                 pEncoding,

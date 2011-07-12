@@ -20,8 +20,8 @@
 
 package org.codegist.crest.security.oauth;
 
-import org.codegist.crest.io.http.Pair;
 import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.Pair;
 
 import java.util.List;
 

@@ -20,7 +20,6 @@
 
 package org.codegist.crest.param.headers.common;
 
-import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.io.UnsupportedEncodingException;

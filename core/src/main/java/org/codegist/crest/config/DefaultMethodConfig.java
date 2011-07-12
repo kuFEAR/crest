@@ -21,12 +21,12 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
-import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.io.http.HttpMethod;
+import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.lang.reflect.Method;

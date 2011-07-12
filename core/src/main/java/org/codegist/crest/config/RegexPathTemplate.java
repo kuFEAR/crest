@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.Validate;
 import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestException;
 
@@ -37,7 +36,7 @@ import static org.codegist.common.lang.Validate.isTrue;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class RegexPathTemplate implements PathTemplate {
+public final class RegexPathTemplate implements PathTemplate {
 
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("(\\w[-\\w\\.]*)(?::(.+))?");
     private static final Pattern DEFAULT_PATTERN = Pattern.compile("([^/]+?)");
@@ -58,7 +57,7 @@ public class RegexPathTemplate implements PathTemplate {
         return urlTemplate;
     }
 
-    private class DefaultPathBuilder implements PathBuilder {
+    private final class DefaultPathBuilder implements PathBuilder {
 
         private final Map<String, PathTemplate> remainingTemplates = new HashMap<String, PathTemplate>(templates);
         private final StringBuilder url = new StringBuilder(urlTemplate);
@@ -99,7 +98,7 @@ public class RegexPathTemplate implements PathTemplate {
         }
     }
 
-    private static class PathTemplate {
+    private static final class PathTemplate {
         private final String name;
         private final Pattern validator;
 

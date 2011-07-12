@@ -21,12 +21,10 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 
 import static java.lang.String.format;

@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class HttpClientHttpChannel implements HttpChannel {
+public final class HttpClientHttpChannel implements HttpChannel {
 
     private static final Logger LOGGER = Logger.getLogger(HttpClientHttpChannel.class);
     private final HttpClient client;
@@ -80,7 +80,7 @@ public class HttpClientHttpChannel implements HttpChannel {
         return new HttpClientResponse(request, client.execute(request));
     }
 
-    private static class HttpClientResponse implements Response {
+    private final class HttpClientResponse implements Response {
 
         private final HttpUriRequest request;
         private final org.apache.http.HttpResponse response;
@@ -134,7 +134,7 @@ public class HttpClientHttpChannel implements HttpChannel {
         }
     }
 
-    private class HttpEntityWriterHttpEntity extends AbstractHttpEntity {
+    private final class HttpEntityWriterHttpEntity extends AbstractHttpEntity {
 
         private final HttpEntityWriter writer;
 
@@ -150,7 +150,7 @@ public class HttpClientHttpChannel implements HttpChannel {
             return writer.getContentLength();
         }
 
-        public InputStream getContent() throws IOException, IllegalStateException {
+        public InputStream getContent() throws IOException {
             throw new UnsupportedOperationException();
         }
 

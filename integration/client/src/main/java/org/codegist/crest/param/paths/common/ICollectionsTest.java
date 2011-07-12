@@ -21,7 +21,6 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.*;
-import org.junit.Test;
 
 import java.util.EnumSet;
 import java.util.List;

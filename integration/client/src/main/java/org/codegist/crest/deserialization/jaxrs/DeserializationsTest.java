@@ -56,10 +56,6 @@ public class DeserializationsTest extends CommonDeserializationsTest<org.codegis
         InputStream inputStream(@QueryParam("value") String value);
 
         @GET
-        @Path("primitive")
-        int primitive(@QueryParam("value") int value);
-
-        @GET
         @Path("primitives")
         int[] primitives(@QueryParam("value") int[] values);
 
@@ -74,5 +70,73 @@ public class DeserializationsTest extends CommonDeserializationsTest<org.codegis
         @HEAD
         @Path("void")
         Void nothing2(@QueryParam("value") String value);
+
+        @GET
+        @Path("int")
+        int getInt(@QueryParam("value") String value);
+
+        @GET
+        @Path("byte")
+        byte getByte(@QueryParam("value") String value);
+
+        @GET
+        @Path("bytes")
+        byte[] getBytes(@QueryParam("value") String value);
+
+        @GET
+        @Path("short")
+        short getShort(@QueryParam("value") String value);
+
+        @GET
+        @Path("long")
+        long getLong(@QueryParam("value") String value);
+
+        @GET
+        @Path("float")
+        float getFloat(@QueryParam("value") String value);
+
+        @GET
+        @Path("double")
+        double getDouble(@QueryParam("value") String value);
+
+        @GET
+        @Path("char")
+        char getChar(@QueryParam("value") String value);
+
+        @GET
+        @Path("boolean")
+        boolean getBoolean(@QueryParam("value") String value);
+
+        @GET
+        @Path("byte")
+        Byte getWrappedByte(@QueryParam("value") String value);
+
+        @GET
+        @Path("short")
+        Short getWrappedShort(@QueryParam("value") String value);
+
+        @GET
+        @Path("int")
+        Integer getWrappedInt(@QueryParam("value") String value);
+
+        @GET
+        @Path("long")
+        Long getWrappedLong(@QueryParam("value") String value);
+
+        @GET
+        @Path("float")
+        Float getWrappedFloat(@QueryParam("value") String value);
+
+        @GET
+        @Path("double")
+        Double getWrappedDouble(@QueryParam("value") String value);
+
+        @GET
+        @Path("char")
+        Character getWrappedChar(@QueryParam("value") String value);
+
+        @GET
+        @Path("boolean")
+        Boolean getWrappedBoolean(@QueryParam("value") String value);
     }
 }

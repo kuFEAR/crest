@@ -18,10 +18,11 @@
  * More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest.serializer.primitive;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.serializer.StringSerializer;
 
 import java.nio.charset.Charset;
 import java.util.Map;

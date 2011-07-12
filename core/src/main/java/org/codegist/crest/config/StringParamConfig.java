@@ -20,10 +20,11 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.io.http.param.ParamProcessor;
+import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.ToStringSerializer;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -32,13 +33,13 @@ public class StringParamConfig implements ParamConfig {
     private static final Serializer<String> TO_STRING_SERIALIZER = new ToStringSerializer<String>();
     private final String name;
     private final String value;
-    private final String destination;
+    private final ParamType type;
     private final boolean encoded;
 
-    public StringParamConfig(String name, String value, String destination, boolean encoded) {
+    public StringParamConfig(String name, String value, ParamType type, boolean encoded) {
         this.name = name;
         this.value = value;
-        this.destination = destination;
+        this.type = type;
         this.encoded = encoded;
     }
 
@@ -58,20 +59,20 @@ public class StringParamConfig implements ParamConfig {
         return value;
     }
 
-    public String getDestination() {
-        return destination;
+    public ParamType getType() {
+        return type;
     }
 
     public Serializer getSerializer() {
         return TO_STRING_SERIALIZER;
     }
 
-    public Boolean isEncoded() {
-        return encoded;
+    public ParamProcessor getParamProcessor() {
+        return null;
     }
 
-    public String getListSeparator() {
-        return null;
+    public Boolean isEncoded() {
+        return encoded;
     }
 
     public Map<String, Object> getMetaDatas() {

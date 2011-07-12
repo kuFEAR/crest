@@ -18,19 +18,16 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.error;
+package org.codegist.crest.serializer.primitive;
+
+import static java.lang.Double.valueOf;
+import static org.codegist.common.lang.Strings.isBlank;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public interface ErrorHandlers {
-
-    String failAndRetry(String value);
-
-    String retryButFail(String value);
-
-    String failAndHandle(String value);
-
-    String failDefault(String value);
-
+public class DoublePrimitiveDeserializer extends PrimitiveDeserializer {
+    public Double deserialize(String value) {
+        return isBlank(value) ? (double) 0 : valueOf(value);
+    }
 }

@@ -45,12 +45,10 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
 
     private final Map<String,Object> crestProperties;
     private final Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry;
-    private final boolean buildTemplates;
     private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> crestProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean buildTemplates, boolean modelPriority) {
+    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> crestProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean modelPriority) {
         this.handlersRegistry = handlersRegistry;
-        this.buildTemplates = buildTemplates;
         this.modelPriority = modelPriority;
         this.crestProperties = crestProperties;
     }
@@ -89,6 +87,6 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
             }
         }
 
-        return config.build(true, buildTemplates);
+        return config.build();
     }
 }

@@ -21,9 +21,7 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.collect.Maps;
-import org.codegist.common.lang.Objects;
 import org.codegist.common.lang.Strings;
-import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 
@@ -35,7 +33,6 @@ import java.util.regex.Pattern;
 
 import static org.codegist.common.lang.Objects.defaultIfNull;
 import static org.codegist.common.lang.Strings.defaultIfEmpty;
-import static org.codegist.common.lang.Strings.isEmpty;
 
 /**
  * Handy builders for {@link org.codegist.crest.config.DefaultInterfaceConfig}.
@@ -47,7 +44,6 @@ import static org.codegist.common.lang.Strings.isEmpty;
  */
 abstract class ConfigBuilder<T> {
 
-    private final Logger logger = Logger.getLogger(getClass());
     private final Map<String, Object> crestProperties;
     private final Map<Pattern, String> placeholders;
 
@@ -68,49 +64,7 @@ abstract class ConfigBuilder<T> {
      *
      * @return config
      */
-    public T build() {
-        return build(true, false);
-    }
-
-    /**
-     * Build a template config. No default values used. To be used to override another config
-     *
-     * @return config template
-     */
-    public T buildTemplate() {
-        return build(false, true);
-    }
-
-    /**
-     * Build a normal config with defaulted values if necessary. Validate the config if specified
-     *
-     * @param validateConfig flag that indicates if the config should be validated
-     * @return config
-     */
-    public T build(boolean validateConfig) {
-        return build(validateConfig, false);
-    }
-
-    /**
-     * Build a normal config with defaulted values if necessary. No validation occurs
-     *
-     * @return config
-     */
-    public T buildUnvalidatedConfig() {
-        return build(false);
-    }
-
-    /**
-     * Build the config.
-     * <p>If isTemplate is true, the returned config won't have any default value, should be used to override another config.
-     * <p>If validate config is true (and isTemplate is false), the config is validated to ensure required information have been given
-     *
-     * @param validateConfig if true, config is validated
-     * @param isTemplate     if true, return a config template
-     * @return config
-     */
-    public abstract T build(boolean validateConfig, boolean isTemplate);
-
+    public abstract T build();
 
     public Map<String, Object> getCRestProperties() {
         return crestProperties;

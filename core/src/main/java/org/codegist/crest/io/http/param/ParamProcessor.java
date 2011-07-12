@@ -18,21 +18,19 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest.io.http.param;
 
-import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
+import org.codegist.crest.io.http.HttpParam;
+import org.codegist.crest.io.http.Pair;
 
-import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class VoidDeserializer implements Deserializer {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        IOs.close(stream);
-        return null;
-    }
+public interface ParamProcessor {
+
+    Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded);
+
 }

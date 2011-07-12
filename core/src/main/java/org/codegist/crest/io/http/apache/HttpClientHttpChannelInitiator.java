@@ -51,8 +51,10 @@ import java.util.Map;
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
 */
-public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Disposable {
+public final class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Disposable {
 
+    private static final int HTTP_PORT = 80;
+    private static final int HTTPS_PORT = 443;
     private final HttpClient client;
 
     private HttpClientHttpChannelInitiator(HttpClient client) {
@@ -110,8 +112,8 @@ public class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Dis
             }
 
             SchemeRegistry schemeRegistry = new SchemeRegistry();
-            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), HTTP_PORT));
+            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT));
 
             ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
             httpClient = new DefaultHttpClient(cm, params);
