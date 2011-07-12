@@ -20,7 +20,9 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.io.http.param.DefaultParamProcessor;
 import org.codegist.crest.io.http.param.ParamProcessor;
+import org.codegist.crest.io.http.param.ParamProcessors;
 import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.ToStringSerializer;
@@ -35,12 +37,14 @@ public class StringParamConfig implements ParamConfig {
     private final String value;
     private final ParamType type;
     private final boolean encoded;
+    private final ParamProcessor paramProcessor;
 
     public StringParamConfig(String name, String value, ParamType type, boolean encoded) {
         this.name = name;
         this.value = value;
         this.type = type;
         this.encoded = encoded;
+        this.paramProcessor = ParamProcessors.select(type, null);
     }
 
     public Type getValueGenericType() {
@@ -68,7 +72,7 @@ public class StringParamConfig implements ParamConfig {
     }
 
     public ParamProcessor getParamProcessor() {
-        return null;
+        return paramProcessor;
     }
 
     public Boolean isEncoded() {
