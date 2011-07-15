@@ -24,18 +24,20 @@ import org.codegist.crest.annotate.ErrorHandler;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class ErrorHandlerAnnotationHandler extends NoOpAnnotationHandler<ErrorHandler> {
 
     @Override
-    public void handleInterfaceAnnotation(ErrorHandler annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(ErrorHandler annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsErrorHandler(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(ErrorHandler annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(ErrorHandler annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setErrorHandler(annotation.value());
     }
 

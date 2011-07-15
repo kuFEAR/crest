@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.io.http.param.DefaultParamProcessor;
 import org.codegist.crest.io.http.param.ParamProcessor;
 import org.codegist.crest.io.http.param.ParamProcessors;
 import org.codegist.crest.io.http.param.ParamType;

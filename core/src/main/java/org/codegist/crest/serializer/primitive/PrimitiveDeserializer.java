@@ -20,24 +20,23 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import org.codegist.crest.CRestException;
-import org.codegist.crest.serializer.StringDeserializer;
+import org.codegist.common.io.IOs;
+import org.codegist.crest.serializer.TypeDeserializer;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public abstract class PrimitiveDeserializer<T> extends StringDeserializer {
+public abstract class PrimitiveDeserializer<T> extends TypeDeserializer<T> {
 
     protected abstract T deserialize(String value);
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        String value = super.deserialize(String.class, String.class, stream, charset);
-        return (T) deserialize(value);
-    
+    @Override
+    protected T deserialize(InputStream stream, Charset charset) throws IOException {
+        return deserialize(IOs.toString(stream, charset, true));
     }
 
 }

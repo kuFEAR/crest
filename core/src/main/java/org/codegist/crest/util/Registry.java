@@ -22,10 +22,6 @@ package org.codegist.crest.util;
 
 import org.codegist.crest.CRestException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,17 +78,17 @@ public final class Registry<K,T> {
         } else {
             throw new IllegalStateException("Shouldn't be here");
         }
-        cache(key, val);
-        return val;
+        return cache(key, val);
     }
 
-    private void cache(K key, T item) {
+    private T cache(K key, T item) {
         cache.put(key, item);
         for(Map.Entry<K,Object> entry : mapping.entrySet()){
             if(entry.getValue() instanceof Class && entry.getValue().equals(entry.getClass())) {
                 cache.put(entry.getKey(), item);
             }
         }
+        return item;
     }
 
 
@@ -105,48 +101,15 @@ public final class Registry<K,T> {
             this.config = config;
         }
 
-        public T instanciate(Map<String,Object> crestProperties) {
+        T instanciate(Map<String,Object> crestProperties) {
             try {
-                return accessible(clazz.getDeclaredConstructor(Map.class)).newInstance(merge(crestProperties,config));
-            } catch (InvocationTargetException e) {
-                throw CRestException.handle(e);
-            } catch (NoSuchMethodException e) {
-                try {
-                    return accessible(clazz.getDeclaredConstructor()).newInstance();
-                } catch (InvocationTargetException e1) {
-                    throw CRestException.handle(e1);
-                } catch (Exception e1) {
-                    throw new CRestException("Class " + clazz + " doesn't have neither default contructor or a Map argument constructor!", e1);
-                }
+                return ComponentFactory.instantiate(clazz, merge(crestProperties,config));
             } catch (Exception e) {
                 throw CRestException.handle(e);
             }
         }
-
-        private static <T> Constructor<? extends T> accessible(final Constructor<? extends T> constructor){
-            if(!isPublic(constructor.getModifiers()) || !isPublic(constructor.getDeclaringClass().getModifiers())) {
-                 AccessController.doPrivileged(new MakeAccessible(constructor));
-            }
-            return constructor;
-        }
-
-        public static boolean isPublic(int modifiers){
-            return (modifiers & 0x00000001) != 0;
-        }
     }
 
-    private static final class MakeAccessible implements PrivilegedAction<Constructor> {
-        private final Constructor constructor;
-
-        private MakeAccessible(Constructor constructor) {
-            this.constructor = constructor;
-        }
-
-        public Constructor run() {
-            constructor.setAccessible(true);
-            return constructor;
-        }
-    }
 
     public static final class Builder<K,T> {
 

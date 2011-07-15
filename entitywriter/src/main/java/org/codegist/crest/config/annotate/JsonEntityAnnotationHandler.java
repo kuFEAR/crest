@@ -25,18 +25,20 @@ import org.codegist.crest.annotate.JsonEntity;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public class JsonEntityAnnotationHandler extends NoOpAnnotationHandler<JsonEntity> {
 
     @Override
-    public void handleInterfaceAnnotation(JsonEntity annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(JsonEntity annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 
     @Override
-    public void handleMethodAnnotation(JsonEntity annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(JsonEntity annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         builder.setEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 

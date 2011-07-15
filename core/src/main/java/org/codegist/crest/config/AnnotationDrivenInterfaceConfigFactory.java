@@ -53,7 +53,8 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
         this.crestProperties = crestProperties;
     }
 
-    public InterfaceConfig newConfig(Class<?> interfaze) {
+    @SuppressWarnings("unchecked")
+    public InterfaceConfig newConfig(Class<?> interfaze) throws Exception {
         InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, crestProperties);
         
         for(Annotation annotation : interfaze.getAnnotations()){

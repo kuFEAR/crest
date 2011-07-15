@@ -89,7 +89,7 @@ public class HttpRequest implements Request {
         return request.getArgs();
     }
 
-    public HttpMethod getMeth() {
+    public HttpMethod getHttpMethod() {
         return meth;
     }
 
@@ -329,7 +329,6 @@ public class HttpRequest implements Request {
             }
         }
     }
-
 
     @Override
     public String toString() {

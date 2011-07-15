@@ -31,10 +31,10 @@ import java.lang.annotation.Annotation;
  */
 public interface AnnotationHandler<A extends Annotation> {
 
-    void handleInterfaceAnnotation(A annotation, InterfaceConfigBuilder builder);
+    void handleInterfaceAnnotation(A annotation, InterfaceConfigBuilder builder) throws Exception;
 
-    void handleMethodAnnotation(A annotation, MethodConfigBuilder builder);
+    void handleMethodAnnotation(A annotation, MethodConfigBuilder builder) throws Exception;
 
-    void handleParameterAnnotation(A annotation, ParamConfigBuilder builder);
+    void handleParameterAnnotation(A annotation, ParamConfigBuilder builder) throws Exception;
 
 }

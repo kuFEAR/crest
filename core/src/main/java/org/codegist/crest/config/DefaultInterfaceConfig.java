@@ -20,11 +20,10 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.collect.Maps;
-import org.codegist.common.lang.ToStringBuilder;
-
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Default immutable in-memory implementation of {@link org.codegist.crest.config.InterfaceConfig}
@@ -32,6 +31,7 @@ import java.util.Map;
  */
 class DefaultInterfaceConfig implements InterfaceConfig {
 
+    private static final Method[] EMPTY = new Method[0];
     private final Class<?> interfaze;
     private final String encoding;
     private final Map<Method, MethodConfig> cache;
@@ -39,7 +39,7 @@ class DefaultInterfaceConfig implements InterfaceConfig {
     DefaultInterfaceConfig(Class<?> interfaze, String encoding, Map<Method, MethodConfig> cache) {
         this.interfaze = interfaze;
         this.encoding = encoding;
-        this.cache = Maps.unmodifiable(cache);
+        this.cache = unmodifiableMap(cache);
     }
 
     public Class<?> getInterface() {
@@ -51,20 +51,11 @@ class DefaultInterfaceConfig implements InterfaceConfig {
     }
 
     public Method[] getMethods() {
-        return interfaze != null ? interfaze.getDeclaredMethods() : null;
+        return interfaze != null ? interfaze.getDeclaredMethods() : EMPTY;
     }
 
     public MethodConfig getMethodConfig(Method meth) {
         return cache != null ? cache.get(meth) : null;
     }
-
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("interface", interfaze)
-                .append("encoding", encoding)
-                .append("cache", cache)
-                .toString();
-    }
-
 
 }

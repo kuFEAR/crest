@@ -21,7 +21,6 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.net.Urls;
-import org.codegist.crest.CRestException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public final class RegexPathTemplate implements PathTemplate {
             this.encoding = encoding;
         }
 
-        public PathBuilder merge(String templateName, String templateValue, boolean encoded) {
+        public PathBuilder merge(String templateName, String templateValue, boolean encoded) throws UnsupportedEncodingException {
             if (!remainingTemplates.containsKey(templateName)) {
                 throw new IllegalArgumentException("Path parameters is unknown or has already been provided for base uri '" + urlTemplate + "'! Param: " + templateName);
             }
@@ -82,12 +81,8 @@ public final class RegexPathTemplate implements PathTemplate {
             return this;
         }
 
-        private String encode(String value, boolean encoded) {
-            try {
-                return encoded ? value : Urls.encode(value, encoding);
-            } catch (UnsupportedEncodingException e) {
-                throw CRestException.handle(e);
-            }
+        private String encode(String value, boolean encoded) throws UnsupportedEncodingException {
+            return encoded ? value : Urls.encode(value, encoding);
         }
 
         public String build() {

@@ -57,7 +57,7 @@
 //    @Test
 //    public void testCustom2(){
 //        MaxAttemptRetryHandler handler = new MaxAttemptRetryHandler(new HashMap<String, Object>(){{
-//            put(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS, "3");
+//            put(CRestProperty.CREST_RETRY_ATTEMPTS, "3");
 //        }});
 //        assertTrue(handler.retry(null, null, 0));
 //        assertTrue(handler.retry(null, null, 1));

@@ -21,9 +21,7 @@
 package org.codegist.crest.error;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
@@ -31,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -47,13 +46,7 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
 
     @Parameterized.Parameters
     public static Collection<CRestHolder[]> getData() {
-        return crest(arrify(forEachBaseBuilder(new Builder() {
-            public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder
-                        .setProperty(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS, 3)
-                        .build());
-            }
-        })));
+        return crest(byRestServicesRetrying(3));
     }
 
     @Before
@@ -76,6 +69,7 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
         try {
             toTest.retry("value");
         }catch(Exception e){
+            e.printStackTrace();
             assertEquals(3, toTest.callCount());
             throw e;
         }
@@ -114,14 +108,48 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
             e.printStackTrace();
         }
     }
+
     @Test
     public void testHttpCode200() {
         assertEquals("ok", toTest.httpCode(200));
     }
 
+
+    @Test(expected= IOException.class)
+    public void testSocketTimeout_Timeout() throws Throwable {
+        try {
+            toTest.socketTimeout(200);
+        }catch(CRestException e){
+            throw e.getCause();
+        }
+    }
+
+    @Test
+    public void testSocketTimeout_NoTimeout() {
+        assertEquals("ok", toTest.socketTimeout(0));
+    }
+
+// TODO how to test that ?
+//    @Test(expected= IOException.class)
+//    public void testConnectionTimeout_Timeout() throws Throwable {
+//        try {
+//            toTest.connectionTimeout(200);
+//        }catch(CRestException e){
+//            throw e.getCause();
+//        }
+//    }
+
+    @Test
+    public void testConnetionTimeout_NoTimeout() {
+        assertEquals("ok", toTest.connectionTimeout(0));
+    }
+
+
     @EndPoint("{crest.server.end-point}")
     @Path("error")
     @GET
+    @ConnectionTimeout(5000)
+    @SocketTimeout(5000)
     public static interface ErrorHandlers {
 
         @Path("call-count")
@@ -146,6 +174,14 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
 
         @Path("http-code")
         String httpCode(@QueryParam("code") int httpCode);
+
+        @ConnectionTimeout(100)
+        @Path("connection-timeout")
+        String connectionTimeout(@QueryParam("timeout") int timeout);
+
+        @SocketTimeout(100)
+        @Path("socket-timeout")
+        String socketTimeout(@QueryParam("timeout") int timeout);
 
     }
 

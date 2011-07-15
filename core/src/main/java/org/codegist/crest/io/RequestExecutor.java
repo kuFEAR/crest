@@ -25,6 +25,13 @@ package org.codegist.crest.io;
  */
 public interface RequestExecutor {
 
-    Response execute(Request request) throws RequestException;
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     * @throws RequestException
+     */
+    Response execute(Request request) throws Exception;
     
 }

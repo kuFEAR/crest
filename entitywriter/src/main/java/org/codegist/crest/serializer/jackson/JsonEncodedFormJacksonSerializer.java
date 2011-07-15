@@ -20,12 +20,10 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.crest.CRestException;
 import org.codegist.crest.io.http.HttpParam;
 import org.codegist.crest.serializer.StreamingSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -41,13 +39,9 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
         this.jackson = JacksonFactory.createSerializer(config);
     }
 
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) {
-        try {
-            JsonObject json = JsonObject.toJsonObject(value);
-            jackson.writeValue(out, json);
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws Exception {
+        JsonObject json = JsonObject.toJsonObject(value);
+        jackson.writeValue(out, json);
     }
 
     private static class JsonObject extends LinkedHashMap<String,Object> {
@@ -91,10 +85,4 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
         }
     }
 
-    private static boolean areAllNull(Collection<Object> objects){
-        for(Object o : objects){
-            if(o != null) return false;
-        }
-        return true;
-    }
 }

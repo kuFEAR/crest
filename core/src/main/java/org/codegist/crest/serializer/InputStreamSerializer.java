@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,11 +31,7 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public class InputStreamSerializer extends StreamingSerializer<InputStream> {
-    public void serialize(InputStream value, Charset charset, OutputStream out) throws CRestException {
-        try {
-            IOs.copy(value, out, true);
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+    public void serialize(InputStream value, Charset charset, OutputStream out) throws IOException {
+        IOs.copy(value, out, true);
     }
 }

@@ -25,18 +25,20 @@ import org.codegist.crest.annotate.MultiPartEntity;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public class MultiPartEntityAnnotationHandler extends NoOpAnnotationHandler<MultiPartEntity> {
 
     @Override
-    public void handleInterfaceAnnotation(MultiPartEntity annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(MultiPartEntity annotation, InterfaceConfigBuilder builder)throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         builder.setMethodsEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 
     @Override
-    public void handleMethodAnnotation(MultiPartEntity annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(MultiPartEntity annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 

@@ -39,7 +39,7 @@ public class CollectionMergingCookieParamProcessor extends CollectionMergingPara
     }
 
     @Override
-    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) {
+    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) throws Exception {
         Collection<Pair> pairs = super.process(param, charset, encodeIfNeeded);
         String cookie = join(pairs, ',');
         return singletonList(new Pair("Cookie", cookie, charset, true));

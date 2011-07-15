@@ -20,18 +20,19 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestException;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
+import java.io.Reader;
 import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class ReaderDeserializer implements Deserializer {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        return (T) new InputStreamReader(stream, charset);
+public class ReaderDeserializer extends TypeDeserializer<Reader> {
+
+    @Override
+    protected Reader deserialize(InputStream stream, Charset charset) {
+        return new InputStreamReader(stream, charset);
     }
+    
 }

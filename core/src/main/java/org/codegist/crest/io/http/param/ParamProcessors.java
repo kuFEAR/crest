@@ -20,6 +20,7 @@
 
 package org.codegist.crest.io.http.param;
 
+import org.codegist.crest.CRestException;
 import org.codegist.crest.io.http.HttpParam;
 import org.codegist.crest.io.http.Pair;
 
@@ -83,7 +84,11 @@ public final class ParamProcessors {
 
         private void doNext() {
             HttpParam currentParam = this.params.next();
-            this.current = currentParam.getConfig().getParamProcessor().process(currentParam, charset, encodeIfNeeded).iterator();
+            try {
+                this.current = currentParam.getConfig().getParamProcessor().process(currentParam, charset, encodeIfNeeded).iterator();
+            } catch (Exception e) {
+                throw CRestException.handle(e);
+            }
         }
 
         public void remove() {

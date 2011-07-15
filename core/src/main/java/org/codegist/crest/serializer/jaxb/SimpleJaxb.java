@@ -20,8 +20,6 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.crest.CRestException;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -39,30 +37,18 @@ class SimpleJaxb implements Jaxb {
     private final Marshaller marshaller;
     private final Unmarshaller unmarshaller;
 
-    public SimpleJaxb(JAXBContext jaxbContext) {
-        try {
-            this.marshaller = jaxbContext.createMarshaller();
-            this.unmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException e) {
-            throw CRestException.handle(e);
-        }
+    public SimpleJaxb(JAXBContext jaxbContext) throws JAXBException {
+        this.marshaller = jaxbContext.createMarshaller();
+        this.unmarshaller = jaxbContext.createUnmarshaller();
     }
 
-    public <T> void marshal(T object, OutputStream out, Charset charset) {
-        try {
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, charset.toString());
-            marshaller.marshal(object, out);
-        } catch (JAXBException e) {
-            throw CRestException.handle(e);
-        }
+    public <T> void marshal(T object, OutputStream out, Charset charset) throws JAXBException {
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, charset.displayName());
+        marshaller.marshal(object, out);
     }
 
-    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) {
-        try {
-            return (T) unmarshaller.unmarshal(reader);
-        } catch (JAXBException e) {
-            throw CRestException.handle(e);
-        }
+    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) throws JAXBException {
+        return (T) unmarshaller.unmarshal(reader);
     }
 
 }

@@ -21,19 +21,17 @@
 package org.codegist.crest.handler;
 
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.model.jaxb.JaxbSomeData;
 import org.codegist.crest.model.jaxb.JaxbSomeDatas;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class JaxbSomeDatasResponseHandler implements ResponseHandler {
-    public Object handle(Response response) throws CRestException, IOException {
+    public Object handle(Response response) throws Exception {
 
         if(response.getExpectedType().isArray() && response.getExpectedType().getComponentType().equals(JaxbSomeData.class)){
             JaxbSomeDatas datas = response.deserializeTo(JaxbSomeDatas.class);

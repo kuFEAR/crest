@@ -86,4 +86,22 @@ public class ErrorHandlersStub {
         return Response.status(httpCode).entity("ok").build();
     }
 
+    @GET
+    @Path("connection-timeout")
+    public String connectionTimeout(@QueryParam("timeout") int timeout) throws InterruptedException {
+        if(timeout > 0) {
+            Thread.sleep(timeout);
+        }
+        return "ok";
+    }
+
+    @GET
+    @Path("socket-timeout")
+    public String socketTimeout(@QueryParam("timeout") int timeout) throws InterruptedException {
+        if(timeout > 0) {
+            Thread.sleep(timeout);
+        }
+        return "ok";
+    }
+
 }

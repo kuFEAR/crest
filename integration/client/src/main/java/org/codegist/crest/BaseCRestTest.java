@@ -49,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.codegist.crest.CRestProperty.CREST_RETRY_ATTEMPTS;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -177,7 +178,7 @@ public abstract class BaseCRestTest<T> {
     }
 
     // this represent the real root builder shared by all tests
-    private static CRestBuilder baseBuilder() {
+    protected static CRestBuilder baseBuilder() {
         CRestBuilder builder = CRest
                     .placeholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                     .setConcurrencyLevel(2)
@@ -250,6 +251,27 @@ public abstract class BaseCRestTest<T> {
         }));
         return arrify(holders);
     }
+
+
+    public static CRestHolder[] byRestServicesRetrying(final int maxAttempts) {
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder
+                        .setProperty(CREST_RETRY_ATTEMPTS, maxAttempts)
+                        .build());
+            }
+        }));
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder
+                        .setProperty(CREST_RETRY_ATTEMPTS, maxAttempts)
+                        .useHttpClient().build());
+            }
+        }));
+        return arrify(holders);
+    }
+
 
     public static CRestHolder[] byRestServicesForHeaders() {
         List<CRestHolder> holders = new ArrayList<CRestHolder>();

@@ -547,7 +547,7 @@
 //            put(DeserializationManager.class.getName(), new DeserializationManager(registry));
 //            put(InterfaceConfigFactory.class.getName(), context.getConfigFactory());
 //            put(CRestProperty.SERIALIZER_CUSTOM_SERIALIZER_MAP, Collections.emptyMap());
-//            put(CRestProperty.CONFIG_PLACEHOLDERS_MAP, Collections.emptyMap());
+//            put(CRestProperty.CREST_ANNOTATION_PLACEHOLDERS, Collections.emptyMap());
 //            put(AuthentificationManager.class.getName(), null);
 //            put(CRestProperty.CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, new ParamConfig[0]);
 //        }};

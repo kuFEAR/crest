@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.io.http.param.ParamProcessor;
 import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
@@ -28,7 +27,7 @@ import org.codegist.crest.serializer.Serializer;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static org.codegist.common.collect.Maps.unmodifiable;
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Default immutable in-memory implementation of {@link ParamConfig}
@@ -56,7 +55,7 @@ class DefaultParamConfig implements ParamConfig {
         this.serializer = serializer;
         this.encoded = encoded;
         this.paramProcessor = paramProcessor;
-        this.metadatas = unmodifiable(metadatas, false);
+        this.metadatas = unmodifiableMap(metadatas);
     }
 
     public Type getValueGenericType() {
@@ -93,19 +92,5 @@ class DefaultParamConfig implements ParamConfig {
 
     public ParamProcessor getParamProcessor() {
         return paramProcessor;
-    }
-
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("clazz", clazz)
-                .append("genericType", genericType)
-                .append("name", name)
-                .append("defaultValue", defaultValue)
-                .append("paramType", paramType)
-                .append("metadatas", metadatas)
-                .append("serializer", serializer)
-                .append("encoded", encoded)
-                .append("paramProcessor", paramProcessor)
-                .toString();
     }
 }

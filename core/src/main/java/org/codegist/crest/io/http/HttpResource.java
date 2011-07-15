@@ -34,7 +34,6 @@ public interface HttpResource extends Closeable {
 
     /**
      * @return the underlying http resource data stream
-     * @throws HttpException
      */
     InputStream getContent() throws IOException;
 

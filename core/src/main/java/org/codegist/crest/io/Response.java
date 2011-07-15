@@ -22,7 +22,6 @@ package org.codegist.crest.io;
 
 import org.codegist.common.lang.Disposable;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -40,10 +39,10 @@ public interface Response extends Disposable {
 
     Class<?> getExpectedType();
 
-    <T> T deserialize() throws IOException;
+    <T> T deserialize() throws Exception;
 
-    <T> T deserializeTo(Class<T> type) throws IOException;
+    <T> T deserializeTo(Class<T> type) throws Exception;
 
-    <T> T deserializeTo(Class<T> type, Type genericType) throws IOException;
+    <T> T deserializeTo(Class<T> type, Type genericType) throws Exception;
 
 }

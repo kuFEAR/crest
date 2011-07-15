@@ -32,7 +32,7 @@ import java.util.Collection;
  */
 public class DefaultParamProcessor implements ParamProcessor {
 
-    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) {
+    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) throws Exception {
         Collection<Pair> pairs = new ArrayList<Pair>();
         boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
         for(Object value : param.getValue()){

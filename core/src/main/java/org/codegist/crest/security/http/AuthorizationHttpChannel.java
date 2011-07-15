@@ -21,6 +21,7 @@
 package org.codegist.crest.security.http;
 
 import org.codegist.common.io.IOs;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpEntityWriter;
 import org.codegist.crest.io.http.HttpMethod;
@@ -29,10 +30,7 @@ import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 import org.codegist.crest.util.Pairs;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +50,9 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private final HttpMethod method;
     private String contentType = "";
     private String fullContentType = "";
-    private HttpEntityWriter httpEntityWriter;
+    private HttpEntityWriter httpEntityWriter = null;
 
-    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset, Map<String, HttpEntityParamExtractor> httpEntityParamExtrator) {
+    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, HttpMethod method, String url, Charset charset, Map<String, HttpEntityParamExtractor> httpEntityParamExtrator) throws UnsupportedEncodingException {
         this.url = url;
         this.method = method;
         this.charset = charset;
@@ -68,7 +66,12 @@ public class AuthorizationHttpChannel implements HttpChannel {
     }
 
     private void authenticate() throws IOException {
-        AuthorizationToken token = authenticatorManager.authorize(method, url, parameters.toArray(new Pair[parameters.size()]));
+        AuthorizationToken token;
+        try {
+            token = authenticatorManager.authorize(method, url, parameters.toArray(new Pair[parameters.size()]));
+        } catch (Exception e) {
+            throw CRestException.handle(e);
+        }
         delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
     }
 
@@ -118,7 +121,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
         return httpEntityParamExtrator.containsKey(contentType);
     }
 
-    private final class RewritableHttpEntityWriter implements HttpEntityWriter {
+    private static final class RewritableHttpEntityWriter implements HttpEntityWriter {
 
         private final HttpEntityWriter delegate;
         private Integer contentLength;

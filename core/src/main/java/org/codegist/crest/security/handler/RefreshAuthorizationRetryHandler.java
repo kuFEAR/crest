@@ -20,16 +20,13 @@
 
 package org.codegist.crest.security.handler;
 
-import org.codegist.common.lang.Numbers;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.http.HttpResponse;
 import org.codegist.crest.security.Authorization;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static org.codegist.common.lang.Validate.notNull;
@@ -42,27 +39,22 @@ import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
 public class RefreshAuthorizationRetryHandler implements RetryHandler {
 
     private static final Logger LOGGER = Logger.getLogger(RefreshAuthorizationRetryHandler.class);
-    public static final int DEFAULT_MAX_ATTEMPTS = 1; /* will retry just once in order to refresh the token */
 
     private final Authorization authorization;
     private final int max;
 
     public RefreshAuthorizationRetryHandler(Map<String, Object> crestProperties) {
-        this.max = Numbers.parse((String) crestProperties.get(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS), DEFAULT_MAX_ATTEMPTS);
-        authorization = (Authorization) crestProperties.get(Authorization.class.getName());
-        notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=%s)", Authorization.class.getName());
+        this.max = CRestProperty.getRetryAttempts(crestProperties) + 1;
+        authorization = CRestProperty.get(crestProperties, Authorization.class);
+        notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=%s)", Authorization.class);
     }
 
-    public boolean retry(RequestException exception, int retryNumber) {
-        try {
-            if (retryNumber > max
-                    || !exception.hasResponse()
-                    || ((HttpResponse) exception.getResponse()).getStatusCode() != HTTP_UNAUTHORIZED) {
-                LOGGER.debug("Not retrying, maximum failure reached or catched exception is neither a HttpException nor a 401 HTTP error code");
-                return false;
-            }
-        } catch (IOException e) {
-            throw CRestException.handle(e);
+    public boolean retry(RequestException exception, int retryNumber) throws Exception {
+        if (retryNumber > max
+                || !exception.hasResponse()
+                || ((HttpResponse) exception.getResponse()).getStatusCode() != HTTP_UNAUTHORIZED) {
+            LOGGER.debug("Not retrying, maximum failure reached or catched exception is neither a HttpException nor a 401 HTTP error code");
+            return false;
         }
         LOGGER.debug("HTTP code 401 detected, refreshing authentification and retry.");
         authorization.refresh();

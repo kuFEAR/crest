@@ -24,18 +24,20 @@ import org.codegist.crest.annotate.RetryHandler;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class RetryHandlerAnnotationHandler extends NoOpAnnotationHandler<RetryHandler> {
 
     @Override
-    public void handleInterfaceAnnotation(RetryHandler annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(RetryHandler annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsRetryHandler(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(RetryHandler annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(RetryHandler annotation, MethodConfigBuilder builder)throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         builder.setRetryHandler(annotation.value());
     }
 

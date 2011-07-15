@@ -24,6 +24,7 @@ import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.handler.DefaultResponseHandler;
 import org.codegist.crest.model.jackson.JacksonSomeData;
 import org.junit.runners.Parameterized;
 
@@ -55,6 +56,7 @@ public class ComplexObjectDeserializationsWithJacksonTest extends CommonComplexO
     @EndPoint("{crest.server.end-point}")
     @Path("deserialization/complexobject")
     @GET
+    @ResponseHandler(DefaultResponseHandler.class)
     public static interface ComplexObjectDeserializationsWithJackson extends IComplexObjectDeserializations {
 
         @Path("json")

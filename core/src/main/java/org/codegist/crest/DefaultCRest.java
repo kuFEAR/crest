@@ -68,11 +68,11 @@ public class DefaultCRest extends CRest implements Disposable {
         }
     }
 
-    class CRestInvocationHandler<T> extends ObjectMethodsAwareInvocationHandler {
+    final class CRestInvocationHandler<T> extends ObjectMethodsAwareInvocationHandler {
 
         private final InterfaceConfig interfaceConfig;
 
-        private CRestInvocationHandler(Class<T> interfaze) {
+        private CRestInvocationHandler(Class<T> interfaze) throws Exception {
             this.interfaceConfig = configFactory.newConfig(interfaze);
         }
 
@@ -105,7 +105,7 @@ public class DefaultCRest extends CRest implements Disposable {
         public SimpleRequest(InterfaceConfig interfaceConfig, MethodConfig methodConfig, Object[] args) {
             this.interfaceConfig = interfaceConfig;
             this.methodConfig = methodConfig;
-            this.args = args != null ? args.clone() : EMPTY;
+            this.args = args != null ? args.clone() : null;
         }
 
         public InterfaceConfig getInterfaceConfig(){

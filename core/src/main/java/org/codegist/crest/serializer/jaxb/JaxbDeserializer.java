@@ -23,6 +23,7 @@ package org.codegist.crest.serializer.jaxb;
 import org.codegist.common.io.IOs;
 import org.codegist.crest.serializer.Deserializer;
 
+import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -41,11 +42,11 @@ public class JaxbDeserializer implements Deserializer {
 
     private final Jaxb jaxb;
 
-    public JaxbDeserializer(Map<String, Object> config) {
+    public JaxbDeserializer(Map<String, Object> config) throws JAXBException {
         this.jaxb = JaxbFactory.create(config);
     }
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
         try {
             return jaxb.<T>unmarshal(type, genericType, new InputStreamReader(stream, charset));
         }finally{

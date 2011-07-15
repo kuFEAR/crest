@@ -25,7 +25,6 @@ import org.codegist.crest.CRestException;
 import org.codegist.crest.util.Registry;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -56,31 +55,27 @@ public final class DeserializationManager {
         return classDeserializerRegistry.contains(clazz);
     }
 
-    public <T> T deserializeByMimeType(Class<T> type, Type genericType, InputStream stream, Charset charset, String mimeType) {
+    public <T> T deserializeByMimeType(Class<T> type, Type genericType, InputStream stream, Charset charset, String mimeType) throws Exception {
         LOG.debug("Trying to deserialize response to Mime Type: %s.", mimeType);
         return mimeDeserializerRegistry.get(mimeType).<T>deserialize(type, genericType, stream, charset);
     }
 
-    public <T> T deserializeByClassType(Class<T> type, Type genericType, InputStream stream, Charset charset) {
+    public <T> T deserializeByClassType(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
         LOG.debug("Trying to deserialize response to Type: %s.", type);
         return classDeserializerRegistry.get(type).<T>deserialize(type, genericType, stream, charset);
     }
 
-    public <T> T deserializeByDeserializers(Class<T> type, Type genericType, InputStream stream, Charset charset, Deserializer[] deserializers) {
+    public <T> T deserializeByDeserializers(Class<T> type, Type genericType, InputStream stream, Charset charset, Deserializer[] deserializers) throws Exception {
         InputStream pStream = stream;
         if (deserializers.length > 1) {// user specific unique expected mime type, worse scenario, need to dump response in memory to retry if deserialization fails
-            try {
-                pStream = new ByteArrayInputStream(toByteArray(pStream, true));
-            } catch (IOException e) {
-                throw CRestException.handle(e);
-            }
+            pStream = new ByteArrayInputStream(toByteArray(pStream, true));
         }
         for (Deserializer deserializer : deserializers) { /*  */
             try {
                 LOG.debug("Trying to deserialize response with user specified deserializer : %s.", deserializer);
                 return deserializer.<T>deserialize(type, genericType, pStream, charset);
-            } catch (CRestException e) {
-                LOG.warn("Failed to deserialize response with user specified deserializer : %s. Trying next.", deserializer);
+            } catch (Exception e) {
+                LOG.warn(e, "Failed to deserialize response with user specified deserializer : %s. Trying next.", deserializer);
             }
         }
         throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers));

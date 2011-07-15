@@ -34,15 +34,15 @@ public class NoOpAnnotationHandler<A extends Annotation> implements AnnotationHa
 
     private final Logger log = Logger.getLogger(getClass());
 
-    public void handleInterfaceAnnotation(A annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(A annotation, InterfaceConfigBuilder builder)  throws Exception{
         log.debug("Ignoring interface level annotation %s", annotation);
     }
 
-    public void handleMethodAnnotation(A annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(A annotation, MethodConfigBuilder builder)  throws Exception{
         log.debug("Ignoring method level annotation %s", annotation);
     }
 
-    public void handleParameterAnnotation(A annotation, ParamConfigBuilder builder) {
+    public void handleParameterAnnotation(A annotation, ParamConfigBuilder builder) throws Exception {
         log.debug("Ignoring parameter level annotation %s", annotation);
     }
 

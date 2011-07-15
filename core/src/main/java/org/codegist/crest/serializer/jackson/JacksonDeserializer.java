@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.crest.CRestException;
+import org.codegist.common.io.IOs;
 import org.codegist.crest.serializer.Deserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -43,12 +43,11 @@ public class JacksonDeserializer implements Deserializer {
         this.jackson = JacksonFactory.createDeserializer(config);
     }
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws IOException {
         try {
-
             return jackson.<T>readValue(new InputStreamReader(stream, charset), TypeFactory.type(genericType));
-        } catch (IOException e) {
-            throw CRestException.handle(e);
+        } finally {
+            IOs.close(stream);
         }
     }
 }

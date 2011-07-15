@@ -32,11 +32,11 @@ public interface Authorization {
     /**
      * Sign the io
      */
-    AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters);
+    AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters) throws Exception;
 
     /**
      * Refresh the authentification information
      */
-    void refresh();
+    void refresh() throws Exception;
 
 }

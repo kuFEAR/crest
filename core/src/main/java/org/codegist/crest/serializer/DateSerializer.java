@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestProperty;
 
 import java.nio.charset.Charset;
@@ -34,59 +33,20 @@ import java.util.Map;
  */
 public class DateSerializer extends StringSerializer<Date> {
 
-    public static final String DEFAULT_DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-
     private final DateFormat formatter;
-    private final FormatType formatType;
 
-    public DateSerializer() {
-        this(DEFAULT_DATEFORMAT);  
+    public DateSerializer(Map<String, Object> crestProperties) {
+        this(CRestProperty.getDateFormat(crestProperties));
     }
 
-    public DateSerializer(Map<String,Object> crestProperties) {
-        this(Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_DATE_FORMAT), DateSerializer.DEFAULT_DATEFORMAT));
-    }
-    
     public DateSerializer(String dateFormat) {
-        DateFormat pFormatter;
-        FormatType pFormatType;
-        try {
-            pFormatType = FormatType.valueOf(dateFormat);
-            pFormatter = null;
-        } catch (IllegalArgumentException e) {
-            pFormatType = null;
-            pFormatter = new SimpleDateFormat(dateFormat);
-        }
-        this.formatter = pFormatter;
-        this.formatType = pFormatType;
+        this.formatter = new SimpleDateFormat(dateFormat);
     }
 
     public String serialize(Date value, Charset charset) {
-        String serialized;
-        if(formatter != null) {
-             synchronized (formatter) {
-                 serialized = formatter.format(value);
-             }
-        }else{
-            serialized = String.valueOf(formatType.format(value));
-        }
-        return serialized;
-    }
-
-    private enum FormatType {
-        Millis(1),
-        Seconds(1000),
-        Minutes(1000*60),
-        Hours(1000*60*60),
-        Days(1000*60*60*24);
-        private final long div;
-
-        FormatType(long div) {
-            this.div = div;
-        }
-
-        long format(Date date) {
-            return date.getTime() / div;
+        synchronized (formatter) {
+            return formatter.format(value);
         }
     }
+
 }

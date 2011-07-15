@@ -26,7 +26,6 @@ import org.codegist.crest.io.http.HttpRequest;
 import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Serializer;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class SerializingEntityWriter implements EntityWriter {
         return -1;
     }
 
-    public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
+    public void writeTo(HttpRequest request, OutputStream outputStream) throws Exception {
         serializer.serialize(request.getFormParams(), request.getCharset(), outputStream);
     }
 }

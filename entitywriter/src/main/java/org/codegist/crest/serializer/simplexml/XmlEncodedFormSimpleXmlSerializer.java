@@ -20,8 +20,6 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.common.lang.Strings;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.http.HttpParam;
 import org.codegist.crest.serializer.DateSerializer;
@@ -57,39 +55,35 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
         serializer = SimpleXmlFactory.createSerializer(cfg);
         dateSerializer = new DateSerializer(cfg);
         booleanSerializer = new BooleanSerializer(cfg);
-        this.rootElement = Strings.defaultIfBlank((String) cfg.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME);
+        this.rootElement = CRestProperty.get(cfg, "crest.entity.writer.xml.element-name", DEFAULT_WRAPPER_ELEMENT_NAME);
     }
 
-    public void serialize(List<HttpParam> params, Charset charset, OutputStream out) {
-        try {
-            String prolog = "<?xml version=\"1.0\" encoding=\""+charset.toString()+"\" standalone=\"yes\"?>";
-            Writer writer = new OutputStreamWriter(out, charset);
-            OutputNode node = NodeBuilder.write(writer, new Format(0, prolog));
-            OutputNode root =  node.getChild(rootElement);
+    public void serialize(List<HttpParam> params, Charset charset, OutputStream out) throws Exception {
+        String prolog = "<?xml version=\"1.0\" encoding=\""+charset.displayName()+"\" standalone=\"yes\"?>";
+        Writer writer = new OutputStreamWriter(out, charset);
+        OutputNode node = NodeBuilder.write(writer, new Format(0, prolog));
+        OutputNode root =  node.getChild(rootElement);
 
-            for(HttpParam param : params){
-                for(Object value : param.getValue()){
-                    if(value == null) continue;
-                    OutputNode n = root.getChild(param.getConfig().getName());
-                    if(isPrimitive(value)) {
-                        // nasty.....
-                        if(value instanceof Date) {
-                            n.setValue(dateSerializer.serialize((Date)value, charset));
-                        }else if(value instanceof Boolean) {
-                            n.setValue(booleanSerializer.serialize((Boolean) value, charset));
-                        }else{
-                            n.setValue(value.toString());
-                        }
+        for(HttpParam param : params){
+            for(Object value : param.getValue()){
+                if(value == null) continue;
+                OutputNode n = root.getChild(param.getConfig().getName());
+                if(isPrimitive(value)) {
+                    // nasty.....
+                    if(value instanceof Date) {
+                        n.setValue(dateSerializer.serialize((Date)value, charset));
+                    }else if(value instanceof Boolean) {
+                        n.setValue(booleanSerializer.serialize((Boolean) value, charset));
                     }else{
-                        serializer.write(value, n);
+                        n.setValue(value.toString());
                     }
+                }else{
+                    serializer.write(value, n);
                 }
             }
-            node.commit();
-            writer.flush();
-        } catch (Exception e) {
-            throw CRestException.handle(e);
         }
+        node.commit();
+        writer.flush();
     }
 
     private boolean isPrimitive(Object value){

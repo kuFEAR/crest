@@ -47,12 +47,12 @@ public class OAuthorization implements Authorization {
         this.accessOAuthToken = accessOAuthToken;
     }
 
-    public AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters) {
+    public AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters)  throws Exception{
         List<Pair> oauthParams = oauth.oauth(this.accessOAuthToken, method, url, parameters);
         return new AuthorizationToken("OAuth", join(oauthParams, ',', '=', false, true));
     }
 
-    public void refresh() {
+    public void refresh()  throws Exception{
         this.accessOAuthToken = oauth.refreshAccessToken(this.accessOAuthToken, this.accessOAuthToken.getAttribute("oauth_session_handle"));
     }
 

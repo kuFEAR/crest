@@ -20,9 +20,8 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
+import org.codegist.crest.CRestProperty;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.io.InputStream;
@@ -44,23 +43,15 @@ public class SimpleXmlDeserializer implements Deserializer {
     private final boolean strict;
     private final org.simpleframework.xml.Serializer serializer;
 
-    public SimpleXmlDeserializer(Map<String,Object> cfg) {
-        Map<String,Object> config = Maps.defaultsIfNull(cfg);
-
+    public SimpleXmlDeserializer(Map<String,Object> config) {
         serializer = SimpleXmlFactory.createDeserializer(config);
-        if(config.containsKey(STRICT_PROP)) {
-            strict = (Boolean) config.get(STRICT_PROP);
-        }else{
-            strict = DEFAULT_STRICT;
-        }
+        strict = CRestProperty.get(config, STRICT_PROP, DEFAULT_STRICT);
     }
 
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
         try {
             return serializer.read(type, new InputStreamReader(stream, charset), strict);
-        } catch (Exception e) {
-            throw CRestException.handle(e);
         } finally {
             IOs.close(stream);
         }

@@ -27,7 +27,10 @@ import org.codegist.crest.io.http.HttpRequest;
 import org.codegist.crest.io.http.Pair;
 import org.codegist.crest.util.MultiParts;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import static org.codegist.common.lang.Strings.defaultIfBlank;
@@ -51,7 +54,7 @@ public class MultiPartEntityWriter implements EntityWriter {
         return -1;
     }
 
-    public void writeTo(HttpRequest request, OutputStream outputStream) throws IOException {
+    public void writeTo(HttpRequest request, OutputStream outputStream) throws Exception {
 
         DataOutputStream out = new DataOutputStream(outputStream);
         if (!request.getFormParams().isEmpty()) {

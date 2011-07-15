@@ -24,18 +24,20 @@ import org.codegist.crest.annotate.RequestInterceptor;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class RequestInterceptorAnnotationHandler extends NoOpAnnotationHandler<RequestInterceptor> {
 
     @Override
-    public void handleInterfaceAnnotation(RequestInterceptor annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(RequestInterceptor annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsRequestInterceptor(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(RequestInterceptor annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(RequestInterceptor annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setRequestInterceptor(annotation.value());
     }
 

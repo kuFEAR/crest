@@ -29,6 +29,6 @@ import org.codegist.crest.io.RequestException;
  */
 public interface RetryHandler {
 
-    boolean retry(RequestException exception, int retryNumber);
+    boolean retry(RequestException exception, int retryNumber) throws Exception;
 
 }

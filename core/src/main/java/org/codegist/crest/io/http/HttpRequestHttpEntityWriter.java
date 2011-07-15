@@ -22,6 +22,7 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.log.Logger;
 import org.codegist.common.log.LoggingOutputStream;
+import org.codegist.crest.CRestException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,7 +42,11 @@ class HttpRequestEntityWriter implements HttpEntityWriter {
 
     public void writeEntityTo(OutputStream out) throws IOException {
         OutputStream os = !logger.isTraceOn() ? out : new LoggingOutputStream(out, logger);
-        httpRequest.getEntityWriter().writeTo(httpRequest, os);
+        try {
+            httpRequest.getEntityWriter().writeTo(httpRequest, os);
+        } catch (Exception e) {
+            throw CRestException.handle(e);
+        }
         os.flush();
     }
 

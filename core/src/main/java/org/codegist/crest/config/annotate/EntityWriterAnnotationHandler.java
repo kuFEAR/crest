@@ -24,18 +24,20 @@ import org.codegist.crest.annotate.EntityWriter;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class EntityWriterAnnotationHandler extends NoOpAnnotationHandler<EntityWriter> {
 
     @Override
-    public void handleInterfaceAnnotation(EntityWriter annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(EntityWriter annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsEntityWriter(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(EntityWriter annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(EntityWriter annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         builder.setEntityWriter(annotation.value());
     }
 

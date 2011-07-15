@@ -24,6 +24,7 @@ import org.codegist.crest.io.http.Pair;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.*;
 
@@ -35,7 +36,7 @@ public final class Pairs {
         throw new IllegalStateException();
     }
 
-    public static List<Pair> fromUrlEncoded(String urlEncoded){
+    public static List<Pair> fromUrlEncoded(String urlEncoded) throws UnsupportedEncodingException {
         List<Pair> pairs = new ArrayList<Pair>();
         String[] split = urlEncoded.split("&");
         for(String param : split){

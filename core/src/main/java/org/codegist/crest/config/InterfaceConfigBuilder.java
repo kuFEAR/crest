@@ -8,11 +8,12 @@ import org.codegist.crest.io.http.HttpMethod;
 import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Serializer;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.codegist.crest.CRestProperty.CONFIG_INTERFACE_DEFAULT_ENCODING;
+import static org.codegist.crest.CRestProperty.INTERFACE_CONFIG_DEFAULT_ENCODING;
 import static org.codegist.crest.config.InterfaceConfig.DEFAULT_ENCODING;
 
 @SuppressWarnings("unchecked")
@@ -42,13 +43,13 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
     /**
      * @inheritDoc
      */
-    public InterfaceConfig build() {
+    public InterfaceConfig build() throws Exception {
         Map<Method, MethodConfig> mConfig = new HashMap<Method, MethodConfig>();
         for (Map.Entry<Method, MethodConfigBuilder> entry : builderCache.entrySet()) {
             mConfig.put(entry.getKey(), entry.getValue().build());
         }
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String pEncoding = defaultIfUndefined(this.encoding, CONFIG_INTERFACE_DEFAULT_ENCODING, DEFAULT_ENCODING);
+        String pEncoding = defaultIfUndefined(this.encoding, INTERFACE_CONFIG_DEFAULT_ENCODING, DEFAULT_ENCODING);
         return new DefaultInterfaceConfig(
                 interfaze,
                 pEncoding,
@@ -130,35 +131,35 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorCls) {
+    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorCls) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setRequestInterceptor(requestInterceptorCls);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) {
+    public InterfaceConfigBuilder setMethodsResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setResponseHandler(responseHandlerClass);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandler) {
+    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandler) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setErrorHandler(errorHandler);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandler) {
+    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandler) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setRetryHandler(retryHandler);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter) {
+    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setEntityWriter(bodyWriter);
         }
@@ -206,7 +207,7 @@ public class InterfaceConfigBuilder extends ConfigBuilder<InterfaceConfig> {
 
 
     /* PARAMS SETTINGS METHODS */
-    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) {
+    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         for (MethodConfigBuilder b : builderCache.values()) {
             b.setParamsSerializer(paramSerializerCls);
         }

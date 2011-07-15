@@ -40,7 +40,11 @@ import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
 import org.codegist.crest.security.http.HttpEntityParamExtractor;
-import org.codegist.crest.security.oauth.*;
+import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.security.oauth.OAuthenticator;
+import org.codegist.crest.security.oauth.OAuthorization;
+import org.codegist.crest.security.oauth.UrlEncodedFormEntityParamExtractor;
+import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
@@ -86,10 +90,8 @@ public class CRestBuilder {
     private final Set<String> jsonMimes = asSet("application/json", "text/javascript", "text/json");
 
     private final Map<String, Object> xmlDeserializerConfig = new HashMap<String, Object>();
-    private Class<? extends Deserializer> xmlDeserializer = JaxbDeserializer.class;
 
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
-    private Class<? extends Deserializer> jsonDeserializer = JacksonDeserializer.class;
 
     private final Registry.Builder<Class<? extends Annotation>,AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(crestProperties, AnnotationHandler.class)
                             .defaultAs(new NoOpAnnotationHandler())
@@ -129,10 +131,10 @@ public class CRestBuilder {
 
 
     private ProxyFactory proxyFactory = new JdkProxyFactory();
-
+    private Class<? extends Deserializer> xmlDeserializer = JaxbDeserializer.class;
+    private Class<? extends Deserializer> jsonDeserializer = JacksonDeserializer.class;
     private boolean useHttpClient = false;
     private HttpChannelInitiator httpChannelInitiator;
-
     private String auth;
     private String username;
     private String password;
@@ -160,7 +162,7 @@ public class CRestBuilder {
         putIfAbsent(crestProperties, RequestExecutor.class.getName(), requestExecutor);
         putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
         putIfAbsent(crestProperties, InterfaceConfigFactory.class.getName(), configFactory);
-        putIfAbsent(crestProperties, CONFIG_PLACEHOLDERS_MAP, Maps.unmodifiable(placeholders));
+        putIfAbsent(crestProperties, CREST_ANNOTATION_PLACEHOLDERS, Maps.unmodifiable(placeholders));
 
         return new DefaultCRest(proxyFactory, requestExecutor, configFactory, deserializationManager);
     }

@@ -66,4 +66,5 @@ public class HttpResourceInputStream extends InputStreamWrapper {
             super.finalize();
         }
     }
+
 }

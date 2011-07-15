@@ -37,7 +37,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
-import org.codegist.common.lang.Objects;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpChannelInitiator;
@@ -93,7 +92,7 @@ public final class HttpClientHttpChannelInitiator implements HttpChannelInitiato
     }
     
     public static HttpChannelInitiator newHttpChannelInitiator(Map<String, Object> crestProperties) {
-        int concurrencyLevel = Objects.defaultIfNull((Integer) crestProperties.get(CRestProperty.CREST_CONCURRENCY_LEVEL), 1);
+        int concurrencyLevel = CRestProperty.getConcurrencyLevel(crestProperties);
         return newHttpChannelInitiator(concurrencyLevel, concurrencyLevel);
     }
 
@@ -120,6 +119,7 @@ public final class HttpClientHttpChannelInitiator implements HttpChannelInitiato
         } else {
             httpClient = new DefaultHttpClient();
         }
+
         httpClient.setRoutePlanner(new ProxySelectorRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry(), ProxySelector.getDefault()));
         return new HttpClientHttpChannelInitiator(httpClient);
     }

@@ -2,6 +2,7 @@ package org.codegist.crest.config;
 
 import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
+import org.codegist.crest.CRestProperty;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
@@ -16,6 +17,7 @@ import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.MultiParts;
 import org.codegist.crest.util.Registry;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -53,7 +55,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         this.parent = parent;
         this.method = method;
         this.methodParamConfigBuilders = new ParamConfigBuilder[method.getParameterTypes().length];
-        this.mimeDeserializerRegistry = getProperty(Registry.class.getName() + "#deserializers-per-mime");
+        this.mimeDeserializerRegistry = CRestProperty.get(crestProperties, Registry.class.getName() + "#deserializers-per-mime");
 
         for (int i = 0; i < this.methodParamConfigBuilders.length; i++) {
             this.methodParamConfigBuilders[i] = new ParamConfigBuilder(this, crestProperties, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
@@ -63,7 +65,7 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
     /**
      * @inheritDoc
      */
-    public MethodConfig build() {
+    public MethodConfig build() throws Exception {
         ParamConfig[] pConfigMethod = new ParamConfig[methodParamConfigBuilders.length];
         for (int i = 0; i < methodParamConfigBuilders.length; i++) {
             pConfigMethod[i] = this.methodParamConfigBuilders[i].build();
@@ -82,25 +84,25 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         String path = Urls.normalizeSlashes(join("/", paths));
         Deserializer[] pDeserializers = arrify(this.deserializers, Deserializer.class);
 
-        path = defaultIfUndefined(path, CONFIG_METHOD_DEFAULT_PATH, DEFAULT_PATH);
-        HttpMethod pMeth = defaultIfUndefined(this.meth, CONFIG_METHOD_DEFAULT_HTTP_METHOD, DEFAULT_HTTP_METHOD);
-        String pContentType = defaultIfUndefined(this.contentType, CONFIG_METHOD_DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
-        String pAccept = defaultIfUndefined(this.accept, CONFIG_METHOD_DEFAULT_ACCEPT, DEFAULT_ACCEPT);
-        ParamConfig[] defs = defaultIfUndefined(null, CONFIG_METHOD_DEFAULT_EXTRA_PARAMS, DEFAULT_EXTRA_PARAMS);
+        path = defaultIfUndefined(path, METHOD_CONFIG_DEFAULT_PATH, DEFAULT_PATH);
+        HttpMethod pMeth = defaultIfUndefined(this.meth, METHOD_CONFIG_DEFAULT_HTTP_METHOD, DEFAULT_HTTP_METHOD);
+        String pContentType = defaultIfUndefined(this.contentType, METHOD_CONFIG_DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
+        String pAccept = defaultIfUndefined(this.accept, METHOD_CONFIG_DEFAULT_ACCEPT, DEFAULT_ACCEPT);
+        ParamConfig[] defs = defaultIfUndefined(null, METHOD_CONFIG_DEFAULT_EXTRA_PARAMS, DEFAULT_EXTRA_PARAMS);
         for (ParamConfig def : defs) {
             if (extraParams.containsKey(def.getName())) {
                 continue;
             }
             extraParams.put(def.getName(), def);
         }
-        Long pSocketTimeout = defaultIfUndefined(this.socketTimeout, CONFIG_METHOD_DEFAULT_SO_TIMEOUT, DEFAULT_SO_TIMEOUT);
-        Long pConnectionTimeout = defaultIfUndefined(this.connectionTimeout, CONFIG_METHOD_DEFAULT_CO_TIMEOUT, DEFAULT_CO_TIMEOUT);
-        RequestInterceptor pRequestInterceptor = defaultIfUndefined(this.requestInterceptor, CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR, newInstance(DEFAULT_REQUEST_INTERCEPTOR));
-        ResponseHandler pResponseHandler = defaultIfUndefined(this.responseHandler, CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER, newInstance(DEFAULT_RESPONSE_HANDLER));
-        ErrorHandler pErrorHandler = defaultIfUndefined(this.errorHandler, CONFIG_METHOD_DEFAULT_ERROR_HANDLER, newInstance(DEFAULT_ERROR_HANDLER));
-        RetryHandler pRetryHandler = defaultIfUndefined(this.retryHandler, CONFIG_METHOD_DEFAULT_RETRY_HANDLER, newInstance(DEFAULT_RETRY_HANDLER));
-        EntityWriter pEntityWriter = defaultIfUndefined(this.entityWriter, CONFIG_PARAM_DEFAULT_BODY_WRITER, newInstance(DEFAULT_BODY_WRITER));
-        pDeserializers = defaultIfUndefined(pDeserializers, CONFIG_METHOD_DEFAULT_DESERIALIZERS, newInstance(DEFAULT_DESERIALIZERS));
+        Long pSocketTimeout = defaultIfUndefined(this.socketTimeout, METHOD_CONFIG_DEFAULT_SO_TIMEOUT, DEFAULT_SO_TIMEOUT);
+        Long pConnectionTimeout = defaultIfUndefined(this.connectionTimeout, METHOD_CONFIG_DEFAULT_CO_TIMEOUT, DEFAULT_CO_TIMEOUT);
+        RequestInterceptor pRequestInterceptor = defaultIfUndefined(this.requestInterceptor, METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR, DEFAULT_REQUEST_INTERCEPTOR);
+        ResponseHandler pResponseHandler = defaultIfUndefined(this.responseHandler, METHOD_CONFIG_DEFAULT_RESPONSE_HANDLER, DEFAULT_RESPONSE_HANDLER);
+        ErrorHandler pErrorHandler = defaultIfUndefined(this.errorHandler, METHOD_CONFIG_DEFAULT_ERROR_HANDLER, DEFAULT_ERROR_HANDLER);
+        RetryHandler pRetryHandler = defaultIfUndefined(this.retryHandler, METHOD_CONFIG_DEFAULT_RETRY_HANDLER, DEFAULT_RETRY_HANDLER);
+        EntityWriter pEntityWriter = defaultIfUndefined(this.entityWriter, METHOD_CONFIG_DEFAULT_BODY_WRITER, DEFAULT_BODY_WRITER);
+        pDeserializers = defaultIfUndefined(pDeserializers, METHOD_CONFIG_DEFAULT_DESERIALIZERS, DEFAULT_DESERIALIZERS);
 
         if(pEntityWriter == null && pMeth.hasEntity()) {
             Class<? extends EntityWriter> entityWriterCls = UrlEncodedFormEntityWriter.class;
@@ -232,34 +234,34 @@ public class MethodConfigBuilder extends ConfigBuilder<MethodConfig> {
         return this;
     }
 
-    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls) {
+    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         this.requestInterceptor = newInstance(interceptorCls);
         return this;
     }
 
-    public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) {
+    public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         this.responseHandler  = newInstance(responseHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass) {
+    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         this.errorHandler = newInstance(methodHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass) {
+    public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         this.retryHandler = newInstance(retryHandlerClass);
         return this;
     }
 
-    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass) {
+    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         this.entityWriter = newInstance(bodyWriterClass);
         return this;
     }
 
     /* PARAMS SETTINGS METHODS */
 
-    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer)  {
+    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         for (ParamConfigBuilder b : methodParamConfigBuilders) {
             b.setSerializer(paramSerializer);
         }

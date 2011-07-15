@@ -21,21 +21,16 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
-public class StringDeserializer implements Deserializer {
+public class StringDeserializer extends TypeDeserializer<String> {
 
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
-        try {
-            return (T) IOs.toString(stream, charset, true);
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+    @Override
+    protected String deserialize(InputStream stream, Charset charset) throws IOException {
+        return IOs.toString(stream, charset, true);
     }
 
 }

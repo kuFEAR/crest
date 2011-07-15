@@ -28,14 +28,12 @@ import org.codegist.crest.flickr.model.SimplePayload;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.io.Response;
 
-import java.io.IOException;
-
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class FlickrResponseHandler implements ResponseHandler {
 
-    public final Object handle(Response context) throws IOException {
+    public final Object handle(Response context) throws Exception {
         /* Marshall the response */
         org.codegist.crest.flickr.model.Response res = context.deserializeTo(org.codegist.crest.flickr.model.Response.class, Types.newType(org.codegist.crest.flickr.model.Response.class, Types.newType(SimplePayload.class, context.getExpectedGenericType())));
         /* Check for flickr OK status */

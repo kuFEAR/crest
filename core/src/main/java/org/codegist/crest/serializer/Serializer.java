@@ -20,8 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestException;
-
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
@@ -30,8 +28,6 @@ import java.nio.charset.Charset;
  * <p> If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
  *
  * @param <T> Optional parameter value type
- * @see org.codegist.crest.serializer.Serializers
- * @see org.codegist.crest.InterfaceContext#getProperties()
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface Serializer<T> {
@@ -43,8 +39,8 @@ public interface Serializer<T> {
      * @return serialized version of the argument
      * @throws NullPointerException when value is null
      */
-    void serialize(T value, Charset charset, OutputStream out) throws CRestException;
+    void serialize(T value, Charset charset, OutputStream out) throws Exception;
 
-    String serialize(T value, Charset charset) throws CRestException;
+    String serialize(T value, Charset charset) throws Exception;
 
 }

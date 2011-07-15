@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,11 +32,7 @@ import java.nio.charset.Charset;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class FileSerializer extends StreamingSerializer<File> {
-    public void serialize(File value, Charset charset, OutputStream out) throws CRestException {
-        try {
-            IOs.copy(new FileInputStream(value), out, true);
-        } catch (IOException e) {
-            throw CRestException.handle(e);
-        }
+    public void serialize(File value, Charset charset, OutputStream out) throws IOException {
+        IOs.copy(new FileInputStream(value), out, true);
     }
 }

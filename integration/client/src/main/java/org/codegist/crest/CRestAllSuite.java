@@ -35,12 +35,12 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ParamsBaseSuite.class,
         ParamsCRestSuite.class,
-        ErrorHandlersTest.class,
         ParamsJaxRsSuite.class,
         RequestsCRestSuite.class,
         RequestsJaxRsSuite.class,
         DeserializationsCRestSuite.class,
-        DeserializationsJaxRsSuite.class
+        DeserializationsJaxRsSuite.class,
+        ErrorHandlersTest.class
 })
 public class CRestAllSuite {
 }

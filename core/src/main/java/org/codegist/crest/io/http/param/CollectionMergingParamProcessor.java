@@ -40,7 +40,7 @@ public class CollectionMergingParamProcessor implements ParamProcessor {
         this.listSeparator = listSeparator;
     }
 
-    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) {
+    public Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) throws Exception {
         StringBuilder sb = new StringBuilder();
         boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
         boolean first = true;

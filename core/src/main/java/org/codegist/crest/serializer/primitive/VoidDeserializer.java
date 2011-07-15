@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer.primitive;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.io.InputStream;
@@ -32,7 +31,7 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public class VoidDeserializer implements Deserializer {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         IOs.close(stream);
         return null;
     }

@@ -21,7 +21,6 @@
 package org.codegist.crest.util;
 
 import org.codegist.common.net.Urls;
-import org.codegist.crest.CRestException;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -35,19 +34,15 @@ public final class Encoders {
         throw new IllegalStateException();
     }
 
-    public static String encode(String value, Charset charset){
+    public static String encode(String value, Charset charset) throws UnsupportedEncodingException {
         return encode(value, charset, false);
     }
 
-    public static String encode(String value, Charset charset, boolean quote){
-        try {
-            String val =  Urls.encode(value, charset.displayName());
-            if(quote) {
-                val = "\"" + val + "\"";
-            }
-            return val;
-        } catch (UnsupportedEncodingException e) {
-            throw CRestException.handle(e);
+    public static String encode(String value, Charset charset, boolean quote) throws UnsupportedEncodingException {
+        String val =  Urls.encode(value, charset.displayName());
+        if(quote) {
+            val = "\"" + val + "\"";
         }
+        return val;
     }
 }

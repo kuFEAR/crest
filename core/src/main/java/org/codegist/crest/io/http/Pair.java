@@ -22,6 +22,7 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.lang.ToStringBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import static org.codegist.crest.util.Encoders.encode;
@@ -34,10 +35,10 @@ public class Pair {
     private final String value;
     private final Charset charset;
 
-    public Pair(String name, String value) {
+    public Pair(String name, String value) throws UnsupportedEncodingException {
         this(name, value, null, true);
     }
-    public Pair(String name, String value, Charset charset, boolean encoded) {
+    public Pair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {
         this.name = encoded ? name : encode(name, charset);
         this.value = encoded ? value : encode(value, charset);
         this.charset = charset;
@@ -55,7 +56,6 @@ public class Pair {
         return charset;
     }
 
-    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("name", name)

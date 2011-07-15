@@ -20,10 +20,7 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
-
-import java.io.IOException;
 
 /**
  * Response handler is invoked for each io's as long as the interface doesn't specifically requested for the raw response (Reader or InputStream method return types.)
@@ -35,6 +32,6 @@ import java.io.IOException;
  */
 public interface ResponseHandler {
 
-    Object handle(Response response) throws CRestException, IOException;
+    Object handle(Response response) throws Exception;
 
 }

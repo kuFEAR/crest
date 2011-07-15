@@ -24,7 +24,7 @@ import org.codegist.crest.io.http.HttpRequestExecutor;
 import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthenticator;
-import org.codegist.crest.security.oauth.OAuthenticatorV1;
+import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 import org.codegist.crest.serializer.DeserializationManager;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.StringDeserializer;

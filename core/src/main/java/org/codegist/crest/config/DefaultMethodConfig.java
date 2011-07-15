@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
@@ -37,6 +36,8 @@ import java.lang.reflect.Method;
  */
 class DefaultMethodConfig implements MethodConfig {
 
+    private static final ParamConfig[] EMPTY_PARAM_CONFIGS = new ParamConfig[0];
+    private static final Deserializer[] EMPTY_DESERIALIZERS = new Deserializer[0];
     private final Method method;
     private final PathTemplate path;
     private final String contentType;
@@ -120,7 +121,7 @@ class DefaultMethodConfig implements MethodConfig {
     }
 
     public Deserializer[] getDeserializers() {
-        return deserializers;
+        return deserializers != null ? deserializers.clone() : EMPTY_DESERIALIZERS;
     }
 
     public ParamConfig getParamConfig(int index) {
@@ -132,25 +133,7 @@ class DefaultMethodConfig implements MethodConfig {
     }
 
     public ParamConfig[] getExtraParams() {
-        return extraParams != null ? extraParams.clone() : null;
+        return extraParams != null ? extraParams.clone() : EMPTY_PARAM_CONFIGS;
     }
 
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("path", path)
-                .append("contentType", contentType)
-                .append("accept", accept)
-                .append("method", method)
-                .append("httpMethod", httpMethod)
-                .append("socketTimeout", socketTimeout)
-                .append("connectionTimeout", connectionTimeout)
-                .append("entityWriter", entityWriter)
-                .append("requestInterceptor", requestInterceptor)
-                .append("responseHandler", responseHandler)
-                .append("deserializers", deserializers)
-                .append("errorHandler", errorHandler)
-                .append("retryHandler", retryHandler)
-                .append("methodParamConfigs", methodParamConfigs)
-                .toString();
-    }
 }

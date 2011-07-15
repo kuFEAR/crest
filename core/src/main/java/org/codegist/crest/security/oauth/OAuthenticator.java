@@ -36,13 +36,13 @@ public interface OAuthenticator {
      * Signs the given io using the given access token and the optional additional oauth headers.
      * @param accessOAuthToken Access token to be used
      */
-    List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters);
+    List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) throws Exception;
 
     /**
      * Fires a get io token to the preconfigured url
      * @return A new io token
      */
-    OAuthToken getRequestToken();
+    OAuthToken getRequestToken() throws Exception;
 
     /**
      * Exchanges the given io token with a new access token using the given verifier
@@ -50,7 +50,7 @@ public interface OAuthenticator {
      * @param verifier verifier
      * @return new access token
      */
-    OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier);
+    OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) throws Exception;
 
     /**
      * Refreshs the given access token if it has expired. Include optional extra oauth header from the extra field of the token.
@@ -59,6 +59,6 @@ public interface OAuthenticator {
      * @see OAuthToken#getAttributes()
      * @return a new access token
      */
-    OAuthToken refreshAccessToken(OAuthToken accessOAuthToken, Pair... extrasOAuthParams);
+    OAuthToken refreshAccessToken(OAuthToken accessOAuthToken, Pair... extrasOAuthParams) throws Exception;
 
 }

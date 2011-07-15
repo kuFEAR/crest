@@ -25,18 +25,20 @@ import org.codegist.crest.annotate.XmlEntity;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public class XmlEntityAnnotationHandler extends NoOpAnnotationHandler<XmlEntity> {
 
     @Override
-    public void handleInterfaceAnnotation(XmlEntity annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(XmlEntity annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setMethodsEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 
     @Override
-    public void handleMethodAnnotation(XmlEntity annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(XmlEntity annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         builder.setEntityWriter(annotation.annotationType().getAnnotation(EntityWriter.class).value());
     }
 

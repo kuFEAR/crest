@@ -31,6 +31,6 @@ import java.util.Collection;
  */
 public interface ParamProcessor {
 
-    Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded);
+    Collection<Pair> process(HttpParam param, Charset charset, boolean encodeIfNeeded) throws Exception;
 
 }

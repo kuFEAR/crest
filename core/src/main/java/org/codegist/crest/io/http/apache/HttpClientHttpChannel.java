@@ -76,11 +76,11 @@ public final class HttpClientHttpChannel implements HttpChannel {
         ((HttpEntityEnclosingRequest) request).setEntity(new HttpEntityWriterHttpEntity(httpEntityWriter));
     }
 
-    public Response send()  throws IOException {
+    public Response send() throws IOException {
         return new HttpClientResponse(request, client.execute(request));
     }
 
-    private final class HttpClientResponse implements Response {
+    private static final class HttpClientResponse implements Response {
 
         private final HttpUriRequest request;
         private final org.apache.http.HttpResponse response;
@@ -122,19 +122,25 @@ public final class HttpClientHttpChannel implements HttpChannel {
         }
 
         public void close() {
-            try {
-                if(response.getEntity() != null) {
-                    response.getEntity().consumeContent();
-                }
-            } catch (IOException e) {
-                LOGGER.warn(e, "Failed to consume content for io %s", request);
-            } finally {
-                request.abort();
-            }
+            HttpClientHttpChannel.close(response, request);
         }
     }
 
-    private final class HttpEntityWriterHttpEntity extends AbstractHttpEntity {
+    private static void close(HttpResponse response, HttpUriRequest request){
+        try {
+            if(response != null && response.getEntity() != null) {
+                LOGGER.trace("Consuming Response Content...");
+                response.getEntity().consumeContent();
+            }
+        } catch (IOException e) {
+            LOGGER.warn(e, "Failed to consume content for request %s", request);
+        } finally {
+            LOGGER.trace("Abording Request...");
+            request.abort();
+        }
+    }
+
+    private static final class HttpEntityWriterHttpEntity extends AbstractHttpEntity {
 
         private final HttpEntityWriter writer;
 

@@ -21,9 +21,7 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -32,17 +30,13 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public class CommaSeparatedIntDeserializer implements Deserializer  {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws CRestException {
-        try {
-            String[] ints = IOs.toString(stream, charset, true).split(",");
-            int[] intPrims = new int[ints.length];
-            int i = 0;
-            for(String in : ints){
-                intPrims[i++] = Integer.parseInt(in);
-            }
-            return (T) intPrims;
-        } catch (IOException e) {
-            throw CRestException.handle(e);
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
+        String[] ints = IOs.toString(stream, charset, true).split(",");
+        int[] intPrims = new int[ints.length];
+        int i = 0;
+        for(String in : ints){
+            intPrims[i++] = Integer.parseInt(in);
         }
+        return (T) intPrims;
     }
 }

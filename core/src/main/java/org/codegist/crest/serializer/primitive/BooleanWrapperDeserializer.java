@@ -20,24 +20,21 @@
 
 package org.codegist.crest.serializer.primitive;
 
+import org.codegist.crest.CRestProperty;
+
 import java.util.Map;
 
-import static org.codegist.common.lang.Strings.defaultIfBlank;
 import static org.codegist.common.lang.Strings.isBlank;
-import static org.codegist.crest.CRestProperty.CREST_BOOLEAN_TRUE;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class BooleanWrapperDeserializer extends PrimitiveDeserializer<Boolean> {
-    public static final String DEFAULT_TRUE = "true";
+
     private final String trueString;
 
-    public BooleanWrapperDeserializer() {
-        this(DEFAULT_TRUE);
-    }
     public BooleanWrapperDeserializer(Map<String,Object> crestProperties) {
-        this(defaultIfBlank((String) crestProperties.get(CREST_BOOLEAN_TRUE), DEFAULT_TRUE));
+        this(CRestProperty.getBooleanTrue(crestProperties));
     }
     public BooleanWrapperDeserializer(String trueString) {
         this.trueString = trueString;

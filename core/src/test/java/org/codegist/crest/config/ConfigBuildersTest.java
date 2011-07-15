@@ -128,7 +128,7 @@
 //        placeholders.put("my.end-point.port", "8080");
 //        placeholders.put("bla", "blo"); // this one should not be replaced
 //        Map<String, Object> props = new HashMap<String, Object>();
-//        props.put(CRestProperty.CONFIG_PLACEHOLDERS_MAP, placeholders);
+//        props.put(CRestProperty.CREST_ANNOTATION_PLACEHOLDERS, placeholders);
 //
 //        AbstractConfigBuilder cb = new AbstractConfigBuilder(props) {
 //        };
@@ -226,7 +226,7 @@
 //
 //
 //        Map<String, Object> props = new HashMap<String, Object>();
-//        props.put(CRestProperty.CONFIG_PLACEHOLDERS_MAP, placeholders);
+//        props.put(CRestProperty.CREST_ANNOTATION_PLACEHOLDERS, placeholders);
 //        props.put(DeserializerRegistry.class.getName(), REGISTRY);
 //
 //        InterfaceConfig expected = new DefaultInterfaceConfig(
@@ -347,11 +347,11 @@
 //
 //        final Map<String, Object> defaultOverrides = new HashMap<String, Object>();
 //        defaultOverrides.put(CONFIG_INTERFACE_DEFAULT_PATH, "/path");
-//        defaultOverrides.put(CONFIG_INTERFACE_DEFAULT_ENCODING, "ISO-8859-1");
+//        defaultOverrides.put(INTERFACE_CONFIG_DEFAULT_ENCODING, "ISO-8859-1");
 //        defaultOverrides.put(CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR, new Stubs.RequestInterceptor1());
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_PATH, "/meth-path");
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR, new Stubs.RequestInterceptor2());
-//        defaultOverrides.put(CONFIG_METHOD_DEFAULT_SO_TIMEOUT, 120l);
+//        defaultOverrides.put(METHOD_CONFIG_DEFAULT_SO_TIMEOUT, 120l);
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_CO_TIMEOUT, 121l);
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_ERROR_HANDLER, new Stubs.ErrorHandler1());
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_RETRY_HANDLER, new Stubs.RetryHandler1());
@@ -369,14 +369,14 @@
 //                Interface.class,
 //                "http://server:8080",
 //                (String) defaultOverrides.get(CONFIG_INTERFACE_DEFAULT_PATH),
-//                (String) defaultOverrides.get(CONFIG_INTERFACE_DEFAULT_ENCODING),
+//                (String) defaultOverrides.get(INTERFACE_CONFIG_DEFAULT_ENCODING),
 //                (RequestInterceptor) defaultOverrides.get(CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR),
 //                new HashMap<Method, MethodConfig>() {{
 //                    put(Interface.A, new DefaultMethodConfig(
 //                            Interface.A,
 //                            (String) defaultOverrides.get(CONFIG_METHOD_DEFAULT_PATH),
 //                            (String) defaultOverrides.get(CONFIG_METHOD_DEFAULT_HTTP_METHOD),
-//                            (Long) defaultOverrides.get(CONFIG_METHOD_DEFAULT_SO_TIMEOUT),
+//                            (Long) defaultOverrides.get(METHOD_CONFIG_DEFAULT_SO_TIMEOUT),
 //                            (Long) defaultOverrides.get(CONFIG_METHOD_DEFAULT_CO_TIMEOUT),
 //                            (RequestInterceptor) defaultOverrides.get(CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR),
 //                            (ResponseHandler) defaultOverrides.get(CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER),
@@ -398,7 +398,7 @@
 //                            Interface.B,
 //                            (String) defaultOverrides.get(CONFIG_METHOD_DEFAULT_PATH),
 //                            (String) defaultOverrides.get(CONFIG_METHOD_DEFAULT_HTTP_METHOD),
-//                            (Long) defaultOverrides.get(CONFIG_METHOD_DEFAULT_SO_TIMEOUT),
+//                            (Long) defaultOverrides.get(METHOD_CONFIG_DEFAULT_SO_TIMEOUT),
 //                            (Long) defaultOverrides.get(CONFIG_METHOD_DEFAULT_CO_TIMEOUT),
 //                            (RequestInterceptor) defaultOverrides.get(CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR),
 //                            (ResponseHandler) defaultOverrides.get(CONFIG_METHOD_DEFAULT_RESPONSE_HANDLER),

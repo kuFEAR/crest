@@ -27,6 +27,7 @@ import static org.codegist.common.lang.Strings.isBlank;
  * @author laurent.gilles@codegist.org
  */
 public class IntegerWrapperDeserializer extends PrimitiveDeserializer<Integer> {
+
     public Integer deserialize(String value) {
         return isBlank(value) ?  null : valueOf(value);
     }

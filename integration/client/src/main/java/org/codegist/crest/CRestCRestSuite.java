@@ -31,10 +31,10 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ParamsBaseSuite.class,
-        ErrorHandlersTest.class,
         ParamsCRestSuite.class,
         RequestsCRestSuite.class,
-        DeserializationsCRestSuite.class
+        DeserializationsCRestSuite.class,
+        ErrorHandlersTest.class
 })
 public class CRestCRestSuite {
 }

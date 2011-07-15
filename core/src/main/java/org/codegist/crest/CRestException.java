@@ -20,6 +20,10 @@
 
 package org.codegist.crest;
 
+import org.codegist.crest.io.RequestException;
+
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -40,15 +44,39 @@ public class CRestException extends RuntimeException {
         super(cause);
     }
 
-    public static <T extends RuntimeException> T handle(Throwable e) {
+    public static RuntimeException handle(Throwable e) {
         if (e instanceof CRestException) {
-            throw (CRestException) e;
+            return handle((CRestException) e);
+        }else if (e instanceof RequestException) {
+            return handle((RequestException) e);
         } else if (e instanceof IllegalArgumentException) {
-            throw (IllegalArgumentException) e;
+            return handle((IllegalArgumentException) e);
         } else if (e instanceof IllegalStateException) {
-            throw (IllegalStateException) e;
+            return handle((IllegalStateException) e);
+        } else if (e instanceof InvocationTargetException) {
+            return handle((InvocationTargetException) e);
         } else {
-            throw new CRestException(e.getMessage(), e);
+            return new CRestException(e.getMessage(), e);
         }
+    }
+
+    public static RuntimeException handle(CRestException e) {
+        return e;
+    }
+
+    public static RuntimeException handle(RequestException e) {
+        return e.getCause() != null ? handle(e.getCause()) : new CRestException(e.getMessage(), e);
+    }
+
+    public static RuntimeException handle(IllegalArgumentException e) {
+        return e;
+    }
+
+    public static RuntimeException handle(IllegalStateException e) {
+        return e;
+    }
+
+    public static RuntimeException handle(InvocationTargetException e) {
+        return handle(e.getCause());
     }
 }

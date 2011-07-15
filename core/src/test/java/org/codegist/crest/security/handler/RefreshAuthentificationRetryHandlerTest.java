@@ -50,7 +50,7 @@
 //    @Test(expected = IllegalArgumentException.class)
 //    public void testInvalidArguments3(){
 //        new RefreshAuthentificationRetryHandler(new HashMap<String, Object>(){{
-//            put(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS, "10");
+//            put(CRestProperty.CREST_RETRY_ATTEMPTS, "10");
 //        }});
 //    }
 //    @Test
@@ -65,7 +65,7 @@
 //    public void testRetryOverrideMax(){
 //        RefreshAuthentificationRetryHandler handler = new RefreshAuthentificationRetryHandler(new HashMap<String, Object>(){{
 //            put(AuthentificationManager.class.getName(), mock(AuthentificationManager.class));
-//            put(CRestProperty.HANDLER_RETRY_MAX_ATTEMPTS, "2");
+//            put(CRestProperty.CREST_RETRY_ATTEMPTS, "2");
 //        }});
 //        assertTrue(handler.retry(mock(ResponseContext.class), getHttpException(401), 1));
 //        assertTrue(handler.retry(mock(ResponseContext.class), getHttpException(401), 2));

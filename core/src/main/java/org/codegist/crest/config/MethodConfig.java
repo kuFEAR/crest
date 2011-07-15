@@ -115,7 +115,7 @@ public interface MethodConfig {
      *
      * @see org.codegist.crest.config.MethodConfig#getDeserializers()
      */
-    Class<? extends Deserializer>[] DEFAULT_DESERIALIZERS = null;
+    Class<? extends Deserializer>[] DEFAULT_DESERIALIZERS = new Class[0];
 
     Class<? extends EntityWriter> DEFAULT_BODY_WRITER = null;
 

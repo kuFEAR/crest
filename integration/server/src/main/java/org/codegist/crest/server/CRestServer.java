@@ -137,6 +137,9 @@ public class CRestServer {
         );
     }
 
+    public void stop(){
+        server.stop();
+    }
     public void stopOnExit(){
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override

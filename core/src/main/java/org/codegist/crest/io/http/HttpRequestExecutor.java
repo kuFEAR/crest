@@ -23,7 +23,6 @@ package org.codegist.crest.io.http;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
@@ -55,12 +54,12 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         this.deserializationManager = deserializationManager;
     }
 
-    public Response execute(Request request) throws RequestException {
+    public Response execute(Request request) throws Exception {
         HttpRequest httpRequest = request instanceof HttpRequest ? (HttpRequest) request : from(request);
         return execute(httpRequest);
     }
 
-    public HttpResponse execute(HttpRequest httpRequest) throws RequestException {
+    public HttpResponse execute(HttpRequest httpRequest) throws Exception {
         HttpResponse response;
         try {
             response = doExecute(httpRequest);
@@ -70,19 +69,17 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
             return response;
         }catch(IOException e){
             throw new RequestException(e);
-        }catch(RuntimeException e){
-            throw CRestException.handle(e);
         }
     }
 
-    private HttpResponse doExecute(HttpRequest httpRequest) throws IOException, RequestException {
+    private HttpResponse doExecute(HttpRequest httpRequest) throws IOException, Exception {
         Charset charset = httpRequest.getCharset();
         String url = getUrlFor(httpRequest);
 
-        LOGGER.debug("Initiating HTTP Channel: %s %s", httpRequest.getMeth(), url);
+        LOGGER.debug("Initiating HTTP Channel: %s %s", httpRequest.getHttpMethod(), url);
         LOGGER.trace(httpRequest);
 
-        HttpChannel httpChannel = channelInitiator.initiate(httpRequest.getMeth(), url, httpRequest.getCharset());
+        HttpChannel httpChannel = channelInitiator.initiate(httpRequest.getHttpMethod(), url, httpRequest.getCharset());
 
         if(httpRequest.getConnectionTimeout() != null) {
             int timeout = httpRequest.getConnectionTimeout().intValue();
@@ -124,7 +121,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
             httpChannel.addHeader(name, value);
         }
 
-        if(httpRequest.getMeth().hasEntity()) {
+        if(httpRequest.getHttpMethod().hasEntity()) {
             String contentType = httpRequest.getEntityWriter().getContentType(httpRequest);
             if(isNotBlank(contentType)) {
                 if(httpRequest.getContentType() == null) {
@@ -142,7 +139,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     }
 
 
-    private String getUrlFor(HttpRequest request){
+    private String getUrlFor(HttpRequest request) throws Exception {
         Charset charset = request.getCharset();
         Iterator<Pair> queryParamsIterator = iterate(request.getQueryParams(), charset);
         Iterator<Pair> matrixesParamsIterator = iterate(request.getMatrixParams(), charset);

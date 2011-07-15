@@ -3,11 +3,13 @@ package org.codegist.crest.config;
 import org.codegist.common.lang.State;
 import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
+import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.http.param.ParamProcessor;
 import org.codegist.crest.io.http.param.ParamType;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.Map;
@@ -43,26 +45,26 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
         this.parent = parent;
         this.clazz = Types.getComponentClass(clazz, genericType);
         this.genericType = Types.getComponentType(clazz, genericType);
-        this.classSerializerRegistry = (Registry<Class<?>, Serializer>) crestProperties.get(Registry.class.getName() + "#serializers-per-class");
+        this.classSerializerRegistry = CRestProperty.get(crestProperties, Registry.class.getName() + "#serializers-per-class");
     }
 
     /**
      * @inheritDoc
      */
-    public T build() {
-        String pName = defaultIfUndefined(this.name, CONFIG_PARAM_DEFAULT_NAME, DEFAULT_NAME);
-        String pDefaultValue = defaultIfUndefined(this.defaultValue, CONFIG_PARAM_DEFAULT_VALUE, DEFAULT_VALUE);
-        ParamType pType = defaultIfUndefined(this.type, CONFIG_PARAM_DEFAULT_TYPE, DEFAULT_TYPE);
-        Map<String,Object> pMetas = defaultIfUndefined(this.metas, CONFIG_PARAM_DEFAULT_METAS, DEFAULT_METADATAS);
-        String pListSeparator = defaultIfUndefined(this.listSeparator, CONFIG_PARAM_DEFAULT_LIST_SEPARATOR, null);
-        Serializer pSerializer = defaultIfUndefined(this.serializer, CONFIG_PARAM_DEFAULT_SERIALIZER, newInstance(DEFAULT_SERIALIZER));
-        Boolean pEncoded = defaultIfUndefined(this.encoded, CONFIG_PARAM_DEFAULT_ENCODED, (COOKIE.equals(pType) || HEADER.equals(pType)) ? Boolean.TRUE : DEFAULT_ENCODED);
+    public T build() throws Exception {
+        String pName = defaultIfUndefined(this.name, PARAM_CONFIG_DEFAULT_NAME, DEFAULT_NAME);
+        String pDefaultValue = defaultIfUndefined(this.defaultValue, PARAM_CONFIG_DEFAULT_VALUE, DEFAULT_VALUE);
+        ParamType pType = defaultIfUndefined(this.type, PARAM_CONFIG_DEFAULT_TYPE, DEFAULT_TYPE);
+        Map<String,Object> pMetas = defaultIfUndefined(this.metas, PARAM_CONFIG_DEFAULT_METAS, DEFAULT_METADATAS);
+        String pListSeparator = defaultIfUndefined(this.listSeparator, PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, null);
+        Serializer pSerializer = defaultIfUndefined(this.serializer, PARAM_CONFIG_DEFAULT_SERIALIZER, DEFAULT_SERIALIZER);
+        Boolean pEncoded = defaultIfUndefined(this.encoded, PARAM_CONFIG_DEFAULT_ENCODED, (COOKIE.equals(pType) || HEADER.equals(pType)) ? Boolean.TRUE : DEFAULT_ENCODED);
         if (pSerializer == null) {
             State.notNull(classSerializerRegistry, "Can't lookup a serializer by type. Please provide a ClassSerializerRegistry");
             // if null, then choose which serializer to apply using default rules
             pSerializer = classSerializerRegistry.get(clazz);
         }
-        ParamProcessor paramProcessor =  defaultIfUndefined(null, CONFIG_PARAM_DEFAULT_PROCESSOR, newInstance(DEFAULT_PARAM_PROCESSOR));
+        ParamProcessor paramProcessor =  defaultIfUndefined(null, PARAM_CONFIG_DEFAULT_PROCESSOR, newInstance(DEFAULT_PARAM_PROCESSOR));
         if(paramProcessor == null) {
             paramProcessor = select(pType, pListSeparator);
         }
@@ -144,7 +146,7 @@ public class ParamConfigBuilder<T extends ParamConfig> extends ConfigBuilder<T> 
      * @param serializer the serializer to use for this argument
      * @return current builder
      */
-    public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
+    public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         this.serializer = newInstance(serializer);
         return this;
     }

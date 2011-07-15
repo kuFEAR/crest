@@ -28,9 +28,7 @@ import static org.codegist.common.lang.Strings.isBlank;
  * @author laurent.gilles@codegist.org
  */
 public class BooleanPrimitiveDeserializer extends BooleanWrapperDeserializer {
-    public BooleanPrimitiveDeserializer() {
-        super();
-    }
+
     public BooleanPrimitiveDeserializer(Map<String,Object> crestProperties) {
         super(crestProperties);
     }

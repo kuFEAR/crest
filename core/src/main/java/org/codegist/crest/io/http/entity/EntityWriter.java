@@ -22,13 +22,12 @@ package org.codegist.crest.io.http.entity;
 
 import org.codegist.crest.io.http.HttpRequest;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 
 public interface EntityWriter {
 
-    void writeTo(HttpRequest request, OutputStream outputStream) throws IOException;
+    void writeTo(HttpRequest request, OutputStream outputStream) throws Exception;
 
     String getContentType(HttpRequest request);
 

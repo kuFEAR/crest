@@ -20,6 +20,7 @@
 
 package org.codegist.crest.entity;
 
+import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.http.HttpParam;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
@@ -40,7 +41,7 @@ public class XmlEntityWriter extends SerializingEntityWriter {
     }
 
     private static Serializer<List<HttpParam>> getSerializer(Map<String,Object> crestProperties){
-        Registry<String,Serializer> registryMime = (Registry<String,Serializer>) crestProperties.get(Registry.class.getName() + "#serializers-per-mime");
+        Registry<String,Serializer> registryMime = CRestProperty.get(crestProperties, Registry.class.getName() + "#serializers-per-mime");
         return registryMime.get(MIME);
     }
 }

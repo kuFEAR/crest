@@ -20,11 +20,14 @@
 
 package org.codegist.crest.security.oauth;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.io.http.Pair;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Map;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * OAuth Token information holder
@@ -37,12 +40,12 @@ public class OAuthToken {
     private final Map<String,String> attributes;
 
     public OAuthToken(String token, String secret) {
-        this(token, secret, null);
+        this(token, secret, Collections.<String, String>emptyMap());
     }
     public OAuthToken(String token, String secret, Map<String,String> attributes) {
         this.token = token;
         this.secret = secret;
-        this.attributes = Maps.unmodifiable(attributes);
+        this.attributes = unmodifiableMap(attributes);
     }
 
     public String getToken() {
@@ -53,7 +56,7 @@ public class OAuthToken {
         return secret;
     }
 
-    public Pair getAttribute(String name){
+    public Pair getAttribute(String name) throws UnsupportedEncodingException {
         return new Pair(name, attributes.get(name));
     }
 

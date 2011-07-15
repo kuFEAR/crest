@@ -30,8 +30,8 @@ import java.nio.charset.Charset;
  */
 public interface Jaxb {
 
-    <T> T unmarshal(Class<T> type, Type genericType, Reader reader);
+    <T> T unmarshal(Class<T> type, Type genericType, Reader reader) throws Exception;
 
-    <T> void marshal(T object, OutputStream out, Charset charset);
+    <T> void marshal(T object, OutputStream out, Charset charset) throws Exception;
 
 }

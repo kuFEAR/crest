@@ -25,23 +25,25 @@ import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class SerializerAnnotationHandler extends NoOpAnnotationHandler<Serializer> {
 
     @Override
-    public void handleInterfaceAnnotation(Serializer annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(Serializer annotation, InterfaceConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setParamsSerializer(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(Serializer annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(Serializer annotation, MethodConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setParamsSerializer(annotation.value());
     }
                   
     @Override
-    public void handleParameterAnnotation(Serializer annotation, ParamConfigBuilder builder) {
+    public void handleParameterAnnotation(Serializer annotation, ParamConfigBuilder builder) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         builder.setSerializer(annotation.value());
     }
     

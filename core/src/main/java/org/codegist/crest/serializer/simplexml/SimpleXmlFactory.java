@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.crest.CRestProperty;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -56,22 +55,18 @@ final class SimpleXmlFactory {
         return create(cfg, DESERIALIZER_PREFIX);
     }
 
-    private static Serializer create(Map<String,Object> cfg, String prefix){
-        Map<String,Object> config = Maps.defaultsIfNull(cfg);
-
+    private static Serializer create(Map<String,Object> config, String prefix){
         Serializer serializer;
         if(config.containsKey(prefix + "#" + USER_SERIALIZER_PROP)) {
-            serializer = (org.simpleframework.xml.Serializer) config.get(prefix + "#" + USER_SERIALIZER_PROP);
+            serializer = CRestProperty.get(config, prefix + "#" + USER_SERIALIZER_PROP);
         }else{
             MatcherRegistry.Builder registry = new MatcherRegistry.Builder();
-            if(config.containsKey(CRestProperty.CREST_DATE_FORMAT)) {
-                registry.bind(Date.class, new DateMatcher((String) config.get(CRestProperty.CREST_DATE_FORMAT)));
-            }
-            if(config.containsKey(CRestProperty.CREST_BOOLEAN_FALSE) && config.containsKey(CRestProperty.CREST_BOOLEAN_TRUE)) {
-                String trueVal = ((String)config.get(CRestProperty.CREST_BOOLEAN_TRUE));
-                String falseVal = ((String)config.get(CRestProperty.CREST_BOOLEAN_FALSE));
-                registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
-            }
+            registry.bind(Date.class, new DateMatcher(CRestProperty.getDateFormat(config)));
+
+            String trueVal = CRestProperty.getBooleanTrue(config);
+            String falseVal = CRestProperty.getBooleanFalse(config);
+            registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
+
             if(registry.hasTransformers()) {
                 serializer = new Persister(registry.build());
             }else{

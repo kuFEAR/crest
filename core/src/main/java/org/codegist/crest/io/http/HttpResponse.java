@@ -22,7 +22,6 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Disposable;
-import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.Response;
@@ -68,16 +67,6 @@ public class HttpResponse implements Response, Disposable {
         return inputStream;
     }
 
-    public String asString() throws IOException {
-        if (inputStream == null) {
-            return null;
-        }
-        if (responseString == null) {
-            responseString = IOs.toString(inputStream, resource.getCharset(), true);
-        }
-        return responseString;
-    }
-
     public int getStatusCode() throws IOException {
         return resource.getStatusCode();
     }
@@ -110,9 +99,9 @@ public class HttpResponse implements Response, Disposable {
         return httpRequest;
     }
 
-    public <T> T deserialize() throws IOException {
+    public <T> T deserialize() throws Exception {
         Deserializer[] deserializers = httpRequest.getMethodConfig().getDeserializers();
-        if(deserializers != null && deserializers.length > 0) {
+        if(deserializers.length > 0) {
             // try with preconfigured deserializer if present
             return deserializationManager.deserializeByDeserializers(
                     (Class<T>) getExpectedType(),
@@ -143,11 +132,11 @@ public class HttpResponse implements Response, Disposable {
         }
     }
 
-    public <T> T deserializeTo(Class<T> type) throws IOException {
+    public <T> T deserializeTo(Class<T> type) throws Exception {
         return deserializeTo(type, type);
     }
 
-    public <T> T deserializeTo(Class<T> type, Type genericType) throws IOException {
+    public <T> T deserializeTo(Class<T> type, Type genericType) throws Exception {
         if(deserializationManager.isClassTypeKnown(type)){
             return deserializationManager.deserializeByClassType(
                     type,
@@ -170,11 +159,5 @@ public class HttpResponse implements Response, Disposable {
         IOs.close(inputStream);
     }
 
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("resource", resource)
-                .append("io", httpRequest)
-                .toString();
-    }
 }
 

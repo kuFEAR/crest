@@ -20,8 +20,6 @@
 
 package org.codegist.crest.io.http;
 
-import org.codegist.common.lang.EqualsBuilder;
-import org.codegist.common.lang.HashCodeBuilder;
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.config.StringParamConfig;
@@ -52,28 +50,6 @@ public class HttpParam {
         return config;
     }
 
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(this.value)
-                .append(this.config)
-                .hashCode();
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (null == o || this.getClass() != o.getClass()) {
-            return false;
-        }
-        HttpParam that = (HttpParam) o;
-        return new EqualsBuilder()
-                .append(this.value, that.value)
-                .append(this.config, that.config)
-                .equals();
-    }
-
-    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("name", config.getName())

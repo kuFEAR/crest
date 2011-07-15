@@ -20,13 +20,13 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.common.lang.Strings;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.io.http.HttpParam;
 import org.codegist.crest.serializer.StreamingSerializer;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -50,12 +50,12 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpP
     private final Jaxb jaxb;
     private final QName wrapperElementName;
 
-    public XmlEncodedFormJaxbSerializer(Map<String, Object> config) {
+    public XmlEncodedFormJaxbSerializer(Map<String, Object> config) throws JAXBException {
         this.jaxb = JaxbFactory.create(config);
-        this.wrapperElementName = new QName(Strings.defaultIfBlank((String) config.get(CRestProperty.SERIALIZER_XML_WRAPPER_ELEMENT_NAME), DEFAULT_WRAPPER_ELEMENT_NAME));
+        this.wrapperElementName = new QName(CRestProperty.get(config, "crest.entity.writer.xml.element-name", DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) {
+    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws Exception {
         JAXBElement<JaxbHttpParam> object = JaxbHttpParamJAXBElement.create(wrapperElementName, value);
         jaxb.marshal(object, out, charset);
     }

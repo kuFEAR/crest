@@ -26,7 +26,6 @@ import org.codegist.crest.delicious.model.Result;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.io.Response;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -34,7 +33,7 @@ import java.lang.reflect.Type;
  */
 public class DeliciousResponseHandler implements ResponseHandler {
 
-    public Object handle(Response response) throws CRestException, IOException {
+    public Object handle(Response response) throws Exception {
         Type expectedType = response.getExpectedGenericType();
         if(response.getExpectedType().isPrimitive()) {
             Result result = response.deserializeTo(Result.class);

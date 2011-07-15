@@ -24,18 +24,20 @@ import org.codegist.crest.annotate.ResponseHandler;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 class ResponseHandlerAnnotationHandler extends NoOpAnnotationHandler<ResponseHandler> {
 
     @Override
-    public void handleInterfaceAnnotation(ResponseHandler annotation, InterfaceConfigBuilder builder) {
+    public void handleInterfaceAnnotation(ResponseHandler annotation, InterfaceConfigBuilder builder)throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         builder.setMethodsResponseHandler(annotation.value());
     }
 
     @Override
-    public void handleMethodAnnotation(ResponseHandler annotation, MethodConfigBuilder builder) {
+    public void handleMethodAnnotation(ResponseHandler annotation, MethodConfigBuilder builder)throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {
         builder.setResponseHandler(annotation.value());
     }
 

@@ -20,12 +20,11 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.common.lang.Strings;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
+import org.codegist.crest.util.ComponentFactory;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +32,8 @@ import java.util.regex.Pattern;
 
 import static org.codegist.common.lang.Objects.defaultIfNull;
 import static org.codegist.common.lang.Strings.defaultIfEmpty;
+import static org.codegist.crest.CRestProperty.get;
+import static org.codegist.crest.CRestProperty.getPlaceholders;
 
 /**
  * Handy builders for {@link org.codegist.crest.config.DefaultInterfaceConfig}.
@@ -45,14 +46,11 @@ import static org.codegist.common.lang.Strings.defaultIfEmpty;
 abstract class ConfigBuilder<T> {
 
     private final Map<String, Object> crestProperties;
-    private final Map<Pattern, String> placeholders;
+    private final Map<Pattern, String> placeholders = new HashMap<Pattern, String>();
 
     ConfigBuilder(Map<String, Object> crestProperties) {
         this.crestProperties = crestProperties;
-
-        Map<String, String> pPlaceholders = Maps.defaultsIfNull((Map<String, String>) crestProperties.get(CRestProperty.CONFIG_PLACEHOLDERS_MAP));
-        this.placeholders = new HashMap<Pattern, String>();
-        for (Map.Entry<String, String> entry : pPlaceholders.entrySet()) {
+        for (Map.Entry<String, String> entry : getPlaceholders(crestProperties).entrySet()) {
             String placeholder = entry.getKey();
             String value = entry.getValue().replaceAll("\\$", "\\\\\\$");
             this.placeholders.put(Pattern.compile("\\{" + Pattern.quote(placeholder) + "\\}"), value);
@@ -64,7 +62,7 @@ abstract class ConfigBuilder<T> {
      *
      * @return config
      */
-    public abstract T build();
+    public abstract T build() throws Exception;
 
     public Map<String, Object> getCRestProperties() {
         return crestProperties;
@@ -83,57 +81,63 @@ abstract class ConfigBuilder<T> {
         return replaced.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}"); // replace escaped with non escaped
     }
 
-    protected <T> T getProperty(String key) {
-        return (T) crestProperties.get(key);
-    }
+//    protected <T> T getProperty(String key) {
+//        return (T) crestProperties.get(key);
+//    }
 
-    protected <T> T defaultIfUndefined(T value, String defProp, T def) {
-        if (value instanceof String || def instanceof String) {
-            String defs = defaultIfEmpty((String) crestProperties.get(defProp), (String) def);
-            return (T) defaultIfEmpty((String) value, defs);
-        } else {
-            return defaultIfNull(value, defaultIfNull((T) crestProperties.get(defProp), def));
+    protected <T> T[] defaultIfUndefined(T[] value, String defProp, Class<? extends T>[] def) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        if(value == null) {
+            T[] prop = CRestProperty.<T[]>get(crestProperties, defProp);
+            if(prop != null) {
+                return prop;
+            }else{
+                return newInstance(def);
+            }
+        }else{
+            return value;
+        }
+    }
+    protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        if(value == null) {
+            T prop = CRestProperty.<T>get(crestProperties, defProp);
+            if(prop != null) {
+                return prop;
+            }else{
+                return newInstance(def);
+            }
+        }else{
+            return value;
         }
     }
 
-    protected <T> T[] newInstance(Class<T>[] classes) {
+    @SuppressWarnings("unchecked")
+    protected <T> T defaultIfUndefined(T value, String defProp, T def) {
+        if (value instanceof String || def instanceof String) {
+            String defs = get(crestProperties, defProp, (String) def);
+            return (T) defaultIfEmpty((String) value, defs);
+        } else {
+            return defaultIfNull(value, get(crestProperties, defProp, def));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> T[] newInstance(Class<T>[] classes) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (classes == null) {
             return null;
         }
-        try {
-            T[] instances = (T[]) java.lang.reflect.Array.newInstance(classes.getClass().getComponentType(), classes.length);
-            for (int i = 0; i < instances.length; i++) {
-                instances[i] = newInstance(classes[i]);
-            }
-            return instances;
-        } catch (Exception e) {
-            throw CRestException.handle(e);
+        T[] instances = (T[]) Array.newInstance(classes.getClass().getComponentType(), classes.length);
+        for (int i = 0; i < instances.length; i++) {
+            instances[i] = newInstance(classes[i]);
         }
+        return instances;
     }
 
-    protected <T> T newInstance(Class<T> clazz) {
+    protected <T> T newInstance(Class<T> clazz) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if (clazz == null) {
             return null;
-        }
-        try {
-            return newInstance(clazz.getConstructor(Map.class), crestProperties);
-        } catch (CRestException e) {
-            throw e;
-        } catch (Exception e) {
-            try {
-                return newInstance(clazz.getConstructor());
-            } catch (Exception e1) {
-                throw CRestException.handle(e1);
-            }
+        }else{
+            return ComponentFactory.instantiate(clazz, crestProperties);
         }
     }
-
-    private <T> T newInstance(Constructor<T> constructor, Object... args) throws Exception {
-        try {
-            return constructor.newInstance(args);
-        } catch (InvocationTargetException e) {
-            throw CRestException.handle(e);
-        }
-    }
-
+    
 }

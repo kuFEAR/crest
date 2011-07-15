@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.common.lang.Validate;
+import org.codegist.crest.CRestProperty;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -38,16 +38,15 @@ final class JacksonFactory {
     }
 
     static ObjectMapper createDeserializer(Map<String,Object> config){
-        Validate.notNull(config, "Config must not be null");
         String prefix = "jackson-deserializer#";
         ObjectMapper mapper;
         if(config.containsKey(prefix + USER_OBJECT_MAPPER_PROP)) {
-            mapper = (ObjectMapper) config.get(prefix + USER_OBJECT_MAPPER_PROP);
+            mapper = CRestProperty.get(config, prefix + USER_OBJECT_MAPPER_PROP);
         }else{
             mapper = new ObjectMapper();
         }
         if(config.containsKey(prefix + DESERIALIZATION_CONFIG_MAP_PROP)) {
-            Map<String, Boolean> deserializationConfig = (Map<String, Boolean>) config.get(prefix + DESERIALIZATION_CONFIG_MAP_PROP);
+            Map<String, Boolean> deserializationConfig = CRestProperty.get(config, prefix + DESERIALIZATION_CONFIG_MAP_PROP);
             for (Map.Entry<String, Boolean> entry : deserializationConfig.entrySet()) {
                 mapper = mapper.configure(DeserializationConfig.Feature.valueOf(entry.getKey()), entry.getValue());
             }
@@ -58,16 +57,15 @@ final class JacksonFactory {
     }
 
     static ObjectMapper createSerializer(Map<String,Object> config){
-        Validate.notNull(config, "Config must not be null");
         String prefix = "jackson-serializer#";
         ObjectMapper mapper;
         if(config.containsKey(prefix + USER_OBJECT_MAPPER_PROP)) {
-            mapper = (ObjectMapper) config.get(prefix + USER_OBJECT_MAPPER_PROP);
+            mapper = CRestProperty.get(config, prefix + USER_OBJECT_MAPPER_PROP);
         }else{
             mapper = new ObjectMapper();
         }
         if(config.containsKey(prefix + SERIALIZATION_CONFIG_MAP_PROP)) {
-            Map<String, Boolean> serializationConfig = (Map<String, Boolean>) config.get(prefix + SERIALIZATION_CONFIG_MAP_PROP);
+            Map<String, Boolean> serializationConfig = CRestProperty.get(config, prefix + SERIALIZATION_CONFIG_MAP_PROP);
             for (Map.Entry<String, Boolean> entry : serializationConfig.entrySet()) {
                 mapper = mapper.configure(SerializationConfig.Feature.valueOf(entry.getKey()), entry.getValue());
             }

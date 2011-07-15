@@ -22,6 +22,7 @@ package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
 
+import javax.xml.bind.JAXBException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -44,7 +45,7 @@ class TypeCachingJaxb implements Jaxb {
         this.crestProperties = crestProperties;
     }
 
-    public <T> void marshal(T object, OutputStream out, Charset charset) {
+    public <T> void marshal(T object, OutputStream out, Charset charset) throws Exception {
         Jaxb jaxb;
         if(object instanceof Classes) {
             jaxb = get(((Classes) object).getClasses());
@@ -54,7 +55,7 @@ class TypeCachingJaxb implements Jaxb {
         jaxb.<T>marshal(object, out, charset);
     }
 
-    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) {
+    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) throws Exception {
         Set<Class<?>> classes = Types.getActors(genericType);
         classes.add(type);
 
@@ -62,15 +63,16 @@ class TypeCachingJaxb implements Jaxb {
         return jaxb.<T>unmarshal(type, genericType, reader);
     }
 
-    private Jaxb get(Class key){
+    private Jaxb get(Class key) throws JAXBException {
         return get(Collections.<Class<?>>singleton((Class<?>)key));
     }
 
-    private Jaxb get(Set<Class<?>> key){
+    private Jaxb get(Set<Class<?>> key) throws JAXBException {
         Jaxb jaxb = cache.get(key);
         if(jaxb == null) {
             jaxb = JaxbFactory.create(crestProperties, key.toArray(new Class<?>[key.size()]));
-            cache.putIfAbsent(key, jaxb);
+            Jaxb previousJaxb = cache.putIfAbsent(key, jaxb);
+            jaxb = previousJaxb != null ? previousJaxb : jaxb;
         }
         return jaxb;
     }

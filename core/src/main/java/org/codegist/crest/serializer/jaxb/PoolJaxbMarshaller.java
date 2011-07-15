@@ -23,6 +23,7 @@ package org.codegist.crest.serializer.jaxb;
 import org.codegist.crest.CRestException;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
@@ -37,7 +38,7 @@ class PooledJaxb implements Jaxb {
     private final BlockingQueue<Jaxb> pool;
     private final long maxWait;
 
-    public PooledJaxb(JAXBContext jaxbContext, int poolSize, long maxWait) {
+    public PooledJaxb(JAXBContext jaxbContext, int poolSize, long maxWait) throws JAXBException {
         this.maxWait = maxWait;
         this.pool = new ArrayBlockingQueue<Jaxb>(poolSize);
         for (int i = 0; i < poolSize; i++) {
@@ -45,7 +46,7 @@ class PooledJaxb implements Jaxb {
         }
     }
 
-    public <T> void marshal(T object, OutputStream out, Charset charset) {
+    public <T> void marshal(T object, OutputStream out, Charset charset) throws Exception {
         Jaxb jaxb = get();
         try {
             jaxb.marshal(object, out, charset);
@@ -54,7 +55,7 @@ class PooledJaxb implements Jaxb {
         }
     }
 
-    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) {
+    public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) throws Exception {
         Jaxb jaxb = get();
         try {
             return jaxb.<T>unmarshal(type, genericType, reader);
@@ -67,15 +68,10 @@ class PooledJaxb implements Jaxb {
         pool.offer(jaxb);
     }
 
-    private Jaxb get() {
-        Jaxb jaxb;
-        try {
-            jaxb = pool.poll(maxWait, TimeUnit.MILLISECONDS);
-            if (jaxb == null) {
-                throw new CRestException("No jaxb could have been retrieved in the allowed time window");
-            }
-        } catch (InterruptedException e) {
-            throw CRestException.handle(e);
+    private Jaxb get() throws InterruptedException {
+        Jaxb jaxb = pool.poll(maxWait, TimeUnit.MILLISECONDS);
+        if (jaxb == null) {
+            throw new CRestException("No jaxb could have been retrieved in the allowed time window");
         }
         return jaxb;
     }

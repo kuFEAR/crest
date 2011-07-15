@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.serializer.StringSerializer;
 
@@ -32,19 +31,14 @@ import java.util.Map;
  */
 public class BooleanSerializer extends StringSerializer<Boolean> {
 
-    public static final String DEFAULT_TRUE = "true";
-    public static final String DEFAULT_FALSE = "false";
     private final String trueString;
     private final String falseString;
 
-    public BooleanSerializer() {
-        this(DEFAULT_TRUE, DEFAULT_FALSE);
-    }
     public BooleanSerializer(Map<String,Object> crestProperties) {
-        this(
-                Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_BOOLEAN_TRUE), DEFAULT_TRUE),
-                Strings.defaultIfBlank((String) crestProperties.get(CRestProperty.CREST_BOOLEAN_FALSE), DEFAULT_FALSE)
-        );
+        this(CRestProperty.getBooleanFormat(crestProperties));
+    }
+    public BooleanSerializer(String[] booleanFormat) {
+        this(booleanFormat[0], booleanFormat[1]);
     }
     public BooleanSerializer(String trueString, String falseString) {
         this.trueString = trueString;
