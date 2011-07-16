@@ -20,8 +20,8 @@
 
 package org.codegist.crest.flickr.security;
 
-import org.codegist.crest.io.http.Pair;
-import org.codegist.crest.security.http.HttpEntityParamExtractor;
+import org.codegist.crest.impl.io.EntityParamExtractor;
+import org.codegist.crest.param.EncodedPair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,27 +34,29 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.codegist.crest.util.Pairs.toPreEncodedPair;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class MultiPartEntityParamExtractor implements HttpEntityParamExtractor {
+public class MultiPartEntityParamExtractor implements EntityParamExtractor {
 
     private static final Pattern BOUNDARY_EXTRACTOR = Pattern.compile("boundary=(.*)");
     private static final Pattern PARAM_PATTERN = Pattern.compile("Content-Disposition:\\s*[^;]+\\s*;\\s*name=\"([^\"]+)\"(?:;[^\r]+)?\r\nContent-Type:\\s*([^;]+)\\s*(?:;\\s*charset=[^\r]+)?\r\n\r\n(.*)\r\n");
 
-    public List<Pair> extract(String contentType, Charset charset, InputStream httpEntity) throws IOException {
+    public List<EncodedPair> extract(String contentType, Charset charset, InputStream entity) throws IOException {
         String boundary = getBoundary(contentType);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(httpEntity, charset));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(entity, charset));
         Scanner partsScanner = new Scanner(reader).useDelimiter(Pattern.quote(boundary));
 
-        List<Pair> pairs = new ArrayList<Pair>();
+        List<EncodedPair> pairs = new ArrayList<EncodedPair>();
         while(partsScanner.hasNext()){
             String part = partsScanner.next();
 
            Matcher m = PARAM_PATTERN.matcher(part);
            if(m.find())  {
                if("text/plain".equals(m.group(2))) {
-                   pairs.add(new Pair(m.group(1), m.group(3)));
+                   pairs.add(toPreEncodedPair(m.group(1), m.group(3)));
                }
            }
         }

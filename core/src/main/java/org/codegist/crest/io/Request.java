@@ -20,8 +20,10 @@
 
 package org.codegist.crest.io;
 
-import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.param.Param;
+
+import java.util.List;
 
 /**
  * Context for any io, passed to io's interceptors.
@@ -31,10 +33,8 @@ import org.codegist.crest.config.MethodConfig;
  */
 public interface Request {
 
-    InterfaceConfig getInterfaceConfig();
+    List<Param> getParams(String type);
 
     MethodConfig getMethodConfig();
-
-    Object[] getArgs();
 
 }

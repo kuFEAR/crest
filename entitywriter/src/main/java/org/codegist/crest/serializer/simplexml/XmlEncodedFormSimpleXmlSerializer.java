@@ -21,9 +21,9 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.io.http.HttpParam;
+import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.DateSerializer;
-import org.codegist.crest.serializer.StreamingSerializer;
+import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.primitive.BooleanSerializer;
 import org.simpleframework.xml.stream.Format;
 import org.simpleframework.xml.stream.NodeBuilder;
@@ -40,7 +40,7 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<HttpParam>> {
+public class XmlEncodedFormSimpleXmlSerializer implements Serializer<List<Param>> {
 
     public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.USER_SERIALIZER_PROP;
     public static final String DEFAULT_WRAPPER_ELEMENT_NAME = "form-data";
@@ -58,13 +58,13 @@ public class XmlEncodedFormSimpleXmlSerializer extends StreamingSerializer<List<
         this.rootElement = CRestProperty.get(cfg, "crest.entity.writer.xml.element-name", DEFAULT_WRAPPER_ELEMENT_NAME);
     }
 
-    public void serialize(List<HttpParam> params, Charset charset, OutputStream out) throws Exception {
+    public void serialize(List<Param> params, Charset charset, OutputStream out) throws Exception {
         String prolog = "<?xml version=\"1.0\" encoding=\""+charset.displayName()+"\" standalone=\"yes\"?>";
         Writer writer = new OutputStreamWriter(out, charset);
         OutputNode node = NodeBuilder.write(writer, new Format(0, prolog));
         OutputNode root =  node.getChild(rootElement);
 
-        for(HttpParam param : params){
+        for(Param param : params){
             for(Object value : param.getValue()){
                 if(value == null) continue;
                 OutputNode n = root.getChild(param.getConfig().getName());

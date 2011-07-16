@@ -27,7 +27,9 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public abstract class StringSerializer<V> implements Serializer<V> {
-    
+
+    public abstract String serialize(V value, Charset charset) throws Exception;
+
     public void serialize(V value, Charset charset, OutputStream out) throws Exception {
         out.write(serialize(value, charset).getBytes(charset));
     }

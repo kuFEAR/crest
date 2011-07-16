@@ -23,11 +23,10 @@ package org.codegist.crest.config;
 import org.codegist.crest.handler.*;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
-import org.codegist.crest.io.http.HttpMethod;
-import org.codegist.crest.io.http.entity.EntityWriter;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 
 /**
  * Method configuration holder object.
@@ -43,19 +42,21 @@ import java.lang.reflect.Method;
  */
 public interface MethodConfig {
 
+     String DEFAULT_CHARSET = "UTF-8";
+
     /**
      * Default socket timeout applied when non specified.
      *
      * @see org.codegist.crest.config.MethodConfig#getSocketTimeout()
      */
-    long DEFAULT_SO_TIMEOUT = 20000;
+    int DEFAULT_SO_TIMEOUT = 20000;
 
     /**
      * Default connection timeout applied when non specified.
      *
      * @see MethodConfig#getConnectionTimeout()
      */
-    long DEFAULT_CO_TIMEOUT = 20000;
+    int DEFAULT_CO_TIMEOUT = 20000;
 
     /**
      * Default url fragment applied when non specified.
@@ -78,9 +79,9 @@ public interface MethodConfig {
     /**
      * Default http method applied when non specified.
      *
-     * @see MethodConfig#getHttpMethod()
+     * @see MethodConfig#getMethodType()
      */
-    HttpMethod DEFAULT_HTTP_METHOD = HttpMethod.GET;
+    String DEFAULT_METHOD_TYPE = "GET";
 
     /**
      * Default response handler applied when non specified.
@@ -124,6 +125,8 @@ public interface MethodConfig {
     /**
      * @return The method being configured by the current object
      */
+    Charset getCharset();
+
     Method getMethod();
 
     ResponseHandler getResponseHandler();
@@ -136,9 +139,9 @@ public interface MethodConfig {
 
     String getAccept();
 
-    Long getSocketTimeout();
+    int getSocketTimeout();
 
-    Long getConnectionTimeout();
+    int getConnectionTimeout();
 
     RetryHandler getRetryHandler();
 
@@ -152,9 +155,9 @@ public interface MethodConfig {
      */
     PathTemplate getPathTemplate();
 
-    HttpMethod getHttpMethod();
+    String getType();
 
-    EntityWriter getBodyWriter();
+    EntityWriter getEntityWriter();
 
     /**
      * Return the method's extra static parameter list
@@ -173,6 +176,6 @@ public interface MethodConfig {
     /**
      * @return The param count.
      */
-    Integer getParamCount();
+    int getParamCount();
 
 }

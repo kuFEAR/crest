@@ -38,30 +38,9 @@ import java.lang.reflect.Method;
 public interface InterfaceConfig {
 
     /**
-     * Default encoding applied when non specified.
-     *
-     * @see InterfaceConfig#getEncoding()
-     */
-    String DEFAULT_ENCODING = "UTF-8";
-
-    /*##############################################################################*/
-
-    /**
-     * Encoding of the interface.
-     *
-     * @return the encoding of the interface
-     */
-    String getEncoding();
-
-    /**
      * @return The interface being configured by the current object.
      */
     Class<?> getInterface();
-
-    /**
-     * @return Method list of the interface being configured by the current object.
-     */
-    Method[] getMethods();
 
     /**
      * @param meth Method to retrieve the config for

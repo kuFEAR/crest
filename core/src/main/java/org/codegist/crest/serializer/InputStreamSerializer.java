@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class InputStreamSerializer extends StreamingSerializer<InputStream> {
+public class InputStreamSerializer implements Serializer<InputStream> {
     public void serialize(InputStream value, Charset charset, OutputStream out) throws IOException {
         IOs.copy(value, out, true);
     }

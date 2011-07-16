@@ -24,26 +24,24 @@ import org.codegist.common.collect.Maps;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
-import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.CRestAnnotations;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
-import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.impl.config.AnnotationDrivenInterfaceConfigFactory;
+import org.codegist.crest.impl.config.annotate.AnnotationHandler;
+import org.codegist.crest.impl.config.annotate.CRestAnnotations;
+import org.codegist.crest.impl.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.impl.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.impl.io.*;
+import org.codegist.crest.impl.io.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.impl.io.platform.HttpURLConnectionHttpChannelInitiator;
+import org.codegist.crest.impl.security.oauth.v1.OAuthApiV1Builder;
+import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
-import org.codegist.crest.io.http.HttpChannelInitiator;
-import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
-import org.codegist.crest.security.http.AuthorizationHttpChannelInitiator;
-import org.codegist.crest.security.http.HttpEntityParamExtractor;
+import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
-import org.codegist.crest.security.oauth.OAuthenticator;
 import org.codegist.crest.security.oauth.OAuthorization;
-import org.codegist.crest.security.oauth.UrlEncodedFormEntityParamExtractor;
 import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
@@ -64,6 +62,8 @@ import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
 import static org.codegist.crest.CRestProperty.*;
+import static org.codegist.crest.impl.io.HttpConstants.HTTP_UNAUTHORIZED;
+import static org.codegist.crest.impl.security.oauth.v1.OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL;
 
 /**
  * <p>The default build :
@@ -82,8 +82,12 @@ import static org.codegist.crest.CRestProperty.*;
 public class CRestBuilder {
 
     private final Map<String, Object> crestProperties = new HashMap<String, Object>();
+    {
+        crestProperties.put(CRestProperty.CREST_UNAUTHORIZED_STATUS_CODE, HTTP_UNAUTHORIZED);
+    }
+    private final RequestBuilderFactory requestBuilderFactory = new HttpRequestBuilderFactory();
     private final Map<String, String> placeholders = new HashMap<String, String>();
-    private final Map<String, HttpEntityParamExtractor> httpEntityParamExtrators = new HashMap<String, HttpEntityParamExtractor>(singletonMap("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamExtractor()));
+    private final Map<String, EntityParamExtractor> httpEntityParamExtrators = new HashMap<String, EntityParamExtractor>(singletonMap("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamExtractor()));
 
     private final Set<String> plainTextMimes = asSet("plain/text");
     private final Set<String> xmlMimes = asSet("application/xml", "text/xml");
@@ -93,7 +97,7 @@ public class CRestBuilder {
 
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
 
-    private final Registry.Builder<Class<? extends Annotation>,AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(crestProperties, AnnotationHandler.class)
+    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(crestProperties, AnnotationHandler.class)
                             .defaultAs(new NoOpAnnotationHandler())
                             .register(CRestAnnotations.MAPPING);
 
@@ -149,7 +153,7 @@ public class CRestBuilder {
         DeserializationManager deserializationManager = new DeserializationManager(mimeDeserializerRegistry, classDeserializerRegistry);
 
         HttpChannelInitiator plainChannelInitiator = buildHttpChannelInitiator();
-        Authorization authorization = buildAuthorization(plainChannelInitiator, deserializationManager);
+        Authorization authorization = buildAuthorization(plainChannelInitiator);
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelInitiator, authorization, deserializationManager);
 
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(crestProperties, annotationHandlerBuilder.build(), false);
@@ -164,7 +168,7 @@ public class CRestBuilder {
         putIfAbsent(crestProperties, InterfaceConfigFactory.class.getName(), configFactory);
         putIfAbsent(crestProperties, CREST_ANNOTATION_PLACEHOLDERS, Maps.unmodifiable(placeholders));
 
-        return new DefaultCRest(proxyFactory, requestExecutor, configFactory, deserializationManager);
+        return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
     private HttpChannelInitiator buildHttpChannelInitiator() {
@@ -194,16 +198,16 @@ public class CRestBuilder {
         return mimeDeserializerBuilder.build();
     }
 
-    private Authorization buildAuthorization(HttpChannelInitiator channelInitiator, DeserializationManager deserializationManager) {
+    private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
         if("oauth".equals(auth)) {
-            return buildOAuthorization(channelInitiator, deserializationManager);
+            return buildOAuthorization(channelInitiator);
         }else if("basic".equals(auth)) {
             return buildBasicAuthorization();
         }else{
             return null;
         }
     }
-    
+
     private Authorization buildBasicAuthorization() {
         try {
             return new BasicAuthorization(username, password);
@@ -212,12 +216,27 @@ public class CRestBuilder {
         }
     }
 
-    private Authorization buildOAuthorization(HttpChannelInitiator channelInitiator, DeserializationManager deserializationManager) {
-        HttpRequestExecutor httpExecutor = new HttpRequestExecutor(channelInitiator, deserializationManager);
-        OAuthenticator authenticator = new OAuthenticatorV1(httpExecutor, consumerOAuthToken, crestProperties);
-        return new OAuthorization(authenticator, accessOAuthToken);
+    private Authorization buildOAuthorization(HttpChannelInitiator channelInitiator) {
+        OAuthenticatorV1 authenticator = null;
+        try {
+            authenticator = new OAuthenticatorV1(consumerOAuthToken);
+        } catch (Exception e) {
+            throw CRestException.handle(e);
+        }
+        OAuthApi oAuthApi = buildOAuthApi(channelInitiator, authenticator);
+        return new OAuthorization(accessOAuthToken, authenticator, oAuthApi);
     }
 
+    private OAuthApi buildOAuthApi(HttpChannelInitiator channelInitiator, OAuthenticatorV1 authenticator) {
+        if(!crestProperties.containsKey(CONFIG_TOKEN_ACCESS_REFRESH_URL)) {
+            return null;
+        }
+        try {
+            return OAuthApiV1Builder.build(channelInitiator, crestProperties, authenticator);
+        } catch (Exception e) {
+            throw CRestException.handle(e);
+        }
+    }
 
 
 
@@ -360,13 +379,20 @@ public class CRestBuilder {
      * @return current builder
      */
     public CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
-        return oauth(consumerKey,consumerSecret,accessToken, accessTokenSecret, Collections.<String, String>emptyMap());
+        return oauth(consumerKey,consumerSecret,accessToken, accessTokenSecret, null, null);
     }
 
-    public CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes) {
+    public CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String sessionHandle, String accessTokenRefreshUrl) {
         this.auth = "oauth";
+        if(sessionHandle != null) {
+            this.accessOAuthToken = new OAuthToken(accessToken, accessTokenSecret, singletonMap("oauth_session_handle", sessionHandle));
+        }else{
+            this.accessOAuthToken = new OAuthToken(accessToken, accessTokenSecret);
+        }
+        if(accessTokenRefreshUrl != null) {
+            setProperty(CONFIG_TOKEN_ACCESS_REFRESH_URL, accessTokenRefreshUrl);
+        }
         this.consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);
-        this.accessOAuthToken = new OAuthToken(accessToken, accessTokenSecret, accessTokenAttributes);
         return this;
     }
 
@@ -377,8 +403,8 @@ public class CRestBuilder {
         return this;
     }
 
-    public CRestBuilder extractsEntityAuthParamsWith(String entityContentType, HttpEntityParamExtractor httpEntityParamExtractor){
-        this.httpEntityParamExtrators.put(entityContentType, httpEntityParamExtractor);
+    public CRestBuilder extractsEntityAuthParamsWith(String entityContentType, EntityParamExtractor entityParamExtractor){
+        this.httpEntityParamExtrators.put(entityContentType, entityParamExtractor);
         return this;
     }
 

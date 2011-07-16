@@ -28,9 +28,10 @@ import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.io.Request;
+import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.serializer.DeserializationManager;
+import org.codegist.crest.util.Requests;
 
 import java.lang.reflect.Method;
 
@@ -46,14 +47,14 @@ public class DefaultCRest extends CRest implements Disposable {
 
     private final ProxyFactory proxyFactory;
     private final RequestExecutor requestExecutor;
+    private final RequestBuilderFactory requestBuilderFactory;
     private final InterfaceConfigFactory configFactory;
-    private final DeserializationManager deserializationManager;
 
-    public DefaultCRest(ProxyFactory proxyFactory, RequestExecutor requestExecutor, InterfaceConfigFactory configFactory, DeserializationManager deserializationManager) {
+    public DefaultCRest(ProxyFactory proxyFactory, RequestExecutor requestExecutor, RequestBuilderFactory requestBuilderFactory, InterfaceConfigFactory configFactory) {
         this.proxyFactory = proxyFactory;
         this.requestExecutor = requestExecutor;
+        this.requestBuilderFactory = requestBuilderFactory;
         this.configFactory = configFactory;
-        this.deserializationManager = deserializationManager;
     }
 
     /**
@@ -79,7 +80,7 @@ public class DefaultCRest extends CRest implements Disposable {
         @Override
         protected Object doInvoke(Object proxy, Method method, Object[] args) throws Throwable {
             MethodConfig mc = interfaceConfig.getMethodConfig(method);
-            Request request = new SimpleRequest(interfaceConfig, mc, args);
+            Request request = Requests.from(requestBuilderFactory, mc, args);
             Response response = null;
             try {
                 mc.getRequestInterceptor().beforeFire(request);
@@ -95,33 +96,7 @@ public class DefaultCRest extends CRest implements Disposable {
         }
     }
 
-    private static class SimpleRequest implements Request {
-
-        private static final Object[] EMPTY = new Object[0];
-        private final InterfaceConfig interfaceConfig;
-        private final MethodConfig methodConfig;
-        private final Object[] args;
-
-        public SimpleRequest(InterfaceConfig interfaceConfig, MethodConfig methodConfig, Object[] args) {
-            this.interfaceConfig = interfaceConfig;
-            this.methodConfig = methodConfig;
-            this.args = args != null ? args.clone() : null;
-        }
-
-        public InterfaceConfig getInterfaceConfig(){
-            return interfaceConfig;
-        }
-
-        public MethodConfig getMethodConfig() {
-            return methodConfig;
-        }
-
-        public Object[] getArgs() {
-            return args != null ? args.clone() : EMPTY;
-        }
-    }
-
     public void dispose() {
-        Disposables.dispose(proxyFactory, requestExecutor, configFactory, deserializationManager);
+        Disposables.dispose(proxyFactory, requestExecutor, configFactory);
     }
 }

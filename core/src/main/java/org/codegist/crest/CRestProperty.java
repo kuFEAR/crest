@@ -21,7 +21,6 @@
 package org.codegist.crest;
 
 import org.codegist.common.lang.Objects;
-import org.codegist.crest.config.InterfaceConfig;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
 
@@ -101,19 +100,11 @@ public final class CRestProperty {
 
     public static final String CREST_BOOLEAN_FALSE = C + "#boolean-format.false";
 
+    public static final String CREST_UNAUTHORIZED_STATUS_CODE = C + "#status-code.unauthorized";
+
     public static final String CREST_RETRY_ATTEMPTS = C + "#retry-attempts";
 
     public static final String CREST_ANNOTATION_PLACEHOLDERS = C + "#annotation-placeholders";
-
-    /*********************************************************
-     *********************************************************
-     ****** InterfaceConfig default values override properties 
-     *********************************************************
-     *********************************************************/
-
-    private static final String IC = InterfaceConfig.class.getName();
-
-    public static final String INTERFACE_CONFIG_DEFAULT_ENCODING = IC + "#encoding";
 
     /*********************************************************
      *********************************************************
@@ -122,6 +113,8 @@ public final class CRestProperty {
      *********************************************************/
 
     private static final String MC = MethodConfig.class.getName();
+
+    public static final String METHOD_CONFIG_DEFAULT_CHARSET = MC + "#charset";
 
     public static final String METHOD_CONFIG_DEFAULT_SO_TIMEOUT = MC + "#socket-timeout";
 

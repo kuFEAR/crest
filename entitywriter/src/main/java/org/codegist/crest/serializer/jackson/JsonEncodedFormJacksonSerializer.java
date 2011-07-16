@@ -20,8 +20,8 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.crest.io.http.HttpParam;
-import org.codegist.crest.serializer.StreamingSerializer;
+import org.codegist.crest.param.Param;
+import org.codegist.crest.serializer.Serializer;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.OutputStream;
@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<HttpParam>> {
+public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>> {
 
     private final ObjectMapper jackson;
 
@@ -39,16 +39,16 @@ public class JsonEncodedFormJacksonSerializer extends StreamingSerializer<List<H
         this.jackson = JacksonFactory.createSerializer(config);
     }
 
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws Exception {
+    public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {
         JsonObject json = JsonObject.toJsonObject(value);
         jackson.writeValue(out, json);
     }
 
     private static class JsonObject extends LinkedHashMap<String,Object> {
 
-        static JsonObject toJsonObject(List<HttpParam> value){
+        static JsonObject toJsonObject(List<Param> value){
             JsonObject json = new JsonObject();
-            for(HttpParam p : value){
+            for(Param p : value){
                 String name = p.getConfig().getName();
                 for(Object o : p.getValue()){
                     json.put(name, o);

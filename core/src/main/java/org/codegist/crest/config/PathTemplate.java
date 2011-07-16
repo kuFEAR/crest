@@ -20,12 +20,14 @@
 
 package org.codegist.crest.config;
 
+import java.nio.charset.Charset;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public interface PathTemplate {
 
-    PathBuilder getBuilder(String encoding);
+    PathBuilder getBuilder(Charset charset);
 
     String getUrlTemplate();
 

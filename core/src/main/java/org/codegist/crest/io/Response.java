@@ -23,6 +23,7 @@ package org.codegist.crest.io;
 import org.codegist.common.lang.Disposable;
 
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * Response context, passed to the response handlers and error handlers.
@@ -34,6 +35,14 @@ import java.lang.reflect.Type;
 public interface Response extends Disposable {
 
     Request getRequest();
+
+    int getStatusCode() throws Exception;
+
+    String getContentType() throws Exception;
+
+    Charset getCharset() throws Exception;
+
+    String getContentEncoding() throws Exception;
 
     Type getExpectedGenericType();
 

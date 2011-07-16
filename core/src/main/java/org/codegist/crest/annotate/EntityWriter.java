@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE,ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 public @interface EntityWriter {
 
-    Class<? extends org.codegist.crest.io.http.entity.EntityWriter> value();
+    Class<? extends org.codegist.crest.config.EntityWriter> value();
     
 }

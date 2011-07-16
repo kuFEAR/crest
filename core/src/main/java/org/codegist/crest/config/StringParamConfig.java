@@ -20,30 +20,30 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.io.http.param.ParamProcessor;
-import org.codegist.crest.io.http.param.ParamProcessors;
-import org.codegist.crest.io.http.param.ParamType;
+import org.codegist.crest.param.ParamProcessor;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.ToStringSerializer;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import static java.util.Collections.emptyMap;
+
 public class StringParamConfig implements ParamConfig {
             
     private static final Serializer<String> TO_STRING_SERIALIZER = new ToStringSerializer<String>();
     private final String name;
     private final String value;
-    private final ParamType type;
+    private final String type;
     private final boolean encoded;
     private final ParamProcessor paramProcessor;
 
-    public StringParamConfig(String name, String value, ParamType type, boolean encoded) {
+    public StringParamConfig(String name, String value, String type, boolean encoded, ParamProcessor paramProcessor) {
         this.name = name;
         this.value = value;
         this.type = type;
         this.encoded = encoded;
-        this.paramProcessor = ParamProcessors.select(type, null);
+        this.paramProcessor = paramProcessor;
     }
 
     public Type getValueGenericType() {
@@ -62,7 +62,7 @@ public class StringParamConfig implements ParamConfig {
         return value;
     }
 
-    public ParamType getType() {
+    public String getType() {
         return type;
     }
 
@@ -74,11 +74,11 @@ public class StringParamConfig implements ParamConfig {
         return paramProcessor;
     }
 
-    public Boolean isEncoded() {
+    public boolean isEncoded() {
         return encoded;
     }
 
     public Map<String, Object> getMetaDatas() {
-        return null;
+        return emptyMap();
     }
 }

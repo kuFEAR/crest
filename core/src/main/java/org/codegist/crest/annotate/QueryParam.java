@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 /**
  * If specified at method parameter level, indicates to inject it into the io query parameter.
  * <p>If specified at interface or method level, indicates to inject a default parameter into the io query parameter for all requests.
- * @see org.codegist.crest.io.http.HttpRequest.Builder#addQueryParam(String, String)
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)

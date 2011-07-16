@@ -22,13 +22,14 @@ package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.common.codec.Base64;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.io.http.HttpMethod;
-import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.util.Pairs;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -45,8 +46,14 @@ final class OAuthsV1 {
         throw new IllegalStateException();
     }
 
-    private static final Logger LOGGER = Logger.getLogger(OAuthsV1.class);
-    private static final int AFTER_PROTOCOL_INDEX = 8;
+    static final EncodedPair[] EMPTY_HTTP_PAIRS = new EncodedPair[0];
+    static final String ENC = "UTF-8";
+    static final Charset CHARSET = Charset.forName(ENC);
+    static final Logger LOGGER = Logger.getLogger(OAuthsV1.class);
+    static final OAuthToken IGNORE_POISON = new OAuthToken("","");
+    static final String SIGN_METH = "HMAC-SHA1";
+    static final String SIGN_METH_4_J = "HmacSHA1";
+    static final int AFTER_PROTOCOL_INDEX = 8;
 
     /**
      * The Signature Base String includes the io absolute URL, tying the signature to a specific endpoint. The URL used in the Signature Base String MUST include the scheme, authority, and path, and MUST exclude the query and fragment as defined by [RFC3986] section 3.<br>
@@ -85,11 +92,10 @@ final class OAuthsV1 {
         return baseURL + retVal.substring(slashIndex);
     }
 
-    static String sign(OAuthToken consumerOAuthToken, OAuthToken accessOAuthToken, String signAlgorithm, String encoding, String url, HttpMethod method, List<Pair> oauthParams) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
+    static String sign(OAuthToken consumerOAuthToken, OAuthToken accessOAuthToken, String signAlgorithm, String encoding, String url, String action, List<EncodedPair> oauthParams) throws NoSuchAlgorithmException, UnsupportedEncodingException, InvalidKeyException {
         // first, sort the list without changing the one given
-        List<Pair> sorted = sortByNameAndValues(oauthParams);
+        List<EncodedPair> sorted = sortByNameAndValues(oauthParams);
 
-        String signMeth = method.toString();
         String signUri = constructRequestURL(url);
         String signParams = join(sorted, '&', '=', false, false);
         String signature = consumerOAuthToken.getSecret() + "&" + accessOAuthToken.getSecret();
@@ -97,10 +103,16 @@ final class OAuthsV1 {
         Mac mac = Mac.getInstance(signAlgorithm);
         mac.init(new SecretKeySpec(signature.getBytes(encoding), signAlgorithm));
 
-        String data = signMeth + "&" + encode(signUri, encoding) + "&" + encode(signParams, encoding);
+        String data = action + "&" + encode(signUri, encoding) + "&" + encode(signParams, encoding);
         String encoded = new String(Base64.encodeToByte(mac.doFinal(data.getBytes(encoding))), encoding);
 
         LOGGER.debug("Signature[data=\"%s\",signature=\"%s\",result=\"%s\"]", data, signature, encoded);
         return encoded;
+    }
+
+
+
+    static EncodedPair pair(String name, String value) throws UnsupportedEncodingException {
+        return Pairs.toPair(name, value, CHARSET, false);
     }
 }

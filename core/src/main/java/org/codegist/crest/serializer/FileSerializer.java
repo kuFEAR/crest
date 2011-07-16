@@ -31,7 +31,7 @@ import java.nio.charset.Charset;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class FileSerializer extends StreamingSerializer<File> {
+public class FileSerializer implements Serializer<File> {
     public void serialize(File value, Charset charset, OutputStream out) throws IOException {
         IOs.copy(new FileInputStream(value), out, true);
     }

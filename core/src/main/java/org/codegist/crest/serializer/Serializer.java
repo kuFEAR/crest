@@ -41,6 +41,4 @@ public interface Serializer<T> {
      */
     void serialize(T value, Charset charset, OutputStream out) throws Exception;
 
-    String serialize(T value, Charset charset) throws Exception;
-
 }

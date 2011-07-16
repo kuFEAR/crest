@@ -20,8 +20,7 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.io.http.param.ParamProcessor;
-import org.codegist.crest.io.http.param.ParamType;
+import org.codegist.crest.param.ParamProcessor;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Type;
@@ -40,7 +39,7 @@ import java.util.Map;
  */
 public interface ParamConfig {
 
-    ParamType DEFAULT_TYPE = ParamType.getDefault();
+    String DEFAULT_PARAM_TYPE = "QUERY";
 
     String DEFAULT_VALUE = null;
 
@@ -62,13 +61,13 @@ public interface ParamConfig {
 
     String getDefaultValue();
 
-    ParamType getType();
+    String getType();
 
     Map<String, Object> getMetaDatas();
 
     Serializer getSerializer();
 
-    Boolean isEncoded();
+    boolean isEncoded();
 
     ParamProcessor getParamProcessor();
 

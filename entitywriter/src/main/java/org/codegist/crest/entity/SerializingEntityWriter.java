@@ -21,9 +21,9 @@
 package org.codegist.crest.entity;
 
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.io.http.HttpParam;
-import org.codegist.crest.io.http.HttpRequest;
-import org.codegist.crest.io.http.entity.EntityWriter;
+import org.codegist.crest.config.EntityWriter;
+import org.codegist.crest.io.Request;
+import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 
 import java.io.OutputStream;
@@ -34,25 +34,25 @@ import java.util.List;
  */
 public class SerializingEntityWriter implements EntityWriter {
 
-    private final Serializer<List<HttpParam>> serializer;
+    private final Serializer<List<Param>> serializer;
     private final String contentType;
 
-    public SerializingEntityWriter(Serializer<List<HttpParam>> serializer, String contentType) {
+    public SerializingEntityWriter(Serializer<List<Param>> serializer, String contentType) {
         Validate.notNull(serializer, "Serializer can't be null");
         Validate.notNull(contentType, "ContentType can't be null");
         this.serializer = serializer;
         this.contentType = contentType;
     }
 
-    public String getContentType(HttpRequest request) {
+    public String getContentType(Request request) {
         return contentType;
     }
 
-    public int getContentLength(HttpRequest httpRequest) {
+    public int getContentLength(Request httpRequest) {
         return -1;
     }
 
-    public void writeTo(HttpRequest request, OutputStream outputStream) throws Exception {
-        serializer.serialize(request.getFormParams(), request.getCharset(), outputStream);
+    public void writeTo(Request request, OutputStream outputStream) throws Exception {
+        serializer.serialize(request.getParams("FORM"), request.getMethodConfig().getCharset(), outputStream);
     }
 }

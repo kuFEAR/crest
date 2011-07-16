@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE,ElementType.METHOD})
 public @interface Encoding {
     String value();
 }

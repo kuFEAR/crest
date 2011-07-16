@@ -20,8 +20,7 @@
 
 package org.codegist.crest.security.oauth;
 
-import org.codegist.crest.io.http.HttpMethod;
-import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.param.EncodedPair;
 
 import java.util.List;
 
@@ -36,29 +35,7 @@ public interface OAuthenticator {
      * Signs the given io using the given access token and the optional additional oauth headers.
      * @param accessOAuthToken Access token to be used
      */
-    List<Pair> oauth(OAuthToken accessOAuthToken, HttpMethod method, String url, Pair... parameters) throws Exception;
+    List<EncodedPair> oauth(OAuthToken accessOAuthToken, String action, String url, EncodedPair... parameters) throws Exception;
 
-    /**
-     * Fires a get io token to the preconfigured url
-     * @return A new io token
-     */
-    OAuthToken getRequestToken() throws Exception;
-
-    /**
-     * Exchanges the given io token with a new access token using the given verifier
-     * @param requestOAuthToken io token to exchange
-     * @param verifier verifier
-     * @return new access token
-     */
-    OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) throws Exception;
-
-    /**
-     * Refreshs the given access token if it has expired. Include optional extra oauth header from the extra field of the token.
-     * @param accessOAuthToken expired access token
-     * @param extrasOAuthParams extras oauth paramst
-     * @see OAuthToken#getAttributes()
-     * @return a new access token
-     */
-    OAuthToken refreshAccessToken(OAuthToken accessOAuthToken, Pair... extrasOAuthParams) throws Exception;
 
 }

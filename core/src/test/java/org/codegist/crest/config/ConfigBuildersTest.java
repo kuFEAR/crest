@@ -21,7 +21,7 @@
 //package org.codegist.crest.config;
 //
 //import org.codegist.crest.CRestProperty;
-//import org.codegist.crest.io.http.HttpRequest;
+//import org.codegist.crest.http.io.HttpRequest;
 //import org.codegist.crest.Stubs;
 //import org.codegist.crest.TestUtils;
 //import org.codegist.crest.handler.ErrorHandler;
@@ -347,7 +347,7 @@
 //
 //        final Map<String, Object> defaultOverrides = new HashMap<String, Object>();
 //        defaultOverrides.put(CONFIG_INTERFACE_DEFAULT_PATH, "/path");
-//        defaultOverrides.put(INTERFACE_CONFIG_DEFAULT_ENCODING, "ISO-8859-1");
+//        defaultOverrides.put(METHOD_CONFIG_DEFAULT_CHARSET, "ISO-8859-1");
 //        defaultOverrides.put(CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR, new Stubs.RequestInterceptor1());
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_PATH, "/meth-path");
 //        defaultOverrides.put(CONFIG_METHOD_DEFAULT_REQUEST_INTERCEPTOR, new Stubs.RequestInterceptor2());
@@ -369,7 +369,7 @@
 //                Interface.class,
 //                "http://server:8080",
 //                (String) defaultOverrides.get(CONFIG_INTERFACE_DEFAULT_PATH),
-//                (String) defaultOverrides.get(INTERFACE_CONFIG_DEFAULT_ENCODING),
+//                (String) defaultOverrides.get(METHOD_CONFIG_DEFAULT_CHARSET),
 //                (RequestInterceptor) defaultOverrides.get(CONFIG_INTERFACE_DEFAULT_GLOBAL_INTERCEPTOR),
 //                new HashMap<Method, MethodConfig>() {{
 //                    put(Interface.A, new DefaultMethodConfig(
@@ -460,7 +460,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new ToStringSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    )
@@ -482,21 +482,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new ToStringSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new ArraySerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new DateSerializer(),
 //                                            TestUtils.newInstance(DEFAULT_INJECTOR)
 //                                    )
@@ -533,7 +533,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -555,21 +555,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -624,7 +624,7 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer2(),
 //                                            new Stubs.RequestParameterInjector2()
 //                                    )
@@ -646,21 +646,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    )
@@ -748,21 +748,21 @@
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer1(),
 //                                            new Stubs.RequestParameterInjector1()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    ),
 //                                    new DefaultMethodParamConfig(
 //                                            "n",
 //                                            DEFAULT_VALUE,
-//                                            DEFAULT_TYPE,
+//                                            DEFAULT_METHOD_TYPE,
 //                                            new Stubs.Serializer3(),
 //                                            new Stubs.RequestParameterInjector3()
 //                                    )

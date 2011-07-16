@@ -22,8 +22,8 @@ package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
-import org.codegist.crest.io.http.HttpParam;
-import org.codegist.crest.serializer.StreamingSerializer;
+import org.codegist.crest.param.Param;
+import org.codegist.crest.serializer.Serializer;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -38,7 +38,7 @@ import java.util.*;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpParam>> {
+public class XmlEncodedFormJaxbSerializer implements Serializer<List<Param>> {
 
     public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = JaxbFactory.POOL_RETRIEVAL_MAX_WAIT_PROP;
     public static final String CUSTOM_JAXB = JaxbFactory.CUSTOM_JAXB;
@@ -55,22 +55,22 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpP
         this.wrapperElementName = new QName(CRestProperty.get(config, "crest.entity.writer.xml.element-name", DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
-    public void serialize(List<HttpParam> value, Charset charset, OutputStream out) throws Exception {
-        JAXBElement<JaxbHttpParam> object = JaxbHttpParamJAXBElement.create(wrapperElementName, value);
+    public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {
+        JAXBElement<JaxbParam> object = JaxbParamJAXBElement.create(wrapperElementName, value);
         jaxb.marshal(object, out, charset);
     }
 
 
-    private static class JaxbHttpParamJAXBElement extends JAXBElement<JaxbHttpParam> implements Classes {
+    private static class JaxbParamJAXBElement extends JAXBElement<JaxbParam> implements Classes {
 
-        public JaxbHttpParamJAXBElement(QName name, JaxbHttpParam value) {
-            super(name, JaxbHttpParam.class, value);
+        public JaxbParamJAXBElement(QName name, JaxbParam value) {
+            super(name, JaxbParam.class, value);
         }
 
-        public static JAXBElement<JaxbHttpParam> create(QName wrapperElementName, List<HttpParam> value){
-            JaxbHttpParam params = new JaxbHttpParam();
+        public static JAXBElement<JaxbParam> create(QName wrapperElementName, List<Param> value){
+            JaxbParam params = new JaxbParam();
             params.setParams(value);
-            return new JaxbHttpParamJAXBElement(wrapperElementName, params);
+            return new JaxbParamJAXBElement(wrapperElementName, params);
         }
 
         public Set<Class<?>> getClasses() {
@@ -81,7 +81,7 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpP
 
 
     @XmlRootElement
-    private static class JaxbHttpParam {
+    private static class JaxbParam {
 
         @XmlAnyElement
         private List<JAXBElement<?>> params;
@@ -89,18 +89,18 @@ public class XmlEncodedFormJaxbSerializer extends StreamingSerializer<List<HttpP
         @XmlTransient
         private Set<Class<?>> classes;
 
-        JaxbHttpParam() {
+        JaxbParam() {
         }
 
         public Set<Class<?>> getClasses() {
             return classes;
         }
 
-        public void setParams(List<HttpParam> params) {
+        public void setParams(List<Param> params) {
             this.params = new ArrayList<JAXBElement<?>>();
             this.classes = new HashSet<Class<?>>();
             this.classes.add(getClass());
-            for (HttpParam entry: params) {
+            for (Param entry: params) {
                 Class<?> cls = entry.getConfig().getValueClass();
 
                 for(Object value : entry.getValue()){

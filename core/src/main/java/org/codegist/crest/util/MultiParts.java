@@ -22,7 +22,7 @@ package org.codegist.crest.util;
 
 import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.io.http.HttpParam;
+import org.codegist.crest.param.Param;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,11 +48,11 @@ public final class MultiParts {
         return (String) (paramConfig.getMetaDatas() == null ? null : paramConfig.getMetaDatas().get(FILENAME));
     }
 
-    public static String getContentType(HttpParam param){
+    public static String getContentType(Param param){
         return (String) param.getConfig().getMetaDatas().get(CONTENT_TYPE);
     }
 
-    public static String getFileName(HttpParam param){
+    public static String getFileName(Param param){
         return (String) param.getConfig().getMetaDatas().get(FILENAME);
     }
 
@@ -60,7 +60,7 @@ public final class MultiParts {
         return metadatas != null && metadatas.containsKey(MULTIPART_FLAG);
     }
     
-    public static boolean hasMultiPart(HttpParam param){
+    public static boolean hasMultiPart(Param param){
         return hasMultiPart(param.getConfig().getMetaDatas());
     }
 

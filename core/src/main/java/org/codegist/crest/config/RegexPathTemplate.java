@@ -23,6 +23,7 @@ package org.codegist.crest.config;
 import org.codegist.common.net.Urls;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +49,8 @@ public final class RegexPathTemplate implements PathTemplate {
         this.templates = templates;
     }
 
-    public PathBuilder getBuilder(String encoding) {
-        return new DefaultPathBuilder(encoding);
+    public PathBuilder getBuilder(Charset charset) {
+        return new DefaultPathBuilder(charset);
     }
 
     public String getUrlTemplate() {
@@ -60,10 +61,10 @@ public final class RegexPathTemplate implements PathTemplate {
 
         private final Map<String, PathTemplate> remainingTemplates = new HashMap<String, PathTemplate>(templates);
         private final StringBuilder url = new StringBuilder(urlTemplate);
-        private final String encoding;
+        private final String charset;
 
-        private DefaultPathBuilder(String encoding) {
-            this.encoding = encoding;
+        private DefaultPathBuilder(Charset charset) {
+            this.charset = charset.displayName();
         }
 
         public PathBuilder merge(String templateName, String templateValue, boolean encoded) throws UnsupportedEncodingException {
@@ -82,7 +83,7 @@ public final class RegexPathTemplate implements PathTemplate {
         }
 
         private String encode(String value, boolean encoded) throws UnsupportedEncodingException {
-            return encoded ? value : Urls.encode(value, encoding);
+            return encoded ? value : Urls.encode(value, charset);
         }
 
         public String build() {

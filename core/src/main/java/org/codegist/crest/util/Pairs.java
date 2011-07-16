@@ -20,13 +20,17 @@
 
 package org.codegist.crest.util;
 
-import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.param.EncodedPair;
+import org.codegist.crest.param.SimpleEncodedPair;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.*;
+
+import static org.codegist.crest.util.Encoders.encode;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -35,44 +39,55 @@ public final class Pairs {
     private Pairs(){
         throw new IllegalStateException();
     }
+    
+    public static EncodedPair toPreEncodedPair(String name, String value) throws UnsupportedEncodingException {
+        return toPair(name, value, null, true);
+    }
+    
+    public static EncodedPair toPair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {
+        String nameEncoded = encoded ? name : encode(name, charset);
+        String valueEncoded = encoded ? value : encode(value, charset);
+        return new SimpleEncodedPair(nameEncoded, valueEncoded);
+    }
 
-    public static List<Pair> fromUrlEncoded(String urlEncoded) throws UnsupportedEncodingException {
-        List<Pair> pairs = new ArrayList<Pair>();
+    public static List<EncodedPair> fromUrlEncoded(String urlEncoded) throws UnsupportedEncodingException {
+        List<EncodedPair> pairs = new ArrayList<EncodedPair>();
         String[] split = urlEncoded.split("&");
         for(String param : split){
             String[] paramSplit = param.split("=");
-            pairs.add(new Pair(paramSplit[0], paramSplit[1]));
+            EncodedPair pair = toPreEncodedPair(paramSplit[0], paramSplit[1]);
+            pairs.add(pair);
         }
         return pairs;
     }
 
-    public static List<Pair> sortByNameAndValues(List<Pair> map){
-       List<Pair> sorted = new ArrayList<Pair>(map);
-       Collections.sort(sorted, HTTP_PAIR_NAME_VALUE_COMPARATOR);
+    public static List<EncodedPair> sortByNameAndValues(List<? extends EncodedPair> map){
+       List<EncodedPair> sorted = new ArrayList<EncodedPair>(map);
+       Collections.sort(sorted, PAIR_NAME_VALUE_COMPARATOR);
        return sorted;
     }
 
-     public static String join(Collection<Pair> pairs, char pairSep){
+     public static String join(List<? extends EncodedPair> pairs, char pairSep){
         return join(pairs, pairSep, '=', false, false);
     }
 
-    public static String join(Collection<Pair> pairs, char pairSep, char nameValSep){
+    public static String join(List<? extends EncodedPair> pairs, char pairSep, char nameValSep){
         return join(pairs, pairSep, nameValSep, false, false);
     }
 
-    public static String join(Collection<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
+    public static String join(List<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
         return join(pairs.iterator(), pairSep, nameValSep, quoteName,quoteVal);
     }
 
-    public static String join(Iterator<Pair> pairs, char pairSep){
+    public static String join(Iterator<? extends EncodedPair> pairs, char pairSep){
         return join(pairs, pairSep, '=', false, false);
     }
 
-    public static String join(Iterator<Pair> pairs, char pairSep, char nameValSep){
+    public static String join(Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep){
         return join(pairs, pairSep, nameValSep, false, false);
     }
 
-    public static String join(Iterator<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
+    public static String join(Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
         StringWriter sw = new StringWriter();
         try {
             join(sw, pairs,pairSep, nameValSep,quoteName,quoteVal);
@@ -82,48 +97,48 @@ public final class Pairs {
         return sw.toString();
     }
 
-    public static void join(Writer writer, Collection<Pair> pairs, char pairSep) throws IOException {
+    public static void join(Writer writer, List<? extends EncodedPair> pairs, char pairSep) throws IOException {
         join(writer, pairs, pairSep, '=', false, false);
     }
 
-    public static void join(Writer writer, Collection<Pair> pairs, char pairSep, char nameValSep) throws IOException {
+    public static void join(Writer writer, List<? extends EncodedPair> pairs, char pairSep, char nameValSep) throws IOException {
         join(writer, pairs, pairSep, nameValSep, false, false);
     }
 
-    public static void join(Writer writer, Collection<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
+    public static void join(Writer writer, List<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
         join(writer, pairs.iterator(), pairSep, nameValSep, quoteName,quoteVal);
     }
 
-    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep) throws IOException {
+    public static void join(Writer writer, Iterator<? extends EncodedPair> pairs, char pairSep) throws IOException {
         join(writer, pairs, pairSep, '=', false, false);
     }
 
-    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep, char nameValSep) throws IOException {
+    public static void join(Writer writer, Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep) throws IOException {
         join(writer, pairs, pairSep, nameValSep, false, false);
     }
 
-    public static void join(Writer writer, Iterator<Pair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
+    public static void join(Writer writer, Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
 
         boolean first = true;
 
         while(pairs.hasNext()) {
-            Pair pair = pairs.next();
+            EncodedPair httpEncodedPair = pairs.next();
             if(!first) {
                 writer.append(pairSep);
             }
 
             if(quoteName) {
-                writer.append('\"').append(pair.getName()).append('\"');
+                writer.append('\"').append(httpEncodedPair.getName()).append('\"');
             }else{
-                writer.append(pair.getName());
+                writer.append(httpEncodedPair.getName());
             }
 
             writer.append(nameValSep);
 
             if(quoteVal) {
-                writer.append('\"').append(pair.getValue()).append('\"');
+                writer.append('\"').append(httpEncodedPair.getValue()).append('\"');
             }else{
-                writer.append(pair.getValue());
+                writer.append(httpEncodedPair.getValue());
             }
 
             first = false;
@@ -131,8 +146,8 @@ public final class Pairs {
     }
 
 
-    private static final Comparator<Pair> HTTP_PAIR_NAME_VALUE_COMPARATOR = new Comparator<Pair>() {
-        public int compare(Pair o1, Pair o2) {
+    private static final Comparator<EncodedPair> PAIR_NAME_VALUE_COMPARATOR = new Comparator<EncodedPair>() {
+        public int compare(EncodedPair o1, EncodedPair o2) {
             int i = o1.getName().compareTo(o2.getName());
             return i != 0 ? i : o1.getValue().compareTo(o2.getValue());
         }

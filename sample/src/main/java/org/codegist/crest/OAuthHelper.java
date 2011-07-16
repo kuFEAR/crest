@@ -20,20 +20,14 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.impl.io.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.impl.security.oauth.v1.OAuthApiV1Builder;
+import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
-import org.codegist.crest.security.oauth.OAuthenticator;
 import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
-import org.codegist.crest.serializer.DeserializationManager;
-import org.codegist.crest.serializer.Deserializer;
-import org.codegist.crest.serializer.StringDeserializer;
-import org.codegist.crest.util.Registry;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,21 +36,23 @@ import java.util.Map;
  */
 public class OAuthHelper {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         // Flickr
-        OAuthHelper.doAccessTokenRetrievalWorkflow(
-        "e0ecb99bde924245e19d008cd5b73339",
-        "388f273a47b5ffad",
-        "http://www.flickr.com/services/oauth/request_token",
-        "http://www.flickr.com/services/oauth/access_token",
-        "http://www.flickr.com/services/oauth/authorize?oauth_token=%s");
-        // Yahoo
 //        OAuthHelper.doAccessTokenRetrievalWorkflow(
 //        "",
 //        "",
-//        "https://api.login.yahoo.com/oauth/v2/get_request_token",
-//        "https://api.login.yahoo.com/oauth/v2/get_token",
-//        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
+//        "http://www.flickr.com/services/oauth",
+//        "request_token",
+//        "access_token",
+//        "http://www.flickr.com/services/oauth/authorize?oauth_token=%s");
+        // Yahoo
+        OAuthHelper.doAccessTokenRetrievalWorkflow(
+        "dj0yJmk9aldLMDF5aVZHZ29uJmQ9WVdrOVJWTmtZbmg1TlRRbWNHbzlNVEkxTkRRMk9EazJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD04Mw--",
+        "57508d207cf3b6ca583d491dba9a8d33162da3cf",
+        "https://api.login.yahoo.com/oauth/v2/get_request_token",
+        "https://api.login.yahoo.com/oauth/v2/get_token",
+        "https://api.login.yahoo.com/oauth/v2/get_token",
+        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
 //
         // Twitter
 //        OAuthHelper.doAccessTokenRetrievalWorkflow(
@@ -69,31 +65,26 @@ public class OAuthHelper {
     }
 
 
-    private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret, String requestUrl, String accessUrl, String redirect) throws IOException {
+    private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret,String requestUrl, String accessUrl, String refreshUrl, String redirect) throws Exception {
         OAuthToken consumerOAuthToken = new OAuthToken(consumerTok, consumerSecret);
         Map<String, Object> config = new HashMap<String, Object>();
-        config.put(OAuthenticatorV1.CONFIG_TOKEN_REQUEST_URL, requestUrl);
-        config.put(OAuthenticatorV1.CONFIG_TOKEN_ACCESS_URL, accessUrl);
+        config.put(OAuthApiV1Builder.CONFIG_TOKEN_REQUEST_URL, requestUrl);
+        config.put(OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_URL, accessUrl);
+        config.put(OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL, refreshUrl);
 
-        OAuthenticator oauth = new OAuthenticatorV1(new HttpRequestExecutor(HttpClientHttpChannelInitiator.newHttpChannelInitiator(), getStringDeserializationManager()), consumerOAuthToken, config);
+        OAuthApi api = OAuthApiV1Builder.build(HttpClientHttpChannelInitiator.newHttpChannelInitiator(), config, new OAuthenticatorV1(consumerOAuthToken));
 
-        OAuthToken tok = oauth.getRequestToken();
+        
+        OAuthToken tok = api.getRequestToken();
 
         System.out.println("RequestToken=" + tok);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("goto " + String.format(redirect, tok.getToken()));
         System.out.println("Input verifier :");
-        OAuthToken accessOAuthToken = oauth.getAccessToken(tok, br.readLine());
+        OAuthToken accessOAuthToken = api.getAccessToken(tok, br.readLine());
         System.out.println("Token  =" + accessOAuthToken);
+        accessOAuthToken = api.refreshAccessToken(accessOAuthToken);
+        System.out.println("Token  Refreshed=" + accessOAuthToken);
     }
 
-    private static DeserializationManager getStringDeserializationManager(){
-        Registry<String, Deserializer> mimeDeserializers = new Registry.Builder<String, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class)
-                .defaultAs(new StringDeserializer())
-                .build();
-        Registry<Class<?>, Deserializer> classDeserializers = new Registry.Builder<Class<?>, Deserializer>(Collections.<String, Object>emptyMap(), Deserializer.class)
-                .defaultAs(new StringDeserializer())
-                .build();
-        return new DeserializationManager(mimeDeserializers, classDeserializers);
-    }
 }

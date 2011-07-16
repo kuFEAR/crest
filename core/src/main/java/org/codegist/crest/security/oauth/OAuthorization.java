@@ -20,9 +20,8 @@
 
 package org.codegist.crest.security.oauth;
 
-import org.codegist.common.lang.Validate;
-import org.codegist.crest.io.http.HttpMethod;
-import org.codegist.crest.io.http.Pair;
+import org.codegist.common.lang.State;
+import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
@@ -38,22 +37,23 @@ import static org.codegist.crest.util.Pairs.join;
 public class OAuthorization implements Authorization {
 
     private final OAuthenticator oauth;
+    private final OAuthApi oauthApi;
     private volatile OAuthToken accessOAuthToken;
 
-    public OAuthorization(OAuthenticator oauth, OAuthToken accessOAuthToken) {
-        Validate.notNull(oauth, "OAuthenticator is required");
-        Validate.notNull(accessOAuthToken, "Token is required");
+    public OAuthorization(OAuthToken accessOAuthToken, OAuthenticator oauth, OAuthApi oauthApi) {
         this.oauth = oauth;
+        this.oauthApi = oauthApi;
         this.accessOAuthToken = accessOAuthToken;
     }
 
-    public AuthorizationToken authorize(HttpMethod method, String url, Pair... parameters)  throws Exception{
-        List<Pair> oauthParams = oauth.oauth(this.accessOAuthToken, method, url, parameters);
+    public AuthorizationToken authorize(String action, String url, EncodedPair... parameters)  throws Exception{
+        List<EncodedPair> oauthParams = oauth.oauth(this.accessOAuthToken, action, url, parameters);
         return new AuthorizationToken("OAuth", join(oauthParams, ',', '=', false, true));
     }
 
     public void refresh()  throws Exception{
-        this.accessOAuthToken = oauth.refreshAccessToken(this.accessOAuthToken, this.accessOAuthToken.getAttribute("oauth_session_handle"));
+        State.notNull(oauthApi, "AccessToken refresh impossible, you must specify the oauth_session_handle and refresh access token url, see CRestBuilder.");
+        this.accessOAuthToken = oauthApi.refreshAccessToken(this.accessOAuthToken);
     }
 
 }

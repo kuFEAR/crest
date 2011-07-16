@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
 /**
  * If specified at method parameter level, indicates to inject it into the HTTP header.
  * <p>If specified at interface or method level, indicates to inject a default parameter into the HTTP header for all requests.
- * @see org.codegist.crest.io.http.HttpRequest.Builder#addHeaderParam(String, Object)
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)

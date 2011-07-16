@@ -67,8 +67,8 @@ public abstract class CRest {
         return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret).build();
     }
 
-    public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes){
-        return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, accessTokenAttributes).build();
+    public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String sessionHandle, String accessTokenRefreshUrl) {
+        return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, accessTokenRefreshUrl).build();
     }
 
     public static CRest getBasicAuthInstance(String username, String password){
@@ -95,8 +95,8 @@ public abstract class CRest {
         return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret);
     }
 
-    public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, Map<String,String> accessTokenAttributes){
-        return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, accessTokenAttributes);
+    public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String sessionHandle, String accessTokenRefreshUrl){
+        return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, accessTokenRefreshUrl);
     }
 
     public static CRestBuilder basicAuth(String username, String password){

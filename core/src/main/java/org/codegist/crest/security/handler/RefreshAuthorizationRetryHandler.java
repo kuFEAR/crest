@@ -24,13 +24,13 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.io.RequestException;
-import org.codegist.crest.io.http.HttpResponse;
 import org.codegist.crest.security.Authorization;
 
 import java.util.Map;
 
 import static org.codegist.common.lang.Validate.notNull;
-import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
+import static org.codegist.crest.CRestProperty.get;
+import static org.codegist.crest.CRestProperty.getRetryAttempts;
 
 /**
  * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
@@ -42,21 +42,23 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
 
     private final Authorization authorization;
     private final int max;
+    private final int unauthorizedStatusCode;
 
     public RefreshAuthorizationRetryHandler(Map<String, Object> crestProperties) {
-        this.max = CRestProperty.getRetryAttempts(crestProperties) + 1;
-        authorization = CRestProperty.get(crestProperties, Authorization.class);
+        this.max = getRetryAttempts(crestProperties) + 1;
+        this.unauthorizedStatusCode = CRestProperty.<Integer>get(crestProperties, CRestProperty.CREST_UNAUTHORIZED_STATUS_CODE);
+        authorization = get(crestProperties, Authorization.class);
         notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=%s)", Authorization.class);
     }
 
     public boolean retry(RequestException exception, int retryNumber) throws Exception {
         if (retryNumber > max
                 || !exception.hasResponse()
-                || ((HttpResponse) exception.getResponse()).getStatusCode() != HTTP_UNAUTHORIZED) {
-            LOGGER.debug("Not retrying, maximum failure reached or catched exception is neither a HttpException nor a 401 HTTP error code");
+                || exception.getResponse().getStatusCode() != unauthorizedStatusCode) {
+            LOGGER.debug("Not retrying, maximum failure reached or catched exception does not have a response or with a status code different than unauthorized.");
             return false;
         }
-        LOGGER.debug("HTTP code 401 detected, refreshing authentification and retry.");
+        LOGGER.debug("Unauthorized status code has been detected, refreshing authentification and retry.");
         authorization.refresh();
         return true;
     }

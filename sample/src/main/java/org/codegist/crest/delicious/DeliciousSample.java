@@ -28,9 +28,6 @@ import org.codegist.crest.delicious.service.Delicious;
 import java.io.IOException;
 import java.util.Date;
 
-import static java.util.Collections.singletonMap;
-import static org.codegist.crest.security.oauth.v1.OAuthenticatorV1.CONFIG_TOKEN_ACCESS_REFRESH_URL;
-
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -58,8 +55,7 @@ public class DeliciousSample implements Runnable {
         LOG.debug("accessTokenSecret = %s", accessTokenSecret);
         LOG.debug("sessionHandle     = %s", sessionHandle);
 
-        CRest crest = CRest.oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, singletonMap("oauth_session_handle", sessionHandle))
-                           .setProperty(CONFIG_TOKEN_ACCESS_REFRESH_URL, "https://api.login.yahoo.com/oauth/v2/get_token")
+        CRest crest = CRest.oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, "https://api.login.yahoo.com/oauth/v2/get_token")
                            .booleanFormat("yes", "no")
                            .build();
 

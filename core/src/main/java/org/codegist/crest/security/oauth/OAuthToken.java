@@ -21,7 +21,8 @@
 package org.codegist.crest.security.oauth;
 
 import org.codegist.common.lang.ToStringBuilder;
-import org.codegist.crest.io.http.Pair;
+import org.codegist.crest.param.EncodedPair;
+import org.codegist.crest.util.Pairs;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
@@ -56,8 +57,8 @@ public class OAuthToken {
         return secret;
     }
 
-    public Pair getAttribute(String name) throws UnsupportedEncodingException {
-        return new Pair(name, attributes.get(name));
+    public EncodedPair getAttribute(String name) throws UnsupportedEncodingException {
+        return Pairs.toPreEncodedPair(name, attributes.get(name));
     }
 
     /**
