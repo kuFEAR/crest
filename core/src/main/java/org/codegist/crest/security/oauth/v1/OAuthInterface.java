@@ -25,34 +25,34 @@ import org.codegist.crest.security.oauth.OAuthToken;
 public interface OAuthInterface {
 
     OAuthToken getAccessToken(
-            String oauth_token,
-            String oauth_consumer_key,
-            String oauth_signature_method,
-            String oauth_timestamp,
-            String oauth_nonce,
-            String oauth_version,
-            String oauth_verifier,
-            String oauth_signature
+            String oauthToken,
+            String oauthConsumerKey,
+            String oauthSignatureMethod,
+            String oauthTimestamp,
+            String oauthNonce,
+            String oauthVersion,
+            String oauthVerifier,
+            String oauthSignature
     );
 
     OAuthToken getRequestToken(
-            String oauth_consumer_key,
-            String oauth_signature_method,
-            String oauth_timestamp,
-            String oauth_nonce,
-            String oauth_version,
-            String oauth_callback,
-            String oauth_signature
+            String oauthConsumerKey,
+            String oauthSignatureMethod,
+            String oauthTimestamp,
+            String oauthNonce,
+            String oauthVersion,
+            String oauthCallback,
+            String oauthSignature
     );
 
     OAuthToken refreshAccessToken(
-            String oauth_token,
-            String oauth_consumer_key,
-            String oauth_signature_method,
-            String oauth_timestamp,
-            String oauth_nonce,
-            String oauth_version,
-            String oauth_session_handle,
-            String oauth_signature
+            String oauthToken,
+            String oauthConsumerKey,
+            String oauthSignatureMethod,
+            String oauthTimestamp,
+            String oauthNonce,
+            String oauthVersion,
+            String oauthSessionHandle,
+            String oauthSignature
     );
 }

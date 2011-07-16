@@ -48,8 +48,6 @@ public class HttpResponse implements Response, Disposable {
     private final InputStream inputStream;
     private final HttpResource resource;
 
-    private String responseString = null;
-
     public HttpResponse(DeserializationManager deserializationManager, Request request, HttpResource resource) throws IOException {
         this.deserializationManager = deserializationManager;
         this.request = request;
@@ -58,12 +56,6 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public InputStream asStream() {
-        if (inputStream == null) {
-            return null;
-        }
-        if (responseString != null) {
-            throw new IllegalStateException("Stream as already been consumed");
-        }
         return inputStream;
     }
 

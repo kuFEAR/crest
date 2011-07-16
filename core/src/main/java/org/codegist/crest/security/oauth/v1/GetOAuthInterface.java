@@ -28,36 +28,36 @@ public interface GetOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")
     OAuthToken getAccessToken(
-            @QueryParam("oauth_token") String oauth_token,
-            @QueryParam("oauth_consumer_key") String oauth_consumer_key,
-            @QueryParam("oauth_signature_method") String oauth_signature_method,
-            @QueryParam("oauth_timestamp") String oauth_timestamp,
-            @QueryParam("oauth_nonce") String oauth_nonce,
-            @QueryParam("oauth_version") String oauth_version,
-            @QueryParam("oauth_verifier") String oauth_verifier,
-            @QueryParam("oauth_signature") String oauth_signature
+            @QueryParam("oauth_token") String oauthToken,
+            @QueryParam("oauth_consumer_key") String oauthConsumerKey,
+            @QueryParam("oauth_signature_method") String oauthSignatureMethod,
+            @QueryParam("oauth_timestamp") String oauthTimestamp,
+            @QueryParam("oauth_nonce") String oauthNonce,
+            @QueryParam("oauth_version") String oauthVersion,
+            @QueryParam("oauth_verifier") String oauthVerifier,
+            @QueryParam("oauth_signature") String oauthSignature
     );
 
     @Path("{oauth.request-token-path}")
     OAuthToken getRequestToken(
-            @QueryParam("oauth_consumer_key") String oauth_consumer_key,
-            @QueryParam("oauth_signature_method") String oauth_signature_method,
-            @QueryParam("oauth_timestamp") String oauth_timestamp,
-            @QueryParam("oauth_nonce") String oauth_nonce,
-            @QueryParam("oauth_version") String oauth_version,
-            @QueryParam("oauth_callback") String oauth_callback,
-            @QueryParam("oauth_signature") String oauth_signature
+            @QueryParam("oauth_consumer_key") String oauthConsumerKey,
+            @QueryParam("oauth_signature_method") String oauthSignatureMethod,
+            @QueryParam("oauth_timestamp") String oauthTimestamp,
+            @QueryParam("oauth_nonce") String oauthNonce,
+            @QueryParam("oauth_version") String oauthVersion,
+            @QueryParam("oauth_callback") String oauthCallback,
+            @QueryParam("oauth_signature") String oauthSignature
     );
 
     @Path("{oauth.refresh-access-token-path}")
     OAuthToken refreshAccessToken(
-            @QueryParam("oauth_token") String oauth_token,
-            @QueryParam("oauth_consumer_key") String oauth_consumer_key,
-            @QueryParam("oauth_signature_method") String oauth_signature_method,
-            @QueryParam("oauth_timestamp") String oauth_timestamp,
-            @QueryParam("oauth_nonce") String oauth_nonce,
-            @QueryParam("oauth_version") String oauth_version,
-            @QueryParam("oauth_session_handle") String oauth_session_handle,
-            @QueryParam("oauth_signature") String oauth_signature
+            @QueryParam("oauth_token") String oauthToken,
+            @QueryParam("oauth_consumer_key") String oauthConsumerKey,
+            @QueryParam("oauth_signature_method") String oauthSignatureMethod,
+            @QueryParam("oauth_timestamp") String oauthTimestamp,
+            @QueryParam("oauth_nonce") String oauthNonce,
+            @QueryParam("oauth_version") String oauthVersion,
+            @QueryParam("oauth_session_handle") String oauthSessionHandle,
+            @QueryParam("oauth_signature") String oauthSignature
     );
 }
