@@ -34,11 +34,11 @@ public class StringParamConfig implements ParamConfig {
     private static final Serializer<String> TO_STRING_SERIALIZER = new ToStringSerializer<String>();
     private final String name;
     private final String value;
-    private final String type;
+    private final ParamType type;
     private final boolean encoded;
     private final ParamProcessor paramProcessor;
 
-    public StringParamConfig(String name, String value, String type, boolean encoded, ParamProcessor paramProcessor) {
+    public StringParamConfig(String name, String value, ParamType type, boolean encoded, ParamProcessor paramProcessor) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -62,7 +62,7 @@ public class StringParamConfig implements ParamConfig {
         return value;
     }
 
-    public String getType() {
+    public ParamType getType() {
         return type;
     }
 

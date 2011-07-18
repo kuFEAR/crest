@@ -25,15 +25,15 @@ import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
 import org.codegist.crest.config.InterfaceConfigFactory;
-import org.codegist.crest.impl.config.AnnotationDrivenInterfaceConfigFactory;
-import org.codegist.crest.impl.config.annotate.AnnotationHandler;
-import org.codegist.crest.impl.config.annotate.CRestAnnotations;
-import org.codegist.crest.impl.config.annotate.NoOpAnnotationHandler;
-import org.codegist.crest.impl.config.annotate.jaxrs.JaxRsAnnotations;
-import org.codegist.crest.impl.io.*;
-import org.codegist.crest.impl.io.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.impl.io.platform.HttpURLConnectionHttpChannelInitiator;
-import org.codegist.crest.impl.security.oauth.v1.OAuthApiV1Builder;
+import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
+import org.codegist.crest.config.annotate.AnnotationHandler;
+import org.codegist.crest.config.annotate.CRestAnnotations;
+import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.io.http.*;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
+import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
@@ -62,8 +62,8 @@ import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
 import static org.codegist.crest.CRestProperty.*;
-import static org.codegist.crest.impl.io.HttpConstants.HTTP_UNAUTHORIZED;
-import static org.codegist.crest.impl.security.oauth.v1.OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL;
+import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
+import static org.codegist.crest.security.oauth.v1.OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL;
 
 /**
  * <p>The default build :

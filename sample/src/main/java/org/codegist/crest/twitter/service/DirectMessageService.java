@@ -21,6 +21,7 @@
 package org.codegist.crest.twitter.service;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.twitter.model.Message;
 
 /**

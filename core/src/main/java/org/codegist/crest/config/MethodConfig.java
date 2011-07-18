@@ -79,9 +79,8 @@ public interface MethodConfig {
     /**
      * Default http method applied when non specified.
      *
-     * @see MethodConfig#getMethodType()
      */
-    String DEFAULT_METHOD_TYPE = "GET";
+    MethodType DEFAULT_METHOD_TYPE = MethodType.getDefault();
 
     /**
      * Default response handler applied when non specified.
@@ -118,7 +117,7 @@ public interface MethodConfig {
      */
     Class<? extends Deserializer>[] DEFAULT_DESERIALIZERS = new Class[0];
 
-    Class<? extends EntityWriter> DEFAULT_BODY_WRITER = null;
+    Class<? extends EntityWriter> DEFAULT_ENTITY_WRITER = null;
 
     /*##############################################################################*/
 
@@ -155,7 +154,7 @@ public interface MethodConfig {
      */
     PathTemplate getPathTemplate();
 
-    String getType();
+    MethodType getType();
 
     EntityWriter getEntityWriter();
 

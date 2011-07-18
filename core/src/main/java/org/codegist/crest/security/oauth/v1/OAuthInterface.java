@@ -22,7 +22,7 @@ package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.crest.security.oauth.OAuthToken;
 
-public interface OAuthInterface {
+interface OAuthInterface {
 
     OAuthToken getAccessToken(
             String oauthToken,

@@ -1,6 +1,7 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
 import org.codegist.crest.request.common.Requests;
 
 /**

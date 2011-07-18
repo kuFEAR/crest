@@ -25,6 +25,8 @@ import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
 import org.codegist.crest.handler.DefaultResponseHandler;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.model.jackson.JacksonSomeData;
 import org.junit.runners.Parameterized;
 

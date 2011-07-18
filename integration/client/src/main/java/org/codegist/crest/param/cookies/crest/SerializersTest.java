@@ -21,6 +21,8 @@
 package org.codegist.crest.param.cookies.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.CookieParam;
+import org.codegist.crest.annotate.GET;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.param.cookies.common.ISerializersTest;

@@ -21,6 +21,7 @@
 package org.codegist.crest.param.paths.jaxrs;
 
 import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.PathParams;
 import org.codegist.crest.param.paths.common.IDefaultValuesTest;
 
 import javax.ws.rs.DefaultValue;
@@ -49,7 +50,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
 
         @GET
         @org.codegist.crest.annotate.PathParam(value = "p2", defaultValue = "p2-val")
-        @org.codegist.crest.annotate.PathParams({
+        @PathParams({
                 @org.codegist.crest.annotate.PathParam(value = "p3", defaultValue = "p3-val")
         })
         @Path("param/{p1}/{p2}/{p3}")

@@ -21,6 +21,8 @@
 package org.codegist.crest.param.queries.common;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.QueryParam;
 
 import java.util.List;
 import java.util.Set;

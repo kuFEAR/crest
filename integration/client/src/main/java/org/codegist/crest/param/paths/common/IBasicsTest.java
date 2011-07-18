@@ -21,9 +21,9 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.annotate.GET;
 import org.codegist.crest.annotate.Path;
-import org.codegist.crest.annotate.PathParam;
 
 /**
  * @author laurent.gilles@codegist.org

@@ -26,6 +26,7 @@ import org.codegist.crest.google.model.LangPair;
 import org.codegist.crest.google.model.LanguageGuess;
 import org.codegist.crest.google.model.Translation;
 import org.codegist.crest.google.serializer.LangPairSerializer;
+import org.codegist.crest.annotate.QueryParam;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

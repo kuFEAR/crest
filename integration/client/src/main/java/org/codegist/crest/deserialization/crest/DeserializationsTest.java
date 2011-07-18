@@ -23,6 +23,9 @@ package org.codegist.crest.deserialization.crest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonDeserializationsTest;
 import org.codegist.crest.deserialization.common.IDeserializations;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.HEAD;
+import org.codegist.crest.annotate.QueryParam;
 
 import java.io.InputStream;
 import java.io.Reader;

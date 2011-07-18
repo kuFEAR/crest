@@ -21,8 +21,11 @@
 package org.codegist.crest.io;
 
 import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.config.ParamType;
+import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.param.Param;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,7 +36,9 @@ import java.util.List;
  */
 public interface Request {
 
-    List<Param> getParams(String type);
+    List<Param> getParams(ParamType type);
+
+    Iterator<EncodedPair> getEncodedParamsIterator(ParamType type);
 
     MethodConfig getMethodConfig();
 

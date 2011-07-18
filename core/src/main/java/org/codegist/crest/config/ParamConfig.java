@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public interface ParamConfig {
 
-    String DEFAULT_PARAM_TYPE = "QUERY";
+    ParamType DEFAULT_PARAM_TYPE = ParamType.getDefault();
 
     String DEFAULT_VALUE = null;
 
@@ -61,7 +61,7 @@ public interface ParamConfig {
 
     String getDefaultValue();
 
-    String getType();
+    ParamType getType();
 
     Map<String, Object> getMetaDatas();
 

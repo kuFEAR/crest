@@ -23,6 +23,7 @@ package org.codegist.crest.delicious.service;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.delicious.handler.DeliciousResponseHandler;
 import org.codegist.crest.delicious.model.*;
+import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
 
 import java.util.Date;

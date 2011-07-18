@@ -21,6 +21,9 @@
 package org.codegist.crest.param.paths.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.PathParam;
+import org.codegist.crest.annotate.PathParams;
 import org.codegist.crest.param.paths.common.IDefaultValuesTest;
 
 /**

@@ -22,6 +22,8 @@ package org.codegist.crest.param.forms.xml.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.XmlEntityWriter;
+import org.codegist.crest.annotate.FormParam;
+import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.common.IBasicsTest;
 import org.junit.runners.Parameterized;
 

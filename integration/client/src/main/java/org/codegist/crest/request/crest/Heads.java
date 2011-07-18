@@ -21,6 +21,8 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.HEAD;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

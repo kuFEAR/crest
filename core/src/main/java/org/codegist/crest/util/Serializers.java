@@ -37,7 +37,7 @@ public final class Serializers {
 
     public static <T> String serialize(Serializer<T> serializer, T value, Charset charset) throws Exception {
         if(serializer instanceof StringSerializer) {
-            return ((StringSerializer)serializer).serialize(value, charset);
+            return ((StringSerializer<T>)serializer).serialize(value, charset);
         }else{
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             serializer.serialize(value, charset, out);

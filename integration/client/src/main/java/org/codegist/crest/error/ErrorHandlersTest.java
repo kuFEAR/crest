@@ -23,6 +23,8 @@ package org.codegist.crest.error;
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
 import org.junit.Before;

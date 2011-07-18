@@ -21,6 +21,7 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.Serializers;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -32,14 +33,16 @@ import static org.codegist.crest.util.Serializers.serialize;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class DefaultParamProcessor implements ParamProcessor {
+class DefaultParamProcessor implements ParamProcessor {
+
+    static final ParamProcessor INSTANCE = new DefaultParamProcessor();
 
     public List<EncodedPair> process(Param param, Charset charset, boolean encodeIfNeeded) throws Exception {
         List<EncodedPair> pairs = new ArrayList<EncodedPair>();
         Serializer serializer = param.getConfig().getSerializer();
         boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
         for(Object value : param.getValue()){
-            String serializedValue = serialize(serializer, value, charset);
+            String serializedValue = Serializers.serialize(serializer, value, charset);
             pairs.add(toPair(param.getConfig().getName(), serializedValue, charset, isEncoded));
         }
         return pairs;

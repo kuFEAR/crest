@@ -21,6 +21,9 @@
 package org.codegist.crest.param.cookies.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.CookieParam;
+import org.codegist.crest.annotate.CookieParams;
+import org.codegist.crest.annotate.GET;
 import org.codegist.crest.param.cookies.common.IDefaultValuesTest;
 
 /**

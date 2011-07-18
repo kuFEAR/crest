@@ -21,6 +21,9 @@
 package org.codegist.crest.param.matrixes.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.MatrixParam;
+import org.codegist.crest.annotate.MatrixParams;
 import org.codegist.crest.param.matrixes.common.IDefaultValuesTest;
 
 /**

@@ -25,7 +25,7 @@ import org.codegist.crest.security.oauth.OAuthToken;
 
 @POST
 @Encoded
-public interface PostOAuthInterface extends OAuthInterface {
+interface PostOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")
     OAuthToken getAccessToken(

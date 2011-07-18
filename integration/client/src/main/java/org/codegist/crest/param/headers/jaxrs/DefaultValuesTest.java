@@ -21,6 +21,7 @@
 package org.codegist.crest.param.headers.jaxrs;
 
 import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.HeaderParams;
 import org.codegist.crest.param.headers.common.IDefaultValuesTest;
 
 import javax.ws.rs.DefaultValue;
@@ -49,7 +50,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
 
         @GET
         @org.codegist.crest.annotate.HeaderParam(value = "p2", defaultValue = "p2-val")
-        @org.codegist.crest.annotate.HeaderParams({
+        @HeaderParams({
                 @org.codegist.crest.annotate.HeaderParam(value = "p1", defaultValue = "p1-val"),
                 @org.codegist.crest.annotate.HeaderParam(value = "p3", defaultValue = "p3-val")
         })

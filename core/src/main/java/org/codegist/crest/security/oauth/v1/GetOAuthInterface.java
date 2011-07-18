@@ -24,7 +24,7 @@ import org.codegist.crest.annotate.*;
 import org.codegist.crest.security.oauth.OAuthToken;
 
 @GET
-public interface GetOAuthInterface extends OAuthInterface {
+interface GetOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")
     OAuthToken getAccessToken(

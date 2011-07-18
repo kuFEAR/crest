@@ -140,7 +140,7 @@ public final class CRestProperty {
 
     public static final String METHOD_CONFIG_DEFAULT_DESERIALIZERS = MC + "#deserializer";
 
-    public static final String METHOD_CONFIG_DEFAULT_BODY_WRITER = MC + "#body-writer";
+    public static final String METHOD_CONFIG_DEFAULT_ENTITY_WRITER = MC + "#body-writer";
 
     /*********************************************************
      *********************************************************

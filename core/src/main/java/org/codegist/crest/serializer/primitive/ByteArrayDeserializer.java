@@ -22,6 +22,7 @@ package org.codegist.crest.serializer.primitive;
 
 import org.codegist.common.io.IOs;
 import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.serializer.TypeDeserializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +32,11 @@ import java.nio.charset.Charset;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class ByteArrayDeserializer implements Deserializer {
-    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws IOException {
-        return (T) IOs.toByteArray(stream, true);
+public class ByteArrayDeserializer extends TypeDeserializer<byte[]> {
+
+    @Override
+    protected byte[] deserialize(InputStream stream, Charset charset) throws Exception {
+        return IOs.toByteArray(stream, true);
     }
+
 }

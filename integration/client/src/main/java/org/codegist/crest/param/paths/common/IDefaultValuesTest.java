@@ -21,6 +21,9 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.PathParam;
+import org.codegist.crest.annotate.PathParams;
 
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;

@@ -21,6 +21,7 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.OPTIONS;
 import org.codegist.crest.request.common.Requests;
 
 /**

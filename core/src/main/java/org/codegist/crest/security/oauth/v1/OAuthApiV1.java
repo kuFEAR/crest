@@ -34,7 +34,7 @@ import static org.codegist.crest.security.oauth.v1.OAuthsV1.*;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class OAuthApiV1 implements OAuthApi {
+class OAuthApiV1 implements OAuthApi {
 
     private static final EncodedPair CALLBACK;
     private final String method;

@@ -21,6 +21,9 @@
 package org.codegist.crest.param.forms.crest;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.FormParam;
+import org.codegist.crest.annotate.FormParams;
+import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.forms.common.IDefaultValuesTest;
 
 /**

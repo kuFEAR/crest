@@ -22,6 +22,8 @@ package org.codegist.crest.param.forms.json.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.JsonEntityWriter;
+import org.codegist.crest.annotate.FormParam;
+import org.codegist.crest.annotate.POST;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.param.common.ISerializersTest;

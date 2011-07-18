@@ -21,6 +21,8 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.PathParam;
 
 import java.util.EnumSet;
 import java.util.List;

@@ -22,6 +22,9 @@ package org.codegist.crest.param.forms.json.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.JsonEntityWriter;
+import org.codegist.crest.annotate.FormParam;
+import org.codegist.crest.annotate.FormParams;
+import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.common.IDefaultValuesTest;
 import org.junit.runners.Parameterized;
 
