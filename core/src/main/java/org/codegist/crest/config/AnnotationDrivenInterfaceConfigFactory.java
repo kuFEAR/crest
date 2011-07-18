@@ -27,7 +27,6 @@ import org.codegist.crest.util.Registry;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Map;
 
 import static java.lang.System.arraycopy;
 
@@ -43,19 +42,19 @@ import static java.lang.System.arraycopy;
  */
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
-    private final Map<String,Object> crestProperties;
+    private final InterfaceConfigBuilderFactory icbf;
     private final Registry<Class<? extends Annotation>, AnnotationHandler> handlersRegistry;
     private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(Map<String,Object> crestProperties, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean modelPriority) {
+    public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean modelPriority) {
         this.handlersRegistry = handlersRegistry;
         this.modelPriority = modelPriority;
-        this.crestProperties = crestProperties;
+        this.icbf = icbf;
     }
 
     @SuppressWarnings("unchecked")
     public InterfaceConfig newConfig(Class<?> interfaze) throws Exception {
-        InterfaceConfigBuilder config = new InterfaceConfigBuilder(interfaze, crestProperties);
+        InterfaceConfigBuilder config = icbf.newInstance(interfaze);
         
         for(Annotation annotation : interfaze.getAnnotations()){
             handlersRegistry.get(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);

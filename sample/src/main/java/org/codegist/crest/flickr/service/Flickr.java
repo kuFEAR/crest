@@ -25,10 +25,6 @@ import org.codegist.crest.flickr.handler.FlickrResponseHandler;
 import org.codegist.crest.flickr.model.Comment;
 import org.codegist.crest.flickr.model.Gallery;
 import org.codegist.crest.flickr.model.Uploader;
-import org.codegist.crest.annotate.FormParam;
-import org.codegist.crest.annotate.MultiPartParam;
-import org.codegist.crest.annotate.POST;
-import org.codegist.crest.annotate.QueryParam;
 
 import java.io.File;
 import java.io.InputStream;

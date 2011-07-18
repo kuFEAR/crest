@@ -23,8 +23,8 @@ package org.codegist.crest.error;
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.QueryParam;
+import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.handler.ErrorDelegatorHandler;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
 import org.junit.Before;
@@ -150,6 +150,7 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
     @EndPoint("{crest.server.end-point}")
     @Path("error")
     @GET
+    @ErrorHandler(ErrorDelegatorHandler.class)
     @ConnectionTimeout(5000)
     @SocketTimeout(5000)
     public static interface ErrorHandlers {

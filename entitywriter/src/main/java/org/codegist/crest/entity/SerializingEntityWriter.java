@@ -21,8 +21,6 @@
 package org.codegist.crest.entity;
 
 import org.codegist.common.lang.Validate;
-import org.codegist.crest.config.EntityWriter;
-import org.codegist.crest.config.ParamType;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;

@@ -21,9 +21,6 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.MultiPartEntity;
-import org.codegist.crest.annotate.MultiPartParam;
-import org.codegist.crest.annotate.PUT;
 import org.codegist.crest.request.common.EntityRequests;
 
 /**
@@ -35,6 +32,7 @@ import org.codegist.crest.request.common.EntityRequests;
 @PUT
 public interface Puts extends EntityRequests {
 
+    @PUT
     String raw();
 
     @Path("accept")

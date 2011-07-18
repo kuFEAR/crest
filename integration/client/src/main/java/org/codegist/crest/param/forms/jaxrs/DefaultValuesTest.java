@@ -40,6 +40,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
 
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/default-value")
+    @org.codegist.crest.annotate.FormParam(value = "p02", defaultValue = "p02-val")
+    @FormParams({
+            @org.codegist.crest.annotate.FormParam(value = "p01", defaultValue = "p01-val"),
+            @org.codegist.crest.annotate.FormParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @POST

@@ -22,8 +22,6 @@ package org.codegist.crest.param.forms.xml.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.XmlEntityWriter;
-import org.codegist.crest.annotate.FormParam;
-import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.common.IBasicsTest;
 import org.junit.runners.Parameterized;
 
@@ -46,11 +44,12 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/xml")
     @POST
-    @EntityWriter(XmlEntityWriter.class)
     public static interface Basics extends IBasicsTest.IBasics {
 
+        @EntityWriter(XmlEntityWriter.class)
         String send();
 
+        @EntityWriter(XmlEntityWriter.class)
         String send(
                 @FormParam("p1") String p1,
                 @FormParam("p2") int p2);

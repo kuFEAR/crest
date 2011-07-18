@@ -24,7 +24,6 @@ import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
 
 import static org.codegist.crest.config.ParamType.QUERY;
 
@@ -35,12 +34,18 @@ class QueryParamAnnotationHandler extends NoOpAnnotationHandler<QueryParam> {
 
     @Override
     public void handleInterfaceAnnotation(QueryParam annotation, InterfaceConfigBuilder builder) {
-        builder.addMethodsExtraQueryParam(annotation.value(), annotation.defaultValue());
+        builder.startMethodsExtraParamConfig()
+                .setType(QUERY)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override
     public void handleMethodAnnotation(QueryParam annotation, MethodConfigBuilder builder) {
-        builder.addExtraQueryParam(annotation.value(), annotation.defaultValue());
+        builder.startExtraParamConfig()
+                .setType(QUERY)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override

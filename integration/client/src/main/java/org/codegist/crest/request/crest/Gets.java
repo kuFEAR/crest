@@ -1,7 +1,6 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
 import org.codegist.crest.request.common.Requests;
 
 /**
@@ -10,15 +9,17 @@ import org.codegist.crest.request.common.Requests;
 
 @EndPoint("{crest.server.end-point}")
 @Path("io/get")
-@GET
 public interface Gets extends Requests {
 
+    @GET
     String raw();
 
+    @GET
     @Path("accept")
     @Consumes({"application/custom1", "application/custom2"})
     String accept();
 
+    @GET
     @Path("content-type")
     @Produces("application/custom")
     String contentType();

@@ -46,9 +46,12 @@ public class DefaultValuesStub {
     @Path("value")
     public String value(
             @FormDataParam("p1") FormDataBodyPart p1,
-            @FormDataParam("p2") FormDataBodyPart p2
+            @FormDataParam("p2") FormDataBodyPart p2,
+            @FormDataParam("p01") FormDataBodyPart p01,
+            @FormDataParam("p02") FormDataBodyPart p02,
+            @FormDataParam("p03") FormDataBodyPart p03
     ) throws UnsupportedEncodingException {
-        return format("value() p1=%s p2=%s", string(p1),string(p2));
+        return format("value() p1=%s p2=%s p01=%s p02=%s p03=%s", string(p1),string(p2), string(p01), string(p02), string(p03));
     }
 
     @POST
@@ -56,7 +59,10 @@ public class DefaultValuesStub {
     public String param(
             @FormDataParam("p1") List<FormDataBodyPart> p1,
             @FormDataParam("p2") FormDataBodyPart p2,
-            @FormDataParam("p3") FormDataBodyPart p3) throws UnsupportedEncodingException {
-        return format("param() p1=%s p2=%s p3=%s", ToStrings.stringMulti(p1),string(p2),string(p3));
+            @FormDataParam("p3") FormDataBodyPart p3,
+            @FormDataParam("p01") FormDataBodyPart p01,
+            @FormDataParam("p02") FormDataBodyPart p02,
+            @FormDataParam("p03") FormDataBodyPart p03) throws UnsupportedEncodingException {
+        return format("param() p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", ToStrings.stringMulti(p1),string(p2),string(p3), string(p01), string(p02), string(p03));
     }
 }

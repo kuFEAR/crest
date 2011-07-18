@@ -21,8 +21,8 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.Encoded;
-import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
 
 /**

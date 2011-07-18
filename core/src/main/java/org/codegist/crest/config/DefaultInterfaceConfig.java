@@ -20,9 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.config.InterfaceConfig;
-import org.codegist.crest.config.MethodConfig;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 

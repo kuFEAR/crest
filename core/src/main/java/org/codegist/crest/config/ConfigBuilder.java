@@ -21,6 +21,7 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.lang.Strings;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.util.ComponentFactory;
 
@@ -43,7 +44,7 @@ import static org.codegist.crest.CRestProperty.getPlaceholders;
  * @see DefaultInterfaceConfig
  * @see DefaultMethodConfig
  */
-abstract class ConfigBuilder<T> {
+abstract class ConfigBuilder {
 
     private final Map<String, Object> crestProperties;
     private final Map<Pattern, String> placeholders = new HashMap<Pattern, String>();
@@ -56,13 +57,6 @@ abstract class ConfigBuilder<T> {
             this.placeholders.put(Pattern.compile("\\{" + Pattern.quote(placeholder) + "\\}"), value);
         }
     }
-
-    /**
-     * Validate and build a normal config with defaulted values if necessary
-     *
-     * @return config
-     */
-    public abstract T build() throws Exception;
 
     public Map<String, Object> getCRestProperties() {
         return crestProperties;
@@ -81,10 +75,6 @@ abstract class ConfigBuilder<T> {
         return replaced.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}"); // replace escaped with non escaped
     }
 
-//    protected <T> T getProperty(String key) {
-//        return (T) crestProperties.get(key);
-//    }
-
     protected <T> T[] defaultIfUndefined(T[] value, String defProp, Class<? extends T>[] def) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         if(value == null) {
             T[] prop = CRestProperty.<T[]>get(crestProperties, defProp);
@@ -97,7 +87,7 @@ abstract class ConfigBuilder<T> {
             return value;
         }
     }
-    protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def)  {
         if(value == null) {
             T prop = CRestProperty.<T>get(crestProperties, defProp);
             if(prop != null) {
@@ -121,7 +111,7 @@ abstract class ConfigBuilder<T> {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T[] newInstance(Class<T>[] classes) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    protected <T> T[] newInstance(Class<T>[] classes)  {
         if (classes == null) {
             return null;
         }
@@ -132,11 +122,15 @@ abstract class ConfigBuilder<T> {
         return instances;
     }
 
-    protected <T> T newInstance(Class<T> clazz) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    protected <T> T newInstance(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }else{
-            return ComponentFactory.instantiate(clazz, crestProperties);
+            try {
+                return ComponentFactory.instantiate(clazz, crestProperties);
+            } catch (Exception e) {
+                throw CRestException.handle(e);
+            }
         }
     }
     

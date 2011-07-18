@@ -24,10 +24,9 @@ import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
+import org.codegist.crest.util.MultiParts;
 
 import static org.codegist.crest.config.ParamType.FORM;
-import static org.codegist.crest.config.ParamType.HEADER;
 import static org.codegist.crest.util.MultiParts.toMetaDatas;
 
 /**
@@ -37,12 +36,20 @@ class MultiPartParamAnnotationHandler extends NoOpAnnotationHandler<MultiPartPar
 
     @Override
     public void handleInterfaceAnnotation(MultiPartParam annotation, InterfaceConfigBuilder builder) {
-        builder.addMethodsExtraMultiPartParam(annotation.value(), annotation.defaultValue(), annotation.contentType(), annotation.fileName());
+        builder.startMethodsExtraParamConfig()
+                .setType(FORM)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue())
+                .setMetaDatas(MultiParts.toMetaDatas(annotation.contentType(), annotation.fileName()));
     }
 
     @Override
     public void handleMethodAnnotation(MultiPartParam annotation, MethodConfigBuilder builder) {
-        builder.addExtraMultiPartParam(annotation.value(), annotation.defaultValue(), annotation.contentType(), annotation.fileName());
+        builder.startExtraParamConfig()
+                .setType(FORM)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue())
+                .setMetaDatas(MultiParts.toMetaDatas(annotation.contentType(), annotation.fileName()));
     }
                   
     @Override

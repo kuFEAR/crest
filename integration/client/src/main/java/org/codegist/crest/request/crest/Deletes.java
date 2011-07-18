@@ -21,7 +21,6 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.DELETE;
 import org.codegist.crest.request.common.Requests;
 
 /**
@@ -33,6 +32,7 @@ import org.codegist.crest.request.common.Requests;
 @DELETE
 public interface Deletes extends Requests {
 
+    @DELETE
     String raw();
 
     @Path("accept")

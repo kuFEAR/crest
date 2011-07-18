@@ -41,20 +41,21 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
     @EndPoint("{crest.server.end-point}")
     @Path("params/path/encoding")
+    @ListSeparator("(p2)")
     public static interface Encodings extends IEncodingsTest.IEncodings {
 
         @GET
         @Path("default/{p1}/{p2}")
         String defaults(
                 @PathParam("p1") String p1,
-                @PathParam("p2") @ListSeparator("(p2)") Collection<String> p2);
+                @PathParam("p2") Collection<String> p2);
 
         @GET
         @Path("encoded/{p1}/{p2}")
         @Encoded
         String encoded(
                 @PathParam("p1") String p1,
-                @PathParam("p2") @ListSeparator("(p2)") Collection<String> p2);
+                @PathParam("p2") Collection<String> p2);
 
     }
 

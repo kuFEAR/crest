@@ -21,8 +21,6 @@
 package org.codegist.crest.request.jaxrs;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.MultiPartEntity;
-import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.request.common.EntityRequests;
 
 import javax.ws.rs.Consumes;

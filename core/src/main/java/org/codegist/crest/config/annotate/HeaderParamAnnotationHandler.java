@@ -24,7 +24,6 @@ import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
 
 import static org.codegist.crest.config.ParamType.HEADER;
 
@@ -35,12 +34,18 @@ class HeaderParamAnnotationHandler extends NoOpAnnotationHandler<HeaderParam> {
 
     @Override
     public void handleInterfaceAnnotation(HeaderParam annotation, InterfaceConfigBuilder builder) {
-        builder.addMethodsExtraHeaderParam(annotation.value(), annotation.defaultValue());
+        builder.startMethodsExtraParamConfig()
+                .setType(HEADER)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override
     public void handleMethodAnnotation(HeaderParam annotation, MethodConfigBuilder builder) {
-        builder.addExtraHeaderParam(annotation.value(), annotation.defaultValue());
+        builder.startExtraParamConfig()
+                .setType(HEADER)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
                   
     @Override

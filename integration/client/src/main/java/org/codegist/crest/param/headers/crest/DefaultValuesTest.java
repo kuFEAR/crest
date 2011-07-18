@@ -21,9 +21,6 @@
 package org.codegist.crest.param.headers.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.HeaderParam;
-import org.codegist.crest.annotate.HeaderParams;
 import org.codegist.crest.param.headers.common.IDefaultValuesTest;
 
 /**
@@ -38,6 +35,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/header/default-value")
     @GET
+    @HeaderParam(value = "p02", defaultValue = "p02-val")
+    @HeaderParams({
+            @HeaderParam(value = "p01", defaultValue = "p01-val"),
+            @HeaderParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @Path("value")

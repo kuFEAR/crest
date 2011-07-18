@@ -20,10 +20,6 @@
 
 package org.codegist.crest.param;
 
-import org.codegist.crest.param.CollectionMergingParamProcessor;
-import org.codegist.crest.param.EncodedPair;
-import org.codegist.crest.param.Param;
-
 import java.nio.charset.Charset;
 import java.util.List;
 

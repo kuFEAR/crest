@@ -21,7 +21,6 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
 import javax.ws.rs.FormParam;

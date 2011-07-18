@@ -21,9 +21,9 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.ListSeparator;
+import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.InterfaceConfigBuilder;
 
 /**
  * @author laurent.gilles@codegist.org

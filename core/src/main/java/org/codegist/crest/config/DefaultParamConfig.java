@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.param.ParamProcessor;
 import org.codegist.crest.serializer.Serializer;
 

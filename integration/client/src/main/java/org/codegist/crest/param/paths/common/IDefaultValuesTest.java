@@ -21,11 +21,9 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.PathParam;
-import org.codegist.crest.annotate.PathParams;
 
 import static java.lang.String.format;
+import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -56,7 +54,9 @@ public class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> ext
 
     }
 
-    public void assertParamsValue(String p11, String p12, String p2, String p3, String actual) {
-        assertEquals(format("param() p1=%s p2=%s p3=%s", p12, p2, p3), actual);
+
+    public void assertParamsValue(String p11, String p12, String p2, String p3, String defaultP01, String defaultP02, String defaultP03, String actual) {
+        assertEquals(format("param() p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", p12, p2, p3, defaultP01, defaultP02, defaultP03), actual);
     }
+
 }

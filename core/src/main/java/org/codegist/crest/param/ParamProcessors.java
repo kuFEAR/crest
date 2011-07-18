@@ -30,7 +30,8 @@ import java.util.List;
  * @author laurent.gilles@codegist.org
  */
 public final class ParamProcessors {
-    public ParamProcessors(){
+    
+    private ParamProcessors(){
         throw new IllegalStateException();
     }
     

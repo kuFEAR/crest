@@ -22,9 +22,6 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.config.ParamType;
-import org.codegist.crest.config.StringParamConfig;
-import org.codegist.crest.param.ParamProcessorFactory;
 import org.codegist.crest.param.Param;
 
 import java.util.Collection;
@@ -35,10 +32,6 @@ public class HttpParam implements Param {
     private final Collection<Object> value;
     private final ParamConfig config;
 
-    public HttpParam(String name, String value, ParamType type, boolean encoded) {
-        this(new StringParamConfig(name, value, type, encoded, ParamProcessorFactory.newInstance(type)), Collections.<Object>singleton(value));
-    }
-    
     public HttpParam(ParamConfig config, Collection<Object> value) {
         this.config = config;
         this.value = value.isEmpty() ? Collections.<Object>singleton(config.getDefaultValue()) : value;

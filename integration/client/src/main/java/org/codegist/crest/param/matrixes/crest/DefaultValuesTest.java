@@ -21,9 +21,6 @@
 package org.codegist.crest.param.matrixes.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.MatrixParam;
-import org.codegist.crest.annotate.MatrixParams;
 import org.codegist.crest.param.matrixes.common.IDefaultValuesTest;
 
 /**
@@ -38,6 +35,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/matrix/default-value")
     @GET
+    @MatrixParam(value = "p02", defaultValue = "p02-val")
+    @MatrixParams({
+            @MatrixParam(value = "p01", defaultValue = "p01-val"),
+            @MatrixParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @Path("value")

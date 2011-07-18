@@ -21,12 +21,9 @@
 package org.codegist.crest.serializer.primitive;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.TypeDeserializer;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**

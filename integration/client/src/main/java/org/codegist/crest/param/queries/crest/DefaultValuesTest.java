@@ -21,9 +21,6 @@
 package org.codegist.crest.param.queries.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.QueryParam;
-import org.codegist.crest.annotate.QueryParams;
 import org.codegist.crest.param.queries.common.IDefaultValuesTest;
 
 /**
@@ -38,6 +35,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/query/default-value")
     @GET
+    @QueryParam(value = "p02", defaultValue = "p02-val")
+    @QueryParams({
+            @QueryParam(value = "p01", defaultValue = "p01-val"),
+            @QueryParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @Path("value")

@@ -22,8 +22,8 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.HttpMethod;
 import org.codegist.crest.annotate.POST;
-import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.MethodType;
 
 /**
@@ -33,12 +33,12 @@ class POSTAnnotationHandler extends NoOpAnnotationHandler<POST> {
 
     @Override
     public void handleInterfaceAnnotation(POST annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsHttpMethod(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
     @Override
     public void handleMethodAnnotation(POST annotation, MethodConfigBuilder builder) {
-        builder.setHttpMethod(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
 }

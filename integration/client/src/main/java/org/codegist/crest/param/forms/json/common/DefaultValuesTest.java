@@ -22,9 +22,6 @@ package org.codegist.crest.param.forms.json.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.JsonEntityWriter;
-import org.codegist.crest.annotate.FormParam;
-import org.codegist.crest.annotate.FormParams;
-import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.common.IDefaultValuesTest;
 import org.junit.runners.Parameterized;
 
@@ -49,6 +46,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/json")
     @POST
+    @FormParam(value = "p02", defaultValue = "p02-val")
+    @FormParams({
+            @FormParam(value = "p01", defaultValue = "p01-val"),
+            @FormParam(value = "p03", defaultValue = "p03-val")
+    })
     @EntityWriter(JsonEntityWriter.class)
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
@@ -66,9 +68,12 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     }
 
     @Override
-    public void assertDefaultValue(String defaultP1, int defaultP2, String actual) {
+    public void assertDefaultValue(String defaultP1, int defaultP2, String p01, String p02, String p03, String actual) {
         StringBuilder expected = new StringBuilder();
         expected.append("{");
+        expected.append("\"p02\":\"").append(p02).append("\",");
+        expected.append("\"p01\":\"").append(p01).append("\",");
+        expected.append("\"p03\":\"").append(p03).append("\",");
         expected.append("\"p1\":\"").append(defaultP1).append("\",");
         expected.append("\"p2\":\"").append(defaultP2).append("\"");
         expected.append("}");
@@ -76,9 +81,12 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     }
 
     @Override
-    public void assertParamsValue(String p11, String p12, String p2, String p3, String actual) {
+    public void assertParamsValue(String p11, String p12, String p2, String p3, String p01, String p02, String p03, String actual) {
         StringBuilder expected = new StringBuilder();
         expected.append("{");
+        expected.append("\"p02\":\"").append(p02).append("\",");
+        expected.append("\"p01\":\"").append(p01).append("\",");
+        expected.append("\"p03\":\"").append(p03).append("\",");
         expected.append("\"p2\":\"").append(p2).append("\",");
         expected.append("\"p1\":[\"").append(p11).append("\",\"").append(p12).append("\"],");
         expected.append("\"p3\":\"").append(p3).append("\"");

@@ -34,7 +34,7 @@ class GETAnnotationHandler extends NoOpAnnotationHandler<GET> {
 
     @Override
     public void handleMethodAnnotation(GET annotation, MethodConfigBuilder builder) {
-        builder.setHttpMethod(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
 }

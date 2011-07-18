@@ -33,12 +33,12 @@ class PUTAnnotationHandler extends NoOpAnnotationHandler<PUT> {
 
     @Override
     public void handleInterfaceAnnotation(PUT annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsHttpMethod(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
     @Override
     public void handleMethodAnnotation(PUT annotation, MethodConfigBuilder builder) {
-        builder.setHttpMethod(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
     }
 
 }

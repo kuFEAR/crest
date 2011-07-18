@@ -37,8 +37,11 @@ public class DefaultValuesStub {
     public String value(
             @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
-            @CookieParam("p2") Integer p2) {
-        return String.format("value(%s) p1=%s p2=%s", stringCookie(cookies, 2), p1, p2);
+            @CookieParam("p2") Integer p2,
+            @CookieParam("p01") String p01,
+            @CookieParam("p02") String p02,
+            @CookieParam("p03") String p03) {
+        return String.format("value(%s) p1=%s p2=%s p01=%s p02=%s p03=%s", stringCookie(cookies, 5), p1, p2,  p01, p02, p03);
     }
 
     @GET
@@ -47,7 +50,10 @@ public class DefaultValuesStub {
             @HeaderParam("Cookie") List<String> cookies,
             @CookieParam("p1") String p1,
             @CookieParam("p2") String p2,
-            @CookieParam("p3") String p3) {
-        return String.format("param(%s) p1=%s p2=%s p3=%s", stringCookie(cookies, 3), p1, p2, p3);
+            @CookieParam("p3") String p3,
+            @CookieParam("p01") String p01,
+            @CookieParam("p02") String p02,
+            @CookieParam("p03") String p03) {
+        return String.format("param(%s) p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", stringCookie(cookies, -1), p1, p2, p3,  p01, p02, p03);
     }
 }

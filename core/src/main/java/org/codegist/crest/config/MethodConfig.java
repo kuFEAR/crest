@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.*;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;

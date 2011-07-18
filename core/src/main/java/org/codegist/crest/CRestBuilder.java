@@ -24,24 +24,26 @@ import org.codegist.common.collect.Maps;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
+import org.codegist.crest.config.DefaultInterfaceConfigBuilderFactory;
+import org.codegist.crest.config.InterfaceConfigBuilderFactory;
+import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
-import org.codegist.crest.io.http.*;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
-import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
+import org.codegist.crest.io.http.*;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
+import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthorization;
+import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
 import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 import org.codegist.crest.serializer.*;
 import org.codegist.crest.serializer.jackson.JacksonDeserializer;
@@ -156,7 +158,8 @@ public class CRestBuilder {
         Authorization authorization = buildAuthorization(plainChannelInitiator);
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelInitiator, authorization, deserializationManager);
 
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(crestProperties, annotationHandlerBuilder.build(), false);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(), false);
 
         putIfAbsent(crestProperties, ProxyFactory.class.getName(), proxyFactory);
         putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
@@ -276,11 +279,11 @@ public class CRestBuilder {
         return this;
     }
 
-    public <A extends Annotation> CRestBuilder bind(Class<A> annotationCls, AnnotationHandler<A> handler){
+    public <A extends Annotation> CRestBuilder bind(AnnotationHandler<A> handler, Class<A> annotationCls){
         annotationHandlerBuilder.register(handler, annotationCls);
         return this;
     }
-    public <A extends Annotation> CRestBuilder bind(Class<A> annotationCls, Class<? extends AnnotationHandler<A>> handler){
+    public <A extends Annotation> CRestBuilder bind(Class<? extends AnnotationHandler<A>> handler, Class<A> annotationCls){
         annotationHandlerBuilder.register(handler, annotationCls);
         return this;
     }

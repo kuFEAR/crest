@@ -20,10 +20,10 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.http.io.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.http.security.oauth.v1.OAuthApiV1Builder;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
 import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
 import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 
 import java.io.BufferedReader;

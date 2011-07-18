@@ -21,9 +21,6 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.MultiPartEntity;
-import org.codegist.crest.annotate.MultiPartParam;
-import org.codegist.crest.annotate.POST;
 import org.codegist.crest.request.common.EntityRequests;
 
 /**
@@ -32,9 +29,10 @@ import org.codegist.crest.request.common.EntityRequests;
 
 @EndPoint("{crest.server.end-point}")
 @Path("io/post")
-@POST
+@POST             
 public interface Posts extends EntityRequests {
 
+    @POST
     String raw();
 
     @Path("accept")

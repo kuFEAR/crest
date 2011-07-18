@@ -24,8 +24,6 @@ import org.codegist.crest.annotate.EntityWriter;
 import org.codegist.crest.annotate.XmlEntity;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 

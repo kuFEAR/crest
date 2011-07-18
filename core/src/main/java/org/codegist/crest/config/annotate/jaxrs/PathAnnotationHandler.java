@@ -20,8 +20,8 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
-import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
 import javax.ws.rs.Path;

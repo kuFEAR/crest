@@ -20,6 +20,7 @@
 
 package org.codegist.crest.server;
 
+import org.codegist.crest.server.stubs.annotate.CustomAnnotationsStub;
 import org.codegist.crest.server.stubs.deserilizations.ComplexeObjectDeserializationsStub;
 import org.codegist.crest.server.stubs.deserilizations.DeserializationsStub;
 import org.codegist.crest.server.stubs.error.ErrorHandlersStub;
@@ -133,7 +134,8 @@ public class CRestServer {
                 new DeserializationsStub(),
                 new ComplexeObjectDeserializationsStub(),
 
-                new ErrorHandlersStub()
+                new ErrorHandlersStub(),
+                new CustomAnnotationsStub()
         );
     }
 

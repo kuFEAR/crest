@@ -21,8 +21,6 @@
 package org.codegist.crest.twitter.service;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.HeaderParam;
-import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.twitter.model.User;
 
 

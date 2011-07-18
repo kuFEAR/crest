@@ -33,10 +33,12 @@ public class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> ext
     }
 
     @Override
-    public void assertParamsValue(String p11, String p12, String p2, String p3, String actual) {
-        assertEquals(format("param(cookies(count:4):[p2=%s,p1=%s,p3=%s,p1=%s]) p1=%s p2=%s p3=%s",
+    public void assertParamsValue(String p11, String p12, String p2, String p3, String p01, String p02, String p03, String actual) {
+        assertEquals(format("param(cookies(count:7):[p02=%s,p01=%s,p03=%s,p2=%s,p1=%s,p3=%s,p1=%s]) p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s",
+                p02, p01, p03,
                 p2, p11, p3, p12,
-                p12, p2, p3
+                p12, p2, p3,
+                p01, p02, p03
         ), actual);
     }
 }

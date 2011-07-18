@@ -21,9 +21,6 @@
 package org.codegist.crest.param.paths.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.PathParam;
-import org.codegist.crest.annotate.PathParams;
 import org.codegist.crest.param.paths.common.IDefaultValuesTest;
 
 /**
@@ -38,9 +35,14 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/path/default-value")
     @GET
+    @PathParam(value = "p02", defaultValue = "p02-val")
+    @PathParams({
+            @PathParam(value = "p01", defaultValue = "p01-val"),
+            @PathParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
-        @Path("value/{p1}/{p2}")
+        @Path("value/{p1}/{p2}/{p01}/{p02}/{p03}")
         String value(
                 @PathParam(value = "p1", defaultValue = "default-p1") String p1,
                 @PathParam(value = "p2", defaultValue = "123") Integer p2);
@@ -49,7 +51,7 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
         @PathParams({
                 @PathParam(value = "p3", defaultValue = "p3-val")
         })
-        @Path("param/{p1}/{p2}/{p3}")
+        @Path("param/{p1}/{p2}/{p3}/{p01}/{p02}/{p03}")
         String param(@PathParam("p1") String p1);
 
     }

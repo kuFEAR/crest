@@ -24,7 +24,6 @@ import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
 
 import static org.codegist.crest.config.ParamType.PATH;
 
@@ -35,12 +34,18 @@ class PathParamAnnotationHandler extends NoOpAnnotationHandler<PathParam> {
 
     @Override
     public void handleInterfaceAnnotation(PathParam annotation, InterfaceConfigBuilder builder) {
-        builder.addMethodsExtraPathParam(annotation.value(), annotation.defaultValue());
+        builder.startMethodsExtraParamConfig()
+                .setType(PATH)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override
     public void handleMethodAnnotation(PathParam annotation, MethodConfigBuilder builder) {
-        builder.addExtraPathParam(annotation.value(), annotation.defaultValue());
+        builder.startExtraParamConfig()
+                .setType(PATH)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override

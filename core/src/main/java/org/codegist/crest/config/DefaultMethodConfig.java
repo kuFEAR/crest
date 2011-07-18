@@ -20,10 +20,7 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.config.EntityWriter;
-import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.config.PathTemplate;
+import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;

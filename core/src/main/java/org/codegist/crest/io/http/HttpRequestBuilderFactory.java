@@ -22,7 +22,6 @@ package org.codegist.crest.io.http;
 
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.config.ParamType;
 import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.param.Param;

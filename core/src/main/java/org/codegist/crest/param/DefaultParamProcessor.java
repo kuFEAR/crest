@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.codegist.crest.util.Pairs.toPair;
-import static org.codegist.crest.util.Serializers.serialize;
 
 /**
  * @author laurent.gilles@codegist.org

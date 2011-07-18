@@ -64,11 +64,11 @@ public abstract class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultVa
     public void testDefaultValue() {
         assumeThatTestIsEnabled(DefaultValue);
         String actual = toTest.value(null, null);
-        assertDefaultValue("default-p1", 123, actual);
+        assertDefaultValue("default-p1", 123, "p01-val", "p02-val", "p03-val", actual);
     }
 
-    public void assertDefaultValue(String defaultP1, int defaultP2, String actual) {
-        assertEquals(format("value() p1=%s p2=%s", defaultP1, defaultP2), actual);
+    public void assertDefaultValue(String defaultP1, int defaultP2, String defaultP01, String defaultP02, String defaultP03, String actual) {
+        assertEquals(format("value() p1=%s p2=%s p01=%s p02=%s p03=%s", defaultP1, defaultP2, defaultP01, defaultP02, defaultP03), actual);
     }
 
     @Test
@@ -76,11 +76,11 @@ public abstract class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultVa
         assumeThatTestIsEnabled(DefaultParams);
         String p1 = "p1";
         String actual = toTest.param(p1);
-        assertParamsValue("p1-val", p1, "p2-val", "p3-val", actual);
+        assertParamsValue("p1-val", p1, "p2-val", "p3-val",  "p01-val", "p02-val", "p03-val", actual);
     }
 
-    public void assertParamsValue(String p11, String p12, String p2, String p3, String actual) {
-        assertEquals(format("param() p1=%s p2=%s p3=%s", string(p11, p12), p2, p3), actual);
+    public void assertParamsValue(String p11, String p12, String p2, String p3, String defaultP01, String defaultP02, String defaultP03, String actual) {
+        assertEquals(format("param() p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", string(p11, p12), p2, p3, defaultP01, defaultP02, defaultP03), actual);
     }
 
     /**

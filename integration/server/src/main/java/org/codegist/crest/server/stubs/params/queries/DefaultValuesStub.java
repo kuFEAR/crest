@@ -39,8 +39,11 @@ public class DefaultValuesStub {
     @Path("value")
     public String value(
             @QueryParam("p1") String p1,
-            @QueryParam("p2") Integer p2) {
-        return String.format("value() p1=%s p2=%s", p1, p2);
+            @QueryParam("p2") Integer p2,
+            @QueryParam("p01") String p01,
+            @QueryParam("p02") String p02,
+            @QueryParam("p03") String p03) {
+        return String.format("value() p1=%s p2=%s p01=%s p02=%s p03=%s", p1, p2,  p01, p02, p03);
     }
 
     @GET
@@ -48,7 +51,10 @@ public class DefaultValuesStub {
     public String param(
             @QueryParam("p1") List<String> p1,
             @QueryParam("p2") String p2,
-            @QueryParam("p3") String p3) {
-        return String.format("param() p1=%s p2=%s p3=%s", string(p1), p2, p3);
+            @QueryParam("p3") String p3,
+            @QueryParam("p01") String p01,
+            @QueryParam("p02") String p02,
+            @QueryParam("p03") String p03) {
+        return String.format("param() p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", string(p1), p2, p3,  p01, p02, p03);
     }
 }

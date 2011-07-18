@@ -20,10 +20,7 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.annotate.MultiPartParam;
-import org.codegist.crest.annotate.POST;
-import org.codegist.crest.annotate.Path;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.param.common.IBasicsTest;
 
 import java.util.EnumSet;
@@ -40,6 +37,7 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     @EndPoint("{crest.server.end-point}")
     @Path("params/multipart/basic")
     @POST
+    @MultiPartEntity
     public static interface Basics extends IBasicsTest.IBasics {
 
         String send(

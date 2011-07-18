@@ -21,7 +21,6 @@
 package org.codegist.crest.request.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.OPTIONS;
 import org.codegist.crest.request.common.Requests;
 
 /**
@@ -33,6 +32,7 @@ import org.codegist.crest.request.common.Requests;
 @OPTIONS
 public interface Options extends Requests {
 
+    @OPTIONS
     String raw();
 
     @Path("accept")

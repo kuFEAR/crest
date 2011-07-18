@@ -20,12 +20,7 @@
 
 package org.codegist.crest.param;
 
-import org.codegist.crest.CRestException;
 import org.codegist.crest.config.ParamType;
-
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author laurent.gilles@codegist.org

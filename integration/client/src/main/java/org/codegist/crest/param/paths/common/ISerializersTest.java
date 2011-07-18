@@ -21,8 +21,6 @@
 package org.codegist.crest.param.paths.common;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.serializer.BunchOfDataSerializer;

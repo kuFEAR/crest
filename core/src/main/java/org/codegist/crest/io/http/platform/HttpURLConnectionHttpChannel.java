@@ -22,9 +22,9 @@ package org.codegist.crest.io.http.platform;
 
 import org.codegist.common.io.EmptyInputStream;
 import org.codegist.common.log.Logger;
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpEntityWriter;
-import org.codegist.crest.config.MethodType;
 
 import java.io.IOException;
 import java.io.InputStream;

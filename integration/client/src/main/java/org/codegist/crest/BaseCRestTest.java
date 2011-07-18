@@ -23,10 +23,10 @@ package org.codegist.crest;
 import org.codegist.common.net.Urls;
 import org.codegist.crest.annotate.JsonEntity;
 import org.codegist.crest.annotate.XmlEntity;
-import org.codegist.crest.entity.JsonEntityWriter;
-import org.codegist.crest.entity.XmlEntityWriter;
 import org.codegist.crest.config.annotate.JsonEntityAnnotationHandler;
 import org.codegist.crest.config.annotate.XmlEntityAnnotationHandler;
+import org.codegist.crest.entity.JsonEntityWriter;
+import org.codegist.crest.entity.XmlEntityWriter;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.model.SerializerTypes;
@@ -182,8 +182,8 @@ public abstract class BaseCRestTest<T> {
         CRestBuilder builder = CRest
                     .placeholder("crest.server.end-point", TEST_SERVER + "/crest-server")
                     .setConcurrencyLevel(2)
-                    .bind(JsonEntity.class, JsonEntityAnnotationHandler.class)
-                    .bind(XmlEntity.class, XmlEntityAnnotationHandler.class)
+                    .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
+                    .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
                     .addProperties(CREST_PROPERTIES);
         if(TEST_JAXRS) {
             builder.jaxrsAware();

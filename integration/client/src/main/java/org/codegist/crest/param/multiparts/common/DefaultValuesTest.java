@@ -21,9 +21,6 @@
 package org.codegist.crest.param.multiparts.common;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.MultiPartParam;
-import org.codegist.crest.annotate.MultiPartParams;
-import org.codegist.crest.annotate.POST;
 import org.codegist.crest.param.common.IDefaultValuesTest;
 
 /**
@@ -38,6 +35,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
     @EndPoint("{crest.server.end-point}")
     @Path("params/multipart/default-value")
     @POST
+    @MultiPartParam(value = "p02", defaultValue = "p02-val")
+    @MultiPartParams({
+            @MultiPartParam(value = "p01", defaultValue = "p01-val"),
+            @MultiPartParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @Path("value")

@@ -24,7 +24,6 @@ import org.codegist.crest.serializer.Serializer;
 
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**

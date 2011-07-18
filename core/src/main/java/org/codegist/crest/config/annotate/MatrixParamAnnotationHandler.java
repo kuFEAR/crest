@@ -21,10 +21,9 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.MatrixParam;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamType;
+import org.codegist.crest.config.ParamConfigBuilder;
 
 import static org.codegist.crest.config.ParamType.MATRIX;
 
@@ -35,12 +34,18 @@ class MatrixParamAnnotationHandler extends NoOpAnnotationHandler<MatrixParam> {
 
     @Override
     public void handleInterfaceAnnotation(MatrixParam annotation, InterfaceConfigBuilder builder) {
-        builder.addMethodsExtraMatrixParam(annotation.value(), annotation.defaultValue());
+        builder.startMethodsExtraParamConfig()
+                .setType(MATRIX)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
 
     @Override
     public void handleMethodAnnotation(MatrixParam annotation, MethodConfigBuilder builder) {
-        builder.addExtraMatrixParam(annotation.value(), annotation.defaultValue());
+        builder.startExtraParamConfig()
+                .setType(MATRIX)
+                .setName(annotation.value())
+                .setDefaultValue(annotation.defaultValue());
     }
                   
     @Override

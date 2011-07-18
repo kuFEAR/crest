@@ -20,8 +20,8 @@
 
 package org.codegist.crest.param.cookies.jaxrs;
 
-import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.CookieParams;
+import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.param.cookies.common.IDefaultValuesTest;
 
 import javax.ws.rs.CookieParam;
@@ -40,6 +40,11 @@ public class DefaultValuesTest extends IDefaultValuesTest<DefaultValuesTest.Defa
 
     @EndPoint("{crest.server.end-point}")
     @Path("params/cookie/default-value")
+    @org.codegist.crest.annotate.CookieParam(value = "p02", defaultValue = "p02-val")
+    @CookieParams({
+            @org.codegist.crest.annotate.CookieParam(value = "p01", defaultValue = "p01-val"),
+            @org.codegist.crest.annotate.CookieParam(value = "p03", defaultValue = "p03-val")
+    })
     public static interface DefaultValues extends IDefaultValuesTest.IDefaultValues {
 
         @GET

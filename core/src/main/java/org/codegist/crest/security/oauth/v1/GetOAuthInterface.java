@@ -20,7 +20,9 @@
 
 package org.codegist.crest.security.oauth.v1;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.annotate.Path;
+import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.security.oauth.OAuthToken;
 
 @GET

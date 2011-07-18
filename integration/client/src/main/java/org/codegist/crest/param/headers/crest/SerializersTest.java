@@ -21,8 +21,6 @@
 package org.codegist.crest.param.headers.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.model.BunchOfData;
 import org.codegist.crest.model.Data;
 import org.codegist.crest.param.headers.common.ISerializersTest;

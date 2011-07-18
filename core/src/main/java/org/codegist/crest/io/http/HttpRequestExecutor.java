@@ -23,8 +23,8 @@ package org.codegist.crest.io.http;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
@@ -38,9 +38,8 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
-import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 import static org.codegist.crest.config.ParamType.*;
-import static org.codegist.crest.param.ParamProcessors.iterate;
+import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 import static org.codegist.crest.util.Pairs.join;
 
 /**

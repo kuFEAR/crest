@@ -23,7 +23,7 @@ package org.codegist.crest.config.annotate;
 import org.codegist.crest.annotate.MultiPartEntity;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.io.http.entity.MultiPartEntityWriter;
+import org.codegist.crest.entity.multipart.MultiPartEntityWriter;
 
 import java.lang.reflect.InvocationTargetException;
 

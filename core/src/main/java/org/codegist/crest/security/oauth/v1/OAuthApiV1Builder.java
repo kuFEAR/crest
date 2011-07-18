@@ -23,16 +23,14 @@ package org.codegist.crest.security.oauth.v1;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.crest.CRest;
 import org.codegist.crest.DefaultCRest;
-import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
-import org.codegist.crest.config.MethodType;
-import org.codegist.crest.config.InterfaceConfigFactory;
+import org.codegist.crest.config.*;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.http.HttpChannelInitiator;
 import org.codegist.crest.io.http.HttpRequestBuilderFactory;
 import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.serializer.DeserializationManager;
 import org.codegist.crest.serializer.Deserializer;
@@ -79,7 +77,8 @@ public final class OAuthApiV1Builder {
                             .defaultAs(new NoOpAnnotationHandler())
                             .register(CRestAnnotations.MAPPING).build();
 
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(props, handlers, false);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, handlers, false);
 
         Class<? extends OAuthInterface> oauthInterfaceCls = methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class;
         Registry<String, Deserializer> mimeDeserializerRegistry = new Registry.Builder<String, Deserializer>(props, Deserializer.class).build();

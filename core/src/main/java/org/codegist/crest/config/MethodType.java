@@ -20,8 +20,6 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.annotate.QueryParam;
-
 /**
  * @author laurent.gilles@codegist.org
  */
