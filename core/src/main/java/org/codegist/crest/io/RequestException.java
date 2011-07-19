@@ -42,6 +42,7 @@ public class RequestException extends Exception implements Disposable {
     public boolean hasResponse() {
         return response != null;
     }
+
     public Response getResponse() {
         return response;
     }

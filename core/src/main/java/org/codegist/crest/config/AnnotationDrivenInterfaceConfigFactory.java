@@ -28,7 +28,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import static java.lang.System.arraycopy;
+import static org.codegist.common.collect.Arrays.merge;
 
 /**
  * <p>Annotation based config factory of any possible interfaces given to the factory.
@@ -44,11 +44,9 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
 
     private final InterfaceConfigBuilderFactory icbf;
     private final Registry<Class<? extends Annotation>, AnnotationHandler> handlersRegistry;
-    private final boolean modelPriority;
 
-    public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry, boolean modelPriority) {
+    public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry) {
         this.handlersRegistry = handlersRegistry;
-        this.modelPriority = modelPriority;
         this.icbf = icbf;
     }
 
@@ -66,21 +64,15 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
                 handlersRegistry.get(methAnnotation.annotationType()).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
             }
 
-            for (int i = 0, max = meth.getParameterTypes().length; i < max; i++) {
-                Class<?> pClass = meth.getParameterTypes()[i];
-                Type pType = meth.getGenericParameterTypes()[i];
-                Class<?> realClass = Types.getComponentClass(pClass, pType);
+            Class<?>[] paramTypes = meth.getParameterTypes();
+            Type[] genParamTypes = meth.getGenericParameterTypes();
+            Annotation[][] paramAnnotations = meth.getParameterAnnotations();
+            for (int i = 0, max = paramTypes.length; i < max; i++) {
+                Type pType = genParamTypes[i];
+                Class<?> pClass = Types.getComponentClass(paramTypes[i], pType);
+                Annotation[] annotations = merge(Annotation.class, pClass.getAnnotations(), paramAnnotations[i]);
+
                 ParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
-
-                Annotation[] typeAnnotations = realClass.getAnnotations();
-                Annotation[] paramAnnotations = meth.getParameterAnnotations()[i];
-                Annotation[] highAnnotations = modelPriority ?  typeAnnotations : paramAnnotations;
-                Annotation[] lowAnnotations = modelPriority ?  paramAnnotations : typeAnnotations;
-                Annotation[] annotations = new Annotation[lowAnnotations.length + highAnnotations.length];
-
-                arraycopy(lowAnnotations, 0, annotations, 0, lowAnnotations.length);
-                arraycopy(highAnnotations, 0, annotations, lowAnnotations.length, highAnnotations.length);
-
                 for(Annotation paramAnnotation : annotations){
                     handlersRegistry.get(paramAnnotation.annotationType()).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
                 }

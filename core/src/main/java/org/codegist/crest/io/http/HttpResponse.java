@@ -55,10 +55,6 @@ public class HttpResponse implements Response, Disposable {
         this.inputStream = new HttpResourceInputStream(resource);
     }
 
-    public InputStream asStream() {
-        return inputStream;
-    }
-
     public int getStatusCode() throws IOException {
         return resource.getStatusCode();
     }
@@ -98,7 +94,7 @@ public class HttpResponse implements Response, Disposable {
             return deserializationManager.deserializeByDeserializers(
                     (Class<T>) getExpectedType(),
                     getExpectedGenericType(),
-                    asStream(),
+                    inputStream,
                     getCharset(),
                     deserializers
             );
@@ -107,7 +103,7 @@ public class HttpResponse implements Response, Disposable {
             return deserializationManager.deserializeByMimeType(
                     (Class<T>) getExpectedType(),
                     getExpectedGenericType(),
-                    asStream(),
+                    inputStream,
                     getCharset(),
                     getContentType()
             );
@@ -116,7 +112,7 @@ public class HttpResponse implements Response, Disposable {
             return deserializationManager.deserializeByClassType(
                     (Class<T>) getExpectedType(),
                     getExpectedGenericType(),
-                    asStream(),
+                    inputStream,
                     getCharset()
             );
         } else {
@@ -124,23 +120,23 @@ public class HttpResponse implements Response, Disposable {
         }
     }
 
-    public <T> T deserializeTo(Class<T> type) throws Exception {
-        return deserializeTo(type, type);
+    public <T> T to(Class<T> type) throws Exception {
+        return to(type, type);
     }
 
-    public <T> T deserializeTo(Class<T> type, Type genericType) throws Exception {
+    public <T> T to(Class<T> type, Type genericType) throws Exception {
         if(deserializationManager.isClassTypeKnown(type)){
             return deserializationManager.deserializeByClassType(
                     type,
                     genericType,
-                    asStream(),
+                    inputStream,
                     getCharset()
             );
         }else{
             return deserializationManager.deserializeByMimeType(
                     type,
                     genericType,
-                    asStream(),
+                    inputStream,
                     getCharset(),
                     getContentType()
             );

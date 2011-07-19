@@ -45,7 +45,7 @@ public final class ComponentFactory {
 
     private static <T> Constructor<? extends T> accessible(final Constructor<? extends T> constructor){
         if(!isPublic(constructor.getModifiers()) || !isPublic(constructor.getDeclaringClass().getModifiers())) {
-             AccessController.doPrivileged(new MakeAccessible(constructor));
+            AccessController.doPrivileged(new MakeAccessible(constructor));
         }
         return constructor;
     }

@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("io/put")
+@Path("request/put")
 public interface Puts extends EntityRequests {
 
     @PUT

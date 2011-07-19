@@ -18,18 +18,19 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config;
+package org.codegist.crest.io.http;
 
-import org.codegist.crest.io.Request;
+import org.codegist.crest.config.MethodType;
 
-import java.io.OutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
+/**
+ * @author laurent.gilles@codegist.org
+ */
 
-public interface EntityWriter {
+public interface HttpChannelFactory {
 
-    void writeTo(Request request, OutputStream outputStream) throws Exception;
+    HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException;
 
-    String getContentType(Request request);
-
-    int getContentLength(Request request);
 }

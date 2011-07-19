@@ -33,7 +33,7 @@ import javax.ws.rs.Produces;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("io/option")
+@Path("request/option")
 public interface Options extends Requests {
 
     @OPTIONS

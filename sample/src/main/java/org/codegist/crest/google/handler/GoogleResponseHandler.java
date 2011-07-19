@@ -33,7 +33,7 @@ public class GoogleResponseHandler implements ResponseHandler {
 
     public final Object handle(org.codegist.crest.io.Response context) throws Exception {
         /* Marshall the response */
-        Response res = context.deserializeTo(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
+        Response res = context.to(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
         /* Check for google OK status */
         if (res.status == 200) {
             return res.data; /* Returns the nested payload */

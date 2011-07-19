@@ -34,10 +34,10 @@ public class JaxbSomeDatasResponseHandler implements ResponseHandler {
     public Object handle(Response response) throws Exception {
 
         if(response.getExpectedType().isArray() && response.getExpectedType().getComponentType().equals(JaxbSomeData.class)){
-            JaxbSomeDatas datas = response.deserializeTo(JaxbSomeDatas.class);
+            JaxbSomeDatas datas = response.to(JaxbSomeDatas.class);
             return datas.getSomeData().toArray(new JaxbSomeData[datas.getSomeData().size()]);
         }else if (Collection.class.isAssignableFrom(response.getExpectedType()) && Types.getComponentClass(response.getExpectedType(), response.getExpectedGenericType()).equals(JaxbSomeData.class)){
-            JaxbSomeDatas datas = response.deserializeTo(JaxbSomeDatas.class);
+            JaxbSomeDatas datas = response.to(JaxbSomeDatas.class);
             return datas.getSomeData();
         }else{
             throw new IllegalStateException("Should not be here");

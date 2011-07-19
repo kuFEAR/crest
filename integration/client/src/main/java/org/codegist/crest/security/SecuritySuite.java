@@ -18,29 +18,17 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.request.crest;
+package org.codegist.crest.security;
 
-import org.codegist.crest.annotate.*;
-import org.codegist.crest.request.common.Requests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-
-@EndPoint("{crest.server.end-point}")
-@Path("request/option")
-@OPTIONS
-public interface Options extends Requests {
-
-    @OPTIONS
-    String raw();
-
-    @Path("accept")
-    @Consumes({"application/custom1", "application/custom2"})
-    String accept();
-
-    @Path("content-type")
-    @Produces("application/custom")
-    String contentType();
-
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        OAuthsTest.class
+})
+public class SecuritySuite {
 }

@@ -21,12 +21,7 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
-import org.codegist.crest.annotate.AnnotatesSuite;
-import org.codegist.crest.interceptor.InterceptorsTest;
-import org.codegist.crest.param.ParamsBaseSuite;
-import org.codegist.crest.param.ParamsCRestSuite;
-import org.codegist.crest.param.ParamsJaxRsSuite;
-import org.codegist.crest.param.paths.jaxrs.DefaultValuesTest;
+import org.codegist.crest.security.SecuritySuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

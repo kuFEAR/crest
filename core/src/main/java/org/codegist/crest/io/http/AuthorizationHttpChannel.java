@@ -48,8 +48,8 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private final String url;
     private final Charset charset;
     private final MethodType methodType;
-    private String contentType = "";
-    private String fullContentType = "";
+    private String contentType = null;
+    private String fullContentType = null;
     private HttpEntityWriter httpEntityWriter = null;
 
     public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, MethodType methodType, String url, Charset charset, Map<String, EntityParamExtractor> httpEntityParamExtrator) throws UnsupportedEncodingException {

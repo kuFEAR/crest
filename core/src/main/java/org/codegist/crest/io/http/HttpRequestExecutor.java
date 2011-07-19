@@ -48,11 +48,11 @@ import static org.codegist.crest.util.Pairs.join;
 public class HttpRequestExecutor implements RequestExecutor, Disposable {
 
     private static final Logger LOGGER = Logger.getLogger(HttpRequestExecutor.class);
-    private final HttpChannelInitiator channelInitiator;
+    private final HttpChannelFactory channelFactory;
     private final DeserializationManager deserializationManager;
 
-    public HttpRequestExecutor(HttpChannelInitiator channelInitiator, DeserializationManager deserializationManager) {
-        this.channelInitiator = channelInitiator;
+    public HttpRequestExecutor(HttpChannelFactory channelFactory, DeserializationManager deserializationManager) {
+        this.channelFactory = channelFactory;
         this.deserializationManager = deserializationManager;
     }
 
@@ -77,7 +77,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         LOGGER.debug("Initiating HTTP Channel: %s %s", mc.getType(), url);
         LOGGER.trace(request);
         MethodType methodType = mc.getType();
-        HttpChannel httpChannel = channelInitiator.initiate(methodType, url, charset);
+        HttpChannel httpChannel = channelFactory.open(methodType, url, charset);
 
         int coTimeout = mc.getConnectionTimeout();
         LOGGER.debug("Set Connection Timeout: %d ", coTimeout);
@@ -158,6 +158,6 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     }
 
     public void dispose() {
-        Disposables.dispose(channelInitiator);
+        Disposables.dispose(channelFactory);
     }
 }

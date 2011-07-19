@@ -36,10 +36,11 @@ import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.*;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelInitiator;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelInitiator;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
+import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
+import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
 import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.OAuthorization;
@@ -140,7 +141,7 @@ public class CRestBuilder {
     private Class<? extends Deserializer> xmlDeserializer = JaxbDeserializer.class;
     private Class<? extends Deserializer> jsonDeserializer = JacksonDeserializer.class;
     private boolean useHttpClient = false;
-    private HttpChannelInitiator httpChannelInitiator;
+    private HttpChannelFactory httpChannelFactory;
     private String auth;
     private String username;
     private String password;
@@ -154,12 +155,12 @@ public class CRestBuilder {
 
         DeserializationManager deserializationManager = new DeserializationManager(mimeDeserializerRegistry, classDeserializerRegistry);
 
-        HttpChannelInitiator plainChannelInitiator = buildHttpChannelInitiator();
-        Authorization authorization = buildAuthorization(plainChannelInitiator);
-        RequestExecutor requestExecutor = buildRequestExecutor(plainChannelInitiator, authorization, deserializationManager);
+        HttpChannelFactory plainChannelFactory = buildHttpChannelInitiator();
+        Authorization authorization = buildAuthorization(plainChannelFactory);
+        RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, deserializationManager);
 
         InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(), false);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build());
 
         putIfAbsent(crestProperties, ProxyFactory.class.getName(), proxyFactory);
         putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
@@ -174,24 +175,24 @@ public class CRestBuilder {
         return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
-    private HttpChannelInitiator buildHttpChannelInitiator() {
-        if (httpChannelInitiator == null) {
+    private HttpChannelFactory buildHttpChannelInitiator() {
+        if (httpChannelFactory == null) {
             if (useHttpClient) {
-                return HttpClientHttpChannelInitiator.newHttpChannelInitiator(crestProperties);
+                return HttpClientHttpChannelFactory.newHttpChannelInitiator(crestProperties);
             } else {
-                return new HttpURLConnectionHttpChannelInitiator();
+                return new HttpURLConnectionHttpChannelFactory();
             }
         } else {
-            return httpChannelInitiator;
+            return httpChannelFactory;
         }
     }
 
-    private RequestExecutor buildRequestExecutor(HttpChannelInitiator plainChannelInitiator, Authorization authorization, DeserializationManager deserializationManager){
-        HttpChannelInitiator channelInitiator = plainChannelInitiator;
+    private RequestExecutor buildRequestExecutor(HttpChannelFactory plainChannelFactory, Authorization authorization, DeserializationManager deserializationManager){
+        HttpChannelFactory channelFactory = plainChannelFactory;
         if(authorization != null) {
-            channelInitiator = new AuthorizationHttpChannelInitiator(plainChannelInitiator, authorization, httpEntityParamExtrators);
+            channelFactory = new AuthorizationHttpChannelFactory(plainChannelFactory, authorization, httpEntityParamExtrators);
         }
-        return new RetryingRequestExecutor(new HttpRequestExecutor(channelInitiator, deserializationManager));
+        return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, deserializationManager));
     }
 
     private Registry<String,Deserializer> buildDeserializerRegistry() {
@@ -201,9 +202,9 @@ public class CRestBuilder {
         return mimeDeserializerBuilder.build();
     }
 
-    private Authorization buildAuthorization(HttpChannelInitiator channelInitiator) {
+    private Authorization buildAuthorization(HttpChannelFactory channelFactory) {
         if("oauth".equals(auth)) {
-            return buildOAuthorization(channelInitiator);
+            return buildOAuthorization(channelFactory);
         }else if("basic".equals(auth)) {
             return buildBasicAuthorization();
         }else{
@@ -219,23 +220,23 @@ public class CRestBuilder {
         }
     }
 
-    private Authorization buildOAuthorization(HttpChannelInitiator channelInitiator) {
-        OAuthenticatorV1 authenticator = null;
+    private Authorization buildOAuthorization(HttpChannelFactory channelFactory) {
+        OAuthenticatorV1 authenticator ;
         try {
             authenticator = new OAuthenticatorV1(consumerOAuthToken);
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
-        OAuthApi oAuthApi = buildOAuthApi(channelInitiator, authenticator);
+        OAuthApi oAuthApi = buildOAuthApi(channelFactory, authenticator);
         return new OAuthorization(accessOAuthToken, authenticator, oAuthApi);
     }
 
-    private OAuthApi buildOAuthApi(HttpChannelInitiator channelInitiator, OAuthenticatorV1 authenticator) {
+    private OAuthApi buildOAuthApi(HttpChannelFactory channelFactory, OAuthenticatorV1 authenticator) {
         if(!crestProperties.containsKey(CONFIG_TOKEN_ACCESS_REFRESH_URL)) {
             return null;
         }
         try {
-            return OAuthApiV1Builder.build(channelInitiator, crestProperties, authenticator);
+            return OAuthApiV1Builder.build(channelFactory, crestProperties, authenticator);
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
@@ -309,8 +310,8 @@ public class CRestBuilder {
         return this;
     }
 
-    public CRestBuilder setHttpChannelInitiator(HttpChannelInitiator httpChannelInitiator) {
-        this.httpChannelInitiator = httpChannelInitiator;
+    public CRestBuilder setHttpChannelFactory(HttpChannelFactory httpChannelFactory) {
+        this.httpChannelFactory = httpChannelFactory;
         return this;
     }
 
@@ -394,7 +395,9 @@ public class CRestBuilder {
         }
         if(accessTokenRefreshUrl != null) {
             setProperty(CONFIG_TOKEN_ACCESS_REFRESH_URL, accessTokenRefreshUrl);
+            setProperty(METHOD_CONFIG_DEFAULT_RETRY_HANDLER, RefreshAuthorizationRetryHandler.class);
         }
+
         this.consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);
         return this;
     }

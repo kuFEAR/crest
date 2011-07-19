@@ -28,7 +28,7 @@ import org.codegist.crest.request.common.EntityRequests;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("io/put")
+@Path("request/put")
 @PUT
 public interface Puts extends EntityRequests {
 

@@ -21,7 +21,6 @@
 package org.codegist.crest.request.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.CRestBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,15 +32,6 @@ public abstract class CommonRequestsTest<T extends Requests> extends BaseCRestTe
 
     public CommonRequestsTest(CRestHolder crest, Class<T> service) {
         super(crest, service);
-    }
-
-
-    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
-        return arrify(forEachBaseBuilder(new Builder() {
-            public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2").build());
-            }
-        }));
     }
 
 

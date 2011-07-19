@@ -22,7 +22,6 @@ package org.codegist.crest.annotate;
 
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestBuilder;
-import org.codegist.crest.serializer.CommaSeparatedIntDeserializer;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 

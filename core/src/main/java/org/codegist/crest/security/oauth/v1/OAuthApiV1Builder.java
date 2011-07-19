@@ -28,7 +28,7 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.io.RequestExecutor;
-import org.codegist.crest.io.http.HttpChannelInitiator;
+import org.codegist.crest.io.http.HttpChannelFactory;
 import org.codegist.crest.io.http.HttpRequestBuilderFactory;
 import org.codegist.crest.io.http.HttpRequestExecutor;
 import org.codegist.crest.security.oauth.OAuthToken;
@@ -58,7 +58,7 @@ public final class OAuthApiV1Builder {
         throw new IllegalStateException();
     }
 
-    public static OAuthApiV1 build(HttpChannelInitiator channelInitiator, Map<String, Object> crestProperties, OAuthenticatorV1 oAuthenticatorV1) throws Exception {
+    public static OAuthApiV1 build(HttpChannelFactory channelFactory, Map<String, Object> crestProperties, OAuthenticatorV1 oAuthenticatorV1) throws Exception {
         MethodType methodType = MethodType.valueOf(get(crestProperties, CONFIG_OAUTH_METHOD, POST.name()));
         String requestTokenUrl = get(crestProperties, CONFIG_TOKEN_REQUEST_URL, "");
         String accessTokenUrl = get(crestProperties, CONFIG_TOKEN_ACCESS_URL, "");
@@ -77,14 +77,14 @@ public final class OAuthApiV1Builder {
                             .defaultAs(new NoOpAnnotationHandler())
                             .register(CRestAnnotations.MAPPING).build();
 
-        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, handlers, false);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(props);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, handlers);
 
         Class<? extends OAuthInterface> oauthInterfaceCls = methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class;
         Registry<String, Deserializer> mimeDeserializerRegistry = new Registry.Builder<String, Deserializer>(props, Deserializer.class).build();
         Registry<Class<?>, Deserializer> classDeserializerRegistry = new Registry.Builder<Class<?>, Deserializer>(props, Deserializer.class).register(TokenDeserializer.class, OAuthToken.class).build();
 
-        RequestExecutor requestExecutor = new HttpRequestExecutor(channelInitiator, new DeserializationManager(mimeDeserializerRegistry, classDeserializerRegistry));
+        RequestExecutor requestExecutor = new HttpRequestExecutor(channelFactory, new DeserializationManager(mimeDeserializerRegistry, classDeserializerRegistry));
 
         CRest crest = new DefaultCRest(new JdkProxyFactory(), requestExecutor, new HttpRequestBuilderFactory(), configFactory);
         OAuthInterface oauthInterface = crest.build(oauthInterfaceCls);

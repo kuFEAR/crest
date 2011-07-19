@@ -22,7 +22,7 @@ package org.codegist.crest.io.http.platform;
 
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpChannelInitiator;
+import org.codegist.crest.io.http.HttpChannelFactory;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -32,9 +32,9 @@ import java.nio.charset.Charset;
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
 */
-public final class HttpURLConnectionHttpChannelInitiator implements HttpChannelInitiator {
+public final class HttpURLConnectionHttpChannelFactory implements HttpChannelFactory {
 
-    public HttpChannel initiate(MethodType methodType, String url, Charset charset) throws IOException {
+    public HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException {
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod(methodType.name());
         return new HttpURLConnectionHttpChannel(con, methodType);

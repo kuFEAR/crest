@@ -1,6 +1,5 @@
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.Validate;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.param.ParamProcessor;

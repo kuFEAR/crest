@@ -36,7 +36,7 @@ public class DeliciousResponseHandler implements ResponseHandler {
     public Object handle(Response response) throws Exception {
         Type expectedType = response.getExpectedGenericType();
         if(response.getExpectedType().isPrimitive()) {
-            Result result = response.deserializeTo(Result.class);
+            Result result = response.to(Result.class);
             // Delicious Result response format is not consistent
             boolean done =
                     "done".equalsIgnoreCase(result.getCode())

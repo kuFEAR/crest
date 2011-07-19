@@ -23,7 +23,6 @@ package org.codegist.crest.annotate;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.ParamType;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 
 import static org.codegist.crest.config.ParamType.QUERY;

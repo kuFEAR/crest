@@ -57,7 +57,7 @@ public abstract class BaseCRestTest<T> {
     public static final String DATE_FORMAT = "dd/MM/yyyy @ HH:mm:ssZ";
     public static final String ENCODING = "UTF-8";
 
-    private static final String TEST_SERVER = System.getProperty("crest.server.end-point", "http://localhost:8080");
+    public static final String TEST_SERVER = System.getProperty("crest.server.end-point", "http://localhost:8080") + "/crest-server";
     private static final boolean TEST_JAXB = Boolean.valueOf(System.getProperty("crest.test.jaxb", "true"));
     private static final boolean TEST_JAXRS = Boolean.valueOf(System.getProperty("crest.test.jaxrs", "true"));
     private static final String TEST_TMP_DIR = System.getProperty("crest.test.tmp-dir", null);
@@ -180,7 +180,7 @@ public abstract class BaseCRestTest<T> {
     // this represent the real root builder shared by all tests
     protected static CRestBuilder baseBuilder() {
         CRestBuilder builder = CRest
-                    .placeholder("crest.server.end-point", TEST_SERVER + "/crest-server")
+                    .placeholder("crest.server.end-point", TEST_SERVER)
                     .setConcurrencyLevel(2)
                     .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
@@ -211,7 +211,7 @@ public abstract class BaseCRestTest<T> {
     private static CRestBuilder[] baseBuilders() {
         return new CRestBuilder[] {
                 baseBuilder(),
-                baseBuilder().oauth( "ConsumerKey","ConsumerSecret","AccessToken","AccessTokenSecret"),
+                baseBuilder().oauth("ConsumerKey","ConsumerSecret","AccessToken","AccessTokenSecret"),
                 baseBuilder().basicAuth("My UserName", "My password")
         };
     }
@@ -285,6 +285,26 @@ public abstract class BaseCRestTest<T> {
                 return new CRestHolder(builder.useHttpClient().build());
             }
         }));
+        return arrify(holders);
+    }
+
+    public static CRestHolder[] byRestServicesAndCustomContentTypes() {
+        List<CRestHolder> holders = new ArrayList<CRestHolder>();
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder
+                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
+                        .build());
+            }
+        }));
+        holders.addAll(forEachBaseBuilder(new Builder() {
+            public CRestHolder build(CRestBuilder builder) {
+                return new CRestHolder(builder
+                        .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
+                        .useHttpClient().build());
+            }
+        }));
+
         return arrify(holders);
     }
 

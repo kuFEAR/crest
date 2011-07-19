@@ -27,7 +27,7 @@ import org.codegist.crest.annotate.*;
  */
 
 @EndPoint("{crest.server.end-point}")
-@Path("io/head")
+@Path("request/head")
 @HEAD
 public interface Heads {
 

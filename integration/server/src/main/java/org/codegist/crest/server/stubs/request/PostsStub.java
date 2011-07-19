@@ -33,7 +33,7 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("io/post")
+@Path("request/post")
 public class PostsStub {
 
     @POST

@@ -40,7 +40,7 @@ import org.codegist.common.lang.Disposable;
 import org.codegist.crest.CRestProperty;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpChannelInitiator;
+import org.codegist.crest.io.http.HttpChannelFactory;
 
 import java.net.ProxySelector;
 import java.nio.charset.Charset;
@@ -50,17 +50,17 @@ import java.util.Map;
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
 */
-public final class HttpClientHttpChannelInitiator implements HttpChannelInitiator, Disposable {
+public final class HttpClientHttpChannelFactory implements HttpChannelFactory, Disposable {
 
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
     private final HttpClient client;
 
-    private HttpClientHttpChannelInitiator(HttpClient client) {
+    private HttpClientHttpChannelFactory(HttpClient client) {
         this.client = client;
     }
 
-    public HttpChannel initiate(MethodType methodType, String url, Charset charset) {
+    public HttpChannel open(MethodType methodType, String url, Charset charset) {
         HttpUriRequest request;
         switch(methodType) {
             case GET:
@@ -87,16 +87,16 @@ public final class HttpClientHttpChannelInitiator implements HttpChannelInitiato
         return new HttpClientHttpChannel(client, request);
     }
 
-    public static HttpChannelInitiator newHttpChannelInitiator() {
+    public static HttpChannelFactory newHttpChannelInitiator() {
         return newHttpChannelInitiator(Collections.<String, Object>emptyMap());
     }
     
-    public static HttpChannelInitiator newHttpChannelInitiator(Map<String, Object> crestProperties) {
+    public static HttpChannelFactory newHttpChannelInitiator(Map<String, Object> crestProperties) {
         int concurrencyLevel = CRestProperty.getConcurrencyLevel(crestProperties);
         return newHttpChannelInitiator(concurrencyLevel, concurrencyLevel);
     }
 
-    public static HttpChannelInitiator newHttpChannelInitiator(int maxConcurrentConnection, int maxConnectionPerRoute) {
+    public static HttpChannelFactory newHttpChannelInitiator(int maxConcurrentConnection, int maxConnectionPerRoute) {
         DefaultHttpClient httpClient;
         if (maxConcurrentConnection > 1 || maxConnectionPerRoute > 1) {
             HttpParams params = new BasicHttpParams();
@@ -121,7 +121,7 @@ public final class HttpClientHttpChannelInitiator implements HttpChannelInitiato
         }
 
         httpClient.setRoutePlanner(new ProxySelectorRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry(), ProxySelector.getDefault()));
-        return new HttpClientHttpChannelInitiator(httpClient);
+        return new HttpClientHttpChannelFactory(httpClient);
     }
 
     public void dispose() {

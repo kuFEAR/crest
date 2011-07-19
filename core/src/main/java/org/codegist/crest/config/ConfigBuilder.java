@@ -37,6 +37,7 @@ import static org.codegist.crest.CRestProperty.get;
 import static org.codegist.crest.CRestProperty.getPlaceholders;
 
 /**
+ * // TODO things are a bit messy here, refactor it!
  * Handy builders for {@link DefaultInterfaceConfig}.
  * <p>Support auto empty/null ignore and defaults methods and params values at respectively interface and method levels.
  *
@@ -89,9 +90,13 @@ abstract class ConfigBuilder {
     }
     protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def)  {
         if(value == null) {
-            T prop = CRestProperty.<T>get(crestProperties, defProp);
+            Object prop = CRestProperty.get(crestProperties, defProp);
             if(prop != null) {
-                return prop;
+                if(prop instanceof Class) {
+                    return newInstance((Class<T>)prop);
+                }else{
+                    return (T) prop;
+                }
             }else{
                 return newInstance(def);
             }

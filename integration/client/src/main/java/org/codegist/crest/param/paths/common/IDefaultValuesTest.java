@@ -23,7 +23,6 @@ package org.codegist.crest.param.paths.common;
 import org.codegist.crest.annotate.*;
 
 import static java.lang.String.format;
-import static org.codegist.crest.utils.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 
 /**

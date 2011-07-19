@@ -22,6 +22,7 @@ package org.codegist.crest.io;
 
 import org.codegist.common.lang.Disposable;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
@@ -50,8 +51,8 @@ public interface Response extends Disposable {
 
     <T> T deserialize() throws Exception;
 
-    <T> T deserializeTo(Class<T> type) throws Exception;
+    <T> T to(Class<T> type) throws Exception;
 
-    <T> T deserializeTo(Class<T> type, Type genericType) throws Exception;
+    <T> T to(Class<T> type, Type genericType) throws Exception;
 
 }

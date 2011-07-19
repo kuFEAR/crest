@@ -21,16 +21,28 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.crest.config.MethodType;
+import org.codegist.crest.security.Authorization;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
  */
+public class AuthorizationHttpChannelFactory implements HttpChannelFactory {
 
-public interface HttpChannelInitiator {
+    private final HttpChannelFactory delegate;
+    private final Authorization authorization;
+    private final Map<String, EntityParamExtractor> httpEntityParamsParsers;
 
-    HttpChannel initiate(MethodType methodType, String url, Charset charset) throws IOException;
+    public AuthorizationHttpChannelFactory(HttpChannelFactory delegate, Authorization authorization, Map<String, EntityParamExtractor> httpEntityParamsParsers) {
+        this.delegate = delegate;
+        this.authorization = authorization;
+        this.httpEntityParamsParsers = httpEntityParamsParsers;
+    }
 
+    public HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException {
+        return new AuthorizationHttpChannel(delegate.open(methodType, url, charset), authorization, methodType, url, charset, httpEntityParamsParsers);
+    }
 }

@@ -30,7 +30,7 @@ import static java.lang.String.format;
  */
 
 @Produces("text/html;charset=UTF-8")
-@Path("io/head")
+@Path("request/head")
 public class HeadsStub {
 
     private String lastRequest;

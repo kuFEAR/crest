@@ -25,6 +25,7 @@ import org.codegist.crest.server.stubs.deserilizations.ComplexeObjectDeserializa
 import org.codegist.crest.server.stubs.deserilizations.DeserializationsStub;
 import org.codegist.crest.server.stubs.error.ErrorHandlersStub;
 import org.codegist.crest.server.stubs.request.*;
+import org.codegist.crest.server.stubs.security.OAuthsStub;
 
 import java.io.IOException;
 
@@ -135,7 +136,8 @@ public class CRestServer {
                 new ComplexeObjectDeserializationsStub(),
 
                 new ErrorHandlersStub(),
-                new CustomAnnotationsStub()
+                new CustomAnnotationsStub(),
+                new OAuthsStub()
         );
     }
 

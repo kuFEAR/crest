@@ -30,11 +30,13 @@ import org.codegist.crest.param.ParamsCRestSuite;
 import org.codegist.crest.param.ParamsJaxRsSuite;
 import org.codegist.crest.request.RequestsCRestSuite;
 import org.codegist.crest.request.RequestsJaxRsSuite;
+import org.codegist.crest.security.SecuritySuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        SecuritySuite.class,
         AnnotatesSuite.class,
         InterceptorsSuite.class,
         ParamsBaseSuite.class,
