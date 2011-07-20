@@ -124,9 +124,9 @@ public final class CRestProperty {
 
     public static final String METHOD_CONFIG_DEFAULT_HTTP_METHOD = MC + "#http-method";
 
-    public static final String METHOD_CONFIG_DEFAULT_CONTENT_TYPE = MC + "#content-type";
+    public static final String METHOD_CONFIG_DEFAULT_PRODUCES = MC + "#produces";
 
-    public static final String METHOD_CONFIG_DEFAULT_ACCEPT = MC + "#accept";
+    public static final String METHOD_CONFIG_DEFAULT_CONSUMES = MC + "#consumes";
 
     public static final String METHOD_CONFIG_DEFAULT_EXTRA_PARAMS = MC + "#extra-params";
 

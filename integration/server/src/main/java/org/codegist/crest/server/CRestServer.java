@@ -23,9 +23,11 @@ package org.codegist.crest.server;
 import org.codegist.crest.server.stubs.annotate.CustomAnnotationsStub;
 import org.codegist.crest.server.stubs.deserilizations.ComplexeObjectDeserializationsStub;
 import org.codegist.crest.server.stubs.deserilizations.DeserializationsStub;
-import org.codegist.crest.server.stubs.error.ErrorHandlersStub;
+import org.codegist.crest.server.stubs.handler.ErrorHandlersStub;
+import org.codegist.crest.server.stubs.handler.RetryHandlersStub;
 import org.codegist.crest.server.stubs.request.*;
 import org.codegist.crest.server.stubs.security.OAuthsStub;
+import org.codegist.crest.server.stubs.timeout.TimeoutsStub;
 
 import java.io.IOException;
 
@@ -136,6 +138,8 @@ public class CRestServer {
                 new ComplexeObjectDeserializationsStub(),
 
                 new ErrorHandlersStub(),
+                new RetryHandlersStub(),
+                new TimeoutsStub(),
                 new CustomAnnotationsStub(),
                 new OAuthsStub()
         );

@@ -23,6 +23,7 @@ package org.codegist.crest.io.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -75,23 +76,27 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
     private static final class ContentType {
 
+        public static final Pattern SEMICOLON = Pattern.compile(";");
+        public static final Pattern EQUAL = Pattern.compile("=");
         private static final String DEFAULT_MIME_TYPE = "text/html";
         private static final Charset DEFAULT_CHARSET = Charset.forName("ISO-8859-1");
 
         private final String mimeType;
         private final Charset charset;
 
+
+
         private ContentType(String contentType) {
             String pMimeType = DEFAULT_MIME_TYPE;
             Charset pCharset = DEFAULT_CHARSET;
             if(contentType != null) {
-                String[] contentTypes = contentType.split(";");
+                String[] contentTypes = SEMICOLON.split(contentType);
 
                 if (contentTypes.length >= 1) {
                     pMimeType = contentTypes[0];
                 }
                 if (contentTypes.length >= 2 && contentTypes[1].contains("charset")) {
-                    pCharset = Charset.forName(contentTypes[1].split("=")[1]);
+                    pCharset = Charset.forName(EQUAL.split(contentTypes[1])[1]);
                 }
             }
             this.mimeType = pMimeType;

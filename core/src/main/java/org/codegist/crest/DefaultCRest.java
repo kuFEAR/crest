@@ -43,7 +43,7 @@ import java.lang.reflect.Method;
  * <p>- {@link org.codegist.crest.handler.ErrorHandler} to customize how the created interface behaves when any error occurs during the method call process.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class DefaultCRest extends CRest implements Disposable {
+class DefaultCRest extends CRest {
 
     private final ProxyFactory proxyFactory;
     private final RequestExecutor requestExecutor;
@@ -94,9 +94,5 @@ public class DefaultCRest extends CRest implements Disposable {
                 }
             }
         }
-    }
-
-    public void dispose() {
-        Disposables.dispose(proxyFactory, requestExecutor, configFactory);
     }
 }

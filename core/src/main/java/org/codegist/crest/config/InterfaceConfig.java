@@ -23,16 +23,6 @@ package org.codegist.crest.config;
 import java.lang.reflect.Method;
 
 /**
- * Interface configuration holder object.
- * <p>Implementors must respect the following contract :
- * <p>- No method return null except for the ones documented or when used as an override template (see {@link Configs#override(InterfaceConfig, InterfaceConfig)})
- * <p>- Defaults values must either be taken from interface's defaults constant or from {@link org.codegist.crest.InterfaceContext#getProperties()}'s defaults overrides.
- * <p>- Every methods in the interface must have it's respective {@link MethodConfig} configured.
- * <p>- Every arguments of every methods in the interface must have it's respective {@link MethodParamConfig} configured in its respective {@link MethodConfig} object.
- *
- * @see org.codegist.crest.config.MethodConfig
- * @see MethodParamConfig
- * @see org.codegist.crest.config.InterfaceConfigFactory
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface InterfaceConfig {

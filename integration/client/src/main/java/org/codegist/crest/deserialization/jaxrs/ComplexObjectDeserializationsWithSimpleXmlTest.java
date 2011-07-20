@@ -25,8 +25,8 @@ import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.ResponseHandler;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
-import org.codegist.crest.handler.SimpleXmlSomeDatasResponseHandler;
-import org.codegist.crest.model.simplexml.SimpleXmlSomeData;
+import org.codegist.crest.util.SimpleXmlSomeDatasResponseHandler;
+import org.codegist.crest.util.model.simplexml.SimpleXmlSomeData;
 import org.junit.runners.Parameterized;
 
 import javax.ws.rs.GET;

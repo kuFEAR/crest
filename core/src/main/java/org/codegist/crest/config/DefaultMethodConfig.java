@@ -36,13 +36,11 @@ import java.nio.charset.Charset;
  */
 class DefaultMethodConfig implements MethodConfig {
 
-    private static final ParamConfig[] EMPTY_PARAM_CONFIGS = new ParamConfig[0];
-    private static final Deserializer[] EMPTY_DESERIALIZERS = new Deserializer[0];
     private final Charset charset;
     private final Method method;
     private final PathTemplate path;
-    private final String contentType;
-    private final String accept;
+    private final String produces;
+    private final String[] consumes;
     private final MethodType type;
     private final int socketTimeout;
     private final int connectionTimeout;
@@ -55,12 +53,12 @@ class DefaultMethodConfig implements MethodConfig {
     private final ParamConfig[] extraParams;
     private final ParamConfig[] methodParamConfigs;
 
-    DefaultMethodConfig(Charset charset, Method method, PathTemplate path, String contentType, String accept, MethodType type, int socketTimeout, int connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
+    DefaultMethodConfig(Charset charset, Method method, PathTemplate path, String produces, String[] consumes, MethodType type, int socketTimeout, int connectionTimeout, EntityWriter entityWriter, RequestInterceptor requestInterceptor, ResponseHandler responseHandler, ErrorHandler errorHandler, RetryHandler retryHandler, Deserializer[] deserializers, ParamConfig[] methodParamConfigs, ParamConfig[] extraParams) {
         this.charset = charset;
         this.method = method;
         this.path = path;
-        this.contentType = contentType;
-        this.accept = accept;
+        this.produces = produces;
+        this.consumes = consumes.clone();
         this.type = type;
         this.socketTimeout = socketTimeout;
         this.connectionTimeout = connectionTimeout;
@@ -69,9 +67,9 @@ class DefaultMethodConfig implements MethodConfig {
         this.responseHandler = responseHandler;
         this.errorHandler = errorHandler;
         this.retryHandler = retryHandler;
-        this.deserializers = deserializers != null ? deserializers.clone() : null;
-        this.methodParamConfigs = methodParamConfigs != null ? methodParamConfigs.clone() : null;
-        this.extraParams = extraParams != null ? extraParams.clone() : null;
+        this.deserializers = deserializers.clone();
+        this.methodParamConfigs = methodParamConfigs.clone();
+        this.extraParams = extraParams.clone();
     }
 
     public Charset getCharset() {
@@ -86,12 +84,12 @@ class DefaultMethodConfig implements MethodConfig {
         return responseHandler;
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getProduces() {
+        return produces;
     }
 
-    public String getAccept() {
-        return accept;
+    public String[] getConsumes() {
+        return consumes.clone();
     }
 
     public Method getMethod() {
@@ -127,19 +125,19 @@ class DefaultMethodConfig implements MethodConfig {
     }
 
     public Deserializer[] getDeserializers() {
-        return deserializers != null ? deserializers.clone() : EMPTY_DESERIALIZERS;
+        return deserializers.clone();
     }
 
     public ParamConfig getParamConfig(int index) {
-        return methodParamConfigs != null && index < methodParamConfigs.length ? methodParamConfigs[index] : null;
+        return methodParamConfigs[index];
     }
 
     public int getParamCount() {
-        return methodParamConfigs != null ? methodParamConfigs.length : 0;
+        return methodParamConfigs.length;
     }
 
     public ParamConfig[] getExtraParams() {
-        return extraParams != null ? extraParams.clone() : EMPTY_PARAM_CONFIGS;
+        return extraParams.clone();
     }
 
 }

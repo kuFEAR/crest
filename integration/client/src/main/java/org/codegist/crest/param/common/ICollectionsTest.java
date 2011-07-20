@@ -30,7 +30,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.codegist.crest.param.common.ICollectionsTest.Tests.DefaultLists;
 import static org.codegist.crest.param.common.ICollectionsTest.Tests.MergingLists;
-import static org.codegist.crest.utils.ToStrings.string;
+import static org.codegist.crest.util.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 

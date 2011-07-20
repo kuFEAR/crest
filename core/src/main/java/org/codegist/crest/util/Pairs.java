@@ -20,6 +20,7 @@
 
 package org.codegist.crest.util;
 
+import org.codegist.common.net.Urls;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.param.SimpleEncodedPair;
 
@@ -29,13 +30,18 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.regex.Pattern;
 
-import static org.codegist.crest.util.Encoders.encode;
+import static org.codegist.common.net.Urls.encode;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public final class Pairs {
+
+    private static final Pattern AMP = Pattern.compile("&");
+    private static final Pattern EQUAL = Pattern.compile("=");
+
     private Pairs(){
         throw new IllegalStateException();
     }
@@ -45,16 +51,17 @@ public final class Pairs {
     }
     
     public static EncodedPair toPair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {
-        String nameEncoded = encoded ? name : encode(name, charset);
-        String valueEncoded = encoded ? value : encode(value, charset);
+        String nameEncoded = encoded ? name : encode(name, charset.displayName());
+        String valueEncoded = encoded ? value : encode(value, charset.displayName());
         return new SimpleEncodedPair(nameEncoded, valueEncoded);
     }
 
     public static List<EncodedPair> fromUrlEncoded(String urlEncoded) throws UnsupportedEncodingException {
         List<EncodedPair> pairs = new ArrayList<EncodedPair>();
-        String[] split = urlEncoded.split("&");
+
+        String[] split = AMP.split(urlEncoded);
         for(String param : split){
-            String[] paramSplit = param.split("=");
+            String[] paramSplit = EQUAL.split(param);
             EncodedPair pair = toPreEncodedPair(paramSplit[0], paramSplit[1]);
             pairs.add(pair);
         }

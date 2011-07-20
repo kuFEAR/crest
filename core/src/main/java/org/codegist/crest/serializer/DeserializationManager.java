@@ -72,10 +72,10 @@ public final class DeserializationManager {
         }
         for (Deserializer deserializer : deserializers) { /*  */
             try {
-                LOG.debug("Trying to deserialize response with user specified deserializer : %s.", deserializer);
+                LOG.debug("Trying to deserialize response with user specified deserializer: %s.", deserializer);
                 return deserializer.<T>deserialize(type, genericType, pStream, charset);
             } catch (Exception e) {
-                LOG.warn(e, "Failed to deserialize response with user specified deserializer : %s. Trying next.", deserializer);
+                LOG.warn(e, "Failed to deserialize response with user specified deserializer: %s. Trying next.", deserializer);
             }
         }
         throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers));

@@ -175,6 +175,10 @@ public class CRestBuilder {
         return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
+    public <T> T build(Class<T> interfaze) {
+        return build().build(interfaze);
+    }
+
     private HttpChannelFactory buildHttpChannelInitiator() {
         if (httpChannelFactory == null) {
             if (useHttpClient) {

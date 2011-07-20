@@ -45,10 +45,9 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
                 @MatrixParam("p2") Collection<String> p2);
 
         @Path("encoded")
-        @Encoded
         String encoded(
-                @MatrixParam("p1") String p1,
-                @MatrixParam("p2") Collection<String> p2);
+                @Encoded @MatrixParam("p1") String p1,
+                @Encoded @MatrixParam("p2") Collection<String> p2);
 
     }
 }

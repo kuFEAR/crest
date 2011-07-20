@@ -22,11 +22,11 @@ package org.codegist.crest.param.forms.xml.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.XmlEntityWriter;
-import org.codegist.crest.model.BunchOfData;
-import org.codegist.crest.model.Data;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.common.ISerializersTest;
-import org.codegist.crest.serializer.BunchOfDataSerializer;
-import org.codegist.crest.serializer.DataSerializer;
+import org.codegist.crest.util.BunchOfDataSerializer;
+import org.codegist.crest.util.DataSerializer;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;
@@ -125,7 +125,7 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
         expected.append("</form-data>");
         // todo Do something about it
         actual = actual.replaceAll(Pattern.quote("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"data\""), "");
-        actual = actual.replaceAll("class=\"org\\.codegist\\.crest\\.model\\.\\w+.\\w+\"", "");
+        actual = actual.replaceAll("class=\"org\\.codegist\\.crest\\.util\\.model\\.\\w+.\\w+\"", "");
         assertXmlEquals(expected.toString(), actual);
     }
 

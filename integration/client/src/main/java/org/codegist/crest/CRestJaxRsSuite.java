@@ -21,7 +21,7 @@
 package org.codegist.crest;
 
 import org.codegist.crest.deserialization.DeserializationsJaxRsSuite;
-import org.codegist.crest.error.ErrorHandlersTest;
+import org.codegist.crest.handler.ErrorHandlersTest;
 import org.codegist.crest.param.ParamsBaseSuite;
 import org.codegist.crest.param.ParamsJaxRsSuite;
 import org.codegist.crest.request.RequestsJaxRsSuite;

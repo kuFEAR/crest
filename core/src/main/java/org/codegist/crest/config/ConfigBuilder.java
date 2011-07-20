@@ -63,7 +63,7 @@ abstract class ConfigBuilder {
         return crestProperties;
     }
 
-    protected String pl(String str) {
+    protected String ph(String str) {
         if (Strings.isBlank(str)) {
             return str;
         }
@@ -99,6 +99,19 @@ abstract class ConfigBuilder {
                 }
             }else{
                 return newInstance(def);
+            }
+        }else{
+            return value;
+        }
+    }
+
+    protected <T> T[] defaultIfUndefined(T[] value, String defProp, T[] def) {
+        if(value == null || value.length == 0) {
+            T[] prop = CRestProperty.<T[]>get(crestProperties, defProp);
+            if(prop != null) {
+                return prop;
+            }else{
+                return def;
             }
         }else{
             return value;

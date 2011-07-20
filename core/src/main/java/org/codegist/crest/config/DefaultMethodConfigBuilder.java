@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.codegist.common.collect.Arrays.*;
 import static org.codegist.crest.CRestProperty.*;
 import static org.codegist.crest.config.MethodConfig.*;
@@ -34,11 +35,11 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private final Registry<String,Deserializer> mimeDeserializerRegistry;
     private final List<String> pathParts = new ArrayList<String>();
     private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
+    private final List<String> consumes = new ArrayList<String>();
 
     private String charset;
     private MethodType meth;
-    private String contentType;
-    private String accept;
+    private String produces;
     private Integer socketTimeout;
     private Integer connectionTimeout;
     private RequestInterceptor requestInterceptor;
@@ -69,15 +70,17 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         // make local copies so that we don't mess with builder state to be able to call build multiple times on it
         String path = paths.length > 1 ? Urls.normalizeSlashes(join("/", paths)) : paths[0];
         Deserializer[] pDeserializers = arrify(this.deserializers, Deserializer.class);
+        String[] pConsumes = arrify(this.consumes, String.class);
 
         pDeserializers = defaultIfUndefined(pDeserializers, METHOD_CONFIG_DEFAULT_DESERIALIZERS, DEFAULT_DESERIALIZERS);
         path = defaultIfUndefined(path, METHOD_CONFIG_DEFAULT_PATH, DEFAULT_PATH);
+        pConsumes = defaultIfUndefined(pConsumes, METHOD_CONFIG_DEFAULT_CONSUMES, arrify(DEFAULT_CONSUMES, String.class));
+
         int pSocketTimeout = defaultIfUndefined(this.socketTimeout, METHOD_CONFIG_DEFAULT_SO_TIMEOUT, DEFAULT_SO_TIMEOUT);
         int pConnectionTimeout = defaultIfUndefined(this.connectionTimeout, METHOD_CONFIG_DEFAULT_CO_TIMEOUT, DEFAULT_CO_TIMEOUT);
         String pCharset = defaultIfUndefined(this.charset, METHOD_CONFIG_DEFAULT_CHARSET, DEFAULT_CHARSET);
         MethodType pMeth = defaultIfUndefined(this.meth, METHOD_CONFIG_DEFAULT_HTTP_METHOD, DEFAULT_METHOD_TYPE);
-        String pContentType = defaultIfUndefined(this.contentType, METHOD_CONFIG_DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE);
-        String pAccept = defaultIfUndefined(this.accept, METHOD_CONFIG_DEFAULT_ACCEPT, DEFAULT_ACCEPT);
+        String pProduces = defaultIfUndefined(this.produces, METHOD_CONFIG_DEFAULT_PRODUCES, DEFAULT_PRODUCES);
         ParamConfig[] pExtraParams = defaultIfUndefined(extraParams, METHOD_CONFIG_DEFAULT_EXTRA_PARAMS, DEFAULT_EXTRA_PARAMS);
         RequestInterceptor pRequestInterceptor = defaultIfUndefined(this.requestInterceptor, METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR, DEFAULT_REQUEST_INTERCEPTOR);
         ResponseHandler pResponseHandler = defaultIfUndefined(this.responseHandler, METHOD_CONFIG_DEFAULT_RESPONSE_HANDLER, DEFAULT_RESPONSE_HANDLER);
@@ -100,8 +103,8 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
                 Charset.forName(pCharset),
                 method,
                 RegexPathTemplate.create(path),
-                pContentType,
-                pAccept,
+                pProduces,
+                pConsumes,
                 pMeth,
                 pSocketTimeout,
                 pConnectionTimeout,
@@ -125,25 +128,27 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     }
 
     public MethodConfigBuilder setCharset(String charset){
-        this.charset = pl(charset);
+        this.charset = ph(charset);
         return this;
     }
 
     public MethodConfigBuilder setConsumes(String... mimeTypes) {
         State.notNull(mimeDeserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
+        this.deserializers.clear();
+        this.consumes.clear();
 
         String[] mimes = new String[mimeTypes.length];
         for (int i = 0; i < mimeTypes.length; i++) {
-            String mMime = pl(mimeTypes[i]);
+            String mMime = ph(mimeTypes[i]);
             this.deserializers.add(mimeDeserializerRegistry.get(mMime));
             mimes[i] = mMime;
         }
-        this.accept = join(",", mimes);
+        this.consumes.addAll(asList(mimes));
         return this;
     }
 
     public MethodConfigBuilder setProduces(String contentType) {
-        this.contentType = pl(contentType);
+        this.produces = ph(contentType);
         return this;
     }
 
@@ -158,12 +163,12 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     }
 
     public MethodConfigBuilder appendPath(String path) {
-        pathParts.add(pl(path));
+        pathParts.add(ph(path));
         return this;
     }
 
     public MethodConfigBuilder setEndPoint(String endPoint) {
-        this.pathParts.add(0, pl(endPoint));
+        this.pathParts.add(0, ph(endPoint));
         return this;
     }
 

@@ -28,7 +28,7 @@ import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static org.codegist.crest.param.common.IEncodingsTest.Tests.Encoded;
-import static org.codegist.crest.utils.ToStrings.string;
+import static org.codegist.crest.util.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 
 /**

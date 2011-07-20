@@ -24,7 +24,7 @@ import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
-import org.codegist.crest.model.jackson.JacksonSomeData;
+import org.codegist.crest.util.model.jackson.JacksonSomeData;
 import org.junit.runners.Parameterized;
 
 import javax.ws.rs.GET;

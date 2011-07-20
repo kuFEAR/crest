@@ -23,7 +23,7 @@ package org.codegist.crest.deserialization.common;
 import org.codegist.common.io.IOs;
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestBuilder;
-import org.codegist.crest.serializer.CommaSeparatedIntDeserializer;
+import org.codegist.crest.util.CommaSeparatedIntDeserializer;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 

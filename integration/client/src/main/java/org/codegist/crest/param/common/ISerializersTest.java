@@ -21,11 +21,11 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.model.BunchOfData;
-import org.codegist.crest.model.Data;
-import org.codegist.crest.serializer.AnotherBunchOfDataSerializer;
-import org.codegist.crest.serializer.BunchOfDataSerializer;
-import org.codegist.crest.serializer.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
+import org.codegist.crest.util.AnotherBunchOfDataSerializer;
+import org.codegist.crest.util.BunchOfDataSerializer;
+import org.codegist.crest.util.DataSerializer;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -34,7 +34,7 @@ import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static org.codegist.crest.utils.ToStrings.string;
+import static org.codegist.crest.util.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 

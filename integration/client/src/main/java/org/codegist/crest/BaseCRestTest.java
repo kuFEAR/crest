@@ -27,9 +27,9 @@ import org.codegist.crest.config.annotate.JsonEntityAnnotationHandler;
 import org.codegist.crest.config.annotate.XmlEntityAnnotationHandler;
 import org.codegist.crest.entity.JsonEntityWriter;
 import org.codegist.crest.entity.XmlEntityWriter;
-import org.codegist.crest.model.BunchOfData;
-import org.codegist.crest.model.Data;
-import org.codegist.crest.model.SerializerTypes;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
+import org.codegist.crest.util.model.SerializerTypes;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
@@ -49,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.util.Collections.singletonMap;
 import static org.codegist.crest.CRestProperty.CREST_RETRY_ATTEMPTS;
 import static org.junit.Assert.assertTrue;
 
@@ -184,27 +185,34 @@ public abstract class BaseCRestTest<T> {
                     .setConcurrencyLevel(2)
                     .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
+                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(CREST_PROPERTIES, Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build())    
                     .addProperties(CREST_PROPERTIES);
         if(TEST_JAXRS) {
             builder.jaxrsAware();
         }
         if(!TEST_JAXB) {
-            registerEntitySerializer(XmlEncodedFormSimpleXmlSerializer.class, XmlEntityWriter.MIME);
             builder.deserializeXmlWithSimpleXml();
         }
+
         return builder;
     }
 
-    private static void registerEntitySerializer(){
-        registerEntitySerializer(null,null);
+    private static Map<String,Object> getEntitySerializerProperties(boolean jaxb){
+        return getEntitySerializerProperties(jaxb, false);
     }
-    private static void registerEntitySerializer(Class<? extends Serializer> clazz, String mime){
-        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>(CREST_PROPERTIES, Serializer.class)
-            .register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME);
-        if(clazz != null) {
-           registry.register(clazz, mime);
+    private static Map<String,Object> getEntitySerializerProperties(boolean jaxb, boolean json){
+        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>(CREST_PROPERTIES, Serializer.class);
+
+        if(jaxb) {
+            registry.register(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);
+        }else{
+            registry.register(XmlEncodedFormSimpleXmlSerializer.class, XmlEntityWriter.MIME);    
         }
-        CREST_PROPERTIES.put(Registry.class.getName() + "#serializers-per-mime", registry.build());
+        if(json) {
+            registry.register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME);
+        }
+
+        return singletonMap(Registry.class.getName() + "#serializers-per-mime", (Object) registry.build());
     }
 
     // these represents the common permutations all test will pass
@@ -293,6 +301,7 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
+                        .addProperties(getEntitySerializerProperties(TEST_JAXB, true))
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
                         .build());
             }
@@ -300,6 +309,7 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
+                        .addProperties(getEntitySerializerProperties(TEST_JAXB, true))
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
                         .useHttpClient().build());
             }
@@ -310,17 +320,19 @@ public abstract class BaseCRestTest<T> {
 
     public static CRestHolder[] byXmlSerializers() {
         List<CRestHolder> holders = new ArrayList<CRestHolder>();
-        registerEntitySerializer(XmlEncodedFormSimpleXmlSerializer.class, XmlEntityWriter.MIME);
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+                return new CRestHolder(builder
+                        .addProperties(getEntitySerializerProperties(false))
+                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
         }));
         if(TEST_JAXB) {
-            registerEntitySerializer(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);
             holders.addAll(forEachBaseBuilder(new Builder() {
                 public CRestHolder build(CRestBuilder builder) {
-                    return new CRestHolder(builder.build(), JAXB_SPECIFIC_PROPERTIES);
+                    return new CRestHolder(builder
+                            .addProperties(getEntitySerializerProperties(true))
+                            .build(), JAXB_SPECIFIC_PROPERTIES);
                 }
             }));
         }
@@ -329,36 +341,39 @@ public abstract class BaseCRestTest<T> {
 
 
     public static CRestHolder[] byJsonSerializersAndRestServices() {
-        registerEntitySerializer();
         return byRestServices();
     }
 
     public static CRestHolder[] byXmlSerializersAndRestServices() {
         List<CRestHolder> holders = new ArrayList<CRestHolder>();
-        registerEntitySerializer(XmlEncodedFormSimpleXmlSerializer.class, XmlEntityWriter.MIME);
+
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+                return new CRestHolder(builder
+                        .addProperties(getEntitySerializerProperties(false))
+                        .build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
         }));
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
                         .useHttpClient()
+                        .addProperties(getEntitySerializerProperties(false))
                         .build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
         }));
         if(TEST_JAXB) {
-            registerEntitySerializer(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);
             holders.addAll(forEachBaseBuilder(new Builder() {
                 public CRestHolder build(CRestBuilder builder) {
                     return new CRestHolder(builder
+                            .addProperties(getEntitySerializerProperties(true))
                             .build(), JAXB_SPECIFIC_PROPERTIES);
                 }
             }));
             holders.addAll(forEachBaseBuilder(new Builder() {
                 public CRestHolder build(CRestBuilder builder) {
                     return new CRestHolder(builder
+                            .addProperties(getEntitySerializerProperties(true))
                             .useHttpClient().build(), JAXB_SPECIFIC_PROPERTIES);
                 }
             }));

@@ -87,6 +87,7 @@ public class HttpResponse implements Response, Disposable {
         return request;
     }
 
+    // todo refactor that to use some deserialization strategy approach
     public <T> T deserialize() throws Exception {
         Deserializer[] deserializers = request.getMethodConfig().getDeserializers();
         if(deserializers.length > 0) {
@@ -132,7 +133,7 @@ public class HttpResponse implements Response, Disposable {
                     inputStream,
                     getCharset()
             );
-        }else{
+        }else if(deserializationManager.isMimeTypeKnown(getContentType())){
             return deserializationManager.deserializeByMimeType(
                     type,
                     genericType,
@@ -140,6 +141,8 @@ public class HttpResponse implements Response, Disposable {
                     getCharset(),
                     getContentType()
             );
+        }else {
+            throw new CRestException("Can't deserializer response to " + type);
         }
     }
 

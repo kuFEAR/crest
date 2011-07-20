@@ -25,8 +25,8 @@ import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.ResponseHandler;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
-import org.codegist.crest.handler.JaxbSomeDatasResponseHandler;
-import org.codegist.crest.model.jaxb.JaxbSomeData;
+import org.codegist.crest.util.JaxbSomeDatasResponseHandler;
+import org.codegist.crest.util.model.jaxb.JaxbSomeData;
 import org.junit.runners.Parameterized;
 
 import javax.ws.rs.GET;

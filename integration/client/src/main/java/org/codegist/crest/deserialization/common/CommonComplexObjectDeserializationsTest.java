@@ -21,7 +21,7 @@
 package org.codegist.crest.deserialization.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.model.SomeData;
+import org.codegist.crest.util.model.SomeData;
 import org.junit.Test;
 
 import java.io.IOException;

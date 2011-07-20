@@ -21,6 +21,9 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
+import org.codegist.crest.param.forms.xml.XmlsSuite;
+import org.codegist.crest.param.forms.xml.common.SerializersTest;
+import org.codegist.crest.request.RequestsCRestSuite;
 import org.codegist.crest.security.SecuritySuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;

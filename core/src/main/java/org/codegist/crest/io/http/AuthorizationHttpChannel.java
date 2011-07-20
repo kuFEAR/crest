@@ -21,6 +21,7 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
+import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
@@ -33,14 +34,18 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.codegist.common.collect.Arrays.arrify;
+import static org.codegist.common.net.Urls.getQueryString;
+import static org.codegist.crest.util.Pairs.fromUrlEncoded;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class AuthorizationHttpChannel implements HttpChannel {
 
+    private static final Pattern SEMICOLON = Pattern.compile(";");
     private final Authorization authenticatorManager;
     private final Map<String, EntityParamExtractor> httpEntityParamExtrator;
     private final HttpChannel delegate;
@@ -59,11 +64,12 @@ public class AuthorizationHttpChannel implements HttpChannel {
         this.delegate = delegate;
         this.httpEntityParamExtrator = httpEntityParamExtrator;
         this.authenticatorManager = authenticatorManager;
-        String[] split = url.split("\\?");
-        if(split.length == 2) {
-            this.parameters.addAll(Pairs.fromUrlEncoded(split[1]));
+        String queryString = getQueryString(url);
+        if(queryString != null) {
+            this.parameters.addAll(fromUrlEncoded(queryString));
         }
     }
+
 
     private void authenticate() throws IOException {
         AuthorizationToken token;
@@ -88,7 +94,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
 
     public void setContentType(String contentType) throws IOException {
         this.delegate.setContentType(contentType);
-        this.contentType = contentType.split(";")[0].trim();
+        this.contentType = SEMICOLON.split(contentType)[0].trim();
         this.fullContentType = contentType;
     }
 

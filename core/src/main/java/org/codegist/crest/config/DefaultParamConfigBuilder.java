@@ -73,13 +73,13 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     }
 
     public ParamConfigBuilder setName(String name) {
-        this.name = pl(name);
+        this.name = ph(name);
         return this;
     }
 
 
     public ParamConfigBuilder setDefaultValue(String defaultValue) {
-        this.defaultValue = pl(defaultValue);
+        this.defaultValue = ph(defaultValue);
         return this;
     }
 

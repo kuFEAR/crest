@@ -31,7 +31,7 @@ import java.util.EnumSet;
 
 import static java.lang.String.format;
 import static org.codegist.crest.param.common.IDatesTest.Tests.Dates;
-import static org.codegist.crest.utils.ToStrings.string;
+import static org.codegist.crest.util.ToStrings.string;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 

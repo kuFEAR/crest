@@ -44,7 +44,7 @@ class DefaultInterfaceConfig implements InterfaceConfig {
     }
 
     public MethodConfig getMethodConfig(Method meth) {
-        return cache != null ? cache.get(meth) : null;
+        return cache.get(meth);
     }
 
 }

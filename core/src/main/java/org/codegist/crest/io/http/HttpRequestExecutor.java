@@ -20,6 +20,7 @@
 
 package org.codegist.crest.io.http;
 
+import org.codegist.common.collect.Arrays;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
@@ -87,14 +88,16 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         LOGGER.debug("Set Socket Timeout: %d ", soTimeout);
         httpChannel.setSocketTimeout(soTimeout);
 
-        if(mc.getContentType() != null) {
-            LOGGER.debug("Set Content-Type: %d ", mc.getContentType());
-            httpChannel.setContentType(mc.getContentType());
+        if(mc.getProduces() != null) {
+            LOGGER.debug("Set Content-Type: %d ", mc.getProduces());
+            httpChannel.setContentType(mc.getProduces());
         }
 
-        if(mc.getAccept() != null) {
-            LOGGER.debug("Set Accept: %d ", mc.getAccept());
-            httpChannel.setAccept(mc.getAccept());
+        String[] consumes = mc.getConsumes();
+        if(consumes.length > 0) {
+            String accept = Arrays.join(",", consumes);
+            LOGGER.debug("Set Accept: %d ", accept);
+            httpChannel.setAccept(accept);
         }
 
         Iterator<EncodedPair> headers = request.getEncodedParamsIterator(HEADER);
@@ -118,7 +121,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         if(methodType.hasEntity()) {
             String contentType = mc.getEntityWriter().getContentType(request);
             if(isNotBlank(contentType)) {
-                if(mc.getContentType() == null) {
+                if(mc.getProduces() == null) {
                     LOGGER.debug("Entity Content-Type : %s", contentType);
                     httpChannel.setContentType(contentType);
                 }else{

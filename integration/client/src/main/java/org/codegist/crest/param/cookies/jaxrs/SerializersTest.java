@@ -22,11 +22,11 @@ package org.codegist.crest.param.cookies.jaxrs;
 
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.Serializer;
-import org.codegist.crest.model.BunchOfData;
-import org.codegist.crest.model.Data;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.cookies.common.ISerializersTest;
-import org.codegist.crest.serializer.BunchOfDataSerializer;
-import org.codegist.crest.serializer.DataSerializer;
+import org.codegist.crest.util.BunchOfDataSerializer;
+import org.codegist.crest.util.DataSerializer;
 
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
