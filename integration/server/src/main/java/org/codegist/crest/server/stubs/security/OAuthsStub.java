@@ -21,9 +21,6 @@
 package org.codegist.crest.server.stubs.security;
 
 import com.sun.jersey.api.core.HttpRequestContext;
-import com.sun.jersey.oauth.signature.OAuthParameters;
-import com.sun.jersey.spi.container.ContainerRequest;
-import org.codegist.crest.server.JerseyServer;
 import org.codegist.crest.server.utils.OAuths;
 
 import javax.ws.rs.*;

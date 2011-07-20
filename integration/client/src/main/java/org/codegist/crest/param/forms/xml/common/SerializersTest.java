@@ -22,11 +22,11 @@ package org.codegist.crest.param.forms.xml.common;
 
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.entity.XmlEntityWriter;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.common.ISerializersTest;
 import org.codegist.crest.util.BunchOfDataSerializer;
 import org.codegist.crest.util.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 import org.junit.runners.Parameterized;
 
 import java.util.Collection;

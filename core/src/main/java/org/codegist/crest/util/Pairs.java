@@ -20,7 +20,6 @@
 
 package org.codegist.crest.util;
 
-import org.codegist.common.net.Urls;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.param.SimpleEncodedPair;
 

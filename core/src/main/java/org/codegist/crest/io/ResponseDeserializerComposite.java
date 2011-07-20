@@ -18,25 +18,30 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.io;
 
-import org.codegist.crest.serializer.StringSerializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
-
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-
-import static java.lang.String.format;
+import org.codegist.crest.CRestException;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class BunchOfDataSerializer extends StringSerializer<BunchOfData<Data>> {
+public class ResponseDeserializerComposite implements ResponseDeserializer {
 
-    public String serialize(BunchOfData<Data> value, Charset charset) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return format("MyBuchOfData(val1=%s,val2=%s,val3=Data(val1=%s,val2=%s))", sdf.format(value.getVal1()), value.getVal2(), value.getVal3().getVal1(), value.getVal3().getVal2());
+    private final ResponseDeserializer[] delegates;
+
+    public ResponseDeserializerComposite(ResponseDeserializer... delegates) {
+        this.delegates = delegates.clone();
     }
 
+    public <T> T deserialize(Response response) throws Exception {
+        IllegalArgumentException deserializationException = null;
+        for(ResponseDeserializer deserializer : delegates){
+            try {
+                return deserializer.<T>deserialize(response);
+            } catch (IllegalArgumentException e) {
+                deserializationException = e;
+            }
+        }
+        throw new CRestException(deserializationException.getMessage(), deserializationException);
+    }
 }

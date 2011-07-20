@@ -36,10 +36,7 @@ public class BasicAuthorization implements Authorization {
     private final AuthorizationToken token;
 
     public BasicAuthorization(String name, String password) throws UnsupportedEncodingException {
-        this(new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes("utf-8"))));
-    }
-    public BasicAuthorization(AuthorizationToken token) throws UnsupportedEncodingException {
-        this.token = token;
+        this.token = new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes("utf-8")));
     }
 
     public AuthorizationToken authorize(String action, String url, EncodedPair... parameters) {

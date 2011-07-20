@@ -55,4 +55,5 @@ public interface Response extends Disposable {
 
     <T> T to(Class<T> type, Type genericType) throws Exception;
 
+    InputStream asStream() throws Exception;
 }

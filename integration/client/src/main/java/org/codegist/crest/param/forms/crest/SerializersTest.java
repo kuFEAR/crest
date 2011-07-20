@@ -21,11 +21,11 @@
 package org.codegist.crest.param.forms.crest;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.forms.common.ISerializersTest;
 import org.codegist.crest.util.BunchOfDataSerializer;
 import org.codegist.crest.util.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 
 import java.util.Collection;
 

@@ -22,11 +22,11 @@ package org.codegist.crest.param.matrixes.jaxrs;
 
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.Serializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.matrixes.common.ISerializersTest;
 import org.codegist.crest.util.BunchOfDataSerializer;
 import org.codegist.crest.util.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.MatrixParam;

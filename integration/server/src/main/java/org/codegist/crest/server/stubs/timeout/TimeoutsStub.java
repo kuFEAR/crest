@@ -20,14 +20,10 @@
 
 package org.codegist.crest.server.stubs.timeout;
 
-import com.sun.jersey.api.core.HttpRequestContext;
-import org.codegist.crest.server.utils.OAuths;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Request;
-
-import static java.lang.String.format;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 /**
  * @author laurent.gilles@codegist.org

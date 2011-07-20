@@ -25,8 +25,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import static java.lang.String.valueOf;
-
 /**
  * @author laurent.gilles@codegist.org
  */

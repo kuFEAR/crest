@@ -23,7 +23,6 @@ package org.codegist.crest.handler;
 import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.annotate.ErrorHandler;
 import org.codegist.crest.annotate.RetryHandler;
 import org.codegist.crest.io.RequestException;
 import org.junit.Before;

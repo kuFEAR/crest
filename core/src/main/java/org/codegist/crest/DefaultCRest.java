@@ -20,7 +20,6 @@
 
 package org.codegist.crest;
 
-import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.reflect.ObjectMethodsAwareInvocationHandler;
 import org.codegist.common.reflect.ProxyFactory;

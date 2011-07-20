@@ -21,13 +21,11 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
-import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
-import org.codegist.crest.util.Pairs;
 
 import java.io.*;
 import java.nio.charset.Charset;

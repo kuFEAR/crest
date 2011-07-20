@@ -32,9 +32,7 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
-import org.codegist.crest.io.RequestBuilderFactory;
-import org.codegist.crest.io.RequestExecutor;
-import org.codegist.crest.io.RetryingRequestExecutor;
+import org.codegist.crest.io.*;
 import org.codegist.crest.io.http.*;
 import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
 import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
@@ -153,11 +151,16 @@ public class CRestBuilder {
         Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build();
         Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build();
 
-        DeserializationManager deserializationManager = new DeserializationManager(mimeDeserializerRegistry, classDeserializerRegistry);
+        ResponseDeserializer mimeResponseDeserializer = new ResponseDeserializerByMimeType(mimeDeserializerRegistry);
+        ResponseDeserializer classResponseDeserializer = new ResponseDeserializerByClass(classDeserializerRegistry);
+        ResponseDeserializer serializersResponseDeserializer = new ResponseDeserializerByDeserializers();
+
+        ResponseDeserializer baseResponseDeserializer = new ResponseDeserializerComposite(serializersResponseDeserializer, mimeResponseDeserializer, classResponseDeserializer);
+        ResponseDeserializer customTypeResponseDeserializer = new ResponseDeserializerComposite(classResponseDeserializer, mimeResponseDeserializer);
 
         HttpChannelFactory plainChannelFactory = buildHttpChannelInitiator();
         Authorization authorization = buildAuthorization(plainChannelFactory);
-        RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, deserializationManager);
+        RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, baseResponseDeserializer, customTypeResponseDeserializer);
 
         InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build());
@@ -166,7 +169,6 @@ public class CRestBuilder {
         putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
         putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-class", classDeserializerRegistry);
         putIfAbsent(crestProperties, Registry.class.getName() + "#serializers-per-class", classSerializerRegistry);
-        putIfAbsent(crestProperties, DeserializationManager.class.getName(), deserializationManager);
         putIfAbsent(crestProperties, RequestExecutor.class.getName(), requestExecutor);
         putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
         putIfAbsent(crestProperties, InterfaceConfigFactory.class.getName(), configFactory);
@@ -191,12 +193,12 @@ public class CRestBuilder {
         }
     }
 
-    private RequestExecutor buildRequestExecutor(HttpChannelFactory plainChannelFactory, Authorization authorization, DeserializationManager deserializationManager){
+    private RequestExecutor buildRequestExecutor(HttpChannelFactory plainChannelFactory, Authorization authorization, ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer){
         HttpChannelFactory channelFactory = plainChannelFactory;
         if(authorization != null) {
             channelFactory = new AuthorizationHttpChannelFactory(plainChannelFactory, authorization, httpEntityParamExtrators);
         }
-        return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, deserializationManager));
+        return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, baseResponseDeserializer, customTypeResponseDeserializer));
     }
 
     private Registry<String,Deserializer> buildDeserializerRegistry() {

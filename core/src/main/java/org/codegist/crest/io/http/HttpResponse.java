@@ -22,11 +22,10 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Disposable;
-import org.codegist.crest.CRestException;
+import org.codegist.crest.io.DelegatingResponse;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.serializer.DeserializationManager;
-import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.io.ResponseDeserializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +42,15 @@ import java.nio.charset.Charset;
  */
 public class HttpResponse implements Response, Disposable {
 
-    private final DeserializationManager deserializationManager;
+    private final ResponseDeserializer baseResponseDeserializer;
+    private final ResponseDeserializer customTypeResponseDeserializer;
     private final Request request;
     private final InputStream inputStream;
     private final HttpResource resource;
 
-    public HttpResponse(DeserializationManager deserializationManager, Request request, HttpResource resource) throws IOException {
-        this.deserializationManager = deserializationManager;
+    public HttpResponse(ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer, Request request, HttpResource resource) throws IOException {
+        this.baseResponseDeserializer = baseResponseDeserializer;
+        this.customTypeResponseDeserializer = customTypeResponseDeserializer;
         this.request = request;
         this.resource = resource;
         this.inputStream = new HttpResourceInputStream(resource);
@@ -87,38 +88,12 @@ public class HttpResponse implements Response, Disposable {
         return request;
     }
 
-    // todo refactor that to use some deserialization strategy approach
+    public InputStream asStream() throws Exception {
+        return inputStream;
+    }
+
     public <T> T deserialize() throws Exception {
-        Deserializer[] deserializers = request.getMethodConfig().getDeserializers();
-        if(deserializers.length > 0) {
-            // try with preconfigured deserializer if present
-            return deserializationManager.deserializeByDeserializers(
-                    (Class<T>) getExpectedType(),
-                    getExpectedGenericType(),
-                    inputStream,
-                    getCharset(),
-                    deserializers
-            );
-        }else if(deserializationManager.isMimeTypeKnown(getContentType())){
-            // if no pre-defined deserializers, try by mime type if known
-            return deserializationManager.deserializeByMimeType(
-                    (Class<T>) getExpectedType(),
-                    getExpectedGenericType(),
-                    inputStream,
-                    getCharset(),
-                    getContentType()
-            );
-        }else if(deserializationManager.isClassTypeKnown(getExpectedType())){
-            // if no pre-defined deserializers, mime type is unknown, try by class type if known
-            return deserializationManager.deserializeByClassType(
-                    (Class<T>) getExpectedType(),
-                    getExpectedGenericType(),
-                    inputStream,
-                    getCharset()
-            );
-        } else {
-            throw new CRestException("Can't deserializer response to " + getExpectedType());
-        }
+        return baseResponseDeserializer.<T>deserialize(this);
     }
 
     public <T> T to(Class<T> type) throws Exception {
@@ -126,29 +101,32 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public <T> T to(Class<T> type, Type genericType) throws Exception {
-        if(deserializationManager.isClassTypeKnown(type)){
-            return deserializationManager.deserializeByClassType(
-                    type,
-                    genericType,
-                    inputStream,
-                    getCharset()
-            );
-        }else if(deserializationManager.isMimeTypeKnown(getContentType())){
-            return deserializationManager.deserializeByMimeType(
-                    type,
-                    genericType,
-                    inputStream,
-                    getCharset(),
-                    getContentType()
-            );
-        }else {
-            throw new CRestException("Can't deserializer response to " + type);
-        }
+        return customTypeResponseDeserializer.<T>deserialize(new ExpectedTypeOverriderResponse(this, type, genericType));
     }
 
     public void dispose() {
         IOs.close(inputStream);
     }
 
+    private static final class ExpectedTypeOverriderResponse extends DelegatingResponse {
+
+        private final Class<?> clazz;
+        private final Type type;
+
+        private ExpectedTypeOverriderResponse(Response delegate, Class<?> clazz, Type type) {
+            super(delegate);
+            this.clazz = clazz;
+            this.type = type;
+        }
+
+        public Type getExpectedGenericType() {
+            return type;
+        }
+
+        public Class<?> getExpectedType() {
+            return clazz;
+        }
+
+    }
 }
 

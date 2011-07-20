@@ -20,7 +20,6 @@
 
 package org.codegist.crest.handler;
 
-import org.codegist.crest.timeout.TimeoutsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

@@ -18,25 +18,13 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
-
-import org.codegist.crest.serializer.StringSerializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
-
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-
-import static java.lang.String.format;
+package org.codegist.crest.io;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class BunchOfDataSerializer extends StringSerializer<BunchOfData<Data>> {
+public interface ResponseDeserializer {
 
-    public String serialize(BunchOfData<Data> value, Charset charset) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return format("MyBuchOfData(val1=%s,val2=%s,val3=Data(val1=%s,val2=%s))", sdf.format(value.getVal1()), value.getVal2(), value.getVal3().getVal1(), value.getVal3().getVal2());
-    }
+    <T> T deserialize(Response response) throws Exception;
 
 }

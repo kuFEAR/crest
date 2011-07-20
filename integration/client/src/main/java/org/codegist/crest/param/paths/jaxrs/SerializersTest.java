@@ -23,11 +23,11 @@ package org.codegist.crest.param.paths.jaxrs;
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.ListSeparator;
 import org.codegist.crest.annotate.Serializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.param.paths.common.ISerializersTest;
 import org.codegist.crest.util.BunchOfDataSerializer;
 import org.codegist.crest.util.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

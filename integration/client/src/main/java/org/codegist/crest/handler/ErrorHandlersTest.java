@@ -24,14 +24,10 @@ import org.codegist.crest.BaseCRestTest;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.annotate.ErrorHandler;
-import org.codegist.crest.annotate.RetryHandler;
 import org.codegist.crest.io.Request;
-import org.codegist.crest.io.RequestException;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;

@@ -20,7 +20,6 @@
 
 package org.codegist.crest.timeout;
 
-import org.codegist.crest.security.OAuthsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

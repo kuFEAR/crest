@@ -27,12 +27,8 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.PathBuilder;
-import org.codegist.crest.io.Request;
-import org.codegist.crest.io.RequestException;
-import org.codegist.crest.io.RequestExecutor;
-import org.codegist.crest.io.Response;
+import org.codegist.crest.io.*;
 import org.codegist.crest.param.EncodedPair;
-import org.codegist.crest.serializer.DeserializationManager;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -50,11 +46,13 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
 
     private static final Logger LOGGER = Logger.getLogger(HttpRequestExecutor.class);
     private final HttpChannelFactory channelFactory;
-    private final DeserializationManager deserializationManager;
+    private final ResponseDeserializer baseResponseDeserializer;
+    private final ResponseDeserializer customTypeResponseDeserializer;
 
-    public HttpRequestExecutor(HttpChannelFactory channelFactory, DeserializationManager deserializationManager) {
+    public HttpRequestExecutor(HttpChannelFactory channelFactory, ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer) {
         this.channelFactory = channelFactory;
-        this.deserializationManager = deserializationManager;
+        this.baseResponseDeserializer = baseResponseDeserializer;
+        this.customTypeResponseDeserializer = customTypeResponseDeserializer;
     }
 
     public Response execute(Request request) throws Exception {
@@ -132,7 +130,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         }
 
         HttpChannel.Response response = httpChannel.send();
-        return new HttpResponse(deserializationManager, request, new HttpChannelResponseHttpResource(response));
+        return new HttpResponse(baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
     }
 
 

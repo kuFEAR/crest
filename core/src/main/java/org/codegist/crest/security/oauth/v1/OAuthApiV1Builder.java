@@ -21,13 +21,15 @@
 package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.crest.CRest;
-import org.codegist.crest.config.*;
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.serializer.ToStringSerializer;
+
 import java.util.Map;
 
-import static org.codegist.crest.CRestProperty.*;
+import static org.codegist.crest.CRestProperty.PARAM_CONFIG_DEFAULT_SERIALIZER;
+import static org.codegist.crest.CRestProperty.get;
 import static org.codegist.crest.config.MethodType.POST;
 
 /**

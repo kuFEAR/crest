@@ -20,8 +20,8 @@
 
 package org.codegist.crest.util;
 
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.serializer.StringSerializer;
+import org.codegist.crest.util.model.Data;
 
 import java.nio.charset.Charset;
 

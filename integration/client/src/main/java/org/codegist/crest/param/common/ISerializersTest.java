@@ -21,11 +21,11 @@
 package org.codegist.crest.param.common;
 
 import org.codegist.crest.BaseCRestTest;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
 import org.codegist.crest.util.AnotherBunchOfDataSerializer;
 import org.codegist.crest.util.BunchOfDataSerializer;
 import org.codegist.crest.util.DataSerializer;
+import org.codegist.crest.util.model.BunchOfData;
+import org.codegist.crest.util.model.Data;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
