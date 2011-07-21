@@ -20,11 +20,6 @@
 
 package org.codegist.crest.param.matrixes.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.List;
-import java.util.Set;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -32,28 +27,5 @@ public class ICollectionsTest<T extends ICollectionsTest.ICollections> extends o
 
     public ICollectionsTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/matrix/collection")
-    @GET
-    public static interface Collections extends org.codegist.crest.param.common.ICollectionsTest.ICollections {
-
-
-        @Path("default")
-        String defaults(
-                @MatrixParam("p1") String[] p1,
-                @MatrixParam("p2") boolean[] p2,
-                @MatrixParam("p3") List<Integer> p3,
-                @MatrixParam("p4") Set<Long> p4);
-
-        @Path("merging")
-        @ListSeparator("(def)")
-        String merging(
-                @MatrixParam("p1") String[] p1,
-                @MatrixParam("p2") @ListSeparator("(p2)") boolean[] p2,
-                @MatrixParam("p3") @ListSeparator("(p3)") List<Integer> p3,
-                @MatrixParam("p4") @ListSeparator("(p4)") Set<Long> p4);
-
     }
 }

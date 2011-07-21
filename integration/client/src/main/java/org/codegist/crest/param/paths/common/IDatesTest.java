@@ -20,10 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.Date;
-
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
@@ -35,18 +31,6 @@ public class IDatesTest<T extends IDatesTest.IDates> extends org.codegist.crest.
     public IDatesTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
     }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/path/date/{p1}/{p2}")
-    @GET
-    public static interface Dates extends org.codegist.crest.param.common.IDatesTest.IDates {
-
-        String date(
-                @PathParam("p1") Date p1,
-                @PathParam("p2") @ListSeparator("(p2)") Date... p2);
-
-    }
-
     @Override
     public void assertDates(String p1, String p21, String p22, String actual) {
         assertEquals(format("date() p1=%s p2=%s(p2)%s", p1, p21, p22), actual);

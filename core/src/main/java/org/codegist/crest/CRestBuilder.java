@@ -20,7 +20,6 @@
 
 package org.codegist.crest;
 
-import org.codegist.common.collect.Maps;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
@@ -32,7 +31,9 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
-import org.codegist.crest.io.*;
+import org.codegist.crest.io.RequestBuilderFactory;
+import org.codegist.crest.io.RequestExecutor;
+import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.*;
 import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
 import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
@@ -59,12 +60,13 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 import static java.util.Collections.singletonMap;
+import static java.util.Collections.unmodifiableMap;
 import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
 import static org.codegist.crest.CRestProperty.*;
+import static org.codegist.crest.config.MethodType.POST;
 import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
-import static org.codegist.crest.security.oauth.v1.OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL;
 
 /**
  * <p>The default build :
@@ -145,6 +147,7 @@ public class CRestBuilder {
     private String password;
     private OAuthToken consumerOAuthToken;
     private OAuthToken accessOAuthToken;
+    private String accessTokenRefreshUrl;
 
     public CRest build() {
         Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry();
@@ -172,7 +175,7 @@ public class CRestBuilder {
         putIfAbsent(crestProperties, RequestExecutor.class.getName(), requestExecutor);
         putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
         putIfAbsent(crestProperties, InterfaceConfigFactory.class.getName(), configFactory);
-        putIfAbsent(crestProperties, CREST_ANNOTATION_PLACEHOLDERS, Maps.unmodifiable(placeholders));
+        putIfAbsent(crestProperties, CREST_ANNOTATION_PLACEHOLDERS, unmodifiableMap(placeholders));
 
         return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
@@ -184,7 +187,7 @@ public class CRestBuilder {
     private HttpChannelFactory buildHttpChannelInitiator() {
         if (httpChannelFactory == null) {
             if (useHttpClient) {
-                return HttpClientHttpChannelFactory.newHttpChannelInitiator(crestProperties);
+                return HttpClientHttpChannelFactory.create(crestProperties);
             } else {
                 return new HttpURLConnectionHttpChannelFactory();
             }
@@ -238,11 +241,11 @@ public class CRestBuilder {
     }
 
     private OAuthApi buildOAuthApi(HttpChannelFactory channelFactory, OAuthenticatorV1 authenticator) {
-        if(!crestProperties.containsKey(CONFIG_TOKEN_ACCESS_REFRESH_URL)) {
+        if(accessTokenRefreshUrl == null) {
             return null;
         }
         try {
-            return OAuthApiV1Builder.build(channelFactory, crestProperties, authenticator);
+            return OAuthApiV1Builder.build(channelFactory, authenticator, POST, null, null, accessTokenRefreshUrl);
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
@@ -400,10 +403,9 @@ public class CRestBuilder {
             this.accessOAuthToken = new OAuthToken(accessToken, accessTokenSecret);
         }
         if(accessTokenRefreshUrl != null) {
-            setProperty(CONFIG_TOKEN_ACCESS_REFRESH_URL, accessTokenRefreshUrl);
             setProperty(METHOD_CONFIG_DEFAULT_RETRY_HANDLER, RefreshAuthorizationRetryHandler.class);
         }
-
+        this.accessTokenRefreshUrl = accessTokenRefreshUrl;
         this.consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);
         return this;
     }

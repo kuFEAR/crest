@@ -20,13 +20,6 @@
 
 package org.codegist.crest.param.queries.common;
 
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.Path;
-import org.codegist.crest.annotate.QueryParam;
-
-import java.util.Date;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -34,16 +27,5 @@ public class IDatesTest<T extends IDatesTest.IDates> extends org.codegist.crest.
 
     public IDatesTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/query/date")
-    @GET
-    public static interface Dates extends org.codegist.crest.param.common.IDatesTest.IDates {
-
-        String date(
-                @QueryParam("p1") Date p1,
-                @QueryParam("p2") Date... p2);
-
     }
 }

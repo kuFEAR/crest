@@ -90,7 +90,7 @@ public final class HttpClientHttpChannel implements HttpChannel {
             this.response = response;
         }
 
-        public InputStream getStream() throws IOException  {
+        public InputStream getEntity() throws IOException  {
             HttpEntity entity = response.getEntity();
             return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
         }

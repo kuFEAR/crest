@@ -35,15 +35,16 @@ import java.util.Map;
  */
 public class JaxbDeserializer implements Deserializer {
 
-    public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = JaxbFactory.POOL_RETRIEVAL_MAX_WAIT_PROP;
-    public static final String CUSTOM_JAXB = JaxbFactory.CUSTOM_JAXB;
-    public static final String MODEL_PACKAGE = JaxbFactory.MODEL_PACKAGE;
-    public static final String MODEL_FACTORY_CLASS = JaxbFactory.MODEL_FACTORY_CLASS;
+    private static final String PREFIX = JaxbDeserializer.class.getName();
+    public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = PREFIX + JaxbFactory.POOL_RETRIEVAL_MAX_WAIT;
+    public static final String JAXB_PROP = PREFIX + JaxbFactory.JAXB;
+    public static final String MODEL_PACKAGE_PROP = PREFIX + JaxbFactory.MODEL_PACKAGE;
+    public static final String MODEL_FACTORY_CLASS_PROP = PREFIX + JaxbFactory.MODEL_FACTORY_CLASS;
 
     private final Jaxb jaxb;
 
     public JaxbDeserializer(Map<String, Object> config) throws JAXBException {
-        this.jaxb = JaxbFactory.create(config);
+        this.jaxb = JaxbFactory.create(config, getClass());
     }
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {

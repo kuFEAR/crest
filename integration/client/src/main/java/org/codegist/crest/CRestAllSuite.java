@@ -23,7 +23,6 @@ package org.codegist.crest;
 import org.codegist.crest.annotate.AnnotatesSuite;
 import org.codegist.crest.deserialization.DeserializationsCRestSuite;
 import org.codegist.crest.deserialization.DeserializationsJaxRsSuite;
-import org.codegist.crest.handler.ErrorHandlersTest;
 import org.codegist.crest.handler.HandlersSuite;
 import org.codegist.crest.interceptor.InterceptorsSuite;
 import org.codegist.crest.param.ParamsBaseSuite;
@@ -37,20 +36,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SecuritySuite.class,
+@Suite.SuiteClasses({       
         AnnotatesSuite.class,
-        InterceptorsSuite.class,
+        DeserializationsCRestSuite.class,
+        DeserializationsJaxRsSuite.class,
         HandlersSuite.class,
-        TimeoutsSuite.class,
+        InterceptorsSuite.class,
         ParamsBaseSuite.class,
         ParamsCRestSuite.class,
         ParamsJaxRsSuite.class,
         RequestsCRestSuite.class,
         RequestsJaxRsSuite.class,
-        DeserializationsCRestSuite.class,
-        DeserializationsJaxRsSuite.class,
-        ErrorHandlersTest.class
+        SecuritySuite.class,
+        TimeoutsSuite.class
 })
 public class CRestAllSuite {
 }

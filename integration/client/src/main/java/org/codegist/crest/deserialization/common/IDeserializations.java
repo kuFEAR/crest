@@ -34,6 +34,8 @@ public interface IDeserializations {
 
     int[] getInts(int[] values);
 
+    long[] getLongs(long[] values);
+
     String get();
 
     void nothing(String value);

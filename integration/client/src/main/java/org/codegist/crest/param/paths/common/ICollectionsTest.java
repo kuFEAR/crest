@@ -20,11 +20,7 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.annotate.*;
-
 import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 import static org.codegist.crest.param.common.ICollectionsTest.Tests.DefaultLists;
 
@@ -35,22 +31,6 @@ public class ICollectionsTest<T extends ICollectionsTest.ICollections> extends o
 
     public ICollectionsTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/path/collection")
-    @GET
-    public static interface Collections extends org.codegist.crest.param.common.ICollectionsTest.ICollections {
-
-
-        @Path("merging/{p1}/{p2}/{p3}/{p4}")
-        @ListSeparator("(def)")
-        String merging(
-                @PathParam("p1") String[] p1,
-                @PathParam("p2") @ListSeparator("(p2)") boolean[] p2,
-                @PathParam("p3") @ListSeparator("(p3)") List<Integer> p3,
-                @PathParam("p4") @ListSeparator("(p4)") Set<Long> p4);
-
     }
 
     @Override

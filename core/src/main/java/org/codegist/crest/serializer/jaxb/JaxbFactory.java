@@ -31,42 +31,44 @@ import java.util.Map;
  */
 final class JaxbFactory {
 
-    static final Long DEFAULT_MAX_WAIT = 30000l;
-    static final String POOL_RETRIEVAL_MAX_WAIT_PROP = "jaxb.pool.retrieval-max-wait";
-    static final String CUSTOM_JAXB = "jaxb.custom";
-    static final String MODEL_PACKAGE = "jaxb.model.package";
-    static final String MODEL_FACTORY_CLASS = "jaxb.model.factory-class";
+    private static final Long DEFAULT_MAX_WAIT = 30000l;
+    static final String POOL_RETRIEVAL_MAX_WAIT = "#pool.retrieval.max-wait";
+    static final String JAXB = "#jaxb";
+    static final String MODEL_PACKAGE = "#model.package";
+    static final String MODEL_FACTORY_CLASS = "#model.factory-class";
 
     private JaxbFactory(){
         throw new IllegalStateException();
     }
 
-    static Jaxb create(Map<String,Object> crestProperties) throws JAXBException {
-        Jaxb jaxb = CRestProperty.get(crestProperties, CUSTOM_JAXB);
+    static Jaxb create(Map<String,Object> crestProperties, Class<?> source) throws JAXBException {
+        String prefix = source.getName();
+        Jaxb jaxb = CRestProperty.get(crestProperties, prefix + JAXB);
         if(jaxb != null) {
             return jaxb;
         }
 
-        String modelPackage = CRestProperty.get(crestProperties, MODEL_PACKAGE);
-        Class<?> modelFactory = CRestProperty.get(crestProperties, MODEL_FACTORY_CLASS);
+        String modelPackage = CRestProperty.get(crestProperties, prefix + MODEL_PACKAGE);
+        Class<?> modelFactory = CRestProperty.get(crestProperties, prefix + MODEL_FACTORY_CLASS);
 
         if(modelPackage != null) {
-            return create(crestProperties, modelPackage);
+            return create(crestProperties, source, modelPackage);
         }else if(modelFactory != null)  {
-            return create(crestProperties, modelFactory);
+            return create(crestProperties, source, modelFactory);
         }else{
-            return new TypeCachingJaxb(crestProperties);
+            return new TypeCachingJaxb(crestProperties, source);
         }
     }
-    static Jaxb create(Map<String,Object> crestProperties, String context) throws JAXBException {
-        return create(JAXBContext.newInstance(context), crestProperties);
+    static Jaxb create(Map<String,Object> crestProperties, Class<?> source, String context) throws JAXBException {
+        return create(crestProperties, source, JAXBContext.newInstance(context));
     }
-    static Jaxb create(Map<String,Object> crestProperties, Class<?>... classToBeBound) throws JAXBException {
-        return create(JAXBContext.newInstance(classToBeBound), crestProperties);
+    static Jaxb create(Map<String,Object> crestProperties, Class<?> source, Class<?>... classToBeBound) throws JAXBException {
+        return create(crestProperties, source, JAXBContext.newInstance(classToBeBound));
     }
-    static Jaxb create(JAXBContext jaxb, Map<String,Object> crestProperties) throws JAXBException {
+    static Jaxb create(Map<String,Object> crestProperties, Class<?> source, JAXBContext jaxb) throws JAXBException {
+        String prefix = source.getName();
         int poolSize = CRestProperty.getConcurrencyLevel(crestProperties);
-        long maxWait = CRestProperty.get(crestProperties, POOL_RETRIEVAL_MAX_WAIT_PROP, DEFAULT_MAX_WAIT);
+        long maxWait = CRestProperty.get(crestProperties, prefix + POOL_RETRIEVAL_MAX_WAIT, DEFAULT_MAX_WAIT);
 
         if (poolSize == 1) {
             return new SimpleJaxb(jaxb);

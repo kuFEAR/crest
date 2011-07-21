@@ -56,8 +56,12 @@ public class DeserializationsTest extends CommonDeserializationsTest<org.codegis
         InputStream inputStream(@QueryParam("value") String value);
 
         @GET
-        @Path("primitives")
-        int[] primitives(@QueryParam("value") int[] values);
+        @Path("ints")
+        int[] getInts(@QueryParam("value") int[] values);
+
+        @GET
+        @Path("ints")
+        long[] getLongs(@QueryParam("value") long[] values);
 
         @GET
         @Path("get")

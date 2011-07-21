@@ -18,15 +18,25 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.param.matrixes.common;
+package org.codegist.crest.config.annotate;
+
+import org.codegist.crest.annotate.Deserializer;
+import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class IBasicsTest<T extends IBasicsTest.IBasics> extends org.codegist.crest.param.common.IBasicsTest<T> {
+public class DeserializerAnnotationHandler extends NoOpAnnotationHandler<Deserializer> {
 
-    public IBasicsTest(CRestHolder crest, Class<T> clazz) {
-        super(crest, clazz);
+    @Override
+    public void handleInterfaceAnnotation(Deserializer annotation, InterfaceConfigBuilder builder) throws Exception {
+        builder.setMethodsDeserializer(annotation.value());
     }
 
+    @Override
+    public void handleMethodAnnotation(Deserializer annotation, MethodConfigBuilder builder) throws Exception {
+        builder.setDeserializer(annotation.value());
+    }
+    
 }

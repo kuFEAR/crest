@@ -20,8 +20,6 @@
 
 package org.codegist.crest.param.queries.common;
 
-import org.codegist.crest.annotate.*;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -31,23 +29,4 @@ public class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> ext
         super(crest, clazz);
     }
 
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/query/default-value")
-    @GET
-    public static interface DefaultValues extends org.codegist.crest.param.common.IDefaultValuesTest.IDefaultValues {
-
-        @Path("value")
-        String value(
-                @QueryParam(value = "p1", defaultValue = "default-p1") String p1,
-                @QueryParam(value = "p2", defaultValue = "123") Integer p2);
-
-        @QueryParam(value = "p2", defaultValue = "p2-val")
-        @QueryParams({
-                @QueryParam(value = "p1", defaultValue = "p1-val"),
-                @QueryParam(value = "p3", defaultValue = "p3-val")
-        })
-        @Path("param")
-        String param(@QueryParam("p1") String p1);
-
-    }
 }

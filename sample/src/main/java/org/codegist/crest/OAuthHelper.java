@@ -20,16 +20,14 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
-import org.codegist.crest.security.oauth.v1.OAuthenticatorV1;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+
+import static org.codegist.crest.config.MethodType.POST;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -47,8 +45,8 @@ public class OAuthHelper {
 //        "http://www.flickr.com/services/oauth/authorize?oauth_token=%s");
         // Yahoo
         OAuthHelper.doAccessTokenRetrievalWorkflow(
-        "dj0yJmk9aldLMDF5aVZHZ29uJmQ9WVdrOVJWTmtZbmg1TlRRbWNHbzlNVEkxTkRRMk9EazJNZy0tJnM9Y29uc3VtZXJzZWNyZXQmeD04Mw--",
-        "57508d207cf3b6ca583d491dba9a8d33162da3cf",
+        "",
+        "",
         "https://api.login.yahoo.com/oauth/v2/get_request_token",
         "https://api.login.yahoo.com/oauth/v2/get_token",
         "https://api.login.yahoo.com/oauth/v2/get_token",
@@ -66,15 +64,9 @@ public class OAuthHelper {
 
 
     private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret,String requestUrl, String accessUrl, String refreshUrl, String redirect) throws Exception {
-        OAuthToken consumerOAuthToken = new OAuthToken(consumerTok, consumerSecret);
-        Map<String, Object> config = new HashMap<String, Object>();
-        config.put(OAuthApiV1Builder.CONFIG_TOKEN_REQUEST_URL, requestUrl);
-        config.put(OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_URL, accessUrl);
-        config.put(OAuthApiV1Builder.CONFIG_TOKEN_ACCESS_REFRESH_URL, refreshUrl);
+        OAuthApi api = OAuthApiV1Builder.build(new OAuthToken(consumerTok, consumerSecret),
+                                               POST, requestUrl, accessUrl, refreshUrl);
 
-        OAuthApi api = OAuthApiV1Builder.build(HttpClientHttpChannelFactory.newHttpChannelInitiator(), config, new OAuthenticatorV1(consumerOAuthToken));
-
-        
         OAuthToken tok = api.getRequestToken();
 
         System.out.println("RequestToken=" + tok);

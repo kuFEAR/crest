@@ -39,7 +39,7 @@ public class HttpResourceInputStream extends InputStreamWrapper {
     private final AtomicBoolean closed = new AtomicBoolean(false);
 
     public HttpResourceInputStream(HttpResource resource) throws IOException {
-        super(resource.getContent());
+        super(resource.getEntity());
         this.resource = resource;
     }
 

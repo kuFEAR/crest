@@ -25,6 +25,7 @@ import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Method;
@@ -55,6 +56,8 @@ public interface InterfaceConfigBuilder {
     InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter);
 
     InterfaceConfigBuilder setMethodsConsumes(String... mimeType);
+
+    InterfaceConfigBuilder setMethodsDeserializer(Class<? extends Deserializer> deserializer);
 
     InterfaceConfigBuilder setMethodsProduces(String contentType);
 

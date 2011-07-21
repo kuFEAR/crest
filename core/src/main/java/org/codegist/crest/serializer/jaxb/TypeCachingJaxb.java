@@ -40,9 +40,11 @@ class TypeCachingJaxb implements Jaxb {
 
     private final Map<String,Object> crestProperties;
     private final ConcurrentMap<Set<Class<?>>, Jaxb> cache = new ConcurrentHashMap<Set<Class<?>>, Jaxb>();
+    private final Class<?> source;
 
-    TypeCachingJaxb(Map<String, Object> crestProperties) {
+    TypeCachingJaxb(Map<String, Object> crestProperties, Class<?> source) {
         this.crestProperties = crestProperties;
+        this.source = source;
     }
 
     public <T> void marshal(T object, OutputStream out, Charset charset) throws Exception {
@@ -70,7 +72,7 @@ class TypeCachingJaxb implements Jaxb {
     private Jaxb get(Set<Class<?>> key) throws JAXBException {
         Jaxb jaxb = cache.get(key);
         if(jaxb == null) {
-            jaxb = JaxbFactory.create(crestProperties, key.toArray(new Class<?>[key.size()]));
+            jaxb = JaxbFactory.create(crestProperties, source, key.toArray(new Class<?>[key.size()]));
             Jaxb previousJaxb = cache.putIfAbsent(key, jaxb);
             jaxb = previousJaxb != null ? previousJaxb : jaxb;
         }

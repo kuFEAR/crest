@@ -26,7 +26,7 @@ import org.codegist.crest.annotate.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -45,11 +45,12 @@ public class TimeoutsTest extends BaseCRestTest<TimeoutsTest.Timeouts> {
         return crest(byRestServices());
     }
 
-    @Test(expected= IOException.class)
+    @Test(expected= SocketTimeoutException.class)
     public void testSocketTimeout_Timeout() throws Throwable {
         try {
-            toTest.socketTimeout(200);
+            toTest.socketTimeout(300);
         }catch(CRestException e){
+            Thread.sleep(110); // sleep a bit so that the server stop to sleep and is available again
             throw e.getCause();
         }
     }
@@ -61,22 +62,33 @@ public class TimeoutsTest extends BaseCRestTest<TimeoutsTest.Timeouts> {
 
     @Test
     public void testOverridenSocketTimeout_Timeout() throws Throwable {
-        assertEquals("ok", toTest.overridenSocketTimeout(200));
+        assertEquals("ok", toTest.overridenSocketTimeout(300));
     }
 
-// TODO how to test that ?
 //    @Test(expected= IOException.class)
 //    public void testConnectionTimeout_Timeout() throws Throwable {
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                System.out.println("BUSY");
+//                toTest.busy(50000);
+//            }
+//        }.start();
+//        Thread.sleep(10);
 //        try {
-//            toTest.connectionTimeout(200);
+//            System.out.println("connectionTimeout");
+//            toTest.connectionTimeout(0);
 //        }catch(CRestException e){
+//            System.out.println(e.getCause());
+//            Thread.sleep(200);// sleep a bit so that the server stop to sleep and is available again
 //            throw e.getCause();
 //        }
 //    }
-//    @Test
-//    public void testOverridenConnectionTimeout_Timeout() throws Throwable {
-//        assertEquals("connection-timeout() timeout=200", toTest.overridenConnectionTimeout(200));
-//    }
+
+    @Test
+    public void testOverridenConnectionTimeout_Timeout() throws Throwable {
+        assertEquals("ok", toTest.overridenConnectionTimeout(150));
+    }
 
     @Test
     public void testConnetionTimeout_NoTimeout() {
@@ -86,8 +98,13 @@ public class TimeoutsTest extends BaseCRestTest<TimeoutsTest.Timeouts> {
     @EndPoint("{crest.server.end-point}")
     @Path("timeout")
     @ConnectionTimeout(100)
-    @SocketTimeout(100)
+    @SocketTimeout(200)
     public interface Timeouts{
+
+        @ConnectionTimeout(5000)
+        @SocketTimeout(5000)
+        @Path("make-busy")
+        String busy(@QueryParam("millis") int millis);
 
         @ConnectionTimeout(5000)
         @Path("connection-timeout")
@@ -97,6 +114,7 @@ public class TimeoutsTest extends BaseCRestTest<TimeoutsTest.Timeouts> {
         @Path("socket-timeout")
         String overridenSocketTimeout(@QueryParam("timeout") int timeout);
 
+        @SocketTimeout(5000)
         @Path("connection-timeout")
         String connectionTimeout(@QueryParam("timeout") int timeout);
 

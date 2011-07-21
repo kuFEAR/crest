@@ -20,10 +20,6 @@
 
 package org.codegist.crest.param.matrixes.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.Collection;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -31,23 +27,5 @@ public class IEncodingsTest<T extends IEncodingsTest.IEncodings> extends org.cod
 
     public IEncodingsTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/matrix/encoding")
-    @GET
-    public static interface Encodings extends org.codegist.crest.param.common.IEncodingsTest.IEncodings {
-
-        @Path("default")
-        String defaults(
-                @MatrixParam("p1") String p1,
-                @MatrixParam("p2") Collection<String> p2);
-
-        @Path("encoded")
-        @Encoded
-        String encoded(
-                @MatrixParam("p1") String p1,
-                @MatrixParam("p2") Collection<String> p2);
-
     }
 }

@@ -20,6 +20,10 @@
 
 package org.codegist.crest.io.http;
 
+import org.codegist.common.io.IOs;
+import org.codegist.common.log.Logger;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -31,11 +35,12 @@ import java.util.zip.GZIPInputStream;
  */
 class HttpChannelResponseHttpResource implements HttpResource {
 
+    private static final Logger LOGGER = Logger.getLogger("org.codegist.crest.io.http.HttpResponse");
     private final HttpChannel.Response response;
+    private final InputStream inputStream;
     private final String contentEncoding;
     private final Charset charset;
     private final String contentType;
-    private final boolean zipped;
 
     HttpChannelResponseHttpResource(HttpChannel.Response response) throws IOException {
         this.response = response;
@@ -43,7 +48,7 @@ class HttpChannelResponseHttpResource implements HttpResource {
         this.contentType = ct.mimeType;
         this.charset = ct.charset;
         this.contentEncoding =  response.getContentEncoding();
-        this.zipped = "gzip".equals(contentEncoding);
+        this.inputStream = getEntity(response, charset);
     }
 
     public String getContentType() {
@@ -58,8 +63,8 @@ class HttpChannelResponseHttpResource implements HttpResource {
         return contentEncoding;
     }
 
-    public InputStream getContent() throws IOException {
-        return !zipped ? response.getStream() : new GZIPInputStream(response.getStream());
+    public InputStream getEntity() throws IOException {
+        return inputStream;
     }
 
     public String getStatusMessage() throws IOException {
@@ -72,6 +77,19 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
     public void close() throws IOException {
         response.close();
+    }
+
+
+    private static InputStream getEntity(HttpChannel.Response response, Charset charset) throws IOException {
+        InputStream stream = "gzip".equals(response.getContentEncoding()) ? new GZIPInputStream(response.getEntity()) : response.getEntity();
+        if(!LOGGER.isTraceOn()) {
+            return stream;
+        }else{
+            byte[] dump = IOs.toByteArray(stream, true);
+            LOGGER.trace("Received Http Response");
+            LOGGER.trace(new String(dump, charset));
+            return new ByteArrayInputStream(dump);
+        }
     }
 
     private static final class ContentType {

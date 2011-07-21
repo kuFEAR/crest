@@ -25,7 +25,7 @@ import org.codegist.common.lang.Disposable;
 import org.codegist.crest.io.DelegatingResponse;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.io.ResponseDeserializer;
+import org.codegist.crest.serializer.ResponseDeserializer;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -20,8 +20,6 @@
 
 package org.codegist.crest.param.matrixes.common;
 
-import org.codegist.crest.annotate.*;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -31,23 +29,4 @@ public class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> ext
         super(crest, clazz);
     }
 
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/matrix/default-value")
-    @GET
-    public static interface DefaultValues extends org.codegist.crest.param.common.IDefaultValuesTest.IDefaultValues {
-
-        @Path("value")
-        String value(
-                @MatrixParam(value = "p1", defaultValue = "default-p1") String p1,
-                @MatrixParam(value = "p2", defaultValue = "123") Integer p2);
-
-        @MatrixParam(value = "p2", defaultValue = "p2-val")
-        @MatrixParams({
-                @MatrixParam(value = "p1", defaultValue = "p1-val"),
-                @MatrixParam(value = "p3", defaultValue = "p3-val")
-        })
-        @Path("param")
-        String param(@MatrixParam("p1") String p1);
-
-    }
 }

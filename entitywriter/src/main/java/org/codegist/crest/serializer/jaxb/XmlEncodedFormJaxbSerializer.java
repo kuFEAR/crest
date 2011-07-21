@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 
@@ -35,15 +34,19 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static org.codegist.crest.CRestProperty.get;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public class XmlEncodedFormJaxbSerializer implements Serializer<List<Param>> {
 
-    public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = JaxbFactory.POOL_RETRIEVAL_MAX_WAIT_PROP;
-    public static final String CUSTOM_JAXB = JaxbFactory.CUSTOM_JAXB;
-    public static final String MODEL_PACKAGE = JaxbFactory.MODEL_PACKAGE;
-    public static final String MODEL_FACTORY_CLASS = JaxbFactory.MODEL_FACTORY_CLASS;
+    private static final String PREFIX = XmlEncodedFormJaxbSerializer.class.getName();
+    public static final String POOL_RETRIEVAL_MAX_WAIT_PROP = PREFIX + JaxbFactory.POOL_RETRIEVAL_MAX_WAIT;
+    public static final String JAXB_PROP = PREFIX + JaxbFactory.JAXB;
+    public static final String MODEL_PACKAGE_PROP = PREFIX + JaxbFactory.MODEL_PACKAGE;
+    public static final String MODEL_FACTORY_CLASS_PROP = PREFIX + JaxbFactory.MODEL_FACTORY_CLASS;
+    public static final String WRAPPER_ELEMENT_NAME_PROP = PREFIX + "#wrapper.element-name";
 
     public static final String DEFAULT_WRAPPER_ELEMENT_NAME = "form-data";
 
@@ -51,8 +54,8 @@ public class XmlEncodedFormJaxbSerializer implements Serializer<List<Param>> {
     private final QName wrapperElementName;
 
     public XmlEncodedFormJaxbSerializer(Map<String, Object> config) throws JAXBException {
-        this.jaxb = JaxbFactory.create(config);
-        this.wrapperElementName = new QName(CRestProperty.get(config, "crest.entity.writer.xml.element-name", DEFAULT_WRAPPER_ELEMENT_NAME));
+        this.jaxb = JaxbFactory.create(config, getClass());
+        this.wrapperElementName = new QName(get(config, WRAPPER_ELEMENT_NAME_PROP, DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
     public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {

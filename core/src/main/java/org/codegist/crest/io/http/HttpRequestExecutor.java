@@ -27,8 +27,12 @@ import org.codegist.common.log.Logger;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.PathBuilder;
-import org.codegist.crest.io.*;
+import org.codegist.crest.io.Request;
+import org.codegist.crest.io.RequestException;
+import org.codegist.crest.io.RequestExecutor;
+import org.codegist.crest.io.Response;
 import org.codegist.crest.param.EncodedPair;
+import org.codegist.crest.serializer.ResponseDeserializer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

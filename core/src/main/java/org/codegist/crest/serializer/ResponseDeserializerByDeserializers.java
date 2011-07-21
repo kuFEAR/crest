@@ -18,11 +18,11 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.io.Response;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -43,10 +43,12 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
         isTrue(deserializers.length > 0, "No pre-configured deserializers found for request's method, cancelling deserialization");
 
         InputStream pStream = response.asStream();
-        if (deserializers.length > 1) {// user specific unique expected mime type, worse scenario, need to dump response in memory to retry if deserialization fails
+        if (deserializers.length > 1) {
+            // user specified more than one serializer: worse case scenario, need to dump response in memory to retry if deserialization fails
             pStream = new ByteArrayInputStream(toByteArray(pStream, true));
         }
-        for (Deserializer deserializer : deserializers) { /*  */
+        Exception deserilizationException = null;
+        for (Deserializer deserializer : deserializers) {
             try {
                 LOG.debug("Trying to deserialize response with user specified deserializer: %s.", deserializer);
                 return deserializer.<T>deserialize(
@@ -56,8 +58,9 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
                         response.getCharset());
             } catch (Exception e) {
                 LOG.warn(e, "Failed to deserialize response with user specified deserializer: %s. Trying next.", deserializer);
+                deserilizationException = e;
             }
         }
-        throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers));
+        throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers), deserilizationException);
     }
 }

@@ -18,15 +18,26 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.param.matrixes.common;
+package org.codegist.crest.util;
+
+import org.codegist.common.io.IOs;
+import org.codegist.crest.serializer.Deserializer;
+
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class IBasicsTest<T extends IBasicsTest.IBasics> extends org.codegist.crest.param.common.IBasicsTest<T> {
-
-    public IBasicsTest(CRestHolder crest, Class<T> clazz) {
-        super(crest, clazz);
+public class CommaSeparatedLongDeserializer implements Deserializer {
+    public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
+        String[] ints = IOs.toString(stream, charset, true).split(",");
+        long[] intPrims = new long[ints.length];
+        int i = 0;
+        for(String in : ints){
+            intPrims[i++] = Long.parseLong(in);
+        }
+        return (T) intPrims;
     }
-
 }

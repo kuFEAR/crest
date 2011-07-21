@@ -20,14 +20,6 @@
 
 package org.codegist.crest.param.queries.common;
 
-import org.codegist.crest.annotate.*;
-import org.codegist.crest.util.BunchOfDataSerializer;
-import org.codegist.crest.util.DataSerializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
-
-import java.util.Collection;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -35,31 +27,5 @@ public class ISerializersTest<T extends ISerializersTest.ISerializers> extends o
 
     public ISerializersTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/query/serializer")
-    @GET
-    public static interface Serializers extends org.codegist.crest.param.common.ISerializersTest.ISerializers {
-
-        @Path("default")
-        String defaults(
-                @QueryParam("p1") Data p1,
-                @QueryParam("p2") Collection<BunchOfData<Data>> p2,
-                @QueryParam("p3") BunchOfData<Data>[] p3);
-
-
-        @Path("configured")
-        String configured(
-                @QueryParam("p1") @Serializer(DataSerializer.class) Data p1,
-                @QueryParam("p2") @Serializer(BunchOfDataSerializer.class) Collection<BunchOfData<Data>> p2,
-                @QueryParam("p3") @Serializer(BunchOfDataSerializer.class) BunchOfData<Data>[] p3);
-
-        @Path("null")
-        String nulls(
-                @QueryParam("p1") @Serializer(DataSerializer.class) Data p1,
-                @QueryParam("p2") @Serializer(BunchOfDataSerializer.class) Collection<BunchOfData<Data>> p2,
-                @QueryParam("p3") @Serializer(BunchOfDataSerializer.class) BunchOfData<Data>[] p3);
-
     }
 }

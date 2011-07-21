@@ -23,6 +23,7 @@ package org.codegist.crest.deserialization.crest;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonDeserializationsTest;
 import org.codegist.crest.deserialization.common.IDeserializations;
+import org.codegist.crest.util.CommaSeparatedLongDeserializer;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -52,6 +53,10 @@ public class DeserializationsTest extends CommonDeserializationsTest<Deserializa
 
         @Path("ints")
         int[] getInts(@QueryParam("value") int[] values);
+
+        @Path("ints")
+        @Deserializer(CommaSeparatedLongDeserializer.class)
+        long[] getLongs(@QueryParam("value") long[] values);
 
         @Path("get")
         String get();

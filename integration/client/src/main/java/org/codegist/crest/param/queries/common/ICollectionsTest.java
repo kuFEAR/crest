@@ -20,11 +20,6 @@
 
 package org.codegist.crest.param.queries.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.List;
-import java.util.Set;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -34,26 +29,4 @@ public class ICollectionsTest<T extends ICollectionsTest.ICollections> extends o
         super(crest, clazz);
     }
 
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/query/collection")
-    @GET
-    public static interface Collections extends org.codegist.crest.param.common.ICollectionsTest.ICollections {
-
-
-        @Path("default")
-        String defaults(
-                @QueryParam("p1") String[] p1,
-                @QueryParam("p2") boolean[] p2,
-                @QueryParam("p3") List<Integer> p3,
-                @QueryParam("p4") Set<Long> p4);
-
-        @Path("merging")
-        @ListSeparator("(def)")
-        String merging(
-                @QueryParam("p1") String[] p1,
-                @QueryParam("p2") @ListSeparator("(p2)") boolean[] p2,
-                @QueryParam("p3") @ListSeparator("(p3)") List<Integer> p3,
-                @QueryParam("p4") @ListSeparator("(p4)") Set<Long> p4);
-
-    }
 }

@@ -23,41 +23,38 @@ package org.codegist.crest.security.oauth.v1;
 import org.codegist.crest.CRest;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
+import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
-import org.codegist.crest.serializer.ToStringSerializer;
 
-import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.PARAM_CONFIG_DEFAULT_SERIALIZER;
-import static org.codegist.crest.CRestProperty.get;
-import static org.codegist.crest.config.MethodType.POST;
+import static org.codegist.common.lang.Strings.defaultIfEmpty;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public final class OAuthApiV1Builder {
 
-    public static final String CONFIG_OAUTH_METHOD = OAuthApiV1.class.getName() + "#oauth.method";
-    public static final String CONFIG_TOKEN_ACCESS_REFRESH_URL = OAuthApiV1.class.getName() + "#access.refresh.url";
-    public static final String CONFIG_TOKEN_REQUEST_URL = OAuthApiV1.class.getName() + "#request.url";
-    public static final String CONFIG_TOKEN_ACCESS_URL = OAuthApiV1.class.getName() + "#access.url";
-
     private OAuthApiV1Builder(){
         throw new IllegalStateException();
     }
 
-    public static OAuthApiV1 build(HttpChannelFactory channelFactory, Map<String, Object> crestProperties, OAuthenticatorV1 oAuthenticatorV1) throws Exception {
-        MethodType methodType = MethodType.valueOf(get(crestProperties, CONFIG_OAUTH_METHOD, POST.name()));
-        String requestTokenUrl = get(crestProperties, CONFIG_TOKEN_REQUEST_URL, "");
-        String accessTokenUrl = get(crestProperties, CONFIG_TOKEN_ACCESS_URL, "");
-        String refreshAccessTokenUrl = get(crestProperties, CONFIG_TOKEN_ACCESS_REFRESH_URL, "");
+    public static OAuthApiV1 build(OAuthToken consumerToken, MethodType methodType, String requestTokenUrl, String accessTokenUrl, String refreshAccessTokenUrl) throws Exception {
+        HttpChannelFactory channelFactory = new HttpURLConnectionHttpChannelFactory();
+        OAuthenticatorV1 oAuthenticatorV1 = new OAuthenticatorV1(consumerToken);
+        return build(channelFactory, oAuthenticatorV1, methodType, requestTokenUrl, accessTokenUrl, refreshAccessTokenUrl);
+    }
 
-        OAuthInterface oauthInterface = CRest.placeholder("oauth.access-token-path", accessTokenUrl)
-                                             .placeholder("oauth.request-token-path", requestTokenUrl)
-                                             .placeholder("oauth.refresh-access-token-path", refreshAccessTokenUrl)
-                                             .bindDeserializer(TokenDeserializer.class, OAuthToken.class)
+    public static OAuthApiV1 build(
+            HttpChannelFactory channelFactory,
+            OAuthenticatorV1 oAuthenticatorV1,
+            MethodType methodType,
+            String requestTokenUrl,
+            String accessTokenUrl,
+            String refreshAccessTokenUrl) throws Exception {
+
+        OAuthInterface oauthInterface = CRest.placeholder("oauth.access-token-path", defaultIfEmpty(accessTokenUrl,""))
+                                             .placeholder("oauth.request-token-path", defaultIfEmpty(requestTokenUrl,""))
+                                             .placeholder("oauth.refresh-access-token-path", defaultIfEmpty(refreshAccessTokenUrl,""))
                                              .setHttpChannelFactory(channelFactory)
-                                             .setProperty(PARAM_CONFIG_DEFAULT_SERIALIZER, new ToStringSerializer())
                                              .build(methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class);
 
         return new OAuthApiV1(

@@ -20,11 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.annotate.EndPoint;
-import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.Path;
-import org.codegist.crest.annotate.PathParam;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -32,19 +27,5 @@ public class IBasicsTest<T extends IBasicsTest.IBasics> extends org.codegist.cre
 
     public IBasicsTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/path/basic")
-    @GET
-    public static interface Basics extends org.codegist.crest.param.common.IBasicsTest.IBasics {
-
-        String send();
-
-        @Path("{p1}/{p2}")
-        String send(
-                @PathParam("p1") String p1,
-                @PathParam("p2") int p2);
-
     }
 }

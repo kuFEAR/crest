@@ -18,10 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.io.Response;
 import org.codegist.crest.util.Registry;
 
 import static org.codegist.common.lang.Validate.isTrue;
@@ -29,23 +29,24 @@ import static org.codegist.common.lang.Validate.isTrue;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ResponseDeserializerByClass implements ResponseDeserializer {
+public class ResponseDeserializerByMimeType implements ResponseDeserializer {
 
-    private static final Logger LOG = Logger.getLogger(ResponseDeserializerByClass.class);
-    private final Registry<Class<?>, Deserializer> classDeserializerRegistry;
+    private static final Logger LOG = Logger.getLogger(ResponseDeserializerByMimeType.class);
+    private final Registry<String, Deserializer> mimeDeserializerRegistry;
 
-    public ResponseDeserializerByClass(Registry<Class<?>, Deserializer> classDeserializerRegistry) {
-        this.classDeserializerRegistry = classDeserializerRegistry;
+    public ResponseDeserializerByMimeType(Registry<String, Deserializer> mimeDeserializerRegistry) {
+        this.mimeDeserializerRegistry = mimeDeserializerRegistry;
     }
 
     public <T> T deserialize(Response response) throws Exception {
-        Class<T> type = (Class<T>) response.getExpectedType();
-        isTrue(classDeserializerRegistry.contains(type), "Unknown class %s, cancelling deserialization", type);
-        LOG.debug("Trying to deserialize response to Type: %s.", type);
-        return classDeserializerRegistry.get(type).<T>deserialize(
-                type,
+        String mimeType = response.getContentType();
+        isTrue(mimeDeserializerRegistry.contains(mimeType), "Unknown mimeType %s, cancelling deserialization", mimeType);
+        LOG.debug("Trying to deserialize response to Mime Type: %s.", mimeType);
+        return mimeDeserializerRegistry.get(mimeType).<T>deserialize(
+                (Class<T>) response.getExpectedType(),
                 response.getExpectedGenericType(),
                 response.asStream(),
                 response.getCharset());
     }
+
 }

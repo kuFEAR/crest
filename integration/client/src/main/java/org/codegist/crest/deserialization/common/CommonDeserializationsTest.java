@@ -79,6 +79,13 @@ public class CommonDeserializationsTest<T extends IDeserializations> extends Bas
     }
 
     @Test
+    public void testGetLongs() throws IOException {
+        long[] data = {-56,0,10,22,34};
+        long[] actual = toTest.getLongs(data);
+        assertArrayEquals(data, actual);
+    }
+
+    @Test
     public void testNothing() throws IOException {
         String data = "data-nothing";
         toTest.nothing(data);

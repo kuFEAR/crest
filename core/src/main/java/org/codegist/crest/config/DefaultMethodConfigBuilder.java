@@ -147,6 +147,11 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return this;
     }
 
+    public MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializer) {
+        this.deserializers.add(newInstance(deserializer));
+        return this;
+    }
+
     public MethodConfigBuilder setProduces(String contentType) {
         this.produces = ph(contentType);
         return this;

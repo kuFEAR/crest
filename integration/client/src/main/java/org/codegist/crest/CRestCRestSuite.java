@@ -22,7 +22,6 @@ package org.codegist.crest;
 
 import org.codegist.crest.annotate.AnnotatesSuite;
 import org.codegist.crest.deserialization.DeserializationsCRestSuite;
-import org.codegist.crest.handler.ErrorHandlersTest;
 import org.codegist.crest.handler.HandlersSuite;
 import org.codegist.crest.interceptor.InterceptorsSuite;
 import org.codegist.crest.param.ParamsBaseSuite;
@@ -43,8 +42,7 @@ import org.junit.runners.Suite;
         ParamsBaseSuite.class,
         ParamsCRestSuite.class,
         RequestsCRestSuite.class,
-        DeserializationsCRestSuite.class,
-        ErrorHandlersTest.class
+        DeserializationsCRestSuite.class
 })
 public class CRestCRestSuite {
 }

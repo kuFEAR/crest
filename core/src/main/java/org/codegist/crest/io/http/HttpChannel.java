@@ -51,7 +51,7 @@ public interface HttpChannel {
 
         String getStatusMessage() throws IOException;
 
-        InputStream getStream() throws IOException;
+        InputStream getEntity() throws IOException;
 
         String getContentType() throws IOException;
 

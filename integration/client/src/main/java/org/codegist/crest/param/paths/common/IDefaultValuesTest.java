@@ -20,8 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.annotate.*;
-
 import static java.lang.String.format;
 import static org.junit.Assert.assertEquals;
 
@@ -33,26 +31,6 @@ public class IDefaultValuesTest<T extends IDefaultValuesTest.IDefaultValues> ext
     public IDefaultValuesTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
     }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/path/default-value")
-    @GET
-    public static interface DefaultValues extends org.codegist.crest.param.common.IDefaultValuesTest.IDefaultValues {
-
-        @Path("value/{p1}/{p2}")
-        String value(
-                @PathParam(value = "p1", defaultValue = "default-p1") String p1,
-                @PathParam(value = "p2", defaultValue = "123") Integer p2);
-
-        @PathParam(value = "p2", defaultValue = "p2-val")
-        @PathParams({
-                @PathParam(value = "p3", defaultValue = "p3-val")
-        })
-        @Path("param/{p1}/{p2}/{p3}")
-        String param(@PathParam("p1") String p1);
-
-    }
-
 
     public void assertParamsValue(String p11, String p12, String p2, String p3, String defaultP01, String defaultP02, String defaultP03, String actual) {
         assertEquals(format("param() p1=%s p2=%s p3=%s p01=%s p02=%s p03=%s", p12, p2, p3, defaultP01, defaultP02, defaultP03), actual);

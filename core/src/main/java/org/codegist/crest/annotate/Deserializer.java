@@ -18,15 +18,20 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.param.matrixes.common;
+package org.codegist.crest.annotate;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class IBasicsTest<T extends IBasicsTest.IBasics> extends org.codegist.crest.param.common.IBasicsTest<T> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE,ElementType.METHOD})
+public @interface Deserializer {
 
-    public IBasicsTest(CRestHolder crest, Class<T> clazz) {
-        super(crest, clazz);
-    }
+    Class<? extends org.codegist.crest.serializer.Deserializer> value();
 
 }

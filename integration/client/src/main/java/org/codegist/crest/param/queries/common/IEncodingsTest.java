@@ -20,10 +20,6 @@
 
 package org.codegist.crest.param.queries.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.Collection;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -31,23 +27,5 @@ public class IEncodingsTest<T extends IEncodingsTest.IEncodings> extends org.cod
 
     public IEncodingsTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/query/encoding")
-    @GET
-    public static interface Encodings extends org.codegist.crest.param.common.IEncodingsTest.IEncodings {
-
-        @Path("default")
-        String defaults(
-                @QueryParam("p1") String p1,
-                @QueryParam("p2") Collection<String> p2);
-
-        @Path("encoded")
-        @Encoded
-        String encoded(
-                @QueryParam("p1") String p1,
-                @QueryParam("p2") Collection<String> p2);
-
     }
 }

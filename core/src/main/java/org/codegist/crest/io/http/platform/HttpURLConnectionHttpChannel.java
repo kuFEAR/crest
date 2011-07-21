@@ -20,7 +20,6 @@
 
 package org.codegist.crest.io.http.platform;
 
-import org.codegist.common.io.EmptyInputStream;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
@@ -106,9 +105,9 @@ public final class HttpURLConnectionHttpChannel implements HttpChannel {
             return con.getResponseMessage();
         }
 
-        public InputStream getStream() throws IOException {
+        public InputStream getEntity() throws IOException {
             if(getStatusCode() >= HTTP_BAD_REQUEST) {
-                return EmptyInputStream.INSTANCE;
+                return con.getErrorStream();
             }else{
                 return con.getInputStream();
             }

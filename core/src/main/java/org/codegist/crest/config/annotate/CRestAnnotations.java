@@ -76,6 +76,7 @@ public final class CRestAnnotations {
         handlers.put(Serializer.class, SerializerAnnotationHandler.class);
         handlers.put(SocketTimeout.class, SocketTimeoutAnnotationHandler.class);
         handlers.put(MultiPartEntity.class, MultiPartEntityAnnotationHandler.class);
+        handlers.put(Deserializer.class, DeserializerAnnotationHandler.class);
         MAPPING = Collections.unmodifiableMap(handlers);
     }
 }

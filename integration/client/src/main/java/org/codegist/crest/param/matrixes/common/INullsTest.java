@@ -20,10 +20,6 @@
 
 package org.codegist.crest.param.matrixes.common;
 
-import org.codegist.crest.annotate.*;
-
-import java.util.Collection;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -33,22 +29,4 @@ public class INullsTest<T extends INullsTest.INulls> extends org.codegist.crest.
         super(crest, clazz);
     }
 
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/matrix/null")
-    @GET
-    public static interface Nulls extends org.codegist.crest.param.common.INullsTest.INulls {
-
-        String nulls(
-                @MatrixParam("p1") String p1,
-                @MatrixParam("p2") Collection<String> p2,
-                @MatrixParam("p3") String[] p3);
-
-        @Path("merging")
-        String merging(
-                @MatrixParam("p1") String p1,
-                @MatrixParam("p2") @ListSeparator("(p2)") Collection<String> p2,
-                @MatrixParam("p3") @ListSeparator("(p3)") String[] p3);
-
-
-    }
 }

@@ -38,40 +38,38 @@ import java.util.Map;
  */
 final class SimpleXmlFactory {
 
-    private static final String SERIALIZER_PREFIX = "simplexml-serializer";
-    private static final String DESERIALIZER_PREFIX = "simplexml-deserializer";
-
-    static final String USER_SERIALIZER_PROP =  "user-serializer";
+    static final String SERIALIZER =  "#serializer";
 
     private SimpleXmlFactory(){
         throw new IllegalStateException();
     }
 
-    static Serializer createSerializer(Map<String,Object> cfg){
-        return create(cfg, SERIALIZER_PREFIX);
+    static Serializer createSerializer(Map<String,Object> crestProperties, Class<?> source){
+        return create(crestProperties, source);
     }
 
-    static Serializer createDeserializer(Map<String,Object> cfg){
-        return create(cfg, DESERIALIZER_PREFIX);
+    static Serializer createDeserializer(Map<String,Object> crestProperties, Class<?> source){
+        return create(crestProperties, source);
     }
 
-    private static Serializer create(Map<String,Object> config, String prefix){
-        Serializer serializer;
-        if(config.containsKey(prefix + "#" + USER_SERIALIZER_PROP)) {
-            serializer = CRestProperty.get(config, prefix + "#" + USER_SERIALIZER_PROP);
+    private static Serializer create(Map<String,Object> crestProperties, Class<?> source){
+        String prefix = source.getName();
+        Serializer serializer =  CRestProperty.get(crestProperties, prefix + "#" + SERIALIZER);
+        if(serializer != null) {
+            return serializer;
+        }
+
+        MatcherRegistry.Builder registry = new MatcherRegistry.Builder();
+        registry.bind(Date.class, new DateMatcher(CRestProperty.getDateFormat(crestProperties)));
+
+        String trueVal = CRestProperty.getBooleanTrue(crestProperties);
+        String falseVal = CRestProperty.getBooleanFalse(crestProperties);
+        registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
+
+        if(registry.hasTransformers()) {
+            serializer = new Persister(registry.build());
         }else{
-            MatcherRegistry.Builder registry = new MatcherRegistry.Builder();
-            registry.bind(Date.class, new DateMatcher(CRestProperty.getDateFormat(config)));
-
-            String trueVal = CRestProperty.getBooleanTrue(config);
-            String falseVal = CRestProperty.getBooleanFalse(config);
-            registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
-
-            if(registry.hasTransformers()) {
-                serializer = new Persister(registry.build());
-            }else{
-                serializer = new Persister();
-            }
+            serializer = new Persister();
         }
         return serializer;
     }

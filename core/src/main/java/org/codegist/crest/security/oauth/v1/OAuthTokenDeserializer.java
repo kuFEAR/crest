@@ -31,7 +31,7 @@ import java.util.Map;
 import static org.codegist.common.collect.Maps.filter;
 import static org.codegist.common.net.Urls.parseQueryString;
 
-class TokenDeserializer extends TypeDeserializer<OAuthToken> {
+class OAuthTokenDeserializer extends TypeDeserializer<OAuthToken> {
     @Override
     protected OAuthToken deserialize(InputStream stream, Charset charset) throws Exception {
         Map<String, String> tokens = parseQueryString(IOs.toString(stream, charset, true));

@@ -56,7 +56,7 @@ public final class HttpClientHttpChannelFactory implements HttpChannelFactory, D
     private static final int HTTPS_PORT = 443;
     private final HttpClient client;
 
-    private HttpClientHttpChannelFactory(HttpClient client) {
+    public HttpClientHttpChannelFactory(HttpClient client) {
         this.client = client;
     }
 
@@ -87,16 +87,16 @@ public final class HttpClientHttpChannelFactory implements HttpChannelFactory, D
         return new HttpClientHttpChannel(client, request);
     }
 
-    public static HttpChannelFactory newHttpChannelInitiator() {
-        return newHttpChannelInitiator(Collections.<String, Object>emptyMap());
+    public static HttpChannelFactory create() {
+        return create(Collections.<String, Object>emptyMap());
     }
     
-    public static HttpChannelFactory newHttpChannelInitiator(Map<String, Object> crestProperties) {
+    public static HttpChannelFactory create(Map<String, Object> crestProperties) {
         int concurrencyLevel = CRestProperty.getConcurrencyLevel(crestProperties);
-        return newHttpChannelInitiator(concurrencyLevel, concurrencyLevel);
+        return create(concurrencyLevel, concurrencyLevel);
     }
 
-    public static HttpChannelFactory newHttpChannelInitiator(int maxConcurrentConnection, int maxConnectionPerRoute) {
+    public static HttpChannelFactory create(int maxConcurrentConnection, int maxConnectionPerRoute) {
         DefaultHttpClient httpClient;
         if (maxConcurrentConnection > 1 || maxConnectionPerRoute > 1) {
             HttpParams params = new BasicHttpParams();

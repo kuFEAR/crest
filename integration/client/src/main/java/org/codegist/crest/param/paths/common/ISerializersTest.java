@@ -20,13 +20,6 @@
 
 package org.codegist.crest.param.paths.common;
 
-import org.codegist.crest.annotate.*;
-import org.codegist.crest.util.BunchOfDataSerializer;
-import org.codegist.crest.util.DataSerializer;
-import org.codegist.crest.util.model.BunchOfData;
-import org.codegist.crest.util.model.Data;
-
-import java.util.Collection;
 import java.util.EnumSet;
 
 import static java.lang.String.format;
@@ -40,26 +33,6 @@ public class ISerializersTest<T extends ISerializersTest.ISerializers> extends o
 
     public ISerializersTest(CRestHolder crest, Class<T> clazz) {
         super(crest, clazz);
-    }
-
-    @EndPoint("{crest.server.end-point}")
-    @Path("params/path/serializer")
-    @GET
-    public static interface Serializers extends org.codegist.crest.param.common.ISerializersTest.ISerializers {
-
-        @Path("default/{p1}/{p2}/{p3}")
-        String defaults(
-                @PathParam("p1") Data p1,
-                @PathParam("p2") @ListSeparator("(p2)") Collection<BunchOfData<Data>> p2,
-                @PathParam("p3") @ListSeparator("(p3)") BunchOfData<Data>[] p3);
-
-
-        @Path("configured/{p1}/{p2}/{p3}")
-        String configured(
-                @PathParam("p1") @Serializer(DataSerializer.class) Data p1,
-                @PathParam("p2") @ListSeparator("(p2)") @Serializer(BunchOfDataSerializer.class) Collection<BunchOfData<Data>> p2,
-                @PathParam("p3") @ListSeparator("(p3)") @Serializer(BunchOfDataSerializer.class) BunchOfData<Data>[] p3);
-
     }
 
     @Override

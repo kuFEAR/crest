@@ -36,7 +36,7 @@ public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>>
     private final ObjectMapper jackson;
 
     public JsonEncodedFormJacksonSerializer(Map<String, Object> config) {
-        this.jackson = JacksonFactory.createSerializer(config);
+        this.jackson = JacksonFactory.createSerializer(config, getClass());
     }
 
     public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {

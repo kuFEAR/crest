@@ -20,14 +20,12 @@
 
 package org.codegist.crest.security.oauth.v1;
 
-import org.codegist.crest.annotate.Encoded;
-import org.codegist.crest.annotate.FormParam;
-import org.codegist.crest.annotate.POST;
-import org.codegist.crest.annotate.Path;
+import org.codegist.crest.annotate.*;
 import org.codegist.crest.security.oauth.OAuthToken;
 
 @POST
 @Encoded
+@Deserializer(OAuthTokenDeserializer.class)
 interface PostOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")

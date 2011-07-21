@@ -31,10 +31,6 @@ public final class ParamProcessorFactory {
         throw new IllegalStateException();
     }
 
-    public static ParamProcessor newInstance(ParamType type){
-        return newInstance(type, null);
-    }
-
     public static ParamProcessor newInstance(ParamType type, String listSeparator){
         switch(type){
             case COOKIE:

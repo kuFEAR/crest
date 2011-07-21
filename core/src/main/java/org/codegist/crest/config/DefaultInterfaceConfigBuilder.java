@@ -5,6 +5,7 @@ import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Method;
@@ -114,6 +115,12 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
         return this;
     }
 
+    public InterfaceConfigBuilder setMethodsDeserializer(Class<? extends Deserializer> deserializer) {
+        for (MethodConfigBuilder b : methodBuilders.values()) {
+            b.setDeserializer(deserializer);
+        }
+        return this;
+    }
 
     public InterfaceConfigBuilder setMethodsProduces(String contentType) {
         for (MethodConfigBuilder b : methodBuilders.values()) {

@@ -25,6 +25,7 @@ import org.codegist.crest.CRestException;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.annotate.ErrorHandler;
 import org.codegist.crest.io.Request;
+import org.codegist.crest.io.RequestException;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -52,22 +53,24 @@ public class ErrorHandlersTest extends BaseCRestTest<ErrorHandlersTest.ErrorHand
         assertEquals("Hello!", toTest.handleError());
     }
 
-    @Test
-    public void testHttpCode400() {
+    @Test(expected = RequestException.class)
+    public void testHttpCode400() throws Throwable {
         try {
             toTest.httpCode(400);
             fail();
         }catch(CRestException e){
-            e.printStackTrace();
+            assertEquals("Bad Request", e.getMessage());
+            throw e.getCause();
         }
     }
-    @Test
-    public void testHttpCode500() {
+    @Test(expected = RequestException.class)
+    public void testHttpCode500() throws Throwable {
         try {
             toTest.httpCode(500);
             fail();
         }catch(CRestException e){
-            e.printStackTrace();
+            assertEquals("Internal Server Error", e.getMessage());
+            throw e.getCause();
         }
     }
 

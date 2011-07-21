@@ -25,6 +25,7 @@ import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
+import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 
 /**
@@ -37,6 +38,8 @@ public interface MethodConfigBuilder {
     MethodConfigBuilder setCharset(String charset);
 
     MethodConfigBuilder setConsumes(String... mimeTypes);
+
+    MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializer);
 
     MethodConfigBuilder setProduces(String contentType);
 

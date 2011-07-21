@@ -18,7 +18,9 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.serializer;
+
+import org.codegist.crest.io.Response;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.io.InputStream;
@@ -30,22 +29,25 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import static org.codegist.crest.CRestProperty.get;
+
 /**
  * @author laurent.gilles@codegist.org
  */
 public class SimpleXmlDeserializer implements Deserializer {
-    
-    public static final String STRICT_PROP =  SimpleXmlDeserializer.class.getName() + "#strict";
-    public static final String USER_SERIALIZER_PROP =  SimpleXmlFactory.USER_SERIALIZER_PROP;
 
-    static final boolean DEFAULT_STRICT = true;
+    private static final String PREFIX = SimpleXmlDeserializer.class.getName();
+    private static final boolean DEFAULT_STRICT = true;
+
+    public static final String STRICT_PROP =  PREFIX + "#strict";
+    public static final String SERIALIZER_PROP =  PREFIX + SimpleXmlFactory.SERIALIZER;
 
     private final boolean strict;
     private final org.simpleframework.xml.Serializer serializer;
 
     public SimpleXmlDeserializer(Map<String,Object> config) {
-        serializer = SimpleXmlFactory.createDeserializer(config);
-        strict = CRestProperty.get(config, STRICT_PROP, DEFAULT_STRICT);
+        serializer = SimpleXmlFactory.createDeserializer(config, getClass());
+        strict = get(config, STRICT_PROP, DEFAULT_STRICT);
     }
 
 

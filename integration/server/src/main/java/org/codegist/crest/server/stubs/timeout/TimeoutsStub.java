@@ -33,6 +33,13 @@ import javax.ws.rs.QueryParam;
 public class TimeoutsStub {
 
     @GET
+    @Path("make-busy")
+    public String busy(@QueryParam("millis") int millis) throws InterruptedException {
+        Thread.sleep(millis);
+        return "ok";
+    }
+
+    @GET
     @Path("connection-timeout")
     public String connectionTimeout(@QueryParam("timeout") int timeout) throws InterruptedException {
         if(timeout > 0) {
