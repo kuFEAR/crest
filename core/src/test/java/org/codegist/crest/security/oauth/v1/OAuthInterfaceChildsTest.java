@@ -21,8 +21,6 @@
 package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.util.Classes;
-import org.codegist.crest.util.Methods;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

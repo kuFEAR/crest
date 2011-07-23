@@ -20,12 +20,7 @@
 
 package org.codegist.crest.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

@@ -21,7 +21,6 @@
 package org.codegist.crest.security.oauth.v1;
 
 import java.security.SecureRandom;
-import java.util.Date;
 import java.util.Random;
 
 class DefaultVariantProvider implements VariantProvider {

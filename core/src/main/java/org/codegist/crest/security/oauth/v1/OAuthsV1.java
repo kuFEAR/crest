@@ -22,7 +22,6 @@ package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.common.codec.Base64;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestException;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.oauth.OAuthToken;
