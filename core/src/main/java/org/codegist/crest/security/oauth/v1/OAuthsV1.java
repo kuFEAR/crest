@@ -46,6 +46,7 @@ import static org.codegist.crest.util.Pairs.sortByNameAndValues;
  * @author laurent.gilles@codegist.org
  */
 final class OAuthsV1 {
+
     private OAuthsV1() {
         throw new IllegalStateException();
     }
@@ -144,7 +145,7 @@ final class OAuthsV1 {
                                                     OAuthToken accessOAuthToken,
                                                     EncodedPair... extras) throws UnsupportedEncodingException {
         List<EncodedPair> params = new ArrayList<EncodedPair>();
-        if(accessOAuthToken != null && accessOAuthToken != IGNORE_POISON) {
+        if(accessOAuthToken != IGNORE_POISON) {
             params.add(pair("oauth_token", accessOAuthToken.getToken()));
         }
         params.add(pair("oauth_consumer_key", consumerOAuthToken.getToken()));
@@ -156,11 +157,7 @@ final class OAuthsV1 {
         return params;
     }
 
-    static EncodedPair pair(String name, String value) {
-        try {
-            return Pairs.toPair(name, value, ENC, false);
-        } catch (UnsupportedEncodingException e) {
-            throw CRestException.handle(e);
-        }
+    static EncodedPair pair(String name, String value) throws UnsupportedEncodingException {
+        return Pairs.toPair(name, value, ENC);
     }
 }

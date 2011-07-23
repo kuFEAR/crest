@@ -31,18 +31,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static org.codegist.common.net.Urls.decode;
-import static org.codegist.crest.util.Pairs.join;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class OAuthTest {
+public abstract class OAuthTest {
 
-    protected final VariantProvider mockVariantProviderStub = mock(VariantProvider.class);
+    protected final VariantProvider mockVariantProvider = mock(VariantProvider.class);
 
     public static final Charset UTF_8 = Charset.forName("utf-8");
     public static final String GET_REQUEST_TOKEN_URL = "http://some-host:8182/get/request-token";
@@ -51,7 +49,6 @@ public class OAuthTest {
     public static final String URL_NO_QUERY = "http://some-host:8182/some/path";
 
     public static final EncodedPair[] PAIRS = {new SimpleEncodedPair("some", "query2"),new SimpleEncodedPair("string", "for%20test"),new SimpleEncodedPair("some", "query1")};
-    public static final String URL_QUERY = URL_NO_QUERY + "?" + join(asList(PAIRS),'&', '=');
 
     public static final String consumerKey= "dpf43f3p2l4k3l03";
     public static final String consumerSecret= "kd94hf93k423kf44";
@@ -69,14 +66,14 @@ public class OAuthTest {
 
     @Before
     public void setupVariantProvider(){
-        when(mockVariantProviderStub.nonce()).thenReturn(nonce);
-        when(mockVariantProviderStub.timestamp()).thenReturn(timestamp);
+        when(mockVariantProvider.nonce()).thenReturn(nonce);
+        when(mockVariantProvider.timestamp()).thenReturn(timestamp);
     }
 
     @After
     public void verifyVariantProvider(){
-        verify(mockVariantProviderStub).nonce();
-        verify(mockVariantProviderStub).timestamp();
+        verify(mockVariantProvider).nonce();
+        verify(mockVariantProvider).timestamp();
     }
 
 

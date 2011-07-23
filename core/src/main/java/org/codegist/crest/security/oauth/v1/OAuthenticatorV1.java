@@ -33,19 +33,19 @@ import java.util.List;
 
 public class OAuthenticatorV1 implements OAuthenticator {
 
-    private final VariantProvider variant;
+    private final VariantProvider variantProvider;
     private final OAuthToken consumerOAuthToken;
 
     public OAuthenticatorV1(OAuthToken consumerOAuthToken) {
         this(consumerOAuthToken, DefaultVariantProvider.INSTANCE);
     }
 
-    OAuthenticatorV1(OAuthToken consumerOAuthToken, VariantProvider variant) {
-        this.variant = variant;
+    OAuthenticatorV1(OAuthToken consumerOAuthToken, VariantProvider variantProvider) {
+        this.variantProvider = variantProvider;
         this.consumerOAuthToken = consumerOAuthToken;
     }
 
     public List<EncodedPair> oauth(OAuthToken accessOAuthToken, MethodType methodType, String url, EncodedPair... parameters) throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
-        return OAuthsV1.oauth(variant, consumerOAuthToken, accessOAuthToken, methodType, url, parameters);
+        return OAuthsV1.oauth(variantProvider, consumerOAuthToken, accessOAuthToken, methodType, url, parameters);
     }
 }

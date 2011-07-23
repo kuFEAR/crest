@@ -18,28 +18,24 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.security.oauth.v1;
+package org.codegist.crest;
 
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Random;
+import org.codegist.crest.util.Classes;
+import org.junit.Test;
 
-class DefaultVariantProvider implements VariantProvider {
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public abstract class NonInstanciableClassTest {
 
-    static final DefaultVariantProvider INSTANCE = new DefaultVariantProvider(new SecureRandom());
-    
-    private final Random rdm;
-    private static final long SECONDS = 1000l;
+    private final Class<?> klass;
 
-    DefaultVariantProvider(Random rdm){
-        this.rdm = rdm;
+    protected NonInstanciableClassTest(Class<?> klass) {
+        this.klass = klass;
     }
 
-    public String timestamp() {
-        return String.valueOf(System.currentTimeMillis() / SECONDS);
-    }
-
-    public String nonce() {
-        return String.valueOf(System.currentTimeMillis() + rdm.nextLong());
+    @Test
+    public void assertNotInstanciable() throws NoSuchMethodException {
+        Classes.assertNotInstanciable(klass);
     }
 }

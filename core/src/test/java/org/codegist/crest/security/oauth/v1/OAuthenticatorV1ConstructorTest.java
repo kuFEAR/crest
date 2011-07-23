@@ -20,26 +20,25 @@
 
 package org.codegist.crest.security.oauth.v1;
 
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Random;
+import org.codegist.crest.security.oauth.OAuthToken;
+import org.junit.Test;
 
-class DefaultVariantProvider implements VariantProvider {
+import java.lang.reflect.Field;
 
-    static final DefaultVariantProvider INSTANCE = new DefaultVariantProvider(new SecureRandom());
-    
-    private final Random rdm;
-    private static final long SECONDS = 1000l;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-    DefaultVariantProvider(Random rdm){
-        this.rdm = rdm;
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public class OAuthenticatorV1ConstructorTest {
+
+    @Test
+    public void shouldUseDefaultVariantProviderInstance() throws Exception {
+        OAuthenticatorV1 toTest = new OAuthenticatorV1(mock(OAuthToken.class));
+        Field variantProvider = OAuthenticatorV1.class.getDeclaredField("variantProvider");
+        variantProvider.setAccessible(true);
+        assertEquals(DefaultVariantProvider.INSTANCE, variantProvider.get(toTest));
     }
 
-    public String timestamp() {
-        return String.valueOf(System.currentTimeMillis() / SECONDS);
-    }
-
-    public String nonce() {
-        return String.valueOf(System.currentTimeMillis() + rdm.nextLong());
-    }
 }

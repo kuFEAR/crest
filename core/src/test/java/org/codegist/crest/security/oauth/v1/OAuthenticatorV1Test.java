@@ -34,7 +34,7 @@ import static org.codegist.crest.config.MethodType.POST;
 public class OAuthenticatorV1Test extends OAuthTest {
 
 
-    private final OAuthenticatorV1 toTest = new OAuthenticatorV1(consumerToken, mockVariantProviderStub);
+    private final OAuthenticatorV1 toTest = new OAuthenticatorV1(consumerToken, mockVariantProvider);
 
     @Test
     public void shouldSignWithNoParametersUsingPOST() throws Exception {
@@ -59,4 +59,6 @@ public class OAuthenticatorV1Test extends OAuthTest {
         List<EncodedPair> actualPairs = toTest.oauth(accessToken, GET, URL_NO_QUERY, PAIRS);
         assertExpectedOAuthPairs("0XLRn8ZZdVOxrCy62dzsjD+GOjg=", actualPairs);
     }
+
+
 }

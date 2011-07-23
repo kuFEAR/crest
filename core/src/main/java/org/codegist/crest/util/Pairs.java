@@ -45,8 +45,12 @@ public final class Pairs {
         throw new IllegalStateException();
     }
     
-    public static EncodedPair toPreEncodedPair(String name, String value) throws UnsupportedEncodingException {
-        return toPair(name, value, null, true);
+    public static EncodedPair toPreEncodedPair(String name, String value) {
+        return new SimpleEncodedPair(name, value);
+    }
+
+    public static EncodedPair toPair(String nameToEncode, String valueToEncode, Charset charset) throws UnsupportedEncodingException {
+        return toPair(nameToEncode, valueToEncode, charset, false);
     }
     
     public static EncodedPair toPair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {

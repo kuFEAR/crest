@@ -30,13 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 import static org.codegist.crest.security.oauth.v1.OAuthsV1.*;
+import static org.codegist.crest.util.Pairs.toPreEncodedPair;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 class OAuthApiV1 implements OAuthApi {
 
-    private static final EncodedPair CALLBACK = pair("oauth_callback", "oob");
+    private static final EncodedPair CALLBACK = toPreEncodedPair("oauth_callback", "oob");
     private final MethodType methodType;
     private final String requestTokenUrl;
     private final String accessTokenUrl;

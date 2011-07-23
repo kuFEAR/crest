@@ -18,28 +18,27 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.security.oauth.v1;
+package org.codegist.crest.util;
 
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Random;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
-class DefaultVariantProvider implements VariantProvider {
+import static org.junit.Assert.*;
 
-    static final DefaultVariantProvider INSTANCE = new DefaultVariantProvider(new SecureRandom());
-    
-    private final Random rdm;
-    private static final long SECONDS = 1000l;
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public class Methods {
 
-    DefaultVariantProvider(Random rdm){
-        this.rdm = rdm;
+    public static Method byName(Class<?> klass, String name){
+        for(Method m : klass.getDeclaredMethods()){
+            if(m.getName().equals(name)) {
+                return m;
+            }
+        }
+        throw new IllegalArgumentException("Method " + name + " not found in " + klass);
     }
 
-    public String timestamp() {
-        return String.valueOf(System.currentTimeMillis() / SECONDS);
-    }
-
-    public String nonce() {
-        return String.valueOf(System.currentTimeMillis() + rdm.nextLong());
-    }
 }
