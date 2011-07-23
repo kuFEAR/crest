@@ -36,7 +36,7 @@ public final class OAuthApiV1Builder {
     private VariantProvider variantProvider = DefaultVariantProvider.INSTANCE;
     private HttpChannelFactory channelFactory = new HttpURLConnectionHttpChannelFactory();
     private MethodType methodType = MethodType.POST;
-    private Class<? extends OAuthInterface> oauthInterfaceCls = PostOAuthInterface.class;
+    private Class<? extends OAuthInterface> oauthInterfaceCls = FormOAuthInterface.class;
     private String requestTokenUrl = "";
     private String accessTokenUrl = "";
     private String refreshAccessTokenUrl = "";
@@ -83,9 +83,9 @@ public final class OAuthApiV1Builder {
         return this;
     }
 
-    public OAuthApiV1Builder using(MethodType methodType){
-        this.methodType = methodType;
-        this.oauthInterfaceCls = methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class;
+    public OAuthApiV1Builder get(){
+        this.methodType = MethodType.GET;
+        this.oauthInterfaceCls = QueryOAuthInterface.class;
         return this;
     }
 

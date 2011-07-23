@@ -246,7 +246,6 @@ public class CRestBuilder {
         }
         return new OAuthApiV1Builder(consumerOAuthToken)
                 .refreshAccessTokenFrom(accessTokenRefreshUrl)
-                .using(POST)
                 .using(channelFactory)
                 .build();
     }

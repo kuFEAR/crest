@@ -54,8 +54,8 @@ public class OAuthApiV1BuilderTest {
 
     @Test
     public void testDefaults() throws Exception {
-        PostOAuthInterface expectedOAuthInterface = mock(PostOAuthInterface.class);
-        when(mockCRestBuilder.build(PostOAuthInterface.class)).thenReturn(expectedOAuthInterface);
+        FormOAuthInterface expectedOAuthInterface = mock(FormOAuthInterface.class);
+        when(mockCRestBuilder.build(FormOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
         OAuthApiV1 mockBuilderResult = PowerMockito.mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
@@ -78,8 +78,8 @@ public class OAuthApiV1BuilderTest {
         MethodType methodType = MethodType.GET;
         HttpChannelFactory mockChannelFactory = mock(HttpChannelFactory.class);
         VariantProvider mockVariantProvider = mock(VariantProvider.class);
-        GetOAuthInterface expectedOAuthInterface = mock(GetOAuthInterface.class);
-        when(mockCRestBuilder.build(GetOAuthInterface.class)).thenReturn(expectedOAuthInterface);
+        QueryOAuthInterface expectedOAuthInterface = mock(QueryOAuthInterface.class);
+        when(mockCRestBuilder.build(QueryOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
         OAuthApiV1 mockBuilderResult = PowerMockito.mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
@@ -90,7 +90,7 @@ public class OAuthApiV1BuilderTest {
                 .getRequestTokenFrom(requestTokenUrl)
                 .getAccessTokenFrom(accessTokenUrl)
                 .refreshAccessTokenFrom(refreshTokenUrl)
-                .using(methodType)
+                .get()
                 .using(mockChannelFactory)
                 .using(mockVariantProvider)
                 .build();

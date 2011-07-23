@@ -155,13 +155,13 @@ public class OAuthApiV1Test extends OAuthTest {
     }
 
     private OAuthInterface mockGetOAuthInterface(){
-        OAuthInterface mockOAuthInterface = mock(GetOAuthInterface.class);
+        OAuthInterface mockOAuthInterface = mock(QueryOAuthInterface.class);
         setupMockOAuthInterface(mockOAuthInterface);
         return mockOAuthInterface;
     }
 
     private OAuthInterface mockPostOAuthInterface(){
-        OAuthInterface mockOAuthInterface = mock(PostOAuthInterface.class);
+        OAuthInterface mockOAuthInterface = mock(FormOAuthInterface.class);
         setupMockOAuthInterface(mockOAuthInterface);
         return mockOAuthInterface;
     }

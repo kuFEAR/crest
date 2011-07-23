@@ -35,15 +35,15 @@ import static org.junit.Assert.assertNotNull;
 public class OAuthInterfaceChildsTest {
 
     @Test
-    public void getChildShouldBeProperlyAnnotated() {
-        assertNotNull(GetOAuthInterface.class.getAnnotation(GET.class));
-        assertNotNull(GetOAuthInterface.class.getAnnotation(Encoded.class));
-        assertNotNull(GetOAuthInterface.class.getAnnotation(Deserializer.class));
-        assertEquals(OAuthTokenDeserializer.class, GetOAuthInterface.class.getAnnotation(Deserializer.class).value());
+    public void queryChildShouldBeProperlyAnnotated() {
+        assertNotNull(QueryOAuthInterface.class.getAnnotation(GET.class));
+        assertNotNull(QueryOAuthInterface.class.getAnnotation(Encoded.class));
+        assertNotNull(QueryOAuthInterface.class.getAnnotation(Deserializer.class));
+        assertEquals(OAuthTokenDeserializer.class, QueryOAuthInterface.class.getAnnotation(Deserializer.class).value());
 
-        Method getAccessToken = byName(GetOAuthInterface.class, "getAccessToken");
-        Method getRequestToken = byName(GetOAuthInterface.class, "getRequestToken");
-        Method refreshAccessToken = byName(GetOAuthInterface.class, "refreshAccessToken");
+        Method getAccessToken = byName(QueryOAuthInterface.class, "getAccessToken");
+        Method getRequestToken = byName(QueryOAuthInterface.class, "getRequestToken");
+        Method refreshAccessToken = byName(QueryOAuthInterface.class, "refreshAccessToken");
 
         assertNotNull(getAccessToken.getAnnotation(Path.class));
         assertEquals("{oauth.access-token-path}", getAccessToken.getAnnotation(Path.class).value());
@@ -104,15 +104,15 @@ public class OAuthInterfaceChildsTest {
 
 
     @Test
-    public void postChildShouldBeProperlyAnnotated() {
-        assertNotNull(PostOAuthInterface.class.getAnnotation(POST.class));
-        assertNotNull(PostOAuthInterface.class.getAnnotation(Encoded.class));
-        assertNotNull(PostOAuthInterface.class.getAnnotation(Deserializer.class));
-        assertEquals(OAuthTokenDeserializer.class, PostOAuthInterface.class.getAnnotation(Deserializer.class).value());
+    public void formChildShouldBeProperlyAnnotated() {
+        assertNotNull(FormOAuthInterface.class.getAnnotation(POST.class));
+        assertNotNull(FormOAuthInterface.class.getAnnotation(Encoded.class));
+        assertNotNull(FormOAuthInterface.class.getAnnotation(Deserializer.class));
+        assertEquals(OAuthTokenDeserializer.class, FormOAuthInterface.class.getAnnotation(Deserializer.class).value());
 
-        Method getAccessToken = byName(PostOAuthInterface.class, "getAccessToken");
-        Method getRequestToken = byName(PostOAuthInterface.class, "getRequestToken");
-        Method refreshAccessToken = byName(PostOAuthInterface.class, "refreshAccessToken");
+        Method getAccessToken = byName(FormOAuthInterface.class, "getAccessToken");
+        Method getRequestToken = byName(FormOAuthInterface.class, "getRequestToken");
+        Method refreshAccessToken = byName(FormOAuthInterface.class, "refreshAccessToken");
 
         assertNotNull(getAccessToken.getAnnotation(Path.class));
         assertEquals("{oauth.access-token-path}", getAccessToken.getAnnotation(Path.class).value());
