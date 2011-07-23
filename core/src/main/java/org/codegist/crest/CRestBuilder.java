@@ -236,19 +236,19 @@ public class CRestBuilder {
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
-        OAuthApi oAuthApi = buildOAuthApi(channelFactory, authenticator);
+        OAuthApi oAuthApi = buildOAuthApi(channelFactory);
         return new OAuthorization(accessOAuthToken, authenticator, oAuthApi);
     }
 
-    private OAuthApi buildOAuthApi(HttpChannelFactory channelFactory, OAuthenticatorV1 authenticator) {
+    private OAuthApi buildOAuthApi(HttpChannelFactory channelFactory) {
         if(accessTokenRefreshUrl == null) {
             return null;
         }
-        try {
-            return OAuthApiV1Builder.build(channelFactory, authenticator, POST, null, null, accessTokenRefreshUrl);
-        } catch (Exception e) {
-            throw CRestException.handle(e);
-        }
+        return new OAuthApiV1Builder(consumerOAuthToken)
+                .refreshAccessTokenFrom(accessTokenRefreshUrl)
+                .using(POST)
+                .using(channelFactory)
+                .build();
     }
 
 

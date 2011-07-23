@@ -20,6 +20,7 @@
 
 package org.codegist.crest.security.basic;
 
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
@@ -39,7 +40,7 @@ public class BasicAuthorization implements Authorization {
         this.token = new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes("utf-8")));
     }
 
-    public AuthorizationToken authorize(String action, String url, EncodedPair... parameters) {
+    public AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters) {
         return token;
     }
 

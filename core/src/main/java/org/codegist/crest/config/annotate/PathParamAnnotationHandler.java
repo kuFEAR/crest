@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.PATH;
 /**
  * @author laurent.gilles@codegist.org
  */
-class PathParamAnnotationHandler extends NoOpAnnotationHandler<PathParam> {
+class PathParamAnnotationHandler extends ParamAnnotationHandler<PathParam> {
 
     @Override
     public void handleInterfaceAnnotation(PathParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(PATH)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,14 +45,14 @@ class PathParamAnnotationHandler extends NoOpAnnotationHandler<PathParam> {
         builder.startExtraParamConfig()
                 .setType(PATH)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
     public void handleParameterAnnotation(PathParam annotation, ParamConfigBuilder builder) {
         builder.setType(PATH)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
     
 }

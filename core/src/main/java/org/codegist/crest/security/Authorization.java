@@ -20,6 +20,7 @@
 
 package org.codegist.crest.security;
 
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 
 /**
@@ -31,7 +32,7 @@ public interface Authorization {
     /**
      * Sign the io
      */
-    AuthorizationToken authorize(String action, String url, EncodedPair... parameters) throws Exception;
+    AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters) throws Exception;
 
     /**
      * Refresh the authentification information

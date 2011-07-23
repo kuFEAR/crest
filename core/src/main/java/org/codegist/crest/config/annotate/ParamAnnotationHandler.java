@@ -18,27 +18,16 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.security.oauth.v1;
+package org.codegist.crest.config.annotate;
 
-import java.security.SecureRandom;
-import java.util.Random;
+import java.lang.annotation.Annotation;
 
-class DefaultVariantProvider implements VariantProvider {
+/**
+ * @author laurent.gilles@codegist.org
+ */
+abstract class ParamAnnotationHandler<T extends Annotation> extends NoOpAnnotationHandler<T> {
 
-    static final VariantProvider INSTANCE = new DefaultVariantProvider();
-    
-    private final Random rdm = new SecureRandom();
-    private static final long SECONDS_IN_MILLIS = 1000l;
-
-    private DefaultVariantProvider(){
-        
-    }
-
-    public String timestamp() {
-        return String.valueOf(System.currentTimeMillis() / SECONDS_IN_MILLIS);
-    }
-
-    public String nonce() {
-        return String.valueOf(System.currentTimeMillis() + rdm.nextLong());
+    protected String nullIfUnset(String value){
+        return value.length() > 0 ? value : null;
     }
 }

@@ -55,9 +55,10 @@ public class SerializersTest extends ISerializersTest<SerializersTest.Serializer
                 @PathParam("p3") @ListSeparator("(p3)") BunchOfData<Data>[] p3);
 
         @GET
+        @Serializer(DataSerializer.class)
         @Path("configured/{p1}/{p2}/{p3}")
         String configured(
-                @PathParam("p1") @Serializer(DataSerializer.class) Data p1,
+                @PathParam("p1") Data p1,
                 @PathParam("p2") @ListSeparator("(p2)") @Serializer(BunchOfDataSerializer.class) Collection<BunchOfData<Data>> p2,
                 @PathParam("p3") @ListSeparator("(p3)") @Serializer(BunchOfDataSerializer.class) BunchOfData<Data>[] p3);
 

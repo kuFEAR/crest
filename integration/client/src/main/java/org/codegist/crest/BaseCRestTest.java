@@ -45,6 +45,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,7 +57,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public abstract class BaseCRestTest<T> {
     public static final String DATE_FORMAT = "dd/MM/yyyy @ HH:mm:ssZ";
-    public static final String ENCODING = "UTF-8";
+    public static final Charset ENCODING = Charset.forName("UTF-8");
 
     public static final String TEST_SERVER = System.getProperty("crest.server.end-point", "http://localhost:8080") + "/crest-server";
     private static final boolean TEST_JAXB = Boolean.valueOf(System.getProperty("crest.test.jaxb", "true"));
@@ -71,8 +72,8 @@ public abstract class BaseCRestTest<T> {
         put(CRestProperty.CREST_DATE_FORMAT, DATE_FORMAT);
         put(CRestProperty.CREST_BOOLEAN_FALSE, "myFalse");
         put(CRestProperty.CREST_BOOLEAN_TRUE, "myTrue");
-        put("crest.encoding", ENCODING);
-        put("encoding.header", ENCODING);
+        put("crest.encoding", ENCODING.displayName());
+        put("encoding.header", ENCODING.displayName());
         put(Serializer.class.getName(), SerializerTypes.JACKSON);
     }};
 

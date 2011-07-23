@@ -26,7 +26,6 @@ import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodType;
-import org.codegist.crest.config.PathBuilder;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.RequestExecutor;
@@ -39,9 +38,10 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 
 import static org.codegist.common.lang.Strings.isNotBlank;
-import static org.codegist.crest.config.ParamType.*;
+import static org.codegist.crest.config.ParamType.COOKIE;
+import static org.codegist.crest.config.ParamType.HEADER;
 import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
-import static org.codegist.crest.util.Pairs.join;
+import static org.codegist.crest.io.http.HttpRequests.toUrl;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -73,7 +73,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     }
 
     private HttpResponse doExecute(Request request) throws IOException, Exception {
-        String url = getUrlFor(request);
+        String url = toUrl(request);
         MethodConfig mc = request.getMethodConfig();
         Charset charset = mc.getCharset();
 
@@ -137,30 +137,6 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         return new HttpResponse(baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
     }
 
-
-    private String getUrlFor(Request request) throws Exception {
-        MethodConfig mc = request.getMethodConfig();
-        Charset charset = mc.getCharset();
-        PathBuilder pathBuilder = mc.getPathTemplate().getBuilder(charset);
-
-        Iterator<EncodedPair> pathParamsIterator = request.getEncodedParamsIterator(PATH);
-        while(pathParamsIterator.hasNext()){
-            EncodedPair encoded = pathParamsIterator.next();
-            pathBuilder.merge(encoded.getName(), encoded.getValue(), true);
-        }
-
-        String query = join(request.getEncodedParamsIterator(QUERY), '&');
-        if(isNotBlank(query)) {
-            query = "?" + query;
-        }
-
-        String matrix = join(request.getEncodedParamsIterator(MATRIX), ';');
-        if(isNotBlank(matrix)) {
-            matrix = ";" + matrix;
-        }
-
-        return pathBuilder.build() + matrix + query;
-    }
 
     public void dispose() {
         Disposables.dispose(channelFactory);

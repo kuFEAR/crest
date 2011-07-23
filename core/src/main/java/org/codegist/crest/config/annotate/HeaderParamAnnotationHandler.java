@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.HEADER;
 /**
  * @author laurent.gilles@codegist.org
  */
-class HeaderParamAnnotationHandler extends NoOpAnnotationHandler<HeaderParam> {
+class HeaderParamAnnotationHandler extends ParamAnnotationHandler<HeaderParam> {
 
     @Override
     public void handleInterfaceAnnotation(HeaderParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(HEADER)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,14 +45,14 @@ class HeaderParamAnnotationHandler extends NoOpAnnotationHandler<HeaderParam> {
         builder.startExtraParamConfig()
                 .setType(HEADER)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
                   
     @Override
     public void handleParameterAnnotation(HeaderParam annotation, ParamConfigBuilder builder) {
         builder.setType(HEADER)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
     
 }

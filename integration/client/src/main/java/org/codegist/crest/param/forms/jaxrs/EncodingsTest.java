@@ -50,10 +50,9 @@ public class EncodingsTest extends IEncodingsTest<EncodingsTest.Encodings> {
 
         @POST
         @Path("encoded")
-        @Encoded
         String encoded(
-                @FormParam("p1") String p1,
-                @FormParam("p2") Collection<String> p2);
+                @FormParam("p1") @Encoded String p1,
+                @FormParam("p2") @Encoded Collection<String> p2);
 
     }
 }

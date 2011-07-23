@@ -20,7 +20,6 @@
 
 package org.codegist.crest.util;
 
-import org.codegist.common.lang.Strings;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.param.Param;
 
@@ -66,12 +65,8 @@ public final class MultiParts {
 
     public static void putMetaDatas(Map<String, Object> metadatas, String contentType, String fileName){
         metadatas.put(MULTIPART_FLAG, true);
-        if(!Strings.isBlank(CONTENT_TYPE)) {
-            metadatas.put(CONTENT_TYPE, contentType);
-        }
-        if(!Strings.isBlank(FILENAME)) {
-            metadatas.put(FILENAME, fileName);
-        }
+        metadatas.put(CONTENT_TYPE, contentType);
+        metadatas.put(FILENAME, fileName);
     }
 
     public static Map<String,Object> toMetaDatas(String contentType, String fileName){

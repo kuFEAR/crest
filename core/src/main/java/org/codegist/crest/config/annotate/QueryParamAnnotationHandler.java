@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.QUERY;
 /**
  * @author laurent.gilles@codegist.org
  */
-class QueryParamAnnotationHandler extends NoOpAnnotationHandler<QueryParam> {
+class QueryParamAnnotationHandler extends ParamAnnotationHandler<QueryParam> {
 
     @Override
     public void handleInterfaceAnnotation(QueryParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(QUERY)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,13 +45,13 @@ class QueryParamAnnotationHandler extends NoOpAnnotationHandler<QueryParam> {
         builder.startExtraParamConfig()
                 .setType(QUERY)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
     public void handleParameterAnnotation(QueryParam annotation, ParamConfigBuilder builder) {
         builder.setType(QUERY)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 }

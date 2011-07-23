@@ -43,7 +43,7 @@ public interface ParamConfig {
 
     String DEFAULT_VALUE = null;
 
-    String DEFAULT_NAME = "";
+    String DEFAULT_NAME = null;
 
     Map<String,Object> DEFAULT_METADATAS = null;
 

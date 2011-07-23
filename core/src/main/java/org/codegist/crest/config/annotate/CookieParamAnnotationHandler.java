@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.COOKIE;
 /**
  * @author laurent.gilles@codegist.org
  */
-class CookieParamAnnotationHandler extends NoOpAnnotationHandler<CookieParam> {
+class CookieParamAnnotationHandler extends ParamAnnotationHandler<CookieParam> {
 
     @Override
     public void handleInterfaceAnnotation(CookieParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(COOKIE)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,14 +45,14 @@ class CookieParamAnnotationHandler extends NoOpAnnotationHandler<CookieParam> {
         builder.startExtraParamConfig()
                 .setType(COOKIE)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
                   
     @Override
     public void handleParameterAnnotation(CookieParam annotation, ParamConfigBuilder builder) {
         builder.setType(COOKIE)
                .setName(annotation.value())
-               .setDefaultValue(annotation.defaultValue());
+               .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
     
 }

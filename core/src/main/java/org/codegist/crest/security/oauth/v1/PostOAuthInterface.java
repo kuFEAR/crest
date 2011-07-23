@@ -30,7 +30,6 @@ interface PostOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")
     OAuthToken getAccessToken(
-            @FormParam("oauth_token") String oauthToken,
             @FormParam("oauth_consumer_key") String oauthConsumerKey,
             @FormParam("oauth_signature_method") String oauthSignatureMethod,
             @FormParam("oauth_timestamp") String oauthTimestamp,

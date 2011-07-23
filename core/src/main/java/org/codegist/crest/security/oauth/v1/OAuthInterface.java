@@ -25,7 +25,6 @@ import org.codegist.crest.security.oauth.OAuthToken;
 interface OAuthInterface {
 
     OAuthToken getAccessToken(
-            String oauthToken,
             String oauthConsumerKey,
             String oauthSignatureMethod,
             String oauthTimestamp,

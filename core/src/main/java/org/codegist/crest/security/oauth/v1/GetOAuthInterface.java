@@ -30,7 +30,6 @@ interface GetOAuthInterface extends OAuthInterface {
 
     @Path("{oauth.access-token-path}")
     OAuthToken getAccessToken(
-            @QueryParam("oauth_token") String oauthToken,
             @QueryParam("oauth_consumer_key") String oauthConsumerKey,
             @QueryParam("oauth_signature_method") String oauthSignatureMethod,
             @QueryParam("oauth_timestamp") String oauthTimestamp,

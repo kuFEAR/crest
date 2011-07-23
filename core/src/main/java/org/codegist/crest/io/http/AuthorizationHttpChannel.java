@@ -72,7 +72,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private void authenticate() throws IOException {
         AuthorizationToken token;
         try {
-            token = authenticatorManager.authorize(methodType.name(), url, arrify(parameters, EncodedPair.class));
+            token = authenticatorManager.authorize(methodType, url, arrify(parameters, EncodedPair.class));
         } catch (Exception e) {
             throw CRestException.handle(e);
         }

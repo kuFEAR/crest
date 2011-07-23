@@ -20,24 +20,19 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.Strings;
 import org.codegist.crest.CRestException;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.util.ComponentFactory;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.codegist.common.lang.Objects.defaultIfNull;
-import static org.codegist.common.lang.Strings.defaultIfEmpty;
 import static org.codegist.crest.CRestProperty.get;
 import static org.codegist.crest.CRestProperty.getPlaceholders;
+import static org.codegist.crest.util.PlaceHolders.compile;
+import static org.codegist.crest.util.PlaceHolders.merge;
 
 /**
- * // TODO things are a bit messy here, refactor it!
  * Handy builders for {@link DefaultInterfaceConfig}.
  * <p>Support auto empty/null ignore and defaults methods and params values at respectively interface and method levels.
  *
@@ -48,15 +43,11 @@ import static org.codegist.crest.CRestProperty.getPlaceholders;
 abstract class ConfigBuilder {
 
     private final Map<String, Object> crestProperties;
-    private final Map<Pattern, String> placeholders = new HashMap<Pattern, String>();
+    private final Map<Pattern, String> placeholders;
 
     ConfigBuilder(Map<String, Object> crestProperties) {
         this.crestProperties = crestProperties;
-        for (Map.Entry<String, String> entry : getPlaceholders(crestProperties).entrySet()) {
-            String placeholder = entry.getKey();
-            String value = entry.getValue().replaceAll("\\$", "\\\\\\$");
-            this.placeholders.put(Pattern.compile("\\{" + Pattern.quote(placeholder) + "\\}"), value);
-        }
+        this.placeholders = compile(getPlaceholders(crestProperties));
     }
 
     public Map<String, Object> getCRestProperties() {
@@ -64,68 +55,38 @@ abstract class ConfigBuilder {
     }
 
     protected String ph(String str) {
-        if (Strings.isBlank(str)) {
-            return str;
-        }
-        String replaced = str;
-        for (Map.Entry<Pattern, String> entry : placeholders.entrySet()) {
-            Pattern placeholder = entry.getKey();
-            String value = entry.getValue();
-            replaced = placeholder.matcher(replaced).replaceAll(value);
-        }
-        return replaced.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}"); // replace escaped with non escaped
+        return merge(placeholders, str);
     }
 
-    protected <T> T[] defaultIfUndefined(T[] value, String defProp, Class<? extends T>[] def) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        if(value == null) {
-            T[] prop = CRestProperty.<T[]>get(crestProperties, defProp);
-            if(prop != null) {
-                return prop;
-            }else{
-                return newInstance(def);
-            }
-        }else{
+    protected <T> T[] defaultIfUndefined(T[] value, String defProp, Class<? extends T>[] def) {
+        if(value != null) {
             return value;
+        }else{
+            T[] prop = get(crestProperties, defProp);
+            return (prop != null) ? prop : newInstance(def);
         }
     }
+
     protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def)  {
-        if(value == null) {
-            Object prop = CRestProperty.get(crestProperties, defProp);
+        if(value != null) {
+            return value;
+        }else{
+            Object prop = get(crestProperties, defProp);
             if(prop != null) {
-                if(prop instanceof Class) {
-                    return newInstance((Class<T>)prop);
-                }else{
-                    return (T) prop;
-                }
+                return (prop instanceof Class) ? newInstance((Class<T>)prop) : (T) prop;
             }else{
                 return newInstance(def);
             }
-        }else{
-            return value;
         }
     }
 
     protected <T> T[] defaultIfUndefined(T[] value, String defProp, T[] def) {
-        if(value == null || value.length == 0) {
-            T[] prop = CRestProperty.<T[]>get(crestProperties, defProp);
-            if(prop != null) {
-                return prop;
-            }else{
-                return def;
-            }
-        }else{
-            return value;
-        }
+        return (value != null && value.length > 0) ? value : get(crestProperties, defProp, def);
     }
 
     @SuppressWarnings("unchecked")
     protected <T> T defaultIfUndefined(T value, String defProp, T def) {
-        if (value instanceof String || def instanceof String) {
-            String defs = get(crestProperties, defProp, (String) def);
-            return (T) defaultIfEmpty((String) value, defs);
-        } else {
-            return defaultIfNull(value, get(crestProperties, defProp, def));
-        }
+        return value != null ? value : get(crestProperties, defProp, def);
     }
 
     @SuppressWarnings("unchecked")

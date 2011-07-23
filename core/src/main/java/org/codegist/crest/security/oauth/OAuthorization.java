@@ -21,6 +21,7 @@
 package org.codegist.crest.security.oauth;
 
 import org.codegist.common.lang.State;
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
@@ -46,8 +47,8 @@ public class OAuthorization implements Authorization {
         this.accessOAuthToken = accessOAuthToken;
     }
 
-    public AuthorizationToken authorize(String action, String url, EncodedPair... parameters)  throws Exception{
-        List<EncodedPair> oauthParams = oauth.oauth(this.accessOAuthToken, action, url, parameters);
+    public AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters)  throws Exception{
+        List<EncodedPair> oauthParams = oauth.oauth(this.accessOAuthToken, methodType, url, parameters);
         return new AuthorizationToken("OAuth", join(oauthParams, ',', '=', false, true));
     }
 

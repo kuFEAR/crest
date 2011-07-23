@@ -21,7 +21,6 @@
 package org.codegist.crest.param.forms.json.common;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.entity.JsonEntityWriter;
 import org.codegist.crest.param.common.ICollectionsTest;
 import org.junit.runners.Parameterized;
 
@@ -48,7 +47,7 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/json")
     @POST
-    @EntityWriter(JsonEntityWriter.class)
+    @JsonEntity
     public static interface Collections extends ICollectionsTest.ICollections {
 
 

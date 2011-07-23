@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.FORM;
 /**
  * @author laurent.gilles@codegist.org
  */
-class FormParamAnnotationHandler extends NoOpAnnotationHandler<FormParam> {
+class FormParamAnnotationHandler extends ParamAnnotationHandler<FormParam> {
 
     @Override
     public void handleInterfaceAnnotation(FormParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,14 +45,14 @@ class FormParamAnnotationHandler extends NoOpAnnotationHandler<FormParam> {
         builder.startExtraParamConfig()
                 .setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
                   
     @Override
     public void handleParameterAnnotation(FormParam annotation, ParamConfigBuilder builder) {
         builder.setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
     
 }

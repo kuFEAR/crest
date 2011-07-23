@@ -61,10 +61,10 @@ public final class RegexPathTemplate implements PathTemplate {
 
         private final Map<String, PathTemplate> remainingTemplates = new HashMap<String, PathTemplate>(templates);
         private final StringBuilder url = new StringBuilder(urlTemplate);
-        private final String charset;
+        private final Charset charset;
 
         private DefaultPathBuilder(Charset charset) {
-            this.charset = charset.displayName();
+            this.charset = charset;
         }
 
         public PathBuilder merge(String templateName, String templateValue, boolean encoded) throws UnsupportedEncodingException {

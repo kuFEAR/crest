@@ -50,8 +50,8 @@ public final class Pairs {
     }
     
     public static EncodedPair toPair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {
-        String nameEncoded = encoded ? name : encode(name, charset.displayName());
-        String valueEncoded = encoded ? value : encode(value, charset.displayName());
+        String nameEncoded = encoded ? name : encode(name, charset);
+        String valueEncoded = encoded ? value : encode(value, charset);
         return new SimpleEncodedPair(nameEncoded, valueEncoded);
     }
 

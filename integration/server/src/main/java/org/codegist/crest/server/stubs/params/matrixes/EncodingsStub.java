@@ -21,6 +21,7 @@
 package org.codegist.crest.server.stubs.params.matrixes;
 
 import javax.ws.rs.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,8 @@ import static org.codegist.crest.server.utils.ToStrings.string;
 @Path("params/matrix/encoding")
 public class EncodingsStub {
 
+    private static final Charset UTF8 = Charset.forName("utf-8");
+
     @GET
     @Path("default")
     public String defaults(
@@ -41,9 +44,9 @@ public class EncodingsStub {
             @MatrixParam("p2") @Encoded List<String> p2) {
         List<String> p2Decoded = new ArrayList<String>();
         for (String p2p : p2) {
-            p2Decoded.add(decode(p2p, "utf-8"));
+            p2Decoded.add(decode(p2p, UTF8));
         }
-        return String.format("default() p1=%s p2=%s", decode(p1, "utf-8"), string(p2Decoded));
+        return String.format("default() p1=%s p2=%s", decode(p1, UTF8), string(p2Decoded));
     }
 
     @GET
@@ -53,9 +56,9 @@ public class EncodingsStub {
             @MatrixParam("p2") @Encoded List<String> p2) {
         List<String> p2Decoded = new ArrayList<String>();
         for (String p2p : p2) {
-            p2Decoded.add(decode(p2p, "utf-8"));
+            p2Decoded.add(decode(p2p, UTF8));
         }
-        return String.format("encoded() p1=%s p2=%s", decode(p1, "utf-8"), string(p2Decoded));
+        return String.format("encoded() p1=%s p2=%s", decode(p1, UTF8), string(p2Decoded));
     }
 
 }

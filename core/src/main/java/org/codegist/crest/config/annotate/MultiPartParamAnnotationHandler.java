@@ -32,15 +32,15 @@ import static org.codegist.crest.util.MultiParts.toMetaDatas;
 /**
  * @author laurent.gilles@codegist.org
  */
-class MultiPartParamAnnotationHandler extends NoOpAnnotationHandler<MultiPartParam> {
+class MultiPartParamAnnotationHandler extends ParamAnnotationHandler<MultiPartParam> {
 
     @Override
     public void handleInterfaceAnnotation(MultiPartParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue())
-                .setMetaDatas(MultiParts.toMetaDatas(annotation.contentType(), annotation.fileName()));
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
+                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
     }
 
     @Override
@@ -48,16 +48,16 @@ class MultiPartParamAnnotationHandler extends NoOpAnnotationHandler<MultiPartPar
         builder.startExtraParamConfig()
                 .setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue())
-                .setMetaDatas(MultiParts.toMetaDatas(annotation.contentType(), annotation.fileName()));
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
+                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
     }
-                  
+
     @Override
     public void handleParameterAnnotation(MultiPartParam annotation, ParamConfigBuilder builder) {
         builder.setType(FORM)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue())
-                .setMetaDatas(toMetaDatas(annotation.contentType(), annotation.fileName()));
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
+                .setMetaDatas(toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
     }
     
 }

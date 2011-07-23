@@ -45,6 +45,7 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
 
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/json")
+    @Produces("application/json")
     @POST
     @EntityWriter(JsonEntityWriter.class)
     public static interface Basics extends IBasicsTest.IBasics {

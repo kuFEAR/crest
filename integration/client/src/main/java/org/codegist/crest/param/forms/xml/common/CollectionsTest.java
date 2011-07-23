@@ -21,7 +21,6 @@
 package org.codegist.crest.param.forms.xml.common;
 
 import org.codegist.crest.annotate.*;
-import org.codegist.crest.entity.XmlEntityWriter;
 import org.codegist.crest.param.common.ICollectionsTest;
 import org.junit.runners.Parameterized;
 
@@ -46,7 +45,8 @@ public class CollectionsTest extends ICollectionsTest<CollectionsTest.Collection
     @EndPoint("{crest.server.end-point}")
     @Path("params/form/xml")
     @POST
-    @EntityWriter(XmlEntityWriter.class)
+    @Produces("application/xml")
+    @XmlEntity
     public static interface Collections extends ICollectionsTest.ICollections {
 
 

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.security.oauth;
 
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface OAuthenticator {
      * Signs the given io using the given access token and the optional additional oauth headers.
      * @param accessOAuthToken Access token to be used
      */
-    List<EncodedPair> oauth(OAuthToken accessOAuthToken, String action, String url, EncodedPair... parameters) throws Exception;
+    List<EncodedPair> oauth(OAuthToken accessOAuthToken, MethodType methodType, String url, EncodedPair... parameters) throws Exception;
 
 
 }

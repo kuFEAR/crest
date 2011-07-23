@@ -20,49 +20,83 @@
 
 package org.codegist.crest.security.oauth.v1;
 
-import org.codegist.crest.CRest;
+import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
 import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
-
-import static org.codegist.common.lang.Strings.defaultIfEmpty;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public final class OAuthApiV1Builder {
 
-    private OAuthApiV1Builder(){
-        throw new IllegalStateException();
-    }
+    private final CRestBuilder crestBuilder;
+    private final OAuthToken consumerToken;
+    private VariantProvider variantProvider = DefaultVariantProvider.INSTANCE;
+    private HttpChannelFactory channelFactory = new HttpURLConnectionHttpChannelFactory();
+    private MethodType methodType = MethodType.POST;
+    private Class<? extends OAuthInterface> oauthInterfaceCls = PostOAuthInterface.class;
+    private String requestTokenUrl = "";
+    private String accessTokenUrl = "";
+    private String refreshAccessTokenUrl = "";
 
-    public static OAuthApiV1 build(OAuthToken consumerToken, MethodType methodType, String requestTokenUrl, String accessTokenUrl, String refreshAccessTokenUrl) throws Exception {
-        HttpChannelFactory channelFactory = new HttpURLConnectionHttpChannelFactory();
-        OAuthenticatorV1 oAuthenticatorV1 = new OAuthenticatorV1(consumerToken);
-        return build(channelFactory, oAuthenticatorV1, methodType, requestTokenUrl, accessTokenUrl, refreshAccessTokenUrl);
-    }
 
-    public static OAuthApiV1 build(
-            HttpChannelFactory channelFactory,
-            OAuthenticatorV1 oAuthenticatorV1,
-            MethodType methodType,
-            String requestTokenUrl,
-            String accessTokenUrl,
-            String refreshAccessTokenUrl) throws Exception {
 
-        OAuthInterface oauthInterface = CRest.placeholder("oauth.access-token-path", defaultIfEmpty(accessTokenUrl,""))
-                                             .placeholder("oauth.request-token-path", defaultIfEmpty(requestTokenUrl,""))
-                                             .placeholder("oauth.refresh-access-token-path", defaultIfEmpty(refreshAccessTokenUrl,""))
-                                             .setHttpChannelFactory(channelFactory)
-                                             .build(methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class);
-
+    public OAuthApiV1 build(){
+        OAuthInterface oauthInterface = crestBuilder.placeholder("oauth.access-token-path", accessTokenUrl)
+                                                    .placeholder("oauth.request-token-path", requestTokenUrl)
+                                                    .placeholder("oauth.refresh-access-token-path", refreshAccessTokenUrl)
+                                                    .setHttpChannelFactory(channelFactory)
+                                                    .build(oauthInterfaceCls);
         return new OAuthApiV1(
-                methodType.name(),
+                methodType,
                 requestTokenUrl,
                 accessTokenUrl,
                 refreshAccessTokenUrl,
                 oauthInterface,
-                oAuthenticatorV1);
+                consumerToken,
+                variantProvider);
     }
+
+    public OAuthApiV1Builder(OAuthToken consumerToken){
+        this(consumerToken, new CRestBuilder());
+    }
+
+    OAuthApiV1Builder(OAuthToken consumerToken, CRestBuilder crestBuilder){
+        this.consumerToken = consumerToken;
+        this.crestBuilder = crestBuilder;
+    }
+
+    public OAuthApiV1Builder getRequestTokenFrom(String url){
+        this.requestTokenUrl = url;
+        return this;
+    }
+
+    public OAuthApiV1Builder getAccessTokenFrom(String url){
+        this.accessTokenUrl = url;
+        return this;
+    }
+
+    public OAuthApiV1Builder refreshAccessTokenFrom(String url){
+        this.refreshAccessTokenUrl = url;
+        return this;
+    }
+
+    public OAuthApiV1Builder using(MethodType methodType){
+        this.methodType = methodType;
+        this.oauthInterfaceCls = methodType.equals(MethodType.POST) ? PostOAuthInterface.class : GetOAuthInterface.class;
+        return this;
+    }
+
+    public OAuthApiV1Builder using(HttpChannelFactory channelFactory){
+        this.channelFactory = channelFactory;
+        return this;
+    }
+
+    public OAuthApiV1Builder using(VariantProvider variantProvider){
+        this.variantProvider = variantProvider;
+        return this;
+    }
+
 }

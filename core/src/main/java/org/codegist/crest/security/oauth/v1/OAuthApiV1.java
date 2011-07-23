@@ -20,11 +20,11 @@
 
 package org.codegist.crest.security.oauth.v1;
 
+import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.oauth.OAuthApi;
 import org.codegist.crest.security.oauth.OAuthToken;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,25 +36,28 @@ import static org.codegist.crest.security.oauth.v1.OAuthsV1.*;
  */
 class OAuthApiV1 implements OAuthApi {
 
-    private static final EncodedPair CALLBACK;
-    private final String method;
+    private static final EncodedPair CALLBACK = pair("oauth_callback", "oob");
+    private final MethodType methodType;
     private final String requestTokenUrl;
     private final String accessTokenUrl;
     private final String refreshAccessTokenUrl;
+    private final OAuthToken consumerToken;
     private final OAuthInterface oauthInterface;
-    private final OAuthenticatorV1 oauth;
+    private final VariantProvider variantProvider;
 
-    public OAuthApiV1(String method, String requestTokenUrl, String accessTokenUrl, String refreshAccessTokenUrl, OAuthInterface oauthInterface, OAuthenticatorV1 oauth) {
-        this.method = method;
+    public OAuthApiV1(MethodType methodType, String requestTokenUrl, String accessTokenUrl, String refreshAccessTokenUrl, OAuthInterface oauthInterface, OAuthToken consumerToken, VariantProvider variantProvider) {
+        this.methodType = methodType;
         this.requestTokenUrl = requestTokenUrl;
         this.accessTokenUrl = accessTokenUrl;
         this.refreshAccessTokenUrl = refreshAccessTokenUrl;
         this.oauthInterface = oauthInterface;
-        this.oauth = oauth;
+        this.consumerToken = consumerToken;
+        this.variantProvider = variantProvider;
     }
 
     public OAuthToken getRequestToken() throws Exception {
-        Map<String,String> params = asMap(oauth.oauth(IGNORE_POISON, method, requestTokenUrl, EMPTY_HTTP_PAIRS, CALLBACK));
+        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, methodType, requestTokenUrl, EMPTY_HTTP_PAIRS, CALLBACK);
+        Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.getRequestToken(
                 params.get("oauth_consumer_key"),
                 params.get("oauth_signature_method"),
@@ -67,9 +70,9 @@ class OAuthApiV1 implements OAuthApi {
     }
 
     public OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) throws Exception {
-        Map<String,String> params = asMap(oauth.oauth(requestOAuthToken, method, accessTokenUrl, EMPTY_HTTP_PAIRS,  pair("oauth_verifier", verifier)));
+        List<EncodedPair> oauthPairs = oauth(variantProvider, requestOAuthToken, methodType, accessTokenUrl, EMPTY_HTTP_PAIRS,  pair("oauth_verifier", verifier));
+        Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.getAccessToken(
-                params.get("oauth_token"),
                 params.get("oauth_consumer_key"),
                 params.get("oauth_signature_method"),
                 params.get("oauth_timestamp"),
@@ -81,7 +84,8 @@ class OAuthApiV1 implements OAuthApi {
     }
 
     public OAuthToken refreshAccessToken(OAuthToken token) throws Exception {
-        Map<String,String> params = asMap(oauth.oauth(token, method, refreshAccessTokenUrl, EMPTY_HTTP_PAIRS,  token.getAttribute("oauth_session_handle")));
+        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, token, methodType, refreshAccessTokenUrl, EMPTY_HTTP_PAIRS,  token.getAttribute("oauth_session_handle"));
+        Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.refreshAccessToken(
                 params.get("oauth_token"),
                 params.get("oauth_consumer_key"),
@@ -101,14 +105,5 @@ class OAuthApiV1 implements OAuthApi {
         }
         return map;
     }
-
-    static{
-        try {
-            CALLBACK = pair("oauth_callback", "oob");
-        } catch (UnsupportedEncodingException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
 
 }

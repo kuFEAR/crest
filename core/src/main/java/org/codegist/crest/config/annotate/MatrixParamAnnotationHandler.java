@@ -30,14 +30,14 @@ import static org.codegist.crest.config.ParamType.MATRIX;
 /**
  * @author laurent.gilles@codegist.org
  */
-class MatrixParamAnnotationHandler extends NoOpAnnotationHandler<MatrixParam> {
+class MatrixParamAnnotationHandler extends ParamAnnotationHandler<MatrixParam> {
 
     @Override
     public void handleInterfaceAnnotation(MatrixParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(MATRIX)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
 
     @Override
@@ -45,14 +45,14 @@ class MatrixParamAnnotationHandler extends NoOpAnnotationHandler<MatrixParam> {
         builder.startExtraParamConfig()
                 .setType(MATRIX)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
                   
     @Override
     public void handleParameterAnnotation(MatrixParam annotation, ParamConfigBuilder builder) {
         builder.setType(MATRIX)
                 .setName(annotation.value())
-                .setDefaultValue(annotation.defaultValue());
+                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
     }
     
 }
