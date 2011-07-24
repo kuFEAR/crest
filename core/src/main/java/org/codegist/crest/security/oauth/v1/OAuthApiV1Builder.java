@@ -41,8 +41,6 @@ public final class OAuthApiV1Builder {
     private String accessTokenUrl = "";
     private String refreshAccessTokenUrl = "";
 
-
-
     public OAuthApiV1 build(){
         OAuthInterface oauthInterface = crestBuilder.placeholder("oauth.access-token-path", accessTokenUrl)
                                                     .placeholder("oauth.request-token-path", requestTokenUrl)
@@ -83,7 +81,7 @@ public final class OAuthApiV1Builder {
         return this;
     }
 
-    public OAuthApiV1Builder get(){
+    public OAuthApiV1Builder useGet(){
         this.methodType = MethodType.GET;
         this.oauthInterfaceCls = QueryOAuthInterface.class;
         return this;

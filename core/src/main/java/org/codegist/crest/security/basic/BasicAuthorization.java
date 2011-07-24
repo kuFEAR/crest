@@ -25,7 +25,7 @@ import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import static org.codegist.common.codec.Base64.encodeToString;
 
@@ -34,10 +34,11 @@ import static org.codegist.common.codec.Base64.encodeToString;
  */
 public class BasicAuthorization implements Authorization {
 
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     private final AuthorizationToken token;
 
-    public BasicAuthorization(String name, String password) throws UnsupportedEncodingException {
-        this.token = new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes("utf-8")));
+    public BasicAuthorization(String name, String password) {
+        this.token = new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes(UTF8)));
     }
 
     public AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters) {
@@ -45,7 +46,7 @@ public class BasicAuthorization implements Authorization {
     }
 
     public void refresh() {
-        // NoOp
+        throw new UnsupportedOperationException();
     }
 
 }

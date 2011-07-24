@@ -55,7 +55,6 @@ import org.codegist.crest.util.Registry;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.util.*;
 
@@ -65,7 +64,6 @@ import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
 import static org.codegist.crest.CRestProperty.*;
-import static org.codegist.crest.config.MethodType.POST;
 import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
 
 /**
@@ -222,11 +220,7 @@ public class CRestBuilder {
     }
 
     private Authorization buildBasicAuthorization() {
-        try {
-            return new BasicAuthorization(username, password);
-        } catch (UnsupportedEncodingException e) {
-            throw CRestException.handle(e);
-        }
+        return new BasicAuthorization(username, password);
     }
 
     private Authorization buildOAuthorization(HttpChannelFactory channelFactory) {
@@ -237,7 +231,11 @@ public class CRestBuilder {
             throw CRestException.handle(e);
         }
         OAuthApi oAuthApi = buildOAuthApi(channelFactory);
-        return new OAuthorization(accessOAuthToken, authenticator, oAuthApi);
+        if(oAuthApi == null) {
+            return new OAuthorization(accessOAuthToken, authenticator);
+        }else{
+            return new OAuthorization(accessOAuthToken, authenticator, oAuthApi);
+        }
     }
 
     private OAuthApi buildOAuthApi(HttpChannelFactory channelFactory) {

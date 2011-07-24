@@ -90,7 +90,7 @@ public class OAuthApiV1BuilderTest {
                 .getRequestTokenFrom(requestTokenUrl)
                 .getAccessTokenFrom(accessTokenUrl)
                 .refreshAccessTokenFrom(refreshTokenUrl)
-                .get()
+                .useGet()
                 .using(mockChannelFactory)
                 .using(mockVariantProvider)
                 .build();

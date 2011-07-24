@@ -112,7 +112,7 @@ public class RetryHandlersTest extends BaseCRestTest<RetryHandlersTest.RetryHand
 
     public static class MyRetryHandler implements org.codegist.crest.handler.RetryHandler {
         static boolean hit = false;
-        public boolean retry(RequestException exception, int retryNumber) {
+        public boolean retry(RequestException exception, int attemptNumber) {
             hit = true;
             return false;
         }

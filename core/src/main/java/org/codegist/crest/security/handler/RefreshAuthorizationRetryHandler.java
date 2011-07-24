@@ -28,9 +28,7 @@ import org.codegist.crest.security.Authorization;
 
 import java.util.Map;
 
-import static org.codegist.common.lang.Validate.notNull;
-import static org.codegist.crest.CRestProperty.get;
-import static org.codegist.crest.CRestProperty.getRetryAttempts;
+import static org.codegist.crest.CRestProperty.*;
 
 /**
  * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
@@ -45,21 +43,20 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
     private final int unauthorizedStatusCode;
 
     public RefreshAuthorizationRetryHandler(Map<String, Object> crestProperties) {
-        this.max = getRetryAttempts(crestProperties) + 1;
-        this.unauthorizedStatusCode = CRestProperty.<Integer>get(crestProperties, CRestProperty.CREST_UNAUTHORIZED_STATUS_CODE);
+        this.max = getMaxAttempts(crestProperties);
+        this.unauthorizedStatusCode = CRestProperty.<Integer>get(crestProperties, CREST_UNAUTHORIZED_STATUS_CODE);
         authorization = get(crestProperties, Authorization.class);
-        notNull(this.authorization, "No authentification manager found, please pass it in the properties (key=%s)", Authorization.class);
     }
 
-    public boolean retry(RequestException exception, int retryNumber) throws Exception {
-        if (retryNumber > max
-                || !exception.hasResponse()
-                || exception.getResponse().getStatusCode() != unauthorizedStatusCode) {
-            LOGGER.debug("Not retrying, maximum failure reached or catched exception does not have a response or with a status code different than unauthorized.");
+    public boolean retry(RequestException exception, int attemptNumber) throws Exception {
+        if (attemptNumber > max) {
+            LOGGER.debug("Not retrying, maximum failure reached.");
             return false;
         }
-        LOGGER.debug("Unauthorized status code has been detected, refreshing authentification and retry.");
-        authorization.refresh();
+        if(exception.hasResponse() && exception.getResponse().getStatusCode() == unauthorizedStatusCode) {
+            LOGGER.debug("Unauthorized status code has been detected, refreshing authentification and retry.");
+            authorization.refresh();
+        }
         return true;
     }
 

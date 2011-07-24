@@ -51,7 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Collections.singletonMap;
-import static org.codegist.crest.CRestProperty.CREST_RETRY_ATTEMPTS;
+import static org.codegist.crest.CRestProperty.CREST_MAX_ATTEMPTS;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -267,14 +267,14 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CREST_RETRY_ATTEMPTS, maxAttempts)
+                        .setProperty(CREST_MAX_ATTEMPTS, maxAttempts)
                         .build());
             }
         }));
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CREST_RETRY_ATTEMPTS, maxAttempts)
+                        .setProperty(CREST_MAX_ATTEMPTS, maxAttempts)
                         .useHttpClient().build());
             }
         }));

@@ -29,6 +29,13 @@ import org.codegist.crest.io.RequestException;
  */
 public interface RetryHandler {
 
-    boolean retry(RequestException exception, int retryNumber) throws Exception;
+    /**
+     *
+     * @param exception
+     * @param attemptNumber starts at 2 as attempt 1 has already been done
+     * @return
+     * @throws Exception
+     */
+    boolean retry(RequestException exception, int attemptNumber) throws Exception;
 
 }

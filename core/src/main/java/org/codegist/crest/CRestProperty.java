@@ -39,14 +39,14 @@ public final class CRestProperty {
     public static final String CREST_BOOLEAN_TRUE_DEFAULT = "true";
     public static final String CREST_BOOLEAN_FALSE_DEFAULT = "false";
     public static final int CREST_CONCURRENCY_LEVEL_DEFAULT = 1;
-    public static final int CREST_RETRY_ATTEMPTS_DEFAULT = 0;
+    public static final int CREST_MAX_ATTEMPTS_DEFAULT = 1;
 
     private CRestProperty() {
         throw new IllegalStateException();
     }
 
-    public static int getRetryAttempts(Map<String,Object> crestProperties){
-        return get(crestProperties, CREST_RETRY_ATTEMPTS, CREST_RETRY_ATTEMPTS_DEFAULT);
+    public static int getMaxAttempts(Map<String,Object> crestProperties){
+        return get(crestProperties, CREST_MAX_ATTEMPTS, CREST_MAX_ATTEMPTS_DEFAULT);
     }
 
     public static String getDateFormat(Map<String,Object> crestProperties){
@@ -102,7 +102,7 @@ public final class CRestProperty {
 
     public static final String CREST_UNAUTHORIZED_STATUS_CODE = C + "#status-code.unauthorized";
 
-    public static final String CREST_RETRY_ATTEMPTS = C + "#retry-attempts";
+    public static final String CREST_MAX_ATTEMPTS = C + "#retry-attempts";
 
     public static final String CREST_ANNOTATION_PLACEHOLDERS = C + "#annotation-placeholders";
 

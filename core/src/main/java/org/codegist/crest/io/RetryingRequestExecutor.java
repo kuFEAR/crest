@@ -37,7 +37,7 @@ public class RetryingRequestExecutor implements RequestExecutor {
     public Response execute(Request request) throws Exception {
         RetryHandler retryHandler = request.getMethodConfig().getRetryHandler();
         RequestException exception = null;
-        int attemptCount = 0;
+        int attemptCount = 1;
         do {
             Disposables.dispose(exception);
             try {

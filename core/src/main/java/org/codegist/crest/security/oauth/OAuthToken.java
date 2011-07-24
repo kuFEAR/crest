@@ -24,8 +24,8 @@ import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.util.Pairs;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
@@ -43,10 +43,11 @@ public class OAuthToken {
     public OAuthToken(String token, String secret) {
         this(token, secret, Collections.<String, String>emptyMap());
     }
+
     public OAuthToken(String token, String secret, Map<String,String> attributes) {
         this.token = token;
         this.secret = secret;
-        this.attributes = unmodifiableMap(attributes);
+        this.attributes = unmodifiableMap(new HashMap<String, String>(attributes));
     }
 
     public String getToken() {
@@ -57,8 +58,12 @@ public class OAuthToken {
         return secret;
     }
 
-    public EncodedPair getAttribute(String name) throws UnsupportedEncodingException {
-        return Pairs.toPreEncodedPair(name, attributes.get(name));
+    public EncodedPair getAttribute(String name) {
+        if(attributes.containsKey(name)) {
+            return Pairs.toPreEncodedPair(name, attributes.get(name));
+        }else{
+            return null;
+        }
     }
 
     /**

@@ -41,6 +41,9 @@ public class OAuthorization implements Authorization {
     private final OAuthApi oauthApi;
     private volatile OAuthToken accessOAuthToken;
 
+    public OAuthorization(OAuthToken accessOAuthToken, OAuthenticator oauth) {
+        this(accessOAuthToken, oauth, null);        
+    }
     public OAuthorization(OAuthToken accessOAuthToken, OAuthenticator oauth, OAuthApi oauthApi) {
         this.oauth = oauth;
         this.oauthApi = oauthApi;
