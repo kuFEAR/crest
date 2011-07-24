@@ -401,6 +401,7 @@ public class CRestBuilder {
         }
         if(accessTokenRefreshUrl != null) {
             setProperty(METHOD_CONFIG_DEFAULT_RETRY_HANDLER, RefreshAuthorizationRetryHandler.class);
+            setProperty(CREST_MAX_ATTEMPTS, CRestProperty.CREST_MAX_ATTEMPTS_DEFAULT + 1);
         }
         this.accessTokenRefreshUrl = accessTokenRefreshUrl;
         this.consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);

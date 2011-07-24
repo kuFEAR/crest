@@ -67,7 +67,7 @@ public class RefreshAuthorizationRetryHandlerTest {
     }
 
     @Test
-    public void shouldRetryButDontRefreshUpUntilMaxWhenRequestExceptionDoHaveAResponseWithAStatusDifferentThanUnauthorized() throws Exception {
+    public void shouldRetryButDontRefreshUpUntilMaxWhenRequestExceptionDoHaveAResponseRefreshAuthorizationRetryHandlerWithAStatusDifferentThanUnauthorized() throws Exception {
         crestProperties.put(CREST_MAX_ATTEMPTS, 5);
         RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(crestProperties);
         shouldRetryUpUntilMaxWhenRequestExceptionDoHaveAResponse(toTest, 5, 123);

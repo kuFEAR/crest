@@ -40,17 +40,13 @@ public class MaxAttemptRetryHandler implements RetryHandler {
 
     private static final Logger LOG = Logger.getLogger(MaxAttemptRetryHandler.class);
 
-    public MaxAttemptRetryHandler(int max) {
-        this.max = max;
-    }
-
     public MaxAttemptRetryHandler(Map<String, Object> crestProperties) {
-        this(CRestProperty.getMaxAttempts(crestProperties));
+        this.max = CRestProperty.getMaxAttempts(crestProperties);
     }
 
 
-    public boolean retry(RequestException exception, int attemptNumber) {
-        boolean retry = attemptNumber < max;
+    public boolean retry(RequestException exception, int attemptNumber) throws Exception {
+        boolean retry = attemptNumber <= max;
         LOG.debug("Retrying attempt=%d,max=%d,retry=%b,reason=%s", attemptNumber, max, retry, exception != null ? exception.getMessage() : "unknown");
         return retry;
     }
