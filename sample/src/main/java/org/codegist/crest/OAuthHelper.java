@@ -66,7 +66,7 @@ public class OAuthHelper {
     private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret,String requestUrl, String accessUrl, String refreshUrl, String redirect) throws Exception {
 
         OAuthApi api = new OAuthApiV1Builder(new OAuthToken(consumerTok, consumerSecret))
-                        .post(POST)
+                        .useGet()
                         .getRequestTokenFrom(requestUrl)
                         .getAccessTokenFrom(accessUrl)
                         .refreshAccessTokenFrom(refreshUrl)

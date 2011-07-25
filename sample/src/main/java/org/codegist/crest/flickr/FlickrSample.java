@@ -28,10 +28,11 @@ import org.codegist.crest.flickr.model.Uploader;
 import org.codegist.crest.flickr.security.MultiPartEntityParamExtractor;
 import org.codegist.crest.flickr.serializer.FlickrDateSerializer;
 import org.codegist.crest.flickr.service.Flickr;
-import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 
 import java.util.Collections;
 import java.util.Date;
+
+import static org.codegist.crest.serializer.jaxb.JaxbDeserializer.MODEL_FACTORY_CLASS_PROP;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -61,7 +62,7 @@ public class FlickrSample implements Runnable {
         /* Get the factory */
         CRest crest = CRest.oauth(consumerKey,consumerSecret,accessToken,accessTokenSecret)
                            .extractsEntityAuthParamsWith("multipart/form-data", new MultiPartEntityParamExtractor())
-                           .deserializeXmlWithJaxb(Collections.<String,Object>singletonMap(JaxbDeserializer.MODEL_FACTORY_CLASS, FlickrModelFactory.class))
+                           .deserializeXmlWithJaxb(Collections.<String,Object>singletonMap(MODEL_FACTORY_CLASS_PROP, FlickrModelFactory.class))
                            .bindSerializer(FlickrDateSerializer.class, Date.class)
                            .booleanFormat("1", "0")
                            .build();

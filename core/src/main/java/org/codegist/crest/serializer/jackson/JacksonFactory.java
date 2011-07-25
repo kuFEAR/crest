@@ -25,46 +25,47 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import static org.codegist.crest.CRestProperty.get;
 
 final class JacksonFactory {
 
     static final String JACKSON_OBJECT_MAPPER = "#user-object-mapper";
-    static final String JACKSON_FEATURES = "#features";
+    static final String JACKSON_DESERIALIZER_CONFIG = "#deserializer-config";
+    static final String JACKSON_SERIALIZER_CONFIG= "#serializer-config";
+
+    private static final Map<SerializationConfig.Feature, Boolean> DEFAULT_SERIALIZER_CONFIG = new HashMap<SerializationConfig.Feature, Boolean>();
+    private static final Map<DeserializationConfig.Feature, Boolean> DEFAULT_DESERIALIZER_CONFIG = new HashMap<DeserializationConfig.Feature, Boolean>();
+    static{
+        DEFAULT_DESERIALIZER_CONFIG.put(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     private JacksonFactory(){
         throw new IllegalStateException();
     }
 
-    static ObjectMapper createDeserializer(Map<String,Object> crestProperties, Class<?> source){
+    static ObjectMapper createObjectMapper(Map<String,Object> crestProperties, Class<?> source){
         String prefix = source.getName();
-        ObjectMapper mapper = getObjectMapper(crestProperties, prefix);
-        if(crestProperties.containsKey(prefix + JACKSON_FEATURES)) {
-            for (Map.Entry<String, Boolean> entry : CRestProperty.<Map<String, Boolean>>get(crestProperties, prefix + JACKSON_FEATURES).entrySet()) {
-                mapper = mapper.configure(DeserializationConfig.Feature.valueOf(entry.getKey()), entry.getValue());
-            }
-        }else{
-            mapper = mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        }
-        return mapper;
-    }
 
-    static ObjectMapper createSerializer(Map<String,Object> crestProperties, Class<?> source){
-        String prefix = source.getName();
-        ObjectMapper mapper = getObjectMapper(crestProperties, prefix);
-        if(crestProperties.containsKey(prefix + JACKSON_FEATURES)) {
-            for (Map.Entry<String, Boolean> entry : CRestProperty.<Map<String, Boolean>>get(crestProperties, prefix + JACKSON_FEATURES).entrySet()) {
-                mapper = mapper.configure(SerializationConfig.Feature.valueOf(entry.getKey()), entry.getValue());
-            }
-        }
-        return mapper;
-    }
-
-    private static ObjectMapper getObjectMapper(Map<String,Object> crestProperties, String prefix){
         ObjectMapper mapper = CRestProperty.get(crestProperties, prefix + JACKSON_OBJECT_MAPPER);
-        if(mapper == null){
-            mapper = new ObjectMapper();
+        if(mapper != null){
+            return mapper;
         }
+        
+        mapper = new ObjectMapper();
+
+        Map<DeserializationConfig.Feature, Boolean> deserConfig = get(crestProperties, prefix + JACKSON_DESERIALIZER_CONFIG, DEFAULT_DESERIALIZER_CONFIG);
+        for(Map.Entry<DeserializationConfig.Feature,Boolean> feature : deserConfig.entrySet()){
+            mapper.configure(feature.getKey(), feature.getValue());
+        }
+
+        Map<SerializationConfig.Feature, Boolean> serConfig = get(crestProperties, prefix + JACKSON_SERIALIZER_CONFIG, DEFAULT_SERIALIZER_CONFIG);
+        for(Map.Entry<SerializationConfig.Feature,Boolean> feature : serConfig.entrySet()){
+            mapper.configure(feature.getKey(), feature.getValue());
+        }
+
         return mapper;
     }
 

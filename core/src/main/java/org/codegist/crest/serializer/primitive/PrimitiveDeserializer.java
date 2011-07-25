@@ -36,7 +36,7 @@ public abstract class PrimitiveDeserializer<T> extends TypeDeserializer<T> {
 
     @Override
     protected T deserialize(InputStream stream, Charset charset) throws IOException {
-        return deserialize(IOs.toString(stream, charset, true));
+        return deserialize(stream != null ? IOs.toString(stream, charset, true) : null);
     }
 
 }

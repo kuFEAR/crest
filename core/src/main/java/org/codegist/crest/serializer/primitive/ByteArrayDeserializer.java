@@ -33,7 +33,7 @@ public class ByteArrayDeserializer extends TypeDeserializer<byte[]> {
 
     @Override
     protected byte[] deserialize(InputStream stream, Charset charset) throws Exception {
-        return IOs.toByteArray(stream, true);
+        return stream != null ? IOs.toByteArray(stream, true) : null;
     }
 
 }

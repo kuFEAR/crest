@@ -20,21 +20,28 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import java.util.Map;
+import org.codegist.crest.serializer.BaseDeserializerTest;
+import org.codegist.crest.serializer.TypeDeserializer;
+import org.junit.Test;
 
-import static org.codegist.common.lang.Strings.isBlank;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class BooleanPrimitiveDeserializer extends BooleanWrapperDeserializer {
+public class IntegerPrimitiveDeserializerTest extends BaseDeserializerTest {
 
-    public BooleanPrimitiveDeserializer(Map<String,Object> crestProperties) {
-        super(crestProperties);
+    private final TypeDeserializer<Integer> toTest = new IntegerPrimitiveDeserializer();
+
+    @Test
+    public void shouldDeserializeToInteger() throws Exception {
+        assertEquals(Integer.valueOf(-1), deserialize(toTest, "-1"));
+        assertInputStreamAsBeenClosed();
     }
 
-    public Boolean deserialize(String value) {
-        return isBlank(value) ? Boolean.FALSE : super.deserialize(value);
+    @Test
+    public void shouldDeserializeNullTo0() throws Exception {
+        assertEquals(Integer.valueOf(0), deserialize(toTest, null));
     }
 
 }

@@ -21,8 +21,6 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
-import org.codegist.crest.handler.RetryHandlersTest;
-import org.codegist.crest.security.OAuthsTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

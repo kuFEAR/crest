@@ -20,11 +20,12 @@
 
 package org.codegist.crest.serializer.jaxb;
 
-import org.codegist.crest.CRestProperty;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.util.Map;
+
+import static org.codegist.crest.CRestProperty.get;
+import static org.codegist.crest.CRestProperty.getConcurrencyLevel;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -43,13 +44,13 @@ final class JaxbFactory {
 
     static Jaxb create(Map<String,Object> crestProperties, Class<?> source) throws JAXBException {
         String prefix = source.getName();
-        Jaxb jaxb = CRestProperty.get(crestProperties, prefix + JAXB);
+        Jaxb jaxb = get(crestProperties, prefix + JAXB);
         if(jaxb != null) {
             return jaxb;
         }
 
-        String modelPackage = CRestProperty.get(crestProperties, prefix + MODEL_PACKAGE);
-        Class<?> modelFactory = CRestProperty.get(crestProperties, prefix + MODEL_FACTORY_CLASS);
+        String modelPackage = get(crestProperties, prefix + MODEL_PACKAGE);
+        Class<?> modelFactory = get(crestProperties, prefix + MODEL_FACTORY_CLASS);
 
         if(modelPackage != null) {
             return create(crestProperties, source, modelPackage);
@@ -59,16 +60,19 @@ final class JaxbFactory {
             return new TypeCachingJaxb(crestProperties, source);
         }
     }
+
     static Jaxb create(Map<String,Object> crestProperties, Class<?> source, String context) throws JAXBException {
         return create(crestProperties, source, JAXBContext.newInstance(context));
     }
+
     static Jaxb create(Map<String,Object> crestProperties, Class<?> source, Class<?>... classToBeBound) throws JAXBException {
         return create(crestProperties, source, JAXBContext.newInstance(classToBeBound));
     }
-    static Jaxb create(Map<String,Object> crestProperties, Class<?> source, JAXBContext jaxb) throws JAXBException {
+
+    private static Jaxb create(Map<String,Object> crestProperties, Class<?> source, JAXBContext jaxb) throws JAXBException {
         String prefix = source.getName();
-        int poolSize = CRestProperty.getConcurrencyLevel(crestProperties);
-        long maxWait = CRestProperty.get(crestProperties, prefix + POOL_RETRIEVAL_MAX_WAIT, DEFAULT_MAX_WAIT);
+        int poolSize = getConcurrencyLevel(crestProperties);
+        long maxWait = get(crestProperties, prefix + POOL_RETRIEVAL_MAX_WAIT, DEFAULT_MAX_WAIT);
 
         if (poolSize == 1) {
             return new SimpleJaxb(jaxb);

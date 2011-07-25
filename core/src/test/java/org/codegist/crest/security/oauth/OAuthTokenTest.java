@@ -43,8 +43,9 @@ public class OAuthTokenTest {
 
     @Test(expected=UnsupportedOperationException.class)
     public void shouldBeImmutable() {
-        attributes.put("attr3", "attr3");
-        assertNull(toTest.getAttribute("attr3"));
+        //should that also be the case, or left to the responsability of the caller?
+        //attributes.put("attr3", "attr3");
+        //assertNull(toTest.getAttribute("attr3"));
         
         toTest.getAttributes().put("a", "b");
     }

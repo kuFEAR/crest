@@ -39,12 +39,12 @@ public class JacksonDeserializer implements Deserializer {
 
     private static final String PREFIX = JacksonDeserializer.class.getName();
     public static final String OBJECT_MAPPER_PROP = PREFIX + JacksonFactory.JACKSON_OBJECT_MAPPER;
-    public static final String FEATURES_PROP = PREFIX + JacksonFactory.JACKSON_FEATURES;
+    public static final String JACKSON_DESERIALIZER_CONFIG_PROP = PREFIX + JacksonFactory.JACKSON_DESERIALIZER_CONFIG;
 
     private final ObjectMapper jackson;
 
     public JacksonDeserializer(Map<String, Object> crestProperties) {
-        this.jackson = JacksonFactory.createDeserializer(crestProperties, getClass());
+        this.jackson = JacksonFactory.createObjectMapper(crestProperties, getClass());
     }
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws IOException {

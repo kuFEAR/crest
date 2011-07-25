@@ -25,7 +25,6 @@ import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.util.Pairs;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
@@ -47,7 +46,7 @@ public class OAuthToken {
     public OAuthToken(String token, String secret, Map<String,String> attributes) {
         this.token = token;
         this.secret = secret;
-        this.attributes = unmodifiableMap(new HashMap<String, String>(attributes));
+        this.attributes = unmodifiableMap(attributes);
     }
 
     public String getToken() {
