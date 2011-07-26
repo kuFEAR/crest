@@ -36,7 +36,6 @@ public class DoublePrimitiveDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToByte() throws Exception {
         assertEquals(Double.valueOf(-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

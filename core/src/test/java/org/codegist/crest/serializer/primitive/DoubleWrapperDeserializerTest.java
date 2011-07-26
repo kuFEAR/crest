@@ -37,7 +37,6 @@ public class DoubleWrapperDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToDouble() throws Exception {
         assertEquals(Double.valueOf(-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

@@ -36,6 +36,5 @@ public class VoidDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToShort() throws Exception {
         assertNull(deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 }

@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.jackson;
 
 import org.codegist.common.io.IOs;
+import org.codegist.crest.serializer.BaseDeserializerTest;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -49,12 +50,9 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({JacksonFactory.class, TypeFactory.class})
-public class JacksonDeserializerTest {
-
-
+public class JacksonDeserializerTest extends BaseDeserializerTest {
 
     private final Map<String,Object> crestProperties = new HashMap<String, Object>();
-
 
     @Test
     public void shouldDeserializeInputStreamUsingGenericTypeAndObjectMapper() throws IOException {
@@ -62,7 +60,7 @@ public class JacksonDeserializerTest {
         JavaType mockJavaType = mock(JavaType.class);
         Object mockResult = mock(Object.class);
         Type mockType = mock(Type.class);
-        InputStream mockInputStream = new ByteArrayInputStream("hello".getBytes());
+        InputStream mockInputStream = toInputStream("hello");
         Charset charset = Charset.forName("UTF-8");
 
         mockStatic(JacksonFactory.class);

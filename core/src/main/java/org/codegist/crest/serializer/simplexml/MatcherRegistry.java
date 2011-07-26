@@ -18,29 +18,22 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer.primitive;
+package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.serializer.BaseDeserializerTest;
-import org.codegist.crest.serializer.TypeDeserializer;
-import org.junit.Test;
+import org.simpleframework.xml.transform.Matcher;
+import org.simpleframework.xml.transform.Transform;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Map;
 
-/**
- * @author laurent.gilles@codegist.org
- */
-public class LongPrimitiveDeserializerTest extends BaseDeserializerTest {
 
-    private final TypeDeserializer<Long> toTest = new LongPrimitiveDeserializer();
+final class MatcherRegistry implements Matcher {
+    private final Map<Class, Transform> transformerMap;
 
-    @Test
-    public void shouldDeserializeToLong() throws Exception {
-        assertEquals(Long.valueOf(-1), deserialize(toTest, "-1"));
+    MatcherRegistry(Map<Class, Transform> transformerMap) {
+        this.transformerMap = transformerMap;
     }
 
-    @Test
-    public void shouldDeserializeNullTo0() throws Exception {
-        assertEquals(Long.valueOf(0), deserialize(toTest, null));
+    public Transform match(Class type) throws Exception {
+        return transformerMap.get(type);
     }
-
 }

@@ -37,12 +37,11 @@ public class ByteArrayDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToByteArray() throws Exception {
         String s = "hello";
-        assertArrayEquals(s.getBytes(), (byte[]) toTest.deserialize(null,null, toInputStream(s), null));
-        assertInputStreamAsBeenClosed();
+        assertArrayEquals(s.getBytes(), deserialize(toTest, s));
     }
 
     @Test
     public void shouldDeserializeNullToNull() throws Exception {
-        assertNull(toTest.deserialize(null,null,null,null));
+        assertNull(deserialize(toTest,null));
     }
 }

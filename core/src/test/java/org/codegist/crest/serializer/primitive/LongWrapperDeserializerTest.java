@@ -37,7 +37,6 @@ public class LongWrapperDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToLong() throws Exception {
         assertEquals(Long.valueOf(-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

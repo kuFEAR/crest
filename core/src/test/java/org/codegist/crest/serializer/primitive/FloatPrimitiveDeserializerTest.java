@@ -36,7 +36,6 @@ public class FloatPrimitiveDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToFloat() throws Exception {
         assertEquals(Float.valueOf(-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

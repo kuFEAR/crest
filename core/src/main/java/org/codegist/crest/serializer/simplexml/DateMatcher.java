@@ -18,29 +18,27 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer.primitive;
+package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.serializer.BaseDeserializerTest;
-import org.codegist.crest.serializer.TypeDeserializer;
-import org.junit.Test;
+import org.simpleframework.xml.transform.Transform;
 
-import static org.junit.Assert.assertEquals;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-/**
- * @author laurent.gilles@codegist.org
- */
-public class LongPrimitiveDeserializerTest extends BaseDeserializerTest {
+final class DateMatcher implements Transform<Date> {
+    private final DateFormat df;
 
-    private final TypeDeserializer<Long> toTest = new LongPrimitiveDeserializer();
-
-    @Test
-    public void shouldDeserializeToLong() throws Exception {
-        assertEquals(Long.valueOf(-1), deserialize(toTest, "-1"));
+    DateMatcher(String format) {
+        this.df = new SimpleDateFormat(format);
     }
 
-    @Test
-    public void shouldDeserializeNullTo0() throws Exception {
-        assertEquals(Long.valueOf(0), deserialize(toTest, null));
+    public synchronized Date read(String value) throws ParseException {
+        return df.parse(value);
     }
 
+    public synchronized String write(Date value) {
+        return df.format(value);
+    }
 }

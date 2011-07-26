@@ -37,7 +37,6 @@ public class CharacterWrapperDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToCharacter() throws Exception {
         assertEquals(Character.valueOf('1'), deserialize(toTest, "1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

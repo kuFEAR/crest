@@ -36,7 +36,6 @@ public class IntegerPrimitiveDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToInteger() throws Exception {
         assertEquals(Integer.valueOf(-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

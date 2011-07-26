@@ -36,35 +36,42 @@ import static org.junit.Assert.assertTrue;
 public abstract class BaseDeserializerTest {
 
     protected static final Charset charset = Charset.defaultCharset();
-    private static final AtomicBoolean closeFlag = new AtomicBoolean(false);
+    private boolean closeFlag = false;
+    private boolean inputStreamSet = false;
 
     @Before
     public void resetCloseFlag(){
-        closeFlag.set(false);
+        closeFlag = inputStreamSet = false;
     }
 
-    protected static InputStream toInputStream(String s) {
-        return s != null ? new ByteArrayInputStream(s.getBytes()){
+    protected InputStream toInputStream(String s) {
+        if(s == null) {
+            return null;
+        }
+        inputStreamSet = true;
+        return new ByteArrayInputStream(s.getBytes()){
             @Override
             public void close() throws IOException {
-                closeFlag.set(true);
+                closeFlag = true;
             }
-        } : null;
+        };
     }
 
-    public static void assertInputStreamAsBeenClosed(){
-        assertTrue(closeFlag.get());
+    private void assertInputStreamAsBeenClosed(){
+        if(inputStreamSet) {
+            assertTrue(closeFlag);
+        }
     }
 
-    protected static <T> T deserialize(TypeDeserializer<T> toTest, String s) throws Exception {
-        return BaseDeserializerTest.<T>deserialize((Deserializer)toTest ,s);
+
+
+    protected <T> T deserialize(TypeDeserializer<T> toTest, String s) throws Exception {
+        return this.<T>deserialize((Deserializer)toTest ,s);
     }
-    protected static <T> T deserialize(Deserializer toTest, String s) throws Exception {
+    protected <T> T deserialize(Deserializer toTest, String s) throws Exception {
         InputStream stream = toInputStream(s);
         T t = toTest.<T>deserialize(null, null, stream, charset);
-        if(stream != null) {
-            assertInputStreamAsBeenClosed();
-        }
+        assertInputStreamAsBeenClosed();
         return t;
     }
 }

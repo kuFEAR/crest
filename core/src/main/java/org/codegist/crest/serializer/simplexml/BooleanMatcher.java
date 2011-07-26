@@ -18,29 +18,24 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer.primitive;
+package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.serializer.BaseDeserializerTest;
-import org.codegist.crest.serializer.TypeDeserializer;
-import org.junit.Test;
+import org.simpleframework.xml.transform.Transform;
 
-import static org.junit.Assert.assertEquals;
+final class BooleanMatcher implements Transform<Boolean> {
+    private final String trueVal;
+    private final String falseVal;
 
-/**
- * @author laurent.gilles@codegist.org
- */
-public class LongPrimitiveDeserializerTest extends BaseDeserializerTest {
-
-    private final TypeDeserializer<Long> toTest = new LongPrimitiveDeserializer();
-
-    @Test
-    public void shouldDeserializeToLong() throws Exception {
-        assertEquals(Long.valueOf(-1), deserialize(toTest, "-1"));
+    BooleanMatcher(String trueVal, String falseVal) {
+        this.trueVal = trueVal;
+        this.falseVal = falseVal;
     }
 
-    @Test
-    public void shouldDeserializeNullTo0() throws Exception {
-        assertEquals(Long.valueOf(0), deserialize(toTest, null));
+    public Boolean read(String value) {
+        return !falseVal.equals(value);
     }
 
+    public String write(Boolean value) {
+        return Boolean.TRUE.equals(value) ? trueVal : falseVal;
+    }
 }

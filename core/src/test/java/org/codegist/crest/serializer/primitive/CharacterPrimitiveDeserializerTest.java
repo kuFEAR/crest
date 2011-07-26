@@ -36,7 +36,6 @@ public class CharacterPrimitiveDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToByte() throws Exception {
         assertEquals(Character.valueOf('1'), deserialize(toTest, "1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test

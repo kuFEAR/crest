@@ -33,6 +33,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.codegist.crest.CRestProperty.getBooleanFalse;
+import static org.codegist.crest.CRestProperty.getBooleanTrue;
+import static org.codegist.crest.CRestProperty.getDateFormat;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -58,82 +62,15 @@ final class SimpleXmlFactory {
         if(serializer != null) {
             return serializer;
         }
+        String trueVal = getBooleanTrue(crestProperties);
+        String falseVal = getBooleanFalse(crestProperties);
+        String dateFormat = getDateFormat(crestProperties);
 
-        MatcherRegistry.Builder registry = new MatcherRegistry.Builder();
-        registry.bind(Date.class, new DateMatcher(CRestProperty.getDateFormat(crestProperties)));
+        Map<Class, Transform> registry = new HashMap<Class, Transform>();
+        registry.put(Date.class, new DateMatcher(dateFormat));
+        registry.put(Boolean.class, new BooleanMatcher(trueVal, falseVal));
 
-        String trueVal = CRestProperty.getBooleanTrue(crestProperties);
-        String falseVal = CRestProperty.getBooleanFalse(crestProperties);
-        registry.bind(Boolean.class, new BooleanMatcher(trueVal, falseVal));
-
-        if(registry.hasTransformers()) {
-            serializer = new Persister(registry.build());
-        }else{
-            serializer = new Persister();
-        }
-        return serializer;
+        return new Persister(new MatcherRegistry(registry));
     }
 
-    private static final class MatcherRegistry implements Matcher {
-        private final Map<Class, Transform> transformerMap;
-
-        private MatcherRegistry(Map<Class, Transform> transformerMap) {
-            this.transformerMap = transformerMap;
-        }
-
-        private static class Builder {
-            private final Map<Class, Transform> transformerMap = new HashMap<Class, Transform>();
-
-            public <T> Builder bind(Class<T> clazz, Transform<T> transform) {
-                transformerMap.put(clazz, transform);
-                return this;
-            }
-
-            public boolean hasTransformers(){
-                return !transformerMap.isEmpty();
-            }
-
-            public MatcherRegistry build() {
-                return new MatcherRegistry(transformerMap);
-            }
-        }
-
-        public Transform match(Class type) throws Exception {
-            return transformerMap.get(type);
-        }
-    }
-
-    private static final class BooleanMatcher implements Transform<Boolean> {
-        private final String trueVal;
-        private final String falseVal;
-
-        private BooleanMatcher(String trueVal, String falseVal) {
-            this.trueVal = trueVal;
-            this.falseVal = falseVal;
-        }
-
-        public Boolean read(String value) {
-            return !falseVal.equals(value);
-        }
-
-        public String write(Boolean value) {
-            return Boolean.TRUE.equals(value) ? trueVal : falseVal;
-        }
-    }
-
-    private static final class DateMatcher implements Transform<Date> {
-        private final DateFormat df;
-
-        private DateMatcher(String format) {
-            this.df = new SimpleDateFormat(format);
-        }
-
-        public synchronized Date read(String value) throws ParseException {
-            return df.parse(value);
-        }
-
-        public synchronized String write(Date value) {
-            return df.format(value);
-        }
-    }
 }

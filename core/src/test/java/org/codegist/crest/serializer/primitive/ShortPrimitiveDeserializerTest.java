@@ -36,7 +36,6 @@ public class ShortPrimitiveDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeToShort() throws Exception {
         assertEquals(Short.valueOf((short)-1), deserialize(toTest, "-1"));
-        assertInputStreamAsBeenClosed();
     }
 
     @Test
