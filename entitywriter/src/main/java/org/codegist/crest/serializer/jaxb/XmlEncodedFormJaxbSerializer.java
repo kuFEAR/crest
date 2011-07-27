@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 
@@ -34,7 +35,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static org.codegist.crest.CRestProperty.get;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -53,9 +53,9 @@ public class XmlEncodedFormJaxbSerializer implements Serializer<List<Param>> {
     private final Jaxb jaxb;
     private final QName wrapperElementName;
 
-    public XmlEncodedFormJaxbSerializer(Map<String, Object> config) throws JAXBException {
-        this.jaxb = JaxbFactory.create(config, getClass());
-        this.wrapperElementName = new QName(get(config, WRAPPER_ELEMENT_NAME_PROP, DEFAULT_WRAPPER_ELEMENT_NAME));
+    public XmlEncodedFormJaxbSerializer(CRestConfig crestConfig) throws JAXBException {
+        this.jaxb = JaxbFactory.create(crestConfig, getClass());
+        this.wrapperElementName = new QName(crestConfig.get(WRAPPER_ELEMENT_NAME_PROP, DEFAULT_WRAPPER_ELEMENT_NAME));
     }
 
     public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {

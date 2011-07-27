@@ -18,16 +18,36 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest;
 
-import org.codegist.crest.CRestConfig;
-import org.codegist.crest.io.Response;
+import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface ResponseDeserializer {
+public interface CRestConfig {
+    
+    String CREST_CONCURRENCY_LEVEL = CRestConfig.class.getName() + "#concurrency-level";
+    String CREST_DATE_FORMAT = CRestConfig.class.getName() + "#date-format";
+    String CREST_BOOLEAN_TRUE = CRestConfig.class.getName() + "#boolean-format.true";
+    String CREST_BOOLEAN_FALSE = CRestConfig.class.getName() + "#boolean-format.false";
+    String CREST_MAX_ATTEMPTS = CRestConfig.class.getName() + "#retry-attempts";
 
-    <T> T deserialize(CRestConfig crestConfig, Response response) throws Exception;
+    CRestConfig merge(Map<String, Object> m);
 
+    <T> T get(String key);
+
+    <T> T get(String key, T defaultIfNotFound);
+
+    <T> T get(Class<?> key);
+
+    int getMaxAttempts();
+
+    String getDateFormat();
+
+    String getBooleanTrue();
+
+    String getBooleanFalse();
+
+    int getConcurrencyLevel();
 }

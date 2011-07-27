@@ -20,11 +20,9 @@
 
 package org.codegist.crest.entity;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
-
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -34,12 +32,12 @@ public class JsonEntityWriter extends SerializingEntityWriter {
     public static final String MIME  = "application/form-jsonencoded";
     private static final String CONTENT_TYPE = "application/json";
 
-    public JsonEntityWriter(Map<String,Object> crestProperties) {
-        super(getSerializer(crestProperties), CONTENT_TYPE);
+    public JsonEntityWriter(CRestConfig crestConfig) {
+        super(getSerializer(crestConfig), CONTENT_TYPE);
     }
 
-    private static Serializer getSerializer(Map<String,Object> crestProperties){
-        Registry<String,Serializer> registryMime = CRestProperty.get(crestProperties, Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME);
+    private static Serializer getSerializer(CRestConfig crestConfig){
+        Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
+        return registryMime.get(MIME, crestConfig);
     }
 }

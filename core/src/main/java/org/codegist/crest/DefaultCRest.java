@@ -44,12 +44,14 @@ import java.lang.reflect.Method;
  */
 class DefaultCRest extends CRest {
 
+    private final CRestConfig crestConfig;
     private final ProxyFactory proxyFactory;
     private final RequestExecutor requestExecutor;
     private final RequestBuilderFactory requestBuilderFactory;
     private final InterfaceConfigFactory configFactory;
 
-    public DefaultCRest(ProxyFactory proxyFactory, RequestExecutor requestExecutor, RequestBuilderFactory requestBuilderFactory, InterfaceConfigFactory configFactory) {
+    public DefaultCRest(CRestConfig crestConfig, ProxyFactory proxyFactory, RequestExecutor requestExecutor, RequestBuilderFactory requestBuilderFactory, InterfaceConfigFactory configFactory) {
+        this.crestConfig = crestConfig;
         this.proxyFactory = proxyFactory;
         this.requestExecutor = requestExecutor;
         this.requestBuilderFactory = requestBuilderFactory;
@@ -73,7 +75,7 @@ class DefaultCRest extends CRest {
         private final InterfaceConfig interfaceConfig;
 
         private CRestInvocationHandler(Class<T> interfaze) throws Exception {
-            this.interfaceConfig = configFactory.newConfig(interfaze);
+            this.interfaceConfig = configFactory.newConfig(crestConfig, interfaze);
         }
 
         @Override
@@ -83,7 +85,7 @@ class DefaultCRest extends CRest {
             Response response = null;
             try {
                 mc.getRequestInterceptor().beforeFire(request);
-                response = requestExecutor.execute(request);
+                response = requestExecutor.execute(crestConfig, request);
                 return mc.getResponseHandler().handle(response);
             }catch(Exception e){
                 try {

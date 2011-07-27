@@ -20,13 +20,12 @@
 
 package org.codegist.crest.util;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.CRestException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.codegist.common.collect.Maps.merge;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -36,29 +35,27 @@ public final class Registry<K,T> {
     private final Class<T> clazz;
     private final Map<K, Object> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
-    private final Map<String,Object> crestProperties;
     private final T defaultIfNotFound;
 
-    private Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound, Map<String, Object> crestProperties) {
+    private Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound) {
         this.clazz = clazz;
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
-        this.crestProperties = crestProperties;
     }
 
     public boolean contains(K key) {
         return mapping.containsKey(key);
     }
 
-    public T get(K key) {
+    public T get(K key, CRestConfig crestConfig) {
         T item = cache.get(key);
         if (item == null) {
-            item = buildAndCache(key);
+            item = buildAndCache(key, crestConfig);
         }
         return item;
     }
 
-    private synchronized T buildAndCache(K key) {
+    private synchronized T buildAndCache(K key, CRestConfig crestConfig) {
         T val = cache.get(key);
         if(val != null) {
             return val;
@@ -74,7 +71,7 @@ public final class Registry<K,T> {
         if (clazz.isAssignableFrom(item.getClass())) {
             val = (T) item;
         } else if (item instanceof ItemDescriptor) {
-            val = ((ItemDescriptor<T>) item).instanciate(crestProperties);
+            val = ((ItemDescriptor<T>) item).instanciate(crestConfig);
         } else {
             throw new IllegalStateException("Shouldn't be here");
         }
@@ -101,9 +98,10 @@ public final class Registry<K,T> {
             this.config = config;
         }
 
-        T instanciate(Map<String,Object> crestProperties) {
+        T instanciate(CRestConfig crestConfig) {
             try {
-                return ComponentFactory.instantiate(clazz, merge(crestProperties,config));
+                CRestConfig merged = config.isEmpty() ? crestConfig : crestConfig.merge(config) ;
+                return ComponentFactory.instantiate(clazz, merged);
             } catch (Exception e) {
                 throw CRestException.handle(e);
             }
@@ -115,16 +113,14 @@ public final class Registry<K,T> {
 
         private final Map<K, Object> mapping = new HashMap<K, Object>();
         private final Class<T> clazz;
-        private final Map<String,Object> crestProperties;
         private T defaultIfNotFound;
 
-        public Builder(Map<String,Object> crestProperties, Class<T> clazz) {
-            this.crestProperties = crestProperties;
+        public Builder(Class<T> clazz) {
             this.clazz = clazz;
         }
 
         public Registry<K,T> build() {
-            return new Registry<K,T>(clazz, mapping, defaultIfNotFound, crestProperties);
+            return new Registry<K,T>(clazz, mapping, defaultIfNotFound);
         }
 
         public Builder<K,T> register(Class<? extends T> item, K... keys) {

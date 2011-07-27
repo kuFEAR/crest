@@ -23,10 +23,7 @@ package org.codegist.crest;
 import org.codegist.common.reflect.CglibProxyFactory;
 import org.codegist.common.reflect.JdkProxyFactory;
 import org.codegist.common.reflect.ProxyFactory;
-import org.codegist.crest.config.AnnotationDrivenInterfaceConfigFactory;
-import org.codegist.crest.config.DefaultInterfaceConfigBuilderFactory;
-import org.codegist.crest.config.InterfaceConfigBuilderFactory;
-import org.codegist.crest.config.InterfaceConfigFactory;
+import org.codegist.crest.config.*;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
@@ -59,12 +56,12 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 import static java.util.Collections.singletonMap;
-import static java.util.Collections.unmodifiableMap;
 import static org.codegist.common.collect.Arrays.arrify;
 import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
-import static org.codegist.crest.CRestProperty.*;
+import static org.codegist.crest.CRestConfig.*;
 import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
+import static org.codegist.crest.util.PlaceHolders.compile;
 
 /**
  * <p>The default build :
@@ -83,9 +80,6 @@ import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
 public class CRestBuilder {
 
     private final Map<String, Object> crestProperties = new HashMap<String, Object>();
-    {
-        crestProperties.put(CRestProperty.CREST_UNAUTHORIZED_STATUS_CODE, HTTP_UNAUTHORIZED);
-    }
     private final RequestBuilderFactory requestBuilderFactory = new HttpRequestBuilderFactory();
     private final Map<String, String> placeholders = new HashMap<String, String>();
     private final Map<String, EntityParamExtractor> httpEntityParamExtrators = new HashMap<String, EntityParamExtractor>(singletonMap("application/x-www-form-urlencoded", new UrlEncodedFormEntityParamExtractor()));
@@ -98,12 +92,12 @@ public class CRestBuilder {
 
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
 
-    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(crestProperties, AnnotationHandler.class)
+    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(AnnotationHandler.class)
                             .defaultAs(new NoOpAnnotationHandler())
                             .register(CRestAnnotations.MAPPING);
 
-    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>(crestProperties, Deserializer.class);
-    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>(crestProperties, Deserializer.class)
+    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>(Deserializer.class);
+    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>(Deserializer.class)
                             .register(VoidDeserializer.class, Void.class, void.class)
                             .register(ByteArrayDeserializer.class, byte[].class)
                             .register(StringDeserializer.class, String.class)
@@ -126,7 +120,7 @@ public class CRestBuilder {
                             .register(InputStreamDeserializer.class, InputStream.class)
                             .register(ReaderDeserializer.class, Reader.class);
 
-    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>(crestProperties, Serializer.class)
+    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>(Serializer.class)
                             .defaultAs(new ToStringSerializer())
                             .register(DateSerializer.class, Date.class)
                             .register(BooleanSerializer.class, Boolean.class, boolean.class)
@@ -148,6 +142,7 @@ public class CRestBuilder {
     private String accessTokenRefreshUrl;
 
     public CRest build() {
+
         Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry();
         Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build();
         Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build();
@@ -163,7 +158,7 @@ public class CRestBuilder {
         Authorization authorization = buildAuthorization(plainChannelFactory);
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, baseResponseDeserializer, customTypeResponseDeserializer);
 
-        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestProperties);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(compile(placeholders), mimeDeserializerRegistry, classSerializerRegistry);
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build());
 
         putIfAbsent(crestProperties, ProxyFactory.class.getName(), proxyFactory);
@@ -172,10 +167,9 @@ public class CRestBuilder {
         putIfAbsent(crestProperties, Registry.class.getName() + "#serializers-per-class", classSerializerRegistry);
         putIfAbsent(crestProperties, RequestExecutor.class.getName(), requestExecutor);
         putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
-        putIfAbsent(crestProperties, InterfaceConfigFactory.class.getName(), configFactory);
-        putIfAbsent(crestProperties, CREST_ANNOTATION_PLACEHOLDERS, unmodifiableMap(placeholders));
 
-        return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
+        CRestConfig crestConfig = new DefaultCRestConfig(crestProperties);
+        return new DefaultCRest(crestConfig, proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
     public <T> T build(Class<T> interfaze) {
@@ -185,7 +179,8 @@ public class CRestBuilder {
     private HttpChannelFactory buildHttpChannelInitiator() {
         if (httpChannelFactory == null) {
             if (useHttpClient) {
-                return HttpClientHttpChannelFactory.create(crestProperties);
+                int concurrenceLevel = crestProperties.containsKey(CREST_CONCURRENCY_LEVEL) ? (Integer) crestProperties.get(CREST_CONCURRENCY_LEVEL) : 1;
+                return HttpClientHttpChannelFactory.create(concurrenceLevel, concurrenceLevel);
             } else {
                 return new HttpURLConnectionHttpChannelFactory();
             }
@@ -400,8 +395,8 @@ public class CRestBuilder {
             this.accessOAuthToken = new OAuthToken(accessToken, accessTokenSecret);
         }
         if(accessTokenRefreshUrl != null) {
-            setProperty(METHOD_CONFIG_DEFAULT_RETRY_HANDLER, RefreshAuthorizationRetryHandler.class);
-            setProperty(CREST_MAX_ATTEMPTS, CRestProperty.CREST_MAX_ATTEMPTS_DEFAULT + 1);
+            setProperty(MethodConfig.METHOD_CONFIG_DEFAULT_RETRY_HANDLER, RefreshAuthorizationRetryHandler.class);
+            setProperty(RefreshAuthorizationRetryHandler.UNAUTHORIZED_STATUS_CODE_PROP, HTTP_UNAUTHORIZED);
         }
         this.accessTokenRefreshUrl = accessTokenRefreshUrl;
         this.consumerOAuthToken = new OAuthToken(consumerKey, consumerSecret);

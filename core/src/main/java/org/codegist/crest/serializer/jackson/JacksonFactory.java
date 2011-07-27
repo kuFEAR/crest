@@ -20,15 +20,13 @@
 
 package org.codegist.crest.serializer.jackson;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.get;
 
 final class JacksonFactory {
 
@@ -46,22 +44,22 @@ final class JacksonFactory {
         throw new IllegalStateException();
     }
 
-    static ObjectMapper createObjectMapper(Map<String,Object> crestProperties, Class<?> source){
+    static ObjectMapper createObjectMapper(CRestConfig crestConfig, Class<?> source){
         String prefix = source.getName();
 
-        ObjectMapper mapper = CRestProperty.get(crestProperties, prefix + JACKSON_OBJECT_MAPPER);
+        ObjectMapper mapper = crestConfig.get(prefix + JACKSON_OBJECT_MAPPER);
         if(mapper != null){
             return mapper;
         }
         
         mapper = new ObjectMapper();
 
-        Map<DeserializationConfig.Feature, Boolean> deserConfig = get(crestProperties, prefix + JACKSON_DESERIALIZER_CONFIG, DEFAULT_DESERIALIZER_CONFIG);
+        Map<DeserializationConfig.Feature, Boolean> deserConfig = crestConfig.get(prefix + JACKSON_DESERIALIZER_CONFIG, DEFAULT_DESERIALIZER_CONFIG);
         for(Map.Entry<DeserializationConfig.Feature,Boolean> feature : deserConfig.entrySet()){
             mapper.configure(feature.getKey(), feature.getValue());
         }
 
-        Map<SerializationConfig.Feature, Boolean> serConfig = get(crestProperties, prefix + JACKSON_SERIALIZER_CONFIG, DEFAULT_SERIALIZER_CONFIG);
+        Map<SerializationConfig.Feature, Boolean> serConfig = crestConfig.get(prefix + JACKSON_SERIALIZER_CONFIG, DEFAULT_SERIALIZER_CONFIG);
         for(Map.Entry<SerializationConfig.Feature,Boolean> feature : serConfig.entrySet()){
             mapper.configure(feature.getKey(), feature.getValue());
         }

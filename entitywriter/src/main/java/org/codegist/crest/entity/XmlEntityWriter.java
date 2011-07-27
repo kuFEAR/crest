@@ -20,13 +20,12 @@
 
 package org.codegist.crest.entity;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -36,12 +35,12 @@ public class XmlEntityWriter extends SerializingEntityWriter {
     public static final String MIME  = "application/form-xmlencoded";
     private static final String CONTENT_TYPE  = "application/xml";
 
-    public XmlEntityWriter(Map<String,Object> crestProperties) {
-        super(getSerializer(crestProperties), CONTENT_TYPE);
+    public XmlEntityWriter(CRestConfig crestConfig) {
+        super(getSerializer(crestConfig), CONTENT_TYPE);
     }
 
-    private static Serializer<List<Param>> getSerializer(Map<String,Object> crestProperties){
-        Registry<String,Serializer> registryMime = CRestProperty.get(crestProperties, Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME);
+    private static Serializer<List<Param>> getSerializer(CRestConfig crestConfig){
+        Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
+        return registryMime.get(MIME, crestConfig);
     }
 }

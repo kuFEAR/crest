@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.util.Registry;
 
@@ -38,11 +39,11 @@ public class ResponseDeserializerByClass implements ResponseDeserializer {
         this.classDeserializerRegistry = classDeserializerRegistry;
     }
 
-    public <T> T deserialize(Response response) throws Exception {
+    public <T> T deserialize(CRestConfig crestConfig,Response response) throws Exception {
         Class<T> type = (Class<T>) response.getExpectedType();
         isTrue(classDeserializerRegistry.contains(type), "Unknown class %s, cancelling deserialization", type);
         LOG.debug("Trying to deserialize response to Type: %s.", type);
-        return classDeserializerRegistry.get(type).<T>deserialize(
+        return classDeserializerRegistry.get(type, crestConfig).<T>deserialize(
                 type,
                 response.getExpectedGenericType(),
                 response.asStream(),

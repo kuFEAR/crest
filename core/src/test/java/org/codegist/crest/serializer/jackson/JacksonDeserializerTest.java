@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.jackson;
 
 import org.codegist.common.io.IOs;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.BaseDeserializerTest;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -31,14 +32,11 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -52,7 +50,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 @PrepareForTest({JacksonFactory.class, TypeFactory.class})
 public class JacksonDeserializerTest extends BaseDeserializerTest {
 
-    private final Map<String,Object> crestProperties = new HashMap<String, Object>();
+    private final CRestConfig crestConfig = mock(CRestConfig.class);
 
     @Test
     public void shouldDeserializeInputStreamUsingGenericTypeAndObjectMapper() throws IOException {
@@ -65,11 +63,11 @@ public class JacksonDeserializerTest extends BaseDeserializerTest {
 
         mockStatic(JacksonFactory.class);
         mockStatic(TypeFactory.class);
-        when(JacksonFactory.createObjectMapper(any(Map.class), any(Class.class))).thenReturn(mockObjectMapper);
+        when(JacksonFactory.createObjectMapper(any(CRestConfig.class), any(Class.class))).thenReturn(mockObjectMapper);
         when(TypeFactory.type(any(Type.class))).thenReturn(mockJavaType);
         when(mockObjectMapper.readValue(any(InputStreamReader.class), any(JavaType.class))).thenReturn(mockResult);
 
-        Object actual = new JacksonDeserializer(crestProperties).deserialize(null, mockType, mockInputStream, charset);
+        Object actual = new JacksonDeserializer(crestConfig).deserialize(null, mockType, mockInputStream, charset);
 
         ArgumentCaptor<InputStreamReader> inputStreamReader = ArgumentCaptor.forClass(InputStreamReader.class);
 
@@ -80,7 +78,7 @@ public class JacksonDeserializerTest extends BaseDeserializerTest {
         assertEquals("UTF8", actualInputStream.getEncoding());
         assertEquals("hello", IOs.toString(actualInputStream));
         verifyStatic();
-        JacksonFactory.createObjectMapper(crestProperties, JacksonDeserializer.class);
+        JacksonFactory.createObjectMapper(crestConfig, JacksonDeserializer.class);
         TypeFactory.type(mockType);
     }
 

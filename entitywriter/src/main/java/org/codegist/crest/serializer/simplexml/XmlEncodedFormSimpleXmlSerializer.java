@@ -20,6 +20,7 @@
 
 package org.codegist.crest.serializer.simplexml;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.DateSerializer;
 import org.codegist.crest.serializer.Serializer;
@@ -34,9 +35,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import static org.codegist.crest.CRestProperty.get;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -54,11 +53,11 @@ public class XmlEncodedFormSimpleXmlSerializer implements Serializer<List<Param>
     private final DateSerializer dateSerializer;
     private final BooleanSerializer booleanSerializer;
 
-    public XmlEncodedFormSimpleXmlSerializer(Map<String,Object> cfg) {
-        serializer = SimpleXmlFactory.createSerializer(cfg, getClass());
-        dateSerializer = new DateSerializer(cfg);
-        booleanSerializer = new BooleanSerializer(cfg);
-        this.rootElement = get(cfg, WRAPPER_ELEMENT_NAME_PROP, DEFAULT_WRAPPER_ELEMENT_NAME);
+    public XmlEncodedFormSimpleXmlSerializer(CRestConfig crestConfig) {
+        serializer = SimpleXmlFactory.createSerializer(crestConfig, getClass());
+        dateSerializer = new DateSerializer(crestConfig);
+        booleanSerializer = new BooleanSerializer(crestConfig);
+        this.rootElement = crestConfig.get(WRAPPER_ELEMENT_NAME_PROP, DEFAULT_WRAPPER_ELEMENT_NAME);
     }
 
     public void serialize(List<Param> params, Charset charset, OutputStream out) throws Exception {

@@ -37,15 +37,12 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
-import org.codegist.crest.CRestProperty;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpChannelFactory;
 
 import java.net.ProxySelector;
 import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.Map;
 
 /**
 * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -85,15 +82,6 @@ public final class HttpClientHttpChannelFactory implements HttpChannelFactory, D
                 throw new IllegalArgumentException("Method " + methodType + " not supported");
         }
         return new HttpClientHttpChannel(client, request);
-    }
-
-    public static HttpChannelFactory create() {
-        return create(Collections.<String, Object>emptyMap());
-    }
-    
-    public static HttpChannelFactory create(Map<String, Object> crestProperties) {
-        int concurrencyLevel = CRestProperty.getConcurrencyLevel(crestProperties);
-        return create(concurrencyLevel, concurrencyLevel);
     }
 
     public static HttpChannelFactory create(int maxConcurrentConnection, int maxConnectionPerRoute) {

@@ -27,8 +27,6 @@ import org.codegist.crest.security.oauth.v1.OAuthApiV1Builder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import static org.codegist.crest.config.MethodType.POST;
-
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */

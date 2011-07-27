@@ -21,14 +21,13 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.IOs;
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -37,12 +36,8 @@ public class DateDeserializer extends TypeDeserializer<Date> {
 
     private final DateFormat formatter;
 
-    public DateDeserializer(Map<String,Object> crestProperties) {
-        this(CRestProperty.getDateFormat(crestProperties));
-    }
-
-    public DateDeserializer(String dateFormat) {
-        this.formatter = new SimpleDateFormat(dateFormat);
+    public DateDeserializer(CRestConfig crestConfig) {
+        this.formatter = new SimpleDateFormat(crestConfig.getDateFormat());
     }
 
     @Override

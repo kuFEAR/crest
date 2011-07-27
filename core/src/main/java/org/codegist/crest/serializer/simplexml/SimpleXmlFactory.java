@@ -20,22 +20,14 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
-import org.simpleframework.xml.transform.Matcher;
 import org.simpleframework.xml.transform.Transform;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.getBooleanFalse;
-import static org.codegist.crest.CRestProperty.getBooleanTrue;
-import static org.codegist.crest.CRestProperty.getDateFormat;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -48,23 +40,23 @@ final class SimpleXmlFactory {
         throw new IllegalStateException();
     }
 
-    static Serializer createSerializer(Map<String,Object> crestProperties, Class<?> source){
-        return create(crestProperties, source);
+    static Serializer createSerializer(CRestConfig crestConfig, Class<?> source){
+        return create(crestConfig, source);
     }
 
-    static Serializer createDeserializer(Map<String,Object> crestProperties, Class<?> source){
-        return create(crestProperties, source);
+    static Serializer createDeserializer(CRestConfig crestConfig, Class<?> source){
+        return create(crestConfig, source);
     }
 
-    private static Serializer create(Map<String,Object> crestProperties, Class<?> source){
+    private static Serializer create(CRestConfig crestConfig, Class<?> source){
         String prefix = source.getName();
-        Serializer serializer =  CRestProperty.get(crestProperties, prefix + "#" + SERIALIZER);
+        Serializer serializer =  crestConfig.get(prefix + "#" + SERIALIZER);
         if(serializer != null) {
             return serializer;
         }
-        String trueVal = getBooleanTrue(crestProperties);
-        String falseVal = getBooleanFalse(crestProperties);
-        String dateFormat = getDateFormat(crestProperties);
+        String trueVal = crestConfig.getBooleanTrue();
+        String falseVal = crestConfig.getBooleanFalse();
+        String dateFormat = crestConfig.getDateFormat();
 
         Map<Class, Transform> registry = new HashMap<Class, Transform>();
         registry.put(Date.class, new DateMatcher(dateFormat));

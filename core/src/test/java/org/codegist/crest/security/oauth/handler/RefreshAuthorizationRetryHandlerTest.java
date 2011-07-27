@@ -20,17 +20,16 @@
 
 package org.codegist.crest.security.oauth.handler;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
+import org.codegist.crest.util.CRestConfigs;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.CREST_MAX_ATTEMPTS;
-import static org.codegist.crest.CRestProperty.CREST_UNAUTHORIZED_STATUS_CODE;
+import static org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler.UNAUTHORIZED_STATUS_CODE_PROP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -46,41 +45,42 @@ public class RefreshAuthorizationRetryHandlerTest {
     private final RequestException mockRequestException = mock(RequestException.class);
     private final Response mockResponse = mock(Response.class);
 
-    private final Map<String,Object> crestProperties = new HashMap<String, Object>(){{
-        put(CREST_UNAUTHORIZED_STATUS_CODE, UNAUTHORIZED_STATUS_CODE);
-        put(Authorization.class.getName(), mockAuthorization);
-    }};
+    private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
 
-    private final RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(crestProperties);
+    @Before
+    public void setupMocks(){
+        when(mockCRestConfig.<Object>get(UNAUTHORIZED_STATUS_CODE_PROP)).thenReturn(UNAUTHORIZED_STATUS_CODE);
+        when(mockCRestConfig.<Object>get(Authorization.class)).thenReturn(mockAuthorization);
+    }
 
     @Test
     public void shouldNotRetryIndependentlyFromRequestExceptionContentAsDefaultMaxIsOne() throws Exception {
-        assertFalse(toTest.retry(mockRequestException, 2));
+        assertFalse(new RefreshAuthorizationRetryHandler(mockCRestConfig).retry(mockRequestException, 3));
     }
 
     @Test
     public void shouldRetryAndRefreshUpUntilMaxWhenRequestExceptionDoHaveAResponseWithAnUnauthorizedStatus() throws Exception {
-        crestProperties.put(CREST_MAX_ATTEMPTS, 5);
-        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(crestProperties);
-        shouldRetryUpUntilMaxWhenRequestExceptionDoHaveAResponse(toTest, 5, UNAUTHORIZED_STATUS_CODE);
-        verify(mockAuthorization, times(4)).refresh();
+        when(mockCRestConfig.getMaxAttempts()).thenReturn(5);
+        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(mockCRestConfig);
+        shouldRetryUpUntilMaxWhenRequestExceptionDoHaveAResponse(toTest, 6, UNAUTHORIZED_STATUS_CODE);
+        verify(mockAuthorization, times(5)).refresh();
     }
 
     @Test
     public void shouldRetryButDontRefreshUpUntilMaxWhenRequestExceptionDoHaveAResponseRefreshAuthorizationRetryHandlerWithAStatusDifferentThanUnauthorized() throws Exception {
-        crestProperties.put(CREST_MAX_ATTEMPTS, 5);
-        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(crestProperties);
-        shouldRetryUpUntilMaxWhenRequestExceptionDoHaveAResponse(toTest, 5, 123);
+        when(mockCRestConfig.getMaxAttempts()).thenReturn(5);
+        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(mockCRestConfig);
+        shouldRetryUpUntilMaxWhenRequestExceptionDoHaveAResponse(toTest, 6, 123);
         verify(mockAuthorization, never()).refresh();
     }
 
     @Test
     public void shouldRetryButDontRefreshUpUntilMaxWhenRequestExceptionDoesNotHaveAResponse() throws Exception {
-        crestProperties.put(CREST_MAX_ATTEMPTS, 5);
-        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(crestProperties);
+        when(mockCRestConfig.getMaxAttempts()).thenReturn(5);
+        RefreshAuthorizationRetryHandler toTest = new RefreshAuthorizationRetryHandler(mockCRestConfig);
         when(mockRequestException.hasResponse()).thenReturn(false);
-        assertTrue(toTest.retry(mockRequestException, 5));
-        assertFalse(toTest.retry(mockRequestException, 6));
+        assertTrue(toTest.retry(mockRequestException, 6));
+        assertFalse(toTest.retry(mockRequestException, 7));
         verify(mockAuthorization, never()).refresh();
     }
 

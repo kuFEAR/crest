@@ -21,14 +21,10 @@
 package org.codegist.crest.security.handler;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.io.RequestException;
 import org.codegist.crest.security.Authorization;
-
-import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.*;
 
 /**
  * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
@@ -36,16 +32,17 @@ import static org.codegist.crest.CRestProperty.*;
  */
 public class RefreshAuthorizationRetryHandler implements RetryHandler {
 
+    public static final String UNAUTHORIZED_STATUS_CODE_PROP = RefreshAuthorizationRetryHandler.class.getName() + "#unauthorized-status-code";
     private static final Logger LOGGER = Logger.getLogger(RefreshAuthorizationRetryHandler.class);
 
     private final Authorization authorization;
     private final int max;
     private final int unauthorizedStatusCode;
 
-    public RefreshAuthorizationRetryHandler(Map<String, Object> crestProperties) {
-        this.max = getMaxAttempts(crestProperties);
-        this.unauthorizedStatusCode = CRestProperty.<Integer>get(crestProperties, CREST_UNAUTHORIZED_STATUS_CODE);
-        authorization = get(crestProperties, Authorization.class);
+    public RefreshAuthorizationRetryHandler(CRestConfig crestConfig) {
+        this.max = crestConfig.getMaxAttempts() + 1;
+        this.unauthorizedStatusCode = crestConfig.<Integer>get(UNAUTHORIZED_STATUS_CODE_PROP);
+        authorization = crestConfig.get(Authorization.class);
     }
 
     public boolean retry(RequestException exception, int attemptNumber) throws Exception {

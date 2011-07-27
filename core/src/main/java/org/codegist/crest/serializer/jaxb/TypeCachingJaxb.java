@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.common.reflect.Types;
+import org.codegist.crest.CRestConfig;
 
 import javax.xml.bind.JAXBException;
 import java.io.OutputStream;
@@ -28,7 +29,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -38,12 +38,12 @@ import java.util.concurrent.ConcurrentMap;
  */
 class TypeCachingJaxb implements Jaxb {
 
-    private final Map<String,Object> crestProperties;
+    private final CRestConfig crestConfig;
     private final ConcurrentMap<Set<Class<?>>, Jaxb> cache = new ConcurrentHashMap<Set<Class<?>>, Jaxb>();
     private final Class<?> source;
 
-    TypeCachingJaxb(Map<String, Object> crestProperties, Class<?> source) {
-        this.crestProperties = crestProperties;
+    TypeCachingJaxb(CRestConfig crestConfig, Class<?> source) {
+        this.crestConfig = crestConfig;
         this.source = source;
     }
 
@@ -72,7 +72,7 @@ class TypeCachingJaxb implements Jaxb {
     private Jaxb get(Set<Class<?>> key) throws JAXBException {
         Jaxb jaxb = cache.get(key);
         if(jaxb == null) {
-            jaxb = JaxbFactory.create(crestProperties, source, key.toArray(new Class<?>[key.size()]));
+            jaxb = JaxbFactory.create(crestConfig, source, key.toArray(new Class<?>[key.size()]));
             Jaxb previousJaxb = cache.putIfAbsent(key, jaxb);
             jaxb = previousJaxb != null ? previousJaxb : jaxb;
         }

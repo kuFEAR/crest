@@ -20,7 +20,7 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import java.util.Map;
+import org.codegist.crest.CRestConfig;
 
 import static org.codegist.common.lang.Strings.isBlank;
 
@@ -29,8 +29,8 @@ import static org.codegist.common.lang.Strings.isBlank;
  */
 public class BooleanPrimitiveDeserializer extends BooleanWrapperDeserializer {
 
-    public BooleanPrimitiveDeserializer(Map<String,Object> crestProperties) {
-        super(crestProperties);
+    public BooleanPrimitiveDeserializer(CRestConfig crestConfig) {
+        super(crestConfig);
     }
 
     public Boolean deserialize(String value) {

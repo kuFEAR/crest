@@ -20,6 +20,8 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.CRestConfig;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -29,6 +31,6 @@ public interface InterfaceConfigFactory {
      * @param interfaze Interface to build the configuration from
      * @return The interface config object.
      */
-    InterfaceConfig newConfig(Class<?> interfaze) throws Exception;
+    InterfaceConfig newConfig(CRestConfig crestConfig, Class<?> interfaze) throws Exception;
 
 }

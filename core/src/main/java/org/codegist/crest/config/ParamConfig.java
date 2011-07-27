@@ -38,20 +38,17 @@ import java.util.Map;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface ParamConfig {
+    
+    
 
-    ParamType DEFAULT_PARAM_TYPE = ParamType.getDefault();
-
-    String DEFAULT_VALUE = null;
-
-    String DEFAULT_NAME = null;
-
-    Map<String,Object> DEFAULT_METADATAS = null;
-
-    Class<? extends Serializer> DEFAULT_SERIALIZER = null;
-
-    boolean DEFAULT_ENCODED = false;
-
-    Class<? extends ParamProcessor> DEFAULT_PARAM_PROCESSOR = null;
+    String PARAM_CONFIG_DEFAULT_TYPE = ParamConfig.class.getName() + "#param-type";
+    String PARAM_CONFIG_DEFAULT_LIST_SEPARATOR = ParamConfig.class.getName() + "#list-separator";
+    String PARAM_CONFIG_DEFAULT_METAS = ParamConfig.class.getName() + "#metas";
+    String PARAM_CONFIG_DEFAULT_VALUE = ParamConfig.class.getName() + "#value";
+    String PARAM_CONFIG_DEFAULT_SERIALIZER = ParamConfig.class.getName() + "#serializer";
+    String PARAM_CONFIG_DEFAULT_ENCODED = ParamConfig.class.getName() + "#encoded";
+    String PARAM_CONFIG_DEFAULT_NAME = ParamConfig.class.getName() + "#name";
+    String PARAM_CONFIG_DEFAULT_PROCESSOR = ParamConfig.class.getName() + "#processor";
 
     String getName();
 

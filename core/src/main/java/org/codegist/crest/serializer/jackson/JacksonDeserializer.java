@@ -21,6 +21,7 @@
 package org.codegist.crest.serializer.jackson;
 
 import org.codegist.common.io.IOs;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Deserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -30,7 +31,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -43,8 +43,8 @@ public class JacksonDeserializer implements Deserializer {
 
     private final ObjectMapper jackson;
 
-    public JacksonDeserializer(Map<String, Object> crestProperties) {
-        this.jackson = JacksonFactory.createObjectMapper(crestProperties, getClass());
+    public JacksonDeserializer(CRestConfig crestConfig) {
+        this.jackson = JacksonFactory.createObjectMapper(crestConfig, getClass());
     }
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws IOException {

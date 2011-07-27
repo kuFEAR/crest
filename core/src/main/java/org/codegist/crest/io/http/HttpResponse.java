@@ -22,6 +22,7 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Disposable;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.DelegatingResponse;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.Response;
@@ -42,13 +43,15 @@ import java.nio.charset.Charset;
  */
 public class HttpResponse implements Response, Disposable {
 
+    private final CRestConfig crestConfig;
     private final ResponseDeserializer baseResponseDeserializer;
     private final ResponseDeserializer customTypeResponseDeserializer;
     private final Request request;
     private final InputStream inputStream;
     private final HttpResource resource;
 
-    public HttpResponse(ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer, Request request, HttpResource resource) throws IOException {
+    public HttpResponse(CRestConfig crestConfig, ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer, Request request, HttpResource resource) throws IOException {
+        this.crestConfig = crestConfig;
         this.baseResponseDeserializer = baseResponseDeserializer;
         this.customTypeResponseDeserializer = customTypeResponseDeserializer;
         this.request = request;
@@ -93,7 +96,7 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public <T> T deserialize() throws Exception {
-        return baseResponseDeserializer.<T>deserialize(this);
+        return baseResponseDeserializer.<T>deserialize(crestConfig, this);
     }
 
     public <T> T to(Class<T> type) throws Exception {
@@ -101,7 +104,7 @@ public class HttpResponse implements Response, Disposable {
     }
 
     public <T> T to(Class<T> type, Type genericType) throws Exception {
-        return customTypeResponseDeserializer.<T>deserialize(new ExpectedTypeOverriderResponse(this, type, genericType));
+        return customTypeResponseDeserializer.<T>deserialize(crestConfig, new ExpectedTypeOverriderResponse(this, type, genericType));
     }
 
     public void dispose() {

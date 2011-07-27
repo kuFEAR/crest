@@ -20,6 +20,7 @@
 
 package org.codegist.crest;
 
+import org.codegist.common.collect.Maps;
 import org.codegist.common.net.Urls;
 import org.codegist.crest.annotate.JsonEntity;
 import org.codegist.crest.annotate.XmlEntity;
@@ -51,7 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Collections.singletonMap;
-import static org.codegist.crest.CRestProperty.CREST_MAX_ATTEMPTS;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -69,9 +69,9 @@ public abstract class BaseCRestTest<T> {
 
 
     private static final Map<String,Object> CREST_PROPERTIES = new HashMap<String, Object>(){{
-        put(CRestProperty.CREST_DATE_FORMAT, DATE_FORMAT);
-        put(CRestProperty.CREST_BOOLEAN_FALSE, "myFalse");
-        put(CRestProperty.CREST_BOOLEAN_TRUE, "myTrue");
+        put(CRestConfig.CREST_DATE_FORMAT, DATE_FORMAT);
+        put(CRestConfig.CREST_BOOLEAN_FALSE, "myFalse");
+        put(CRestConfig.CREST_BOOLEAN_TRUE, "myTrue");
         put("crest.encoding", ENCODING.displayName());
         put("encoding.header", ENCODING.displayName());
         put(Serializer.class.getName(), SerializerTypes.JACKSON);
@@ -79,9 +79,9 @@ public abstract class BaseCRestTest<T> {
 
     // TODO this is to handle the fact we CANNOT override the way jaxb serialize types!
     public static final Map<String,Object> JAXB_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
-        put(CRestProperty.CREST_DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss+00:00");
-        put(CRestProperty.CREST_BOOLEAN_TRUE, "true");
-        put(CRestProperty.CREST_BOOLEAN_FALSE, "false");
+        put(CRestConfig.CREST_DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss+00:00");
+        put(CRestConfig.CREST_BOOLEAN_TRUE, "true");
+        put(CRestConfig.CREST_BOOLEAN_FALSE, "false");
         put(Serializer.class.getName(), SerializerTypes.JAXB);
     }};
     public static final Map<String,Object> SIMPLEXML_SPECIFIC_PROPERTIES = new HashMap<String, Object>(){{
@@ -94,39 +94,39 @@ public abstract class BaseCRestTest<T> {
     }};
 
     protected final T toTest;
-    private final Map<String,Object> testProps;
+    private final CRestConfig crestConfig;
 
 
 
     public BaseCRestTest(CRestHolder holder, Class<T> service) {
         this.toTest = holder.crest.build(service);
-        this.testProps = holder.properties;
+        this.crestConfig = holder.crestConfig;
     }
 
 
     public String getEffectiveDateFormat(){
-        return (String)testProps.get(CRestProperty.CREST_DATE_FORMAT);
+        return crestConfig.getDateFormat();
     }
     public String getEffectiveBooleanTrue(){
-        return (String)testProps.get(CRestProperty.CREST_BOOLEAN_TRUE);
+        return crestConfig.getBooleanTrue();
     }
     public String getEffectiveBooleanFalse(){
-        return (String)testProps.get(CRestProperty.CREST_BOOLEAN_FALSE);
+        return crestConfig.getBooleanFalse();
     }
     public File getTempDir(){
         return TEST_TMP_DIR != null ? new File(TEST_TMP_DIR) : null;
     }
 
     public String encodeHeader(String header) throws UnsupportedEncodingException {
-        return new String(header.getBytes(ENCODING), (String) testProps.get("encoding.header"));
+        return new String(header.getBytes(ENCODING), (String) crestConfig.get("encoding.header"));
     }
 
 
     public <D> BunchOfData<D> newBunchOfData(Date val1, Boolean val2, D val3){
-        return BunchOfData.create((SerializerTypes)testProps.get(Serializer.class.getName()), val1, val2, val3);
+        return BunchOfData.create((SerializerTypes)crestConfig.get(Serializer.class), val1, val2, val3);
     }
     public Data newData(int val1, String val2){
-        return Data.create((SerializerTypes)testProps.get(Serializer.class.getName()), val1, val2);
+        return Data.create((SerializerTypes)crestConfig.get(Serializer.class), val1, val2);
     }
 
 
@@ -186,7 +186,7 @@ public abstract class BaseCRestTest<T> {
                     .setConcurrencyLevel(2)
                     .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
-                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(CREST_PROPERTIES, Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build())    
+                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build())
                     .addProperties(CREST_PROPERTIES);
         if(TEST_JAXRS) {
             builder.jaxrsAware();
@@ -202,7 +202,7 @@ public abstract class BaseCRestTest<T> {
         return getEntitySerializerProperties(jaxb, false);
     }
     private static Map<String,Object> getEntitySerializerProperties(boolean jaxb, boolean json){
-        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>(CREST_PROPERTIES, Serializer.class);
+        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>(Serializer.class);
 
         if(jaxb) {
             registry.register(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);
@@ -267,14 +267,14 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CREST_MAX_ATTEMPTS, maxAttempts)
+                        .setProperty(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
                         .build());
             }
         }));
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CREST_MAX_ATTEMPTS, maxAttempts)
+                        .setProperty(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
                         .useHttpClient().build());
             }
         }));
@@ -395,14 +395,14 @@ public abstract class BaseCRestTest<T> {
 
     public static class CRestHolder {
         public final CRest crest;
-        public final Map<String,Object> properties = new HashMap<String, Object>(CREST_PROPERTIES);
+        public final CRestConfig crestConfig;
 
         public CRestHolder(CRest crest) {
             this(crest, Collections.<String, Object>emptyMap());
         }
         public CRestHolder(CRest crest, Map<String, Object> properties) {
             this.crest = crest;
-            this.properties.putAll(properties);
+            this.crestConfig = new DefaultCRestConfig(Maps.merge(CREST_PROPERTIES, properties));
         }
     }
 }

@@ -20,7 +20,9 @@
 
 package org.codegist.crest.serializer.jackson;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.NonInstanciableClassTest;
+import org.codegist.crest.util.CRestConfigs;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -30,15 +32,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class JacksonFactoryTest extends NonInstanciableClassTest {
 
-    private final Map<String,Object> crestProperties = new HashMap<String, Object>();
-
+    private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
 
     public JacksonFactoryTest() {
         super(JacksonFactory.class);
@@ -47,14 +51,15 @@ public class JacksonFactoryTest extends NonInstanciableClassTest {
     @Test
     public void shouldNotCreateAnObjectMapperButUseTheCustomOn(){
         ObjectMapper mockObjectMapper = mock(ObjectMapper.class);
-        crestProperties.put(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_OBJECT_MAPPER, mockObjectMapper);
-        ObjectMapper actual = JacksonFactory.createObjectMapper(crestProperties, getClass());
+
+        when(mockCRestConfig.get(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_OBJECT_MAPPER)).thenReturn(mockObjectMapper);
+        ObjectMapper actual = JacksonFactory.createObjectMapper(mockCRestConfig, getClass());
         assertEquals(mockObjectMapper, actual);
     }
 
     @Test
     public void shouldCreateAnObjectMapperWithDefaultConfig(){
-        ObjectMapper actual = JacksonFactory.createObjectMapper(crestProperties, getClass());
+        ObjectMapper actual = JacksonFactory.createObjectMapper(mockCRestConfig, getClass());
         assertNotNull(actual);
         assertFalse(actual.getDeserializationConfig().isEnabled(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES));
     }
@@ -68,10 +73,10 @@ public class JacksonFactoryTest extends NonInstanciableClassTest {
         serialization.put(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS, false);
         serialization.put(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
 
-        crestProperties.put(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_DESERIALIZER_CONFIG, deserialization);
-        crestProperties.put(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_SERIALIZER_CONFIG, serialization);
+        when(mockCRestConfig.get(eq(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_DESERIALIZER_CONFIG), any(Object.class))).thenReturn(deserialization);
+        when(mockCRestConfig.get(eq(JacksonFactoryTest.class.getName() + JacksonFactory.JACKSON_SERIALIZER_CONFIG), any(Object.class))).thenReturn(serialization);
 
-        ObjectMapper actual = JacksonFactory.createObjectMapper(crestProperties, getClass());
+        ObjectMapper actual = JacksonFactory.createObjectMapper(mockCRestConfig, getClass());
         assertNotNull(actual);
         assertTrue(actual.getDeserializationConfig().isEnabled(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES));
         assertFalse(actual.getDeserializationConfig().isEnabled(DeserializationConfig.Feature.AUTO_DETECT_SETTERS));

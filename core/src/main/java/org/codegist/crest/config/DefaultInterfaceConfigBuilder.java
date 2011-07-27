@@ -1,5 +1,6 @@
 package org.codegist.crest.config;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
@@ -7,29 +8,25 @@ import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.Registry;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceConfigBuilder {
 
     private final Class interfaze;
     private final Map<Method, MethodConfigBuilder> methodBuilders;
 
-    /**
-     * Given properties map can contains user-defined default values, that override interface predefined defauts.
-     *
-     * @param interfaze        interface to bind the config to
-     * @param crestProperties default values holder
-     */
-    public DefaultInterfaceConfigBuilder(Class interfaze, Map<String, Object> crestProperties) {
-        super(crestProperties);
+    public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+        super(crestConfig, placeholders);
         this.interfaze = interfaze;
         this.methodBuilders = new HashMap<Method, MethodConfigBuilder>();
         for (Method m : interfaze.getDeclaredMethods()) {
-            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(m, crestProperties));
+            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(m, crestConfig, placeholders, mimeDeserializerRegistry, classSerializerRegistry));
         }
     }
 

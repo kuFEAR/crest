@@ -20,20 +20,30 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.CRestConfig;
+import org.codegist.crest.serializer.Deserializer;
+import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.Registry;
+
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class DefaultInterfaceConfigBuilderFactory implements InterfaceConfigBuilderFactory {
 
-    private final Map<String,Object> crestProperties;
+    private final Map<Pattern,String> placeholders;
+    private final Registry<String,Deserializer> mimeDeserializerRegistry;
+    private final Registry<Class<?>, Serializer> classSerializerRegistry;
 
-    public DefaultInterfaceConfigBuilderFactory(Map<String, Object> crestProperties) {
-        this.crestProperties = crestProperties;
+    public DefaultInterfaceConfigBuilderFactory(Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+        this.placeholders= placeholders;
+        this.mimeDeserializerRegistry= mimeDeserializerRegistry;
+        this.classSerializerRegistry= classSerializerRegistry;
     }
 
-    public InterfaceConfigBuilder newInstance(Class<?> interfaze) {
-        return new DefaultInterfaceConfigBuilder(interfaze, crestProperties);
+    public InterfaceConfigBuilder newInstance(CRestConfig crestConfig, Class<?> interfaze) {
+        return new DefaultInterfaceConfigBuilder(interfaze, crestConfig, placeholders, mimeDeserializerRegistry, classSerializerRegistry);
     }
 }

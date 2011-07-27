@@ -20,6 +20,7 @@
 
 package org.codegist.crest.serializer.jackson;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -35,8 +36,8 @@ public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>>
 
     private final ObjectMapper jackson;
 
-    public JsonEncodedFormJacksonSerializer(Map<String, Object> config) {
-        this.jackson = JacksonFactory.createObjectMapper(config, getClass());
+    public JsonEncodedFormJacksonSerializer(CRestConfig crestConfig) {
+        this.jackson = JacksonFactory.createObjectMapper(crestConfig, getClass());
     }
 
     public void serialize(List<Param> value, Charset charset, OutputStream out) throws Exception {

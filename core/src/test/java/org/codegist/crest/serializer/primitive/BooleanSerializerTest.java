@@ -20,19 +20,18 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.CRestConfigs;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.codegist.crest.CRestProperty.CREST_BOOLEAN_FALSE_DEFAULT;
-import static org.codegist.crest.CRestProperty.CREST_BOOLEAN_TRUE_DEFAULT;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -40,19 +39,21 @@ import static org.junit.Assert.assertEquals;
 public class BooleanSerializerTest {
 
     private static final Charset charset = Charset.defaultCharset();
-    private final Serializer<Boolean> toTest = new BooleanSerializer(new HashMap<String, Object>());
+    private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
+    
+    private final Serializer<Boolean> toTest = new BooleanSerializer(mockCRestConfig);
 
     @Test
     public void shouldSerializeFalseToFalseUsingDefaultBooleanFormat() throws Exception {
         OutputStream out = new ByteArrayOutputStream();
         toTest.serialize(false, charset, out);
-        assertEquals(CREST_BOOLEAN_FALSE_DEFAULT, out.toString());
+        assertEquals("false", out.toString());
     }
     @Test
     public void shouldSerializeTrueToTrueUsingDefaultBooleanFormat() throws Exception {
         OutputStream out = new ByteArrayOutputStream();
         toTest.serialize(true, charset, out);
-        assertEquals(CREST_BOOLEAN_TRUE_DEFAULT, out.toString());
+        assertEquals("true", out.toString());
     }
     @Test(expected = NullPointerException.class)
     public void shouldThrowNullPointerWhenSerializingNull() throws Exception {
@@ -79,10 +80,9 @@ public class BooleanSerializerTest {
         newToTest().serialize(null, charset, new ByteArrayOutputStream());
     }
 
-    private static Serializer<Boolean> newToTest(){
-        Map<String, Object> crestProperties = new HashMap<String, Object>();
-        crestProperties.put(CRestProperty.CREST_BOOLEAN_TRUE, "1");
-        crestProperties.put(CRestProperty.CREST_BOOLEAN_FALSE, "0");
-        return new BooleanSerializer(crestProperties);
+    private Serializer<Boolean> newToTest(){
+        when(mockCRestConfig.getBooleanTrue()).thenReturn("1");
+        when(mockCRestConfig.getBooleanFalse()).thenReturn("0");
+        return new BooleanSerializer(mockCRestConfig);
     }
 }

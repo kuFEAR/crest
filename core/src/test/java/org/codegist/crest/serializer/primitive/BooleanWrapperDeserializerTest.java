@@ -20,32 +20,31 @@
 
 package org.codegist.crest.serializer.primitive;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.BaseDeserializerTest;
 import org.codegist.crest.serializer.TypeDeserializer;
+import org.codegist.crest.util.CRestConfigs;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.codegist.crest.CRestProperty.CREST_BOOLEAN_FALSE_DEFAULT;
-import static org.codegist.crest.CRestProperty.CREST_BOOLEAN_TRUE_DEFAULT;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class BooleanWrapperDeserializerTest extends BaseDeserializerTest {
     
-    private final BooleanWrapperDeserializer toTest = new BooleanWrapperDeserializer(new HashMap<String, Object>());
+    private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
+    private final BooleanWrapperDeserializer toTest = new BooleanWrapperDeserializer(mockCRestConfig);
 
     @Test
     public void shouldDeserializeFalseToFalseUsingDefaultBooleanFormat() throws Exception {
-        assertFalse(deserialize(toTest, CREST_BOOLEAN_FALSE_DEFAULT));
+        assertFalse(deserialize(toTest, "false"));
     }
     @Test
     public void shouldDeserializeTrueToTrueUsingDefaultBooleanFormat() throws Exception {
-        assertTrue(deserialize(toTest, CREST_BOOLEAN_TRUE_DEFAULT));
+        assertTrue(deserialize(toTest, "true"));
     }
     @Test
     public void shouldDeserializeAnythingToFalse() throws Exception {
@@ -59,12 +58,12 @@ public class BooleanWrapperDeserializerTest extends BaseDeserializerTest {
     @Test
     public void shouldDeserializeFalseToFalseUsingCustomBooleanFormat() throws Exception {
         TypeDeserializer<Boolean> toTest = newToTest();
-        assertFalse(deserialize(toTest, CREST_BOOLEAN_FALSE_DEFAULT));
+        assertFalse(deserialize(toTest, "false"));
     }
     @Test
     public void shouldDeserializeTrueToFalseUsingCustomBooleanFormat() throws Exception {
         TypeDeserializer<Boolean> toTest = newToTest();
-        assertFalse(deserialize(toTest, CREST_BOOLEAN_TRUE_DEFAULT));
+        assertFalse(deserialize(toTest, "true"));
     }
     @Test
     public void shouldDeserializeCustomTrueToTrueUsingCustomBooleanFormat() throws Exception {
@@ -82,9 +81,8 @@ public class BooleanWrapperDeserializerTest extends BaseDeserializerTest {
         assertNull(deserialize(toTest, null));
     }
     
-    private static TypeDeserializer<Boolean> newToTest(){
-        Map<String, Object> crestProperties = new HashMap<String, Object>();
-        crestProperties.put(CRestProperty.CREST_BOOLEAN_TRUE, "ffff");
-        return new BooleanWrapperDeserializer(crestProperties);
+    private TypeDeserializer<Boolean> newToTest(){
+        when(mockCRestConfig.getBooleanTrue()).thenReturn("ffff");
+        return new BooleanWrapperDeserializer(mockCRestConfig);
     }
 }

@@ -21,10 +21,8 @@
 package org.codegist.crest.handler;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.RequestException;
-
-import java.util.Map;
 
 /**
  * Default retry handler always returns true is the given attempt is strictly less than given max value.
@@ -40,8 +38,8 @@ public class MaxAttemptRetryHandler implements RetryHandler {
 
     private static final Logger LOG = Logger.getLogger(MaxAttemptRetryHandler.class);
 
-    public MaxAttemptRetryHandler(Map<String, Object> crestProperties) {
-        this.max = CRestProperty.getMaxAttempts(crestProperties);
+    public MaxAttemptRetryHandler(CRestConfig crestConfig) {
+        this.max = crestConfig.getMaxAttempts();
     }
 
 

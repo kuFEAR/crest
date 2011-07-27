@@ -21,6 +21,7 @@
 package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Types;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.util.Registry;
 
@@ -51,17 +52,17 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
     }
 
     @SuppressWarnings("unchecked")
-    public InterfaceConfig newConfig(Class<?> interfaze) throws Exception {
-        InterfaceConfigBuilder config = icbf.newInstance(interfaze);
+    public InterfaceConfig newConfig(CRestConfig crestConfig, Class<?> interfaze) throws Exception {
+        InterfaceConfigBuilder config = icbf.newInstance(crestConfig, interfaze);
         
         for(Annotation annotation : interfaze.getAnnotations()){
-            handlersRegistry.get(annotation.annotationType()).handleInterfaceAnnotation(annotation, config);
+            handlersRegistry.get(annotation.annotationType(), crestConfig).handleInterfaceAnnotation(annotation, config);
         }
 
         for (Method meth : interfaze.getDeclaredMethods()) {
             MethodConfigBuilder methodConfigBuilder = config.startMethodConfig(meth);
             for(Annotation methAnnotation : meth.getAnnotations()){
-                handlersRegistry.get(methAnnotation.annotationType()).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
+                handlersRegistry.get(methAnnotation.annotationType(), crestConfig).handleMethodAnnotation(methAnnotation, methodConfigBuilder);
             }
 
             Class<?>[] paramTypes = meth.getParameterTypes();
@@ -74,7 +75,7 @@ public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFa
 
                 ParamConfigBuilder methodParamConfigBuilder = methodConfigBuilder.startParamConfig(i);
                 for(Annotation paramAnnotation : annotations){
-                    handlersRegistry.get(paramAnnotation.annotationType()).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
+                    handlersRegistry.get(paramAnnotation.annotationType(), crestConfig).handleParameterAnnotation(paramAnnotation, methodParamConfigBuilder);
                 }
             }
         }

@@ -24,6 +24,7 @@ import org.codegist.common.collect.Arrays;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.Request;
@@ -59,10 +60,10 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         this.customTypeResponseDeserializer = customTypeResponseDeserializer;
     }
 
-    public Response execute(Request request) throws Exception {
+    public Response execute(CRestConfig crestConfig, Request request) throws Exception {
         HttpResponse response;
         try {
-            response = doExecute(request);
+            response = doExecute(crestConfig, request);
             if(response.getStatusCode() >= HTTP_BAD_REQUEST) {
                 throw new RequestException(response.getStatusMessage(), response);
             }
@@ -72,7 +73,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         }
     }
 
-    private HttpResponse doExecute(Request request) throws IOException, Exception {
+    private HttpResponse doExecute(CRestConfig crestConfig, Request request) throws IOException, Exception {
         String url = toUrl(request);
         MethodConfig mc = request.getMethodConfig();
         Charset charset = mc.getCharset();
@@ -134,7 +135,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         }
 
         HttpChannel.Response response = httpChannel.send();
-        return new HttpResponse(baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
+        return new HttpResponse(crestConfig, baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
     }
 
 

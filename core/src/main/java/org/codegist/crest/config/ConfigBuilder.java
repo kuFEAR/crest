@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.util.ComponentFactory;
 
@@ -27,9 +28,6 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.codegist.crest.CRestProperty.get;
-import static org.codegist.crest.CRestProperty.getPlaceholders;
-import static org.codegist.crest.util.PlaceHolders.compile;
 import static org.codegist.crest.util.PlaceHolders.merge;
 
 /**
@@ -42,16 +40,20 @@ import static org.codegist.crest.util.PlaceHolders.merge;
  */
 abstract class ConfigBuilder {
 
-    private final Map<String, Object> crestProperties;
+    private final CRestConfig crestConfig;
     private final Map<Pattern, String> placeholders;
 
-    ConfigBuilder(Map<String, Object> crestProperties) {
-        this.crestProperties = crestProperties;
-        this.placeholders = compile(getPlaceholders(crestProperties));
+    ConfigBuilder(CRestConfig crestConfig, Map<Pattern,String> placeholders) {
+        this.crestConfig = crestConfig;
+        this.placeholders = placeholders;
     }
 
-    public Map<String, Object> getCRestProperties() {
-        return crestProperties;
+    public CRestConfig getCRestConfig() {
+        return crestConfig;
+    }
+
+    public Map<Pattern, String> getPlaceholders() {
+        return placeholders;
     }
 
     protected String ph(String str) {
@@ -62,7 +64,7 @@ abstract class ConfigBuilder {
         if(value != null) {
             return value;
         }else{
-            T[] prop = get(crestProperties, defProp);
+            T[] prop = crestConfig.get(defProp);
             return (prop != null) ? prop : newInstance(def);
         }
     }
@@ -71,7 +73,7 @@ abstract class ConfigBuilder {
         if(value != null) {
             return value;
         }else{
-            Object prop = get(crestProperties, defProp);
+            Object prop = crestConfig.get(defProp);
             if(prop != null) {
                 return (prop instanceof Class) ? newInstance((Class<T>)prop) : (T) prop;
             }else{
@@ -81,12 +83,16 @@ abstract class ConfigBuilder {
     }
 
     protected <T> T[] defaultIfUndefined(T[] value, String defProp, T[] def) {
-        return (value != null && value.length > 0) ? value : get(crestProperties, defProp, def);
+        return (value != null && value.length > 0) ? value : crestConfig.get(defProp, def);
     }
 
     @SuppressWarnings("unchecked")
+    protected <T> T defaultIfUndefined(T value, String defProp) {
+        return defaultIfUndefined(value, defProp, null);
+
+    }
     protected <T> T defaultIfUndefined(T value, String defProp, T def) {
-        return value != null ? value : get(crestProperties, defProp, def);
+        return value != null ? value : crestConfig.get(defProp, def);
     }
 
     @SuppressWarnings("unchecked")
@@ -106,7 +112,7 @@ abstract class ConfigBuilder {
             return null;
         }else{
             try {
-                return ComponentFactory.instantiate(clazz, crestProperties);
+                return ComponentFactory.instantiate(clazz, crestConfig);
             } catch (Exception e) {
                 throw CRestException.handle(e);
             }

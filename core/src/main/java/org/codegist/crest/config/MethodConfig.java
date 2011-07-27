@@ -21,105 +21,35 @@
 package org.codegist.crest.config;
 
 import org.codegist.crest.entity.EntityWriter;
-import org.codegist.crest.handler.*;
-import org.codegist.crest.interceptor.NoOpRequestInterceptor;
+import org.codegist.crest.handler.ErrorHandler;
+import org.codegist.crest.handler.ResponseHandler;
+import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface MethodConfig {
 
-     String DEFAULT_CHARSET = "UTF-8";
-
-    /**
-     * Default socket timeout applied when non specified.
-     *
-     * @see org.codegist.crest.config.MethodConfig#getSocketTimeout()
-     */
-    int DEFAULT_SO_TIMEOUT = 20000;
-
-    /**
-     * Default connection timeout applied when non specified.
-     *
-     * @see MethodConfig#getConnectionTimeout()
-     */
-    int DEFAULT_CO_TIMEOUT = 20000;
-
-    /**
-     * Default url fragment applied when non specified.
-     *
-     * @see MethodConfig#getPathTemplate()
-     */
-    String DEFAULT_PATH = "";
-
-    String DEFAULT_PRODUCES = null;
-
-    List<String> DEFAULT_CONSUMES = unmodifiableList(asList("*/*"));
-
-    /**
-     * Default method extra params.
-     *
-     * @see org.codegist.crest.config.MethodConfig#getExtraParams()
-     */
-    ParamConfig[] DEFAULT_EXTRA_PARAMS = new ParamConfig[0];
-
-    /**
-     * Default http method applied when non specified.
-     *
-     */
-    MethodType DEFAULT_METHOD_TYPE = MethodType.getDefault();
-
-    /**
-     * Default response handler applied when non specified.
-     *
-     * @see MethodConfig#getResponseHandler()
-     */
-    Class<? extends ResponseHandler> DEFAULT_RESPONSE_HANDLER = DefaultResponseHandler.class;
-
-    /**
-     * Default error handler applied when non specified.
-     *
-     * @see MethodConfig#getErrorHandler()
-     */
-    Class<? extends ErrorHandler> DEFAULT_ERROR_HANDLER = ErrorDelegatorHandler.class;
-
-    /**
-     * Default io interceptor applied when non specified.
-     *
-     * @see MethodConfig#getRequestInterceptor()
-     */
-    Class<? extends RequestInterceptor> DEFAULT_REQUEST_INTERCEPTOR = NoOpRequestInterceptor.class;
-
-    /**
-     * Default retry handler applied when non specified.
-     *
-     * @see org.codegist.crest.config.MethodConfig#getRetryHandler()
-     */
-    Class<? extends RetryHandler> DEFAULT_RETRY_HANDLER = MaxAttemptRetryHandler.class;
-
-    /**
-     * Default response deserializer applied when non specified.
-     *
-     * @see org.codegist.crest.config.MethodConfig#getDeserializers()
-     */
-    Class<? extends Deserializer>[] DEFAULT_DESERIALIZERS = new Class[0];
-
-    Class<? extends EntityWriter> DEFAULT_ENTITY_WRITER = null;
-
-    /*##############################################################################*/
-
-    /**
-     * @return The method being configured by the current object
-     */
+    String METHOD_CONFIG_DEFAULT_CHARSET = MethodConfig.class.getName() + "#charset";
+    String METHOD_CONFIG_DEFAULT_SO_TIMEOUT = MethodConfig.class.getName() + "#socket-timeout";
+    String METHOD_CONFIG_DEFAULT_CO_TIMEOUT = MethodConfig.class.getName() + "#connection-timeout";
+    String METHOD_CONFIG_DEFAULT_PATH = MethodConfig.class.getName() + "#path";
+    String METHOD_CONFIG_DEFAULT_HTTP_METHOD = MethodConfig.class.getName() + "#http-method";
+    String METHOD_CONFIG_DEFAULT_PRODUCES = MethodConfig.class.getName() + "#produces";
+    String METHOD_CONFIG_DEFAULT_CONSUMES = MethodConfig.class.getName() + "#consumes";
+    String METHOD_CONFIG_DEFAULT_EXTRA_PARAMS = MethodConfig.class.getName() + "#extra-params";
+    String METHOD_CONFIG_DEFAULT_RESPONSE_HANDLER = MethodConfig.class.getName() + "#response-handler";
+    String METHOD_CONFIG_DEFAULT_ERROR_HANDLER = MethodConfig.class.getName() + "#error-handler";
+    String METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR = MethodConfig.class.getName() + "#request-interceptor";
+    String METHOD_CONFIG_DEFAULT_RETRY_HANDLER = MethodConfig.class.getName() + "#retry-handler";
+    String METHOD_CONFIG_DEFAULT_DESERIALIZERS = MethodConfig.class.getName() + "#deserializer";
+    String METHOD_CONFIG_DEFAULT_ENTITY_WRITER = MethodConfig.class.getName() + "#body-writer";
+    
     Charset getCharset();
 
     Method getMethod();

@@ -20,11 +20,12 @@
 
 package org.codegist.crest.util;
 
+import org.codegist.crest.CRestConfig;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.Map;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -35,9 +36,9 @@ public final class ComponentFactory {
         throw new IllegalStateException();
     }
 
-    public static <T> T instantiate(Class<T> clazz, Map<String,Object> crestProperties) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
+    public static <T> T instantiate(Class<T> clazz, CRestConfig crestConfig) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
         try {
-            return accessible(clazz.getDeclaredConstructor(Map.class)).newInstance(crestProperties);
+            return accessible(clazz.getDeclaredConstructor(CRestConfig.class)).newInstance(crestConfig);
         } catch (NoSuchMethodException e) {
             return accessible(clazz.getDeclaredConstructor()).newInstance();
         }

@@ -20,13 +20,12 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestProperty;
+import org.codegist.crest.CRestConfig;
 
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -35,12 +34,8 @@ public class DateSerializer extends StringSerializer<Date> {
 
     private final DateFormat formatter;
 
-    public DateSerializer(Map<String, Object> crestProperties) {
-        this(CRestProperty.getDateFormat(crestProperties));
-    }
-
-    public DateSerializer(String dateFormat) {
-        this.formatter = new SimpleDateFormat(dateFormat);
+    public DateSerializer(CRestConfig crestConfig) {
+        this.formatter = new SimpleDateFormat(crestConfig.getDateFormat());
     }
 
     public String serialize(Date value, Charset charset) {
