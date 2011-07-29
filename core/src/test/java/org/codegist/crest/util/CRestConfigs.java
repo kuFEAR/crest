@@ -33,14 +33,19 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class CRestConfigs {
 
-    public static CRestConfig mockDefaultBehavior(){
-        return mockDefaultBehavior(mock(CRestConfig.class));
+    public static CRestConfig mockBehavior(String booleanTrue, String booleanFalse, String dateFormat){
+       return mockBehavior(booleanTrue, booleanFalse, dateFormat, mock(CRestConfig.class));
     }
-    public static CRestConfig mockDefaultBehavior(CRestConfig mockCrestConfig){
-        when(mockCrestConfig.getBooleanTrue()).thenReturn("true");
-        when(mockCrestConfig.getBooleanFalse()).thenReturn("false");
+
+    public static CRestConfig mockDefaultBehavior(){
+        return mockBehavior("true", "false", "yyyy-MM-dd'T'HH:mm:ssZ", mock(CRestConfig.class));
+    }
+
+    public static CRestConfig mockBehavior(String booleanTrue, String booleanFalse, String dateFormat, CRestConfig mockCrestConfig){
+        when(mockCrestConfig.getBooleanTrue()).thenReturn(booleanTrue);
+        when(mockCrestConfig.getBooleanFalse()).thenReturn(booleanFalse);
+        when(mockCrestConfig.getDateFormat()).thenReturn(dateFormat);
         when(mockCrestConfig.getMaxAttempts()).thenReturn(1);
-        when(mockCrestConfig.getDateFormat()).thenReturn("yyyy-MM-dd'T'HH:mm:ssZ");
         when(mockCrestConfig.getConcurrencyLevel()).thenReturn(1);
         when(mockCrestConfig.get(any(String.class), any(Object.class))).thenAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -49,4 +54,6 @@ public class CRestConfigs {
         });
         return mockCrestConfig;
     }
+
+
 }

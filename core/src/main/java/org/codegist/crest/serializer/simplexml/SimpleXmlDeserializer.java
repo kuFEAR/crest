@@ -51,6 +51,7 @@ public class SimpleXmlDeserializer implements Deserializer {
 
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
         try {
+            
             return serializer.read(type, new InputStreamReader(stream, charset), strict);
         } finally {
             IOs.close(stream);

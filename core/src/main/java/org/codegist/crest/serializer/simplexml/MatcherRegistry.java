@@ -27,6 +27,7 @@ import java.util.Map;
 
 
 final class MatcherRegistry implements Matcher {
+
     private final Map<Class, Transform> transformerMap;
 
     MatcherRegistry(Map<Class, Transform> transformerMap) {

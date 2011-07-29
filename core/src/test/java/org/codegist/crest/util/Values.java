@@ -18,24 +18,26 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer.simplexml;
+package org.codegist.crest.util;
 
-import org.simpleframework.xml.transform.Transform;
+import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
-final class BooleanMatcher implements Transform<Boolean> {
-    private final String trueVal;
-    private final String falseVal;
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+public class Values {
+    public static final Charset UTF8 = Charset.forName("utf-8");
+    public static final String FORMAT = "dd/MM/yyyy HH:mm:ss";
+    public static final String DATE_STR = "13/03/1983 00:35:10";
+    public static final Date DATE;
 
-    BooleanMatcher(String trueVal, String falseVal) {
-        this.trueVal = trueVal;
-        this.falseVal = falseVal;
-    }
-
-    public Boolean read(String value) {
-        return trueVal.equals(value);
-    }
-
-    public String write(Boolean value) {
-        return Boolean.TRUE.equals(value) ? trueVal : falseVal;
+    static {
+        Calendar CAL = GregorianCalendar.getInstance(Locale.ITALY);
+        CAL.set(1983, 2, 13, 0,35,10);
+        DATE = CAL.getTime();
     }
 }

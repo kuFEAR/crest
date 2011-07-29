@@ -50,7 +50,7 @@ final class SimpleXmlFactory {
 
     private static Serializer create(CRestConfig crestConfig, Class<?> source){
         String prefix = source.getName();
-        Serializer serializer =  crestConfig.get(prefix + "#" + SERIALIZER);
+        Serializer serializer =  crestConfig.get(prefix + SERIALIZER);
         if(serializer != null) {
             return serializer;
         }
@@ -61,6 +61,7 @@ final class SimpleXmlFactory {
         Map<Class, Transform> registry = new HashMap<Class, Transform>();
         registry.put(Date.class, new DateMatcher(dateFormat));
         registry.put(Boolean.class, new BooleanMatcher(trueVal, falseVal));
+        registry.put(boolean.class, new BooleanMatcher(trueVal, falseVal));
 
         return new Persister(new MatcherRegistry(registry));
     }

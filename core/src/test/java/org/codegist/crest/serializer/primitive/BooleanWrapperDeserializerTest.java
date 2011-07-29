@@ -27,7 +27,6 @@ import org.codegist.crest.util.CRestConfigs;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**

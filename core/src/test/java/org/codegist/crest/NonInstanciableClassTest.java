@@ -30,7 +30,7 @@ public abstract class NonInstanciableClassTest {
 
     private final Class<?> klass;
 
-    protected NonInstanciableClassTest(Class<?> klass) {
+    public NonInstanciableClassTest(Class<?> klass) {
         this.klass = klass;
     }
 

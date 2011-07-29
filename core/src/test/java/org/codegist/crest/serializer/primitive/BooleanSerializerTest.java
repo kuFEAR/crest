@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
