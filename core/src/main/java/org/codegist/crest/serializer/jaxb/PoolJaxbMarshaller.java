@@ -47,28 +47,28 @@ class PooledJaxb implements Jaxb {
     }
 
     public <T> void marshal(T object, OutputStream out, Charset charset) throws Exception {
-        Jaxb jaxb = get();
+        Jaxb jaxb = borrow();
         try {
             jaxb.marshal(object, out, charset);
         } finally {
-            put(jaxb);
+            lend(jaxb);
         }
     }
 
     public <T> T unmarshal(Class<T> type, Type genericType, Reader reader) throws Exception {
-        Jaxb jaxb = get();
+        Jaxb jaxb = borrow();
         try {
             return jaxb.<T>unmarshal(type, genericType, reader);
         } finally {
-            put(jaxb);
+            lend(jaxb);
         }
     }
 
-    private void put(Jaxb jaxb) {
+    private void lend(Jaxb jaxb) {
         pool.offer(jaxb);
     }
 
-    private Jaxb get() throws InterruptedException {
+    private Jaxb borrow() throws InterruptedException {
         Jaxb jaxb = pool.poll(maxWait, TimeUnit.MILLISECONDS);
         if (jaxb == null) {
             throw new CRestException("No jaxb could have been retrieved in the allowed time window");

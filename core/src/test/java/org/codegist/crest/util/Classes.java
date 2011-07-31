@@ -44,8 +44,9 @@ public class Classes {
     public static void assertNotInstanciable(Class<?> klass) throws NoSuchMethodException {
 
         assertEquals(1, klass.getDeclaredConstructors().length);
+        assertTrue(Modifier.isFinal(klass.getModifiers()));
         Constructor defaultConstructor = klass.getDeclaredConstructor();
-        assertTrue((defaultConstructor.getModifiers() | Modifier.PRIVATE) == Modifier.PRIVATE);
+        assertTrue(Modifier.isPrivate(defaultConstructor.getModifiers()));
 
         // make it accessible
         defaultConstructor.setAccessible(true);

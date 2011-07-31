@@ -42,21 +42,23 @@ final class JaxbFactory {
 
     static Jaxb create(CRestConfig crestConfig, Class<?> source) throws JAXBException {
         String prefix = source.getName();
+
         Jaxb jaxb = crestConfig.get(prefix + JAXB);
         if(jaxb != null) {
             return jaxb;
         }
 
         String modelPackage = crestConfig.get(prefix + MODEL_PACKAGE);
-        Class<?> modelFactory = crestConfig.get(prefix + MODEL_FACTORY_CLASS);
-
         if(modelPackage != null) {
             return create(crestConfig, source, modelPackage);
-        }else if(modelFactory != null)  {
-            return create(crestConfig, source, modelFactory);
-        }else{
-            return new TypeCachingJaxb(crestConfig, source);
         }
+
+        Class<?> modelFactory = crestConfig.get(prefix + MODEL_FACTORY_CLASS);
+        if(modelFactory != null)  {
+            return create(crestConfig, source, modelFactory);
+        }
+
+        return new TypeCachingJaxb(crestConfig, source);
     }
 
     static Jaxb create(CRestConfig crestConfig, Class<?> source, String context) throws JAXBException {
@@ -68,13 +70,12 @@ final class JaxbFactory {
     }
 
     private static Jaxb create(CRestConfig crestConfig, Class<?> source, JAXBContext jaxb) throws JAXBException {
-        String prefix = source.getName();
         int poolSize = crestConfig.getConcurrencyLevel();
-        long maxWait = crestConfig.get(prefix + POOL_RETRIEVAL_MAX_WAIT, DEFAULT_MAX_WAIT);
-
         if (poolSize == 1) {
             return new SimpleJaxb(jaxb);
         } else {
+            String prefix = source.getName();
+            long maxWait = crestConfig.get(prefix + POOL_RETRIEVAL_MAX_WAIT, DEFAULT_MAX_WAIT);
             return new PooledJaxb(jaxb, poolSize, maxWait);
         }
     }
