@@ -41,6 +41,6 @@ public class XmlEntityWriter extends SerializingEntityWriter {
 
     private static Serializer<List<Param>> getSerializer(CRestConfig crestConfig){
         Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME, crestConfig);
+        return registryMime.get(MIME);
     }
 }

@@ -186,7 +186,7 @@ public abstract class BaseCRestTest<T> {
                     .setConcurrencyLevel(2)
                     .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
-                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build())
+                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
                     .addProperties(CREST_PROPERTIES);
         if(TEST_JAXRS) {
             builder.jaxrsAware();
@@ -213,7 +213,7 @@ public abstract class BaseCRestTest<T> {
             registry.register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME);
         }
 
-        return singletonMap(Registry.class.getName() + "#serializers-per-mime", (Object) registry.build());
+        return singletonMap(Registry.class.getName() + "#serializers-per-mime", (Object) registry.build(new DefaultCRestConfig(CREST_PROPERTIES)));
     }
 
     // these represents the common permutations all test will pass

@@ -35,7 +35,7 @@ public abstract class NonInstanciableClassTest {
     }
 
     @Test
-    public void assertNotInstanciable() throws NoSuchMethodException {
+    public void shouldntBeInstanciable() throws NoSuchMethodException {
         Classes.assertNotInstanciable(klass);
     }
 }

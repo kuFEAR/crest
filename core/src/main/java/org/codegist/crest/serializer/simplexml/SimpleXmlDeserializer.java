@@ -44,7 +44,7 @@ public class SimpleXmlDeserializer implements Deserializer {
     private final org.simpleframework.xml.Serializer serializer;
 
     public SimpleXmlDeserializer(CRestConfig crestConfig) {
-        serializer = SimpleXmlFactory.createDeserializer(crestConfig, getClass());
+        serializer = SimpleXmlFactory.createSerializer(crestConfig, getClass());
         strict = crestConfig.get(STRICT_PROP, DEFAULT_STRICT);
     }
 

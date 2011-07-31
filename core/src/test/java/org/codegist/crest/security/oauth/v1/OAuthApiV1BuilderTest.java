@@ -53,7 +53,7 @@ public class OAuthApiV1BuilderTest {
     private final OAuthApiV1Builder toTest = new OAuthApiV1Builder(token, mockCRestBuilder);
 
     @Test
-    public void testDefaults() throws Exception {
+    public void shouldUseDefaults() throws Exception {
         FormOAuthInterface expectedOAuthInterface = mock(FormOAuthInterface.class);
         when(mockCRestBuilder.build(FormOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
@@ -71,7 +71,7 @@ public class OAuthApiV1BuilderTest {
     }
     
     @Test
-    public void testWithValues() throws Exception {
+    public void shouldUseProvidedValues() throws Exception {
         String accessTokenUrl = "a";
         String requestTokenUrl = "b";
         String refreshTokenUrl = "c";

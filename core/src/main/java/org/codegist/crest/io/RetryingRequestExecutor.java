@@ -21,7 +21,6 @@
 package org.codegist.crest.io;
 
 import org.codegist.common.lang.Disposables;
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.handler.RetryHandler;
 
 /**
@@ -35,14 +34,14 @@ public class RetryingRequestExecutor implements RequestExecutor {
         this.delegate = delegate;
     }
 
-    public Response execute(CRestConfig crestConfig, Request request) throws Exception {
+    public Response execute(Request request) throws Exception {
         RetryHandler retryHandler = request.getMethodConfig().getRetryHandler();
         RequestException exception = null;
         int attemptCount = 1;
         do {
             Disposables.dispose(exception);
             try {
-                return delegate.execute(crestConfig, request);
+                return delegate.execute(request);
             } catch (RequestException e) {
                 exception = e;
             }

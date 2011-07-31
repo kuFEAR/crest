@@ -38,6 +38,6 @@ public class JsonEntityWriter extends SerializingEntityWriter {
 
     private static Serializer getSerializer(CRestConfig crestConfig){
         Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
-        return registryMime.get(MIME, crestConfig);
+        return registryMime.get(MIME);
     }
 }

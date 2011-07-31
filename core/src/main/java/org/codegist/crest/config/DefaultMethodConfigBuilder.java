@@ -141,7 +141,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         String[] mimes = new String[mimeTypes.length];
         for (int i = 0; i < mimeTypes.length; i++) {
             String mMime = ph(mimeTypes[i]);
-            this.deserializers.add(mimeDeserializerRegistry.get(mMime, getCRestConfig()));
+            this.deserializers.add(mimeDeserializerRegistry.get(mMime));
             mimes[i] = mMime;
         }
         this.consumes.addAll(asList(mimes));

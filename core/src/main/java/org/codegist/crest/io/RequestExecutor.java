@@ -20,8 +20,6 @@
 
 package org.codegist.crest.io;
 
-import org.codegist.crest.CRestConfig;
-
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -34,6 +32,6 @@ public interface RequestExecutor {
      * @throws Exception
      * @throws RequestException
      */
-    Response execute(CRestConfig crestConfig, Request request) throws Exception;
+    Response execute(Request request) throws Exception;
     
 }

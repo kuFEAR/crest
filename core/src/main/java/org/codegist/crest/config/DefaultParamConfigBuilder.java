@@ -54,7 +54,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
 
         if (pSerializer == null) {
             // if null, then choose which serializer to apply using default rules
-            pSerializer = classSerializerRegistry.get(clazz, getCRestConfig());
+            pSerializer = classSerializerRegistry.get(clazz);
         }
 
         return new DefaultParamConfig(

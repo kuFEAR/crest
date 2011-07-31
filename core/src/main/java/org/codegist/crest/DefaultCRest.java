@@ -75,7 +75,7 @@ class DefaultCRest extends CRest {
         private final InterfaceConfig interfaceConfig;
 
         private CRestInvocationHandler(Class<T> interfaze) throws Exception {
-            this.interfaceConfig = configFactory.newConfig(crestConfig, interfaze);
+            this.interfaceConfig = configFactory.newConfig(interfaze);
         }
 
         @Override
@@ -85,7 +85,7 @@ class DefaultCRest extends CRest {
             Response response = null;
             try {
                 mc.getRequestInterceptor().beforeFire(request);
-                response = requestExecutor.execute(crestConfig, request);
+                response = requestExecutor.execute(request);
                 return mc.getResponseHandler().handle(response);
             }catch(Exception e){
                 try {

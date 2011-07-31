@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.Response;
 
 /**
@@ -28,6 +27,6 @@ import org.codegist.crest.io.Response;
  */
 public interface ResponseDeserializer {
 
-    <T> T deserialize(CRestConfig crestConfig, Response response) throws Exception;
+    <T> T deserialize(Response response) throws Exception;
 
 }

@@ -51,15 +51,8 @@ public class SimpleXmlFactoryTest extends NonInstanciableClassTest {
     private final CRestConfig config = CRestConfigs.mockBehavior("myTrue", "myFalse", FORMAT);
 
     @Test
-    public void shouldCreateSerializerWithGivenConfigThroughCreateDeserializer() throws Exception {
-        shouldCreateSerializerWithGivenConfig(SimpleXmlFactory.createDeserializer(config, getClass()));
-    }
-    @Test
-    public void shouldCreateSerializerWithGivenConfigThroughCreateSerializer() throws Exception {
-        shouldCreateSerializerWithGivenConfig(SimpleXmlFactory.createSerializer(config, getClass()));
-    }
-
-    private void shouldCreateSerializerWithGivenConfig(Serializer actual) throws Exception {
+    public void shouldCreateSerializerWithGivenConfig() throws Exception {
+        Serializer actual = SimpleXmlFactory.createSerializer(config, getClass());
         verify(config).getBooleanFalse();
         verify(config).getBooleanTrue();
         verify(config).getDateFormat();
@@ -79,7 +72,7 @@ public class SimpleXmlFactoryTest extends NonInstanciableClassTest {
         Serializer mock = mock(Serializer.class);
         when(config.get(getClass().getName()  + SimpleXmlFactory.SERIALIZER)).thenReturn(mock);
 
-        assertSame(mock, SimpleXmlFactory.createDeserializer(config, getClass()));
+        assertSame(mock, SimpleXmlFactory.createSerializer(config, getClass()));
 
         verify(config, never()).getBooleanFalse();
         verify(config, never()).getBooleanTrue();

@@ -142,10 +142,14 @@ public class CRestBuilder {
     private String accessTokenRefreshUrl;
 
     public CRest build() {
+        HttpChannelFactory plainChannelFactory = buildHttpChannelInitiator();
+        Authorization authorization = buildAuthorization(plainChannelFactory);
+        putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
 
-        Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry();
-        Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build();
-        Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build();
+        CRestConfig crestConfig = new DefaultCRestConfig(crestProperties);
+
+        Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry(crestConfig);
+        Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build(crestConfig);
 
         ResponseDeserializer mimeResponseDeserializer = new ResponseDeserializerByMimeType(mimeDeserializerRegistry);
         ResponseDeserializer classResponseDeserializer = new ResponseDeserializerByClass(classDeserializerRegistry);
@@ -154,21 +158,13 @@ public class CRestBuilder {
         ResponseDeserializer baseResponseDeserializer = new ResponseDeserializerComposite(serializersResponseDeserializer, mimeResponseDeserializer, classResponseDeserializer);
         ResponseDeserializer customTypeResponseDeserializer = new ResponseDeserializerComposite(classResponseDeserializer, mimeResponseDeserializer);
 
-        HttpChannelFactory plainChannelFactory = buildHttpChannelInitiator();
-        Authorization authorization = buildAuthorization(plainChannelFactory);
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, baseResponseDeserializer, customTypeResponseDeserializer);
 
-        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(compile(placeholders), mimeDeserializerRegistry, classSerializerRegistry);
-        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build());
+        Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build(crestConfig);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestConfig, compile(placeholders), mimeDeserializerRegistry, classSerializerRegistry);
+        InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(crestConfig));
 
-        putIfAbsent(crestProperties, ProxyFactory.class.getName(), proxyFactory);
-        putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-mime", mimeDeserializerRegistry);
-        putIfAbsent(crestProperties, Registry.class.getName() + "#deserializers-per-class", classDeserializerRegistry);
-        putIfAbsent(crestProperties, Registry.class.getName() + "#serializers-per-class", classSerializerRegistry);
-        putIfAbsent(crestProperties, RequestExecutor.class.getName(), requestExecutor);
-        putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
 
-        CRestConfig crestConfig = new DefaultCRestConfig(crestProperties);
         return new DefaultCRest(crestConfig, proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
@@ -197,11 +193,11 @@ public class CRestBuilder {
         return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, baseResponseDeserializer, customTypeResponseDeserializer));
     }
 
-    private Registry<String,Deserializer> buildDeserializerRegistry() {
+    private Registry<String,Deserializer> buildDeserializerRegistry(CRestConfig crestConfig) {
         mimeDeserializerBuilder.register(jsonDeserializer, arrify(jsonMimes, String.class), jsonDeserializerConfig);
         mimeDeserializerBuilder.register(xmlDeserializer, arrify(xmlMimes, String.class), xmlDeserializerConfig);
         mimeDeserializerBuilder.register(StringDeserializer.class, arrify(plainTextMimes, String.class));
-        return mimeDeserializerBuilder.build();
+        return mimeDeserializerBuilder.build(crestConfig);
     }
 
     private Authorization buildAuthorization(HttpChannelFactory channelFactory) {
@@ -421,7 +417,6 @@ public class CRestBuilder {
      *
      * @param format Date format to use
      * @return current builder
-     * @see CRestProperty#CREST_DATE_FORMAT
      */
     public CRestBuilder dateFormat(String format) {
         return setProperty(CREST_DATE_FORMAT, format);
@@ -436,8 +431,6 @@ public class CRestBuilder {
      * @param trueSerialized  String representing serialized form of TRUE
      * @param falseSerialized String representing serialized form of FALSE
      * @return current builder
-     * @see CRestProperty#CREST_BOOLEAN_TRUE
-     * @see CRestProperty#CREST_BOOLEAN_FALSE
      */
     public CRestBuilder booleanFormat(String trueSerialized, String falseSerialized) {
         return setProperty(CREST_BOOLEAN_TRUE, trueSerialized).setProperty(CREST_BOOLEAN_FALSE, falseSerialized);

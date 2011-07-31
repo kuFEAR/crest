@@ -60,10 +60,10 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         this.customTypeResponseDeserializer = customTypeResponseDeserializer;
     }
 
-    public Response execute(CRestConfig crestConfig, Request request) throws Exception {
+    public Response execute(Request request) throws Exception {
         HttpResponse response;
         try {
-            response = doExecute(crestConfig, request);
+            response = doExecute(request);
             if(response.getStatusCode() >= HTTP_BAD_REQUEST) {
                 throw new RequestException(response.getStatusMessage(), response);
             }
@@ -73,7 +73,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         }
     }
 
-    private HttpResponse doExecute(CRestConfig crestConfig, Request request) throws IOException, Exception {
+    private HttpResponse doExecute(Request request) throws IOException, Exception {
         String url = toUrl(request);
         MethodConfig mc = request.getMethodConfig();
         Charset charset = mc.getCharset();
@@ -135,7 +135,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         }
 
         HttpChannel.Response response = httpChannel.send();
-        return new HttpResponse(crestConfig, baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
+        return new HttpResponse(baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
     }
 
 

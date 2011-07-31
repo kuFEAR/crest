@@ -36,14 +36,16 @@ public class DefaultInterfaceConfigBuilderFactory implements InterfaceConfigBuil
     private final Map<Pattern,String> placeholders;
     private final Registry<String,Deserializer> mimeDeserializerRegistry;
     private final Registry<Class<?>, Serializer> classSerializerRegistry;
+    private final CRestConfig crestConfig;
 
-    public DefaultInterfaceConfigBuilderFactory(Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+    public DefaultInterfaceConfigBuilderFactory(CRestConfig crestConfig, Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
         this.placeholders= placeholders;
+        this.crestConfig= crestConfig;
         this.mimeDeserializerRegistry= mimeDeserializerRegistry;
         this.classSerializerRegistry= classSerializerRegistry;
     }
 
-    public InterfaceConfigBuilder newInstance(CRestConfig crestConfig, Class<?> interfaze) {
+    public InterfaceConfigBuilder newInstance(Class<?> interfaze) {
         return new DefaultInterfaceConfigBuilder(interfaze, crestConfig, placeholders, mimeDeserializerRegistry, classSerializerRegistry);
     }
 }

@@ -57,14 +57,14 @@ public class SimpleXmlDeserializerTest {
         String str = "hello";
 
         mockStatic(SimpleXmlFactory.class);
-        when(SimpleXmlFactory.createDeserializer(any(CRestConfig.class), any(Class.class))).thenReturn(mock);
+        when(SimpleXmlFactory.createSerializer(any(CRestConfig.class), any(Class.class))).thenReturn(mock);
         when(mock.read(any(Class.class),any(Reader.class),anyBoolean())).thenReturn(str);
 
         SimpleXmlDeserializer toTest = new SimpleXmlDeserializer(config);
 
         verify(config).get(SimpleXmlDeserializer.STRICT_PROP, true);
         verifyStatic();
-        SimpleXmlFactory.createDeserializer(config, SimpleXmlDeserializer.class);
+        SimpleXmlFactory.createSerializer(config, SimpleXmlDeserializer.class);
 
 
         assertEquals(str, toTest.deserialize(String.class, String.class, mock(InputStream.class), UTF8));

@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 
@@ -39,7 +38,7 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
 
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByDeserializers.class);
 
-    public <T> T deserialize(CRestConfig crestConfig, Response response) throws Exception {
+    public <T> T deserialize(Response response) throws Exception {
         Deserializer[] deserializers = response.getRequest().getMethodConfig().getDeserializers();
         isTrue(deserializers.length > 0, "No pre-configured deserializers found for request's method, cancelling deserialization");
 

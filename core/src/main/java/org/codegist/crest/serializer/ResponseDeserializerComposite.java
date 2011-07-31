@@ -20,7 +20,6 @@
 
 package org.codegist.crest.serializer;
 
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 
@@ -35,11 +34,11 @@ public class ResponseDeserializerComposite implements ResponseDeserializer {
         this.delegates = delegates.clone();
     }
 
-    public <T> T deserialize(CRestConfig crestConfig, Response response) throws Exception {
+    public <T> T deserialize(Response response) throws Exception {
         IllegalArgumentException deserializationException = null;
         for(ResponseDeserializer deserializer : delegates){
             try {
-                return deserializer.<T>deserialize(crestConfig, response);
+                return deserializer.<T>deserialize(response);
             } catch (IllegalArgumentException e) {
                 deserializationException = e;
             }

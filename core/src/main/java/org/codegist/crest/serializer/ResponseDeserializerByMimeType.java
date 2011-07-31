@@ -21,7 +21,6 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.util.Registry;
 
@@ -39,11 +38,11 @@ public class ResponseDeserializerByMimeType implements ResponseDeserializer {
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
     }
 
-    public <T> T deserialize(CRestConfig crestConfig, Response response) throws Exception {
+    public <T> T deserialize(Response response) throws Exception {
         String mimeType = response.getContentType();
         isTrue(mimeDeserializerRegistry.contains(mimeType), "Unknown mimeType %s, cancelling deserialization", mimeType);
         LOG.debug("Trying to deserialize response to Mime Type: %s.", mimeType);
-        return mimeDeserializerRegistry.get(mimeType, crestConfig).<T>deserialize(
+        return mimeDeserializerRegistry.get(mimeType).<T>deserialize(
                 (Class<T>) response.getExpectedType(),
                 response.getExpectedGenericType(),
                 response.asStream(),

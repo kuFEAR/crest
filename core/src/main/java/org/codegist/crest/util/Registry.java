@@ -36,18 +36,20 @@ public final class Registry<K,T> {
     private final Map<K, Object> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
     private final T defaultIfNotFound;
+    private final CRestConfig crestConfig;
 
-    private Registry(Class<T> clazz, Map<K, Object> mapping, T defaultIfNotFound) {
+    private Registry(Class<T> clazz, Map<K, Object> mapping, CRestConfig crestConfig, T defaultIfNotFound) {
         this.clazz = clazz;
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
+        this.crestConfig = crestConfig;
     }
 
     public boolean contains(K key) {
         return mapping.containsKey(key);
     }
 
-    public T get(K key, CRestConfig crestConfig) {
+    public T get(K key) {
         T item = cache.get(key);
         if (item == null) {
             item = buildAndCache(key, crestConfig);
@@ -119,8 +121,8 @@ public final class Registry<K,T> {
             this.clazz = clazz;
         }
 
-        public Registry<K,T> build() {
-            return new Registry<K,T>(clazz, mapping, defaultIfNotFound);
+        public Registry<K,T> build(CRestConfig crestConfig) {
+            return new Registry<K,T>(clazz, mapping, crestConfig, defaultIfNotFound);
         }
 
         public Builder<K,T> register(Class<? extends T> item, K... keys) {

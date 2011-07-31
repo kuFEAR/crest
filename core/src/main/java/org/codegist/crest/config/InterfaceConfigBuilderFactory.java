@@ -20,13 +20,11 @@
 
 package org.codegist.crest.config;
 
-import org.codegist.crest.CRestConfig;
-
 /**
  * @author laurent.gilles@codegist.org
  */
 public interface InterfaceConfigBuilderFactory {
 
-    InterfaceConfigBuilder newInstance(CRestConfig crestConfig, Class<?> interfaze);
+    InterfaceConfigBuilder newInstance(Class<?> interfaze);
     
 }
