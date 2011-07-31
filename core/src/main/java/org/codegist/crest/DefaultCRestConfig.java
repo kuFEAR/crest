@@ -51,8 +51,12 @@ final class DefaultCRestConfig implements CRestConfig {
         return config.containsKey(propName) ? this.<T>get(propName) : defaultIfNotFound;
     }
 
-    public <T> T get(Class<?> propName){
-        return (T) get(propName.getName());
+    public <T> T get(Class<?> key){
+        return this.<T>get(key, (T) null);
+    }
+
+    public <T> T get(Class<?> key, T defaultIfNotFound) {
+        return this.<T>get(key.getName(), defaultIfNotFound);
     }
 
     public int getMaxAttempts(){

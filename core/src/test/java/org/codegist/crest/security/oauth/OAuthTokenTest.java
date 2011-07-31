@@ -23,7 +23,7 @@ package org.codegist.crest.security.oauth;
 import org.codegist.crest.param.EncodedPair;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -35,7 +35,7 @@ public class OAuthTokenTest {
 
     private static final String TOKEN = "TOKEN";
     private static final String SECRET = "SECRET";
-    private final Map<String,String> attributes = new HashMap<String, String>(){{
+    private final Map<String,String> attributes = new LinkedHashMap<String, String>(){{
         put("attr1", "val%201");
         put("attr2", "val%202");
     }};
@@ -61,5 +61,12 @@ public class OAuthTokenTest {
         assertNotNull(actual);
         assertEquals("attr2", actual.getName());
         assertEquals("val%202", actual.getValue());
+    }
+
+    @Test
+    public void shouldReturnAInformativeToString() {
+        String actual = toTest.toString();
+        assertNotNull(actual);
+        assertEquals("OAuthToken[token=TOKEN,secret=SECRET,attributes={attr1=val%201, attr2=val%202}]", actual);
     }
 }

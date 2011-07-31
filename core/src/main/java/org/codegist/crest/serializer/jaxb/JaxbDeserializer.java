@@ -55,5 +55,4 @@ public class JaxbDeserializer implements Deserializer {
         }
     }
 
-
 }

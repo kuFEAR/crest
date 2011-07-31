@@ -43,7 +43,7 @@ public class DateDeserializer extends TypeDeserializer<Date> {
     @Override
     protected Date deserialize(InputStream stream, Charset charset) throws Exception {
          synchronized (formatter) {
-           return formatter.parse(IOs.toString(stream, charset));
+           return formatter.parse(IOs.toString(stream, charset, true));
          }
     }
 }

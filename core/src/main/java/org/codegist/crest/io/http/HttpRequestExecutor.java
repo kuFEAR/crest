@@ -24,7 +24,6 @@ import org.codegist.common.collect.Arrays;
 import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.Request;

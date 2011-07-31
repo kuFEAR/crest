@@ -41,6 +41,8 @@ public interface CRestConfig {
 
     <T> T get(Class<?> key);
 
+    <T> T get(Class<?> key, T defaultIfNotFound);
+
     int getMaxAttempts();
 
     String getDateFormat();

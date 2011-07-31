@@ -52,7 +52,7 @@ class TypeCachingJaxb implements Jaxb {
         if(object instanceof Classes) {
             jaxb = get(((Classes) object).getClasses());
         }else{
-            jaxb = get(object.getClass());
+            jaxb = get(Collections.<Class<?>>singleton(object.getClass()));
         }
         jaxb.<T>marshal(object, out, charset);
     }
@@ -63,10 +63,6 @@ class TypeCachingJaxb implements Jaxb {
 
         Jaxb jaxb = get(classes);
         return jaxb.<T>unmarshal(type, genericType, reader);
-    }
-
-    private Jaxb get(Class key) throws JAXBException {
-        return get(Collections.<Class<?>>singleton((Class<?>)key));
     }
 
     private Jaxb get(Set<Class<?>> key) throws JAXBException {
