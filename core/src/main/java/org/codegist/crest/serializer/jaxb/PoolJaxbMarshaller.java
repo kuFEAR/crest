@@ -42,7 +42,8 @@ class PooledJaxb implements Jaxb {
         this.maxWait = maxWait;
         this.pool = new ArrayBlockingQueue<Jaxb>(poolSize);
         for (int i = 0; i < poolSize; i++) {
-            this.pool.add(new SimpleJaxb(jaxbContext));
+            SimpleJaxb jaxb = new SimpleJaxb(jaxbContext);
+            this.pool.add(jaxb);
         }
     }
 
