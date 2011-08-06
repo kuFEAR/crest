@@ -62,8 +62,6 @@ public abstract class BaseDeserializerTest {
         }
     }
 
-
-
     protected <T> T deserialize(TypeDeserializer<T> toTest, String s) throws Exception {
         return this.<T>deserialize((Deserializer)toTest ,s);
     }

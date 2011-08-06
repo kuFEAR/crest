@@ -26,25 +26,19 @@ import org.codegist.crest.util.CRestConfigs;
 import org.codegist.crest.util.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.xml.bind.JAXBContext;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static org.codegist.common.collect.Collections.asSet;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 /**
  * @author laurent.gilles@codegist.org
