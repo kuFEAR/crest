@@ -21,10 +21,11 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.crest.util.TestReader;
-import org.codegist.crest.util.Values;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
 
 import static org.codegist.crest.util.Values.SOME_STRING;
 import static org.codegist.crest.util.Values.UTF8;

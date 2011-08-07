@@ -43,9 +43,13 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
         isTrue(deserializers.length > 0, "No pre-configured deserializers found for request's method, cancelling deserialization");
 
         InputStream pStream = response.asStream();
+        boolean isDumped;
         if (deserializers.length > 1) {
             // user specified more than one serializer: worse case scenario, need to dump response in memory to retry if deserialization fails
             pStream = new ByteArrayInputStream(toByteArray(pStream, true));
+            isDumped = true;
+        }else{
+            isDumped = false;
         }
         Exception deserilizationException = null;
         for (Deserializer deserializer : deserializers) {
@@ -59,6 +63,10 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
             } catch (Exception e) {
                 LOG.warn(e, "Failed to deserialize response with user specified deserializer: %s. Trying next.", deserializer);
                 deserilizationException = e;
+                if(isDumped) {
+                    pStream.mark(0);
+                    pStream.reset();
+                }
             }
         }
         throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers), deserilizationException);

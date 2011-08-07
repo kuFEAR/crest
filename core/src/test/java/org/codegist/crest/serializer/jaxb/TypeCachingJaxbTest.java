@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -109,7 +110,7 @@ public class TypeCachingJaxbTest {
         Charset charset = Values.UTF8;
         final Jaxb mockJaxb2 = mock(Jaxb.class);
         Jaxb mockJaxb1 = mock(Jaxb.class);
-        Class[] expected = asSet(String.class, Integer.class, int[].class, List.class, MyObject.class).toArray(new Class[5]);
+        Class[] expected = MyObject.withItSelf();
 
         mockStatic(JaxbFactory.class);
         when(JaxbFactory.create(mockCRestConfig, getClass(), new Class<?>[]{Object.class})).thenReturn(mockJaxb1);
@@ -129,7 +130,15 @@ public class TypeCachingJaxbTest {
 
     public static class MyObject implements Classes {
         public Set<Class<?>> getClasses() {
+            return classes();
+        }
+        public static Set<Class<?>> classes() {
             return asSet(String.class, Integer.class, int[].class, List.class);
+        }
+        public static Class[] withItSelf() {
+            Set<Class<?>>  set = new HashSet<Class<?>>(classes());
+            set.add(MyObject.class);
+            return set.toArray(new Class[set.size()]);
         }
     }
 

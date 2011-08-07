@@ -27,6 +27,13 @@ import org.codegist.crest.io.Response;
  */
 public interface ResponseDeserializer {
 
+    /**
+     *
+     * @param response
+     * @param <T>
+     * @return
+     * @throws Exception IllegalArgumentException if not deserializable (stream won't be consumed)
+     */
     <T> T deserialize(Response response) throws Exception;
 
 }
