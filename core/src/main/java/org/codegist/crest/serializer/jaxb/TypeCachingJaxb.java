@@ -29,7 +29,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -52,9 +51,7 @@ class TypeCachingJaxb implements Jaxb {
         Jaxb jaxb;
         if(object instanceof Classes) {
             Set<Class<?>> classes = ((Classes) object).getClasses();
-            HashSet<Class<?>> allClasses = new HashSet<Class<?>>(classes);
-            allClasses.add(object.getClass());
-            jaxb = get(allClasses);
+            jaxb = get(classes);
         }else{
             jaxb = get(Collections.<Class<?>>singleton(object.getClass()));
         }
