@@ -22,7 +22,7 @@ package org.codegist.crest.serializer.primitive;
 
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.CRestConfigs;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

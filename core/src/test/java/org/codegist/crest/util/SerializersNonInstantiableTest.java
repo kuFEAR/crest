@@ -20,16 +20,13 @@
 
 package org.codegist.crest.util;
 
-import java.io.File;
+import org.codegist.crest.NonInstanciableClassTest;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class Resources {
-
-    public static File getFile(String relativePath){
-        return new File(Resources.class.getClassLoader().getResource(relativePath).getFile());    
+public class SerializersNonInstantiableTest extends NonInstanciableClassTest {
+    public SerializersNonInstantiableTest() {
+        super(Serializers.class);
     }
-
-
 }

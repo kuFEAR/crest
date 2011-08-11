@@ -20,7 +20,7 @@
 
 package org.codegist.crest;
 
-import org.codegist.crest.util.Classes;
+import org.codegist.crest.test.util.Classes;
 import org.junit.Test;
 
 /**
@@ -35,7 +35,7 @@ public abstract class NonInstanciableClassTest {
     }
 
     @Test
-    public void shouldntBeInstanciable() throws NoSuchMethodException {
-        Classes.assertNotInstanciable(klass);
+    public void shouldntBeInstantiable() throws NoSuchMethodException {
+        Classes.assertNotInstantiable(klass);
     }
 }

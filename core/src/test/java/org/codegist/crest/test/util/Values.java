@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.test.util;
 
 import org.codegist.common.io.Files;
 
@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import static org.codegist.crest.util.Resources.getFile;
+import static org.codegist.crest.test.util.Resources.getFile;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

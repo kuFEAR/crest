@@ -18,21 +18,20 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.test.util;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.CharBuffer;
+import java.io.InputStream;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class TestReader extends Reader {
-    
-    private final Reader delegate;
+public class TestInputStream extends InputStream {
+
+    private final InputStream delegate;
     private boolean closed = false;
 
-    public TestReader(Reader delegate) {
+    public TestInputStream(InputStream delegate) {
         this.delegate = delegate;
     }
 
@@ -41,23 +40,18 @@ public class TestReader extends Reader {
     }
 
     @Override
-    public int read(CharBuffer target) throws IOException {
-        return delegate.read(target);
-    }
-
-    @Override
     public int read() throws IOException {
         return delegate.read();
     }
 
     @Override
-    public int read(char[] cbuf) throws IOException {
-        return delegate.read(cbuf);
+    public int read(byte[] b) throws IOException {
+        return delegate.read(b);
     }
 
     @Override
-    public int read(char[] cbuf, int off, int len) throws IOException {
-        return delegate.read(cbuf, off, len);
+    public int read(byte[] b, int off, int len) throws IOException {
+        return delegate.read(b, off, len);
     }
 
     @Override
@@ -66,18 +60,19 @@ public class TestReader extends Reader {
     }
 
     @Override
-    public boolean ready() throws IOException {
-        return delegate.ready();
+    public int available() throws IOException {
+        return delegate.available();
     }
 
     @Override
-    public boolean markSupported() {
-        return delegate.markSupported();
+    public void close() throws IOException {
+        delegate.close();
+        closed = true;
     }
 
     @Override
-    public void mark(int readAheadLimit) throws IOException {
-        delegate.mark(readAheadLimit);
+    public void mark(int readlimit) {
+        delegate.mark(readlimit);
     }
 
     @Override
@@ -86,9 +81,8 @@ public class TestReader extends Reader {
     }
 
     @Override
-    public void close() throws IOException {
-        delegate.close();
-        closed = true;
+    public boolean markSupported() {
+        return delegate.markSupported();
     }
 
     @Override
@@ -100,4 +94,5 @@ public class TestReader extends Reader {
     public boolean equals(Object obj) {
         return delegate.equals(obj);
     }
+
 }

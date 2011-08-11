@@ -21,14 +21,14 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.crest.CRestConfig;
-import org.codegist.crest.util.CRestConfigs;
-import org.codegist.crest.util.Values;
+import org.codegist.crest.test.util.CRestConfigs;
+import org.codegist.crest.test.util.Values;
 import org.junit.After;
 import org.junit.Test;
 
 import java.util.Date;
 
-import static org.codegist.crest.util.Values.DATE;
+import static org.codegist.crest.test.util.Values.DATE;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 

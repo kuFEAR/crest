@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.test.util;
 
 import org.codegist.crest.CRestConfig;
 import org.mockito.invocation.InvocationOnMock;

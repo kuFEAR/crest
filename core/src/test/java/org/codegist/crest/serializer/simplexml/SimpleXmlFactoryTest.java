@@ -22,8 +22,8 @@ package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.NonInstanciableClassTest;
-import org.codegist.crest.util.CRestConfigs;
-import org.codegist.crest.util.Values;
+import org.codegist.crest.test.util.CRestConfigs;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
@@ -33,7 +33,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
 
-import static org.codegist.crest.util.Values.FORMAT;
+import static org.codegist.crest.test.util.Values.FORMAT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;

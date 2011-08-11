@@ -61,7 +61,7 @@ import static org.codegist.common.collect.Collections.asSet;
 import static org.codegist.common.collect.Maps.putIfAbsent;
 import static org.codegist.crest.CRestConfig.*;
 import static org.codegist.crest.io.http.HttpConstants.HTTP_UNAUTHORIZED;
-import static org.codegist.crest.util.PlaceHolders.compile;
+import static org.codegist.crest.util.Placeholders.compile;
 
 /**
  * <p>The default build :

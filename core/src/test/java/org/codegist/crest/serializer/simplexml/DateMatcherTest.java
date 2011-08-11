@@ -20,13 +20,13 @@
 
 package org.codegist.crest.serializer.simplexml;
 
-import org.codegist.crest.util.Values;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 
 import java.text.ParseException;
 
-import static org.codegist.crest.util.Values.DATE;
-import static org.codegist.crest.util.Values.DATE_STR;
+import static org.codegist.crest.test.util.Values.DATE;
+import static org.codegist.crest.test.util.Values.DATE_STR;
 import static org.junit.Assert.assertEquals;
 
 /**

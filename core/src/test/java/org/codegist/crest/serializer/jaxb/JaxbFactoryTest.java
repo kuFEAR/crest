@@ -28,7 +28,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.xml.bind.JAXBContext;
 
-import static org.codegist.crest.util.CRestConfigs.mockDefaultBehavior;
+import static org.codegist.crest.test.util.CRestConfigs.mockDefaultBehavior;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;

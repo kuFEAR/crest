@@ -22,7 +22,7 @@ package org.codegist.crest.serializer.jackson;
 
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.NonInstanciableClassTest;
-import org.codegist.crest.util.CRestConfigs;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;

@@ -27,6 +27,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import static java.lang.reflect.Modifier.isPublic;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -50,11 +52,6 @@ public final class ComponentFactory {
         }
         return constructor;
     }
-
-    private static boolean isPublic(int modifiers){
-        return (modifiers & 0x00000001) != 0;
-    }
-
 
     private static final class MakeAccessible implements PrivilegedAction<Constructor> {
         private final Constructor constructor;

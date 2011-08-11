@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.test.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +41,7 @@ public class Classes {
         throw new IllegalArgumentException("Method " + name + " not found in " + klass);
     }
 
-    public static void assertNotInstanciable(Class<?> klass) throws NoSuchMethodException {
+    public static void assertNotInstantiable(Class<?> klass) throws NoSuchMethodException {
 
         assertEquals(1, klass.getDeclaredConstructors().length);
         assertTrue(Modifier.isFinal(klass.getModifiers()));

@@ -21,7 +21,7 @@
 package org.codegist.crest.serializer.simplexml;
 
 import org.codegist.crest.CRestConfig;
-import org.codegist.crest.util.CRestConfigs;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import static org.codegist.crest.util.Values.UTF8;
+import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;

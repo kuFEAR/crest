@@ -21,7 +21,7 @@
 package org.codegist.crest.serializer.jaxb;
 
 import org.codegist.crest.CRestException;
-import org.codegist.crest.util.Values;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;

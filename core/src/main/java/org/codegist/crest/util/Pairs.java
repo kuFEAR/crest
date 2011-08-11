@@ -52,21 +52,26 @@ public final class Pairs {
     public static EncodedPair toPair(String nameToEncode, String valueToEncode, Charset charset) throws UnsupportedEncodingException {
         return toPair(nameToEncode, valueToEncode, charset, false);
     }
-    
+
     public static EncodedPair toPair(String name, String value, Charset charset, boolean encoded) throws UnsupportedEncodingException {
-        String nameEncoded = encoded ? name : encode(name, charset);
-        String valueEncoded = encoded ? value : encode(value, charset);
+        String nameEncoded;
+        String valueEncoded;
+        if(encoded){
+            nameEncoded = name;
+            valueEncoded = value;
+        }else{
+            nameEncoded = encode(name, charset);
+            valueEncoded = encode(value, charset);
+        }
         return new SimpleEncodedPair(nameEncoded, valueEncoded);
     }
 
-    public static List<EncodedPair> fromUrlEncoded(String urlEncoded) throws UnsupportedEncodingException {
+    public static List<EncodedPair> fromUrlEncoded(String urlEncoded) {
         List<EncodedPair> pairs = new ArrayList<EncodedPair>();
-
         String[] split = AMP.split(urlEncoded);
         for(String param : split){
             String[] paramSplit = EQUAL.split(param);
-            EncodedPair pair = toPreEncodedPair(paramSplit[0], paramSplit[1]);
-            pairs.add(pair);
+            pairs.add(toPreEncodedPair(paramSplit[0], paramSplit[1]));
         }
         return pairs;
     }
@@ -77,7 +82,7 @@ public final class Pairs {
        return sorted;
     }
 
-     public static String join(List<? extends EncodedPair> pairs, char pairSep){
+    public static String join(List<? extends EncodedPair> pairs, char pairSep){
         return join(pairs, pairSep, '=', false, false);
     }
 
@@ -128,9 +133,7 @@ public final class Pairs {
     }
 
     public static void join(Writer writer, Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal) throws IOException {
-
         boolean first = true;
-
         while(pairs.hasNext()) {
             EncodedPair httpEncodedPair = pairs.next();
             if(!first) {

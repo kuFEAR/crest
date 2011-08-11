@@ -18,32 +18,22 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.serializer;
+package org.codegist.crest.test.util;
 
-import org.codegist.crest.test.util.Values;
-import org.junit.Test;
-
-import java.io.File;
-
-import static org.junit.Assert.assertEquals;
+import java.lang.reflect.Method;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class FileSerializerTest extends BaseSerializerTest {
+public class Methods {
 
-    private final Serializer<File> toTest = new FileSerializer();
+    public static Method byName(Class<?> klass, String name){
+        for(Method m : klass.getDeclaredMethods()){
+            if(m.getName().equals(name)) {
+                return m;
+            }
+        }
+        throw new IllegalArgumentException("Method " + name + " not found in " + klass);
+    }
 
-    @Test
-    public void shouldSerializeFileToString() throws Exception {
-        assertEquals(Values.FILE1_CONTENT, serializeToString(toTest,  Values.FILE1));
-    }
-    @Test(expected= Exception.class)
-    public void shouldSerializeAnyThrowException() throws Exception {
-        serializeToString(toTest, "abdfg");
-    }
-    @Test(expected= Exception.class)
-    public void shouldSerializeNullThrowException() throws Exception {
-        serializeToString(toTest, null);
-    }
 }

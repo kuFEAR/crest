@@ -35,7 +35,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
-import static org.codegist.crest.util.Values.UTF8;
+import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;

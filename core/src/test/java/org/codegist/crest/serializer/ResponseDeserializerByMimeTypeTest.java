@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 
-import static org.codegist.crest.util.Values.UTF8;
+import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;

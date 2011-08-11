@@ -25,7 +25,7 @@ import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
-import org.codegist.crest.util.CRestConfigs;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Before;
 import org.junit.Test;
 

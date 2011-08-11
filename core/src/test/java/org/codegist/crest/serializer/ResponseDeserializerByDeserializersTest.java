@@ -33,8 +33,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import static org.codegist.crest.util.Values.SOME_STRING_UTF8_BYTES;
-import static org.codegist.crest.util.Values.UTF8;
+import static org.codegist.crest.test.util.Values.SOME_STRING_UTF8_BYTES;
+import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;

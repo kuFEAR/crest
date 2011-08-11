@@ -21,8 +21,8 @@
 package org.codegist.crest.serializer;
 
 import org.codegist.common.io.Files;
-import org.codegist.crest.util.TestInputStream;
-import org.codegist.crest.util.Values;
+import org.codegist.crest.test.util.TestInputStream;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

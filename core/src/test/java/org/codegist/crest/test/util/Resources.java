@@ -18,22 +18,18 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.test.util;
 
-import java.lang.reflect.Method;
+import java.io.File;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class Methods {
+public class Resources {
 
-    public static Method byName(Class<?> klass, String name){
-        for(Method m : klass.getDeclaredMethods()){
-            if(m.getName().equals(name)) {
-                return m;
-            }
-        }
-        throw new IllegalArgumentException("Method " + name + " not found in " + klass);
+    public static File getFile(String relativePath){
+        return new File(Resources.class.getClassLoader().getResource(relativePath).getFile());    
     }
+
 
 }

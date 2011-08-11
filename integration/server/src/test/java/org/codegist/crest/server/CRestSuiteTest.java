@@ -21,7 +21,6 @@
 package org.codegist.crest.server;
 
 import org.codegist.crest.CRestAllSuite;
-import org.codegist.crest.param.forms.xml.XmlsSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

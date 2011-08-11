@@ -28,7 +28,7 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.codegist.crest.util.PlaceHolders.merge;
+import static org.codegist.crest.util.Placeholders.merge;
 
 /**
  * Handy builders for {@link DefaultInterfaceConfig}.
@@ -58,15 +58,6 @@ abstract class ConfigBuilder {
 
     protected String ph(String str) {
         return merge(placeholders, str);
-    }
-
-    protected <T> T[] defaultIfUndefined(T[] value, String defProp, Class<? extends T>[] def) {
-        if(value != null) {
-            return value;
-        }else{
-            T[] prop = crestConfig.get(defProp);
-            return (prop != null) ? prop : newInstance(def);
-        }
     }
 
     protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def)  {

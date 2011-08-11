@@ -40,23 +40,23 @@ public final class MultiParts {
     }
 
     public static String getContentType(ParamConfig paramConfig){
-        return (String) (paramConfig.getMetaDatas() == null ? null : paramConfig.getMetaDatas().get(CONTENT_TYPE));
+        return (String) paramConfig.getMetaDatas().get(CONTENT_TYPE);
     }
 
     public static String getFileName(ParamConfig paramConfig){
-        return (String) (paramConfig.getMetaDatas() == null ? null : paramConfig.getMetaDatas().get(FILENAME));
+        return (String) paramConfig.getMetaDatas().get(FILENAME);
     }
 
     public static String getContentType(Param param){
-        return (String) param.getConfig().getMetaDatas().get(CONTENT_TYPE);
+        return getContentType(param.getConfig());
     }
 
     public static String getFileName(Param param){
-        return (String) param.getConfig().getMetaDatas().get(FILENAME);
+        return getFileName(param.getConfig());
     }
 
     public static boolean hasMultiPart(Map<String,Object> metadatas){
-        return metadatas != null && metadatas.containsKey(MULTIPART_FLAG);
+        return metadatas.containsKey(MULTIPART_FLAG);
     }
     
     public static boolean hasMultiPart(Param param){

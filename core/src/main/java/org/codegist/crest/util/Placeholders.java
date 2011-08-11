@@ -31,12 +31,12 @@ import static java.util.Collections.unmodifiableMap;
 /**
  * @author laurent.gilles@codegist.org
  */
-public final class PlaceHolders {
+public final class Placeholders {
 
     private static final Pattern ESCAPED_OPEN_CURLY_BRACKET = Pattern.compile(Pattern.quote("\\{"));
     private static final Pattern ESCAPED_CLOSE_CURLY_BRACKET = Pattern.compile(Pattern.quote("\\}"));
 
-    private PlaceHolders() {
+    private Placeholders() {
         throw new IllegalStateException();
     }
 

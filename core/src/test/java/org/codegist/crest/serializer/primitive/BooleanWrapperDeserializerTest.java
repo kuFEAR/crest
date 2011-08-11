@@ -23,7 +23,7 @@ package org.codegist.crest.serializer.primitive;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.BaseDeserializerTest;
 import org.codegist.crest.serializer.TypeDeserializer;
-import org.codegist.crest.util.CRestConfigs;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

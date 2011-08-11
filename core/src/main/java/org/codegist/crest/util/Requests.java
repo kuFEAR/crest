@@ -46,7 +46,7 @@ public final class Requests {
             if(isNull(value) && pc.getDefaultValue() == null) {
                 continue;
             }
-            builder.addParam(mc.getParamConfig(i), value);
+            builder.addParam(pc, value);
         }
 
         return builder.build(mc);
