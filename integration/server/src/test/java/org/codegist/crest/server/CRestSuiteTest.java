@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import java.io.IOException;
+import java.util.TimeZone;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -33,6 +34,9 @@ import java.io.IOException;
 @RunWith(Suite.class)
 @Suite.SuiteClasses(CRestAllSuite.class)
 public class CRestSuiteTest {
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
     private static int PORT = 8080;
 //    static {  for some reason this works when ran within an IDE, but not within maven...
 //        try {

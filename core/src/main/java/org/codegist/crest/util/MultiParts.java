@@ -48,11 +48,11 @@ public final class MultiParts {
     }
 
     public static String getContentType(Param param){
-        return getContentType(param.getConfig());
+        return getContentType(param.getParamConfig());
     }
 
     public static String getFileName(Param param){
-        return getFileName(param.getConfig());
+        return getFileName(param.getParamConfig());
     }
 
     public static boolean hasMultiPart(Map<String,Object> metadatas){
@@ -60,7 +60,7 @@ public final class MultiParts {
     }
     
     public static boolean hasMultiPart(Param param){
-        return hasMultiPart(param.getConfig().getMetaDatas());
+        return hasMultiPart(param.getParamConfig().getMetaDatas());
     }
 
     public static void putMetaDatas(Map<String, Object> metadatas, String contentType, String fileName){

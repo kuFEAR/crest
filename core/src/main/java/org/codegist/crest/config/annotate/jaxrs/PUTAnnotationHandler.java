@@ -24,7 +24,6 @@ import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.PUT;
 
 /**
@@ -34,7 +33,7 @@ class PUTAnnotationHandler extends NoOpAnnotationHandler<PUT> {
 
     @Override
     public void handleMethodAnnotation(PUT annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.PUT);
     }
 
 }

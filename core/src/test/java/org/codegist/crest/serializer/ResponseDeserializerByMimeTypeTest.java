@@ -41,7 +41,7 @@ public class ResponseDeserializerByMimeTypeTest {
     private final Deserializer mockDeserializerMime2 = mock(Deserializer.class);
     private final CRestConfig crestConfig = mock(CRestConfig.class);
     private final Response mockResponse = mock(Response.class);
-    private final Registry<String, Deserializer> registry = new Registry.Builder<String, Deserializer>(Deserializer.class)
+    private final Registry<String, Deserializer> registry = new Registry.Builder<String, Deserializer>()
             .register(mockDeserializerMime1, "mime1")
             .register(mockDeserializerMime2, "mime2")
             .build(crestConfig);

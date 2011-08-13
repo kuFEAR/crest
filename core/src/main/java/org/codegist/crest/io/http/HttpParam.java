@@ -41,7 +41,7 @@ public class HttpParam implements Param {
         return value;
     }
 
-    public ParamConfig getConfig() {
+    public ParamConfig getParamConfig() {
         return config;
     }
 

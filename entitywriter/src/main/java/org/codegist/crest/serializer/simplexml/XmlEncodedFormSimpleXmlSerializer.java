@@ -69,7 +69,7 @@ public class XmlEncodedFormSimpleXmlSerializer implements Serializer<List<Param>
         for(Param param : params){
             for(Object value : param.getValue()){
                 if(value == null) continue;
-                OutputNode n = root.getChild(param.getConfig().getName());
+                OutputNode n = root.getChild(param.getParamConfig().getName());
                 if(isPrimitive(value)) {
                     // nasty.....
                     if(value instanceof Date) {

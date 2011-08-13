@@ -41,7 +41,7 @@ public class ResponseDeserializerByClassTest {
     private final Deserializer mockDeserializerInt = mock(Deserializer.class);
     private final CRestConfig crestConfig = mock(CRestConfig.class);
     private final Response mockResponse = mock(Response.class);
-    private final Registry<Class<?>, Deserializer> registry = new Registry.Builder<Class<?>,Deserializer>(Deserializer.class)
+    private final Registry<Class<?>, Deserializer> registry = new Registry.Builder<Class<?>,Deserializer>()
             .register(mockDeserializerInteger, Integer.class)
             .register(mockDeserializerInt, int.class)
             .build(crestConfig);

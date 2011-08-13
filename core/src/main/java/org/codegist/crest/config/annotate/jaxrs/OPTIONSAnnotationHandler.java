@@ -24,7 +24,6 @@ import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.OPTIONS;
 
 /**
@@ -34,7 +33,7 @@ class OPTIONSAnnotationHandler extends NoOpAnnotationHandler<OPTIONS> {
 
     @Override
     public void handleMethodAnnotation(OPTIONS annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.OPTIONS);
     }
 
 }

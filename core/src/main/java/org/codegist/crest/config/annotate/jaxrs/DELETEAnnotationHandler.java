@@ -25,7 +25,6 @@ import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
 import javax.ws.rs.DELETE;
-import javax.ws.rs.HttpMethod;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -34,7 +33,7 @@ class DELETEAnnotationHandler extends NoOpAnnotationHandler<DELETE> {
 
     @Override
     public void handleMethodAnnotation(DELETE annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.DELETE);
     }
 
 }

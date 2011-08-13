@@ -51,7 +51,7 @@ class JaxbParam {
         this.classes = new HashSet<Class<?>>();
         this.classes.add(getClass());
         for (Param entry: params) {
-            Class<?> cls = entry.getConfig().getValueClass();
+            Class<?> cls = entry.getParamConfig().getValueClass();
 
             for(Object value : entry.getValue()){
                 if(value == null) continue;
@@ -72,12 +72,12 @@ class JaxbParam {
                     }
                     valueEl = new JAXBElement(new QName(ns, name), cls, value);
                 }
-                JAXBElement entryEl = new JAXBElement(new QName(entry.getConfig().getName()), valueEl.getClass(), valueEl);
+                JAXBElement entryEl = new JAXBElement(new QName(entry.getParamConfig().getName()), valueEl.getClass(), valueEl);
                this.params.add(entryEl);
             }
 
 
-            this.classes.addAll(Types.getActors(entry.getConfig().getValueGenericType()));
+            this.classes.addAll(Types.getActors(entry.getParamConfig().getValueGenericType()));
         }
     }
 

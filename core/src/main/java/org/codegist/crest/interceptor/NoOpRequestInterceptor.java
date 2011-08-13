@@ -28,6 +28,5 @@ import org.codegist.crest.io.Request;
  */
 public class NoOpRequestInterceptor implements RequestInterceptor {
     public void beforeFire(Request request) throws Exception {
-
     }
 }

@@ -25,7 +25,6 @@ import org.codegist.crest.config.MethodType;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 
 import javax.ws.rs.HEAD;
-import javax.ws.rs.HttpMethod;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -34,7 +33,7 @@ class HEADAnnotationHandler extends NoOpAnnotationHandler<HEAD> {
 
     @Override
     public void handleMethodAnnotation(HEAD annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.HEAD);
     }
 
 }

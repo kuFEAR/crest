@@ -43,8 +43,8 @@ class CollectionMergingParamProcessor implements ParamProcessor {
 
     public List<EncodedPair> process(Param param, Charset charset, boolean encodeIfNeeded) throws Exception {
         StringBuilder sb = new StringBuilder();
-        Serializer serializer = param.getConfig().getSerializer();
-        boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
+        Serializer serializer = param.getParamConfig().getSerializer();
+        boolean isEncoded = !encodeIfNeeded || param.getParamConfig().isEncoded();
         boolean first = true;
         for(Object value : param.getValue()){
             String serializedValue = serialize(serializer, value, charset);
@@ -58,7 +58,7 @@ class CollectionMergingParamProcessor implements ParamProcessor {
         if(sb.length() == 0) {
             return emptyList();
         }else{
-            return singletonList(toPair(param.getConfig().getName(), sb.toString(), charset, isEncoded));
+            return singletonList(toPair(param.getParamConfig().getName(), sb.toString(), charset, isEncoded));
         }
     }
 

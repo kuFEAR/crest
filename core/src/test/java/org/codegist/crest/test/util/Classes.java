@@ -20,10 +20,7 @@
 
 package org.codegist.crest.test.util;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +28,16 @@ import static org.junit.Assert.*;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class Classes {
+
+    public static <T> T getFieldValue(Object ref, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        return getFieldValue(ref, fieldName, ref.getClass());
+    }
+
+    public static <T> T getFieldValue(Object ref, String fieldName, Class<?> klass) throws NoSuchFieldException, IllegalAccessException {
+        Field classField = klass.getDeclaredField(fieldName);
+        classField.setAccessible(true);
+        return (T) classField.get(ref);
+    }
 
     public static Method byName(Class<?> klass, String name){
         for(Method m : klass.getDeclaredMethods()){

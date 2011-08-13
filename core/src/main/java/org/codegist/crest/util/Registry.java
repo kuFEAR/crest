@@ -32,14 +32,12 @@ import java.util.Map;
  */
 public final class Registry<K,T> {
 
-    private final Class<T> clazz;
     private final Map<K, Object> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
     private final T defaultIfNotFound;
     private final CRestConfig crestConfig;
 
-    private Registry(Class<T> clazz, Map<K, Object> mapping, CRestConfig crestConfig, T defaultIfNotFound) {
-        this.clazz = clazz;
+    Registry(Map<K, Object> mapping, CRestConfig crestConfig, T defaultIfNotFound) {
         this.defaultIfNotFound = defaultIfNotFound;
         this.mapping = mapping;
         this.crestConfig = crestConfig;
@@ -58,10 +56,6 @@ public final class Registry<K,T> {
     }
 
     private synchronized T buildAndCache(K key, CRestConfig crestConfig) {
-        T val = cache.get(key);
-        if(val != null) {
-            return val;
-        }
         Object item = mapping.get(key);
         if (item == null) {
             if(defaultIfNotFound == null) {
@@ -70,28 +64,22 @@ public final class Registry<K,T> {
                 item = defaultIfNotFound;
             }
         }
-        if (clazz.isAssignableFrom(item.getClass())) {
-            val = (T) item;
-        } else if (item instanceof ItemDescriptor) {
+        T val;
+        if (item instanceof ItemDescriptor) {
             val = ((ItemDescriptor<T>) item).instanciate(crestConfig);
         } else {
-            throw new IllegalStateException("Shouldn't be here");
+            val = (T) item;
         }
         return cache(key, val);
     }
 
     private T cache(K key, T item) {
         cache.put(key, item);
-        for(Map.Entry<K,Object> entry : mapping.entrySet()){
-            if(entry.getValue() instanceof Class && entry.getValue().equals(entry.getClass())) {
-                cache.put(entry.getKey(), item);
-            }
-        }
         return item;
     }
 
 
-    private static class ItemDescriptor<T> {
+    static final class ItemDescriptor<T> {
         private final Class<? extends T> clazz;
         private final Map<String, Object> config;
 
@@ -114,15 +102,10 @@ public final class Registry<K,T> {
     public static final class Builder<K,T> {
 
         private final Map<K, Object> mapping = new HashMap<K, Object>();
-        private final Class<T> clazz;
         private T defaultIfNotFound;
 
-        public Builder(Class<T> clazz) {
-            this.clazz = clazz;
-        }
-
         public Registry<K,T> build(CRestConfig crestConfig) {
-            return new Registry<K,T>(clazz, mapping, crestConfig, defaultIfNotFound);
+            return new Registry<K,T>(mapping, crestConfig, defaultIfNotFound);
         }
 
         public Builder<K,T> register(Class<? extends T> item, K... keys) {
@@ -130,8 +113,9 @@ public final class Registry<K,T> {
         }
 
         public Builder<K,T> register(Class<? extends T> item, K[] keys, Map<String, Object> itemConfig) {
+            ItemDescriptor descriptor = new ItemDescriptor<T>(item, itemConfig);
             for (K mt : keys) {
-                mapping.put(mt, new ItemDescriptor<T>(item, itemConfig));
+                mapping.put(mt, descriptor);
             }
             return this;
         }

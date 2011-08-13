@@ -38,11 +38,11 @@ class DefaultParamProcessor implements ParamProcessor {
 
     public List<EncodedPair> process(Param param, Charset charset, boolean encodeIfNeeded) throws Exception {
         List<EncodedPair> pairs = new ArrayList<EncodedPair>();
-        Serializer serializer = param.getConfig().getSerializer();
-        boolean isEncoded = !encodeIfNeeded || param.getConfig().isEncoded();
+        Serializer serializer = param.getParamConfig().getSerializer();
+        boolean isEncoded = !encodeIfNeeded || param.getParamConfig().isEncoded();
         for(Object value : param.getValue()){
             String serializedValue = Serializers.serialize(serializer, value, charset);
-            pairs.add(toPair(param.getConfig().getName(), serializedValue, charset, isEncoded));
+            pairs.add(toPair(param.getParamConfig().getName(), serializedValue, charset, isEncoded));
         }
         return pairs;
     }

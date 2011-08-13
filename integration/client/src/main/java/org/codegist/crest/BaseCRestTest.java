@@ -186,7 +186,7 @@ public abstract class BaseCRestTest<T> {
                     .setConcurrencyLevel(2)
                     .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
-                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>(Serializer.class).register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
+                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>().register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
                     .addProperties(CREST_PROPERTIES);
         if(TEST_JAXRS) {
             builder.jaxrsAware();
@@ -202,7 +202,7 @@ public abstract class BaseCRestTest<T> {
         return getEntitySerializerProperties(jaxb, false);
     }
     private static Map<String,Object> getEntitySerializerProperties(boolean jaxb, boolean json){
-        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>(Serializer.class);
+        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>();
 
         if(jaxb) {
             registry.register(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);

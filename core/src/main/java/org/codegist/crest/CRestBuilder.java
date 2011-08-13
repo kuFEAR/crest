@@ -92,12 +92,12 @@ public class CRestBuilder {
 
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
 
-    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>(AnnotationHandler.class)
+    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>()
                             .defaultAs(new NoOpAnnotationHandler())
                             .register(CRestAnnotations.MAPPING);
 
-    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>(Deserializer.class);
-    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>(Deserializer.class)
+    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>();
+    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>()
                             .register(VoidDeserializer.class, Void.class, void.class)
                             .register(ByteArrayDeserializer.class, byte[].class)
                             .register(StringDeserializer.class, String.class)
@@ -120,7 +120,7 @@ public class CRestBuilder {
                             .register(InputStreamDeserializer.class, InputStream.class)
                             .register(ReaderDeserializer.class, Reader.class);
 
-    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>(Serializer.class)
+    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>()
                             .defaultAs(new ToStringSerializer())
                             .register(DateSerializer.class, Date.class)
                             .register(BooleanSerializer.class, Boolean.class, boolean.class)
@@ -165,7 +165,7 @@ public class CRestBuilder {
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(crestConfig));
 
 
-        return new DefaultCRest(crestConfig, proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
+        return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
     public <T> T build(Class<T> interfaze) {

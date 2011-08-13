@@ -20,11 +20,11 @@
 
 package org.codegist.crest.util;
 
+import org.codegist.common.io.StringBuilderWriter;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.param.SimpleEncodedPair;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -103,7 +103,7 @@ public final class Pairs {
     }
 
     public static String join(Iterator<? extends EncodedPair> pairs, char pairSep, char nameValSep, boolean quoteName, boolean quoteVal){
-        StringWriter sw = new StringWriter();
+        Writer sw = new StringBuilderWriter();
         try {
             join(sw, pairs,pairSep, nameValSep,quoteName,quoteVal);
         } catch (IOException e) {

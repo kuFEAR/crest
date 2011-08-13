@@ -82,7 +82,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
-        when(param.getConfig()).thenReturn(paramConfig);
+        when(param.getParamConfig()).thenReturn(paramConfig);
 
         assertEquals("expected", MultiParts.getContentType(param));
     }
@@ -93,7 +93,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
-        when(param.getConfig()).thenReturn(paramConfig);
+        when(param.getParamConfig()).thenReturn(paramConfig);
         assertNull(MultiParts.getContentType(param));
     }
 
@@ -103,7 +103,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
-        when(param.getConfig()).thenReturn(paramConfig);
+        when(param.getParamConfig()).thenReturn(paramConfig);
 
         assertEquals("expected", MultiParts.getFileName(param));
     }
@@ -114,7 +114,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
-        when(param.getConfig()).thenReturn(paramConfig);
+        when(param.getParamConfig()).thenReturn(paramConfig);
         assertNull(MultiParts.getFileName(param));
     }
 
@@ -130,7 +130,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
-        when(param.getConfig()).thenReturn(paramConfig);
+        when(param.getParamConfig()).thenReturn(paramConfig);
 
         assertTrue(MultiParts.hasMultiPart(param));
     }

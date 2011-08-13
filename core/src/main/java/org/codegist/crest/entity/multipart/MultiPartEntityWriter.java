@@ -59,7 +59,7 @@ public class MultiPartEntityWriter implements EntityWriter {
             Charset charset = request.getMethodConfig().getCharset();
 
             for (Param param: formParams) {
-                ParamConfig pc = param.getConfig();
+                ParamConfig pc = param.getParamConfig();
                 Class<?> paramClass = pc.getValueClass();
                 MultiPart<Param> multiPart = new MultiPart<Param>(pc, param, BOUNDARY);
 

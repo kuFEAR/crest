@@ -21,9 +21,11 @@
 package org.codegist.crest.param;
 
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static org.codegist.common.lang.Strings.isBlank;
 import static org.codegist.crest.util.Pairs.join;
 import static org.codegist.crest.util.Pairs.toPreEncodedPair;
 
@@ -38,6 +40,9 @@ class DefaultCookieParamProcessor extends DefaultParamProcessor {
     public List<EncodedPair> process(Param param, Charset charset, boolean encodeIfNeeded) throws Exception {
         List<EncodedPair> pairs = super.process(param, charset, encodeIfNeeded);
         String cookie = join(pairs, ',');
+        if(isBlank(cookie)) {
+            return Collections.emptyList();
+        }
         return singletonList(toPreEncodedPair("Cookie", cookie));
     }
 }

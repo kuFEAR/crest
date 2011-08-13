@@ -28,6 +28,6 @@ public interface Param {
     
      Collection<Object> getValue();
     
-     ParamConfig getConfig();
+     ParamConfig getParamConfig();
     
 }

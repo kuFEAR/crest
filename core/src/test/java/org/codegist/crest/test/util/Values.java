@@ -25,10 +25,10 @@ import org.codegist.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import static org.codegist.crest.test.util.Resources.getFile;
 
@@ -39,7 +39,7 @@ public class Values {
     public static final Charset UTF8 = Charset.forName("utf-8");
     public static final String FORMAT = "dd/MM/yyyy HH:mm:ss";
     public static final String DATE_STR = "13/03/1983 00:35:10";
-    public static final String DATE_STR_DEFAULT_FORMAT = "1983-03-13T00:35:10+0000";
+    public static final String DATE_STR_DEFAULT_FORMAT;
     public static final Date DATE;
     public static final File FILE1 = getFile("org/codegist/crest/File1.txt");
     public static final String FILE1_CONTENT;
@@ -50,10 +50,14 @@ public class Values {
     
 
     static {
-        Calendar CAL = GregorianCalendar.getInstance(Locale.ITALY);
+        Calendar CAL = GregorianCalendar.getInstance();
         CAL.set(1983, 2, 13, 0,35,10);
         CAL.set(Calendar.MILLISECOND, 0);
         DATE = CAL.getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        DATE_STR_DEFAULT_FORMAT = sdf.format(DATE);
+
         try {
             FILE1_CONTENT = Files.toString(FILE1);
         } catch (IOException e) {

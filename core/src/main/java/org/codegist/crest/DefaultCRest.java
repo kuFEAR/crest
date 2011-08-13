@@ -44,14 +44,12 @@ import java.lang.reflect.Method;
  */
 class DefaultCRest extends CRest {
 
-    private final CRestConfig crestConfig;
     private final ProxyFactory proxyFactory;
     private final RequestExecutor requestExecutor;
     private final RequestBuilderFactory requestBuilderFactory;
     private final InterfaceConfigFactory configFactory;
 
-    public DefaultCRest(CRestConfig crestConfig, ProxyFactory proxyFactory, RequestExecutor requestExecutor, RequestBuilderFactory requestBuilderFactory, InterfaceConfigFactory configFactory) {
-        this.crestConfig = crestConfig;
+    public DefaultCRest(ProxyFactory proxyFactory, RequestExecutor requestExecutor, RequestBuilderFactory requestBuilderFactory, InterfaceConfigFactory configFactory) {
         this.proxyFactory = proxyFactory;
         this.requestExecutor = requestExecutor;
         this.requestBuilderFactory = requestBuilderFactory;

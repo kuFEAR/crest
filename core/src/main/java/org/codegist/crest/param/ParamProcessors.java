@@ -74,7 +74,7 @@ public final class ParamProcessors {
         private void doNext() {
             Param currentParam = this.params.next();
             try {
-                this.current = currentParam.getConfig().getParamProcessor().process(currentParam, charset, encodeIfNeeded).iterator();
+                this.current = currentParam.getParamConfig().getParamProcessor().process(currentParam, charset, encodeIfNeeded).iterator();
             } catch (Exception e) {
                 throw CRestException.handle(e);
             }

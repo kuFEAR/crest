@@ -50,7 +50,7 @@ public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>>
         static JsonObject toJsonObject(List<Param> value){
             JsonObject json = new JsonObject();
             for(Param p : value){
-                String name = p.getConfig().getName();
+                String name = p.getParamConfig().getName();
                 for(Object o : p.getValue()){
                     json.put(name, o);
                 }

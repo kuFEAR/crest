@@ -28,7 +28,6 @@ import org.codegist.crest.security.oauth.OAuthToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -57,7 +56,7 @@ public class OAuthApiV1BuilderTest {
         FormOAuthInterface expectedOAuthInterface = mock(FormOAuthInterface.class);
         when(mockCRestBuilder.build(FormOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
-        OAuthApiV1 mockBuilderResult = PowerMockito.mock(OAuthApiV1.class);
+        OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
                 .withArguments(MethodType.POST, "", "", "", expectedOAuthInterface, token, DefaultVariantProvider.INSTANCE)
                 .thenReturn(mockBuilderResult);
@@ -81,7 +80,7 @@ public class OAuthApiV1BuilderTest {
         QueryOAuthInterface expectedOAuthInterface = mock(QueryOAuthInterface.class);
         when(mockCRestBuilder.build(QueryOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
-        OAuthApiV1 mockBuilderResult = PowerMockito.mock(OAuthApiV1.class);
+        OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
                 .withArguments(methodType, requestTokenUrl, accessTokenUrl, refreshTokenUrl, expectedOAuthInterface, token, mockVariantProvider)
                 .thenReturn(mockBuilderResult);
