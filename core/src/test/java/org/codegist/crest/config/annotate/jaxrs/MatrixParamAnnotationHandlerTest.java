@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.ParamType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -34,8 +35,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class MatrixParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<MatrixParam> {
+
+    private final MatrixParamAnnotationHandler toTest = new MatrixParamAnnotationHandler();
+
     public MatrixParamAnnotationHandlerTest() {
-        super(MatrixParam.class, new MatrixParamAnnotationHandler());
+        super(MatrixParam.class);
     }
 
     @Test
@@ -46,5 +50,10 @@ public class MatrixParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTes
         verify(mockParamConfigBuilder).setType(ParamType.MATRIX);
         verify(mockParamConfigBuilder).setName("a");
         verify(mockAnnotation).value();
+    }
+
+    @Override
+    public AnnotationHandler<MatrixParam> getToTest() {
+        return toTest;
     }
 }

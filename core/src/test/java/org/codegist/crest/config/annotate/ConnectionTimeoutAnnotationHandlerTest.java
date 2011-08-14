@@ -18,13 +18,11 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config.annotate.jaxrs;
+package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.DownToMethodAnnotationBaseTest;
+import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.config.annotate.jaxrs.*;
 import org.junit.Test;
-
-import javax.ws.rs.Path;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,32 +30,36 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class PathAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Path> {
+public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
 
-    private final PathAnnotationHandler toTest = new PathAnnotationHandler();
+    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
 
-    public PathAnnotationHandlerTest() {
-        super(Path.class);
+    public ConnectionTimeoutAnnotationHandlerTest() {
+        super(ConnectionTimeout.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldAppendMethodsPathWithAnnotationValue() throws Exception {
-        when(mockAnnotation.value()).thenReturn("a");
+    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
+        when(mockAnnotation.value()).thenReturn(12);
+
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-        verify(mockInterfaceConfigBuilder).appendMethodsPath("a");
+
         verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
     }
 
     @Test
-    public void handleMethodAnnotationShouldAppendPathWithAnnotationValue() throws Exception {
-        when(mockAnnotation.value()).thenReturn("a");
+    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
+        when(mockAnnotation.value()).thenReturn(12);
+
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-        verify(mockMethodConfigBuilder).appendPath("a");
+
         verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
     }
 
     @Override
-    public AnnotationHandler<Path> getToTest() {
+    public AnnotationHandler<ConnectionTimeout> getToTest() {
         return toTest;
     }
 }

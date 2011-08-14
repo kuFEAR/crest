@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.ParamType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -34,8 +35,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HeaderParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<HeaderParam> {
+
+    private final HeaderParamAnnotationHandler toTest = new HeaderParamAnnotationHandler();
+
     public HeaderParamAnnotationHandlerTest() {
-        super(HeaderParam.class, new HeaderParamAnnotationHandler());
+        super(HeaderParam.class);
     }
 
     @Test
@@ -46,5 +50,10 @@ public class HeaderParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTes
         verify(mockParamConfigBuilder).setType(ParamType.HEADER);
         verify(mockParamConfigBuilder).setName("a");
         verify(mockAnnotation).value();
+    }
+
+    @Override
+    public AnnotationHandler<HeaderParam> getToTest() {
+        return toTest;
     }
 }

@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.MethodType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.MethodOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -32,13 +33,21 @@ import static org.mockito.Mockito.verify;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class PUTAnnotationHandlerTest extends MethodOnlyAnnotationBaseTest<PUT> {
+
+    private final PUTAnnotationHandler toTest = new PUTAnnotationHandler();
+
     public PUTAnnotationHandlerTest() {
-        super(PUT.class, new PUTAnnotationHandler());
+        super(PUT.class);
     }
 
     @Test
     public void handleMethodAnnotationShouldSetMethodTypeToPUT() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setType(MethodType.PUT);
+    }
+
+    @Override
+    public AnnotationHandler<PUT> getToTest() {
+        return toTest;
     }
 }

@@ -33,12 +33,12 @@ class DELETEAnnotationHandler extends NoOpAnnotationHandler<DELETE> {
 
     @Override
     public void handleInterfaceAnnotation(DELETE annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.DELETE);
     }
 
     @Override
     public void handleMethodAnnotation(DELETE annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.DELETE);
     }
 
 }

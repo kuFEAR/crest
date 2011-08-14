@@ -33,12 +33,12 @@ class HEADAnnotationHandler extends NoOpAnnotationHandler<HEAD> {
 
     @Override
     public void handleInterfaceAnnotation(HEAD annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.HEAD);
     }
 
     @Override
     public void handleMethodAnnotation(HEAD annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.HEAD);
     }
 
 }

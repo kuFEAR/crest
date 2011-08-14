@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.MethodType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.MethodOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -32,13 +33,21 @@ import static org.mockito.Mockito.verify;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class DELETEAnnotationHandlerTest extends MethodOnlyAnnotationBaseTest<DELETE> {
+
+    private final DELETEAnnotationHandler toTest = new DELETEAnnotationHandler();
+
     public DELETEAnnotationHandlerTest() {
-        super(DELETE.class, new DELETEAnnotationHandler());
+        super(DELETE.class);
     }
 
     @Test
     public void handleMethodAnnotationShouldSetMethodTypeToDelete() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setType(MethodType.DELETE);
+    }
+
+    @Override
+    public AnnotationHandler<DELETE> getToTest() {
+        return toTest;
     }
 }

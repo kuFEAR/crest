@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.MethodType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.MethodOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -32,13 +33,21 @@ import static org.mockito.Mockito.verify;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class GETAnnotationHandlerTest extends MethodOnlyAnnotationBaseTest<GET> {
+
+    private final GETAnnotationHandler toTest = new GETAnnotationHandler();
+
     public GETAnnotationHandlerTest() {
-        super(GET.class, new GETAnnotationHandler());
+        super(GET.class);
     }
 
     @Test
     public void handleMethodAnnotationShouldSetMethodTypeToGET() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setType(MethodType.GET);
+    }
+
+    @Override
+    public AnnotationHandler<GET> getToTest() {
+        return toTest;
     }
 }

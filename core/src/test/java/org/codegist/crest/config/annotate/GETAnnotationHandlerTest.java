@@ -18,50 +18,42 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config.annotate.jaxrs;
+package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.config.annotate.AnnotationBaseTest;
-import org.codegist.crest.config.annotate.AnnotationHandler;
+import org.codegist.crest.annotate.DELETE;
+import org.codegist.crest.annotate.GET;
+import org.codegist.crest.config.MethodType;
 import org.junit.Test;
-
-import javax.ws.rs.Encoded;
 
 import static org.mockito.Mockito.verify;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class EncodedAnnotationHandlerTest extends AnnotationBaseTest<Encoded> {
+public class GETAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<GET> {
 
-    private final EncodedAnnotationHandler toTest = new EncodedAnnotationHandler();
+    private final GETAnnotationHandler toTest = new GETAnnotationHandler();
 
-    public EncodedAnnotationHandlerTest() {
-        super(Encoded.class);
+    public GETAnnotationHandlerTest() {
+        super(GET.class);
     }
 
-
     @Test
-    public void handleInterfaceAnnotationShouldSetParamsEncoded() throws Exception {
+    public void handleInterfaceAnnotationShouldSetMethodsType() throws Exception {
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-        verify(mockInterfaceConfigBuilder).setParamsEncoded(true);
+
+        verify(mockInterfaceConfigBuilder).setMethodsType(MethodType.GET);
     }
 
-
     @Test
-    public void handleMethodAnnotationShouldSetParamsEncoded() throws Exception {
+    public void handleMethodAnnotationShouldSetType() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-        verify(mockMethodConfigBuilder).setParamsEncoded(true);
-    }
 
-
-    @Test
-    public void handleParamsAnnotationShouldSetParamsEncoded() throws Exception {
-        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
-        verify(mockParamConfigBuilder).setEncoded(true);
+        verify(mockMethodConfigBuilder).setType(MethodType.GET);
     }
 
     @Override
-    public AnnotationHandler<Encoded> getToTest() {
+    public AnnotationHandler<GET> getToTest() {
         return toTest;
     }
 }

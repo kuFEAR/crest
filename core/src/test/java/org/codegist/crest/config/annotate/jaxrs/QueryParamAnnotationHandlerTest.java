@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.ParamType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -34,8 +35,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class QueryParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<QueryParam> {
+
+    private final QueryParamAnnotationHandler toTest = new QueryParamAnnotationHandler();
+
     public QueryParamAnnotationHandlerTest() {
-        super(QueryParam.class, new QueryParamAnnotationHandler());
+        super(QueryParam.class);
     }
 
     @Test
@@ -46,5 +50,10 @@ public class QueryParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest
         verify(mockParamConfigBuilder).setType(ParamType.QUERY);
         verify(mockParamConfigBuilder).setName("a");
         verify(mockAnnotation).value();
+    }
+
+    @Override
+    public AnnotationHandler<QueryParam> getToTest() {
+        return toTest;
     }
 }

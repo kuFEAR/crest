@@ -18,50 +18,43 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config.annotate.jaxrs;
+package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.config.annotate.AnnotationBaseTest;
-import org.codegist.crest.config.annotate.AnnotationHandler;
+import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.DELETE;
+import org.codegist.crest.config.MethodType;
 import org.junit.Test;
 
-import javax.ws.rs.Encoded;
-
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class EncodedAnnotationHandlerTest extends AnnotationBaseTest<Encoded> {
+public class DELETEAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<DELETE> {
 
-    private final EncodedAnnotationHandler toTest = new EncodedAnnotationHandler();
+    private final DELETEAnnotationHandler toTest = new DELETEAnnotationHandler();
 
-    public EncodedAnnotationHandlerTest() {
-        super(Encoded.class);
+    public DELETEAnnotationHandlerTest() {
+        super(DELETE.class);
     }
 
-
     @Test
-    public void handleInterfaceAnnotationShouldSetParamsEncoded() throws Exception {
+    public void handleInterfaceAnnotationShouldSetMethodsType() throws Exception {
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-        verify(mockInterfaceConfigBuilder).setParamsEncoded(true);
+
+        verify(mockInterfaceConfigBuilder).setMethodsType(MethodType.DELETE);
     }
 
-
     @Test
-    public void handleMethodAnnotationShouldSetParamsEncoded() throws Exception {
+    public void handleMethodAnnotationShouldSetType() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-        verify(mockMethodConfigBuilder).setParamsEncoded(true);
-    }
 
-
-    @Test
-    public void handleParamsAnnotationShouldSetParamsEncoded() throws Exception {
-        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
-        verify(mockParamConfigBuilder).setEncoded(true);
+        verify(mockMethodConfigBuilder).setType(MethodType.DELETE);
     }
 
     @Override
-    public AnnotationHandler<Encoded> getToTest() {
+    public AnnotationHandler<DELETE> getToTest() {
         return toTest;
     }
 }

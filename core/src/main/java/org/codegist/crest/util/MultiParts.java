@@ -26,6 +26,8 @@ import org.codegist.crest.param.Param;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.codegist.common.lang.Strings.isNotBlank;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -65,8 +67,12 @@ public final class MultiParts {
 
     public static void putMetaDatas(Map<String, Object> metadatas, String contentType, String fileName){
         metadatas.put(MULTIPART_FLAG, true);
-        metadatas.put(CONTENT_TYPE, contentType);
-        metadatas.put(FILENAME, fileName);
+        if(isNotBlank(contentType)) {
+            metadatas.put(CONTENT_TYPE, contentType);
+        }
+        if(isNotBlank(fileName)) {
+            metadatas.put(FILENAME, fileName);
+        }
     }
 
     public static Map<String,Object> toMetaDatas(String contentType, String fileName){

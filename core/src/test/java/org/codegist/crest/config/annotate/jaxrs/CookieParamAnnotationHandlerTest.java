@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -33,9 +34,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class CookieParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<CookieParam> {
-    
+
+    private final CookieParamAnnotationHandler toTest = new CookieParamAnnotationHandler();
+
     public CookieParamAnnotationHandlerTest() {
-        super(CookieParam.class, new CookieParamAnnotationHandler());
+        super(CookieParam.class);
     }
 
     @Test
@@ -49,4 +52,9 @@ public class CookieParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTes
         verify(mockParamConfigBuilder).setName("a");
     }
 
+
+    @Override
+    public AnnotationHandler<CookieParam> getToTest() {
+        return toTest;
+    }
 }

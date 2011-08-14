@@ -33,12 +33,12 @@ class OPTIONSAnnotationHandler extends NoOpAnnotationHandler<OPTIONS> {
 
     @Override
     public void handleInterfaceAnnotation(OPTIONS annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.OPTIONS);
     }
 
     @Override
     public void handleMethodAnnotation(OPTIONS annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.OPTIONS);
     }
 
 }

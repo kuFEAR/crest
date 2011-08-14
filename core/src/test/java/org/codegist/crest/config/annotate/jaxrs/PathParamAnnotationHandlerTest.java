@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.ParamType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -34,8 +35,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class PathParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<PathParam> {
+
+    private final PathParamAnnotationHandler toTest = new PathParamAnnotationHandler();
+
     public PathParamAnnotationHandlerTest() {
-        super(PathParam.class, new PathParamAnnotationHandler());
+        super(PathParam.class);
     }
 
     @Test
@@ -46,5 +50,10 @@ public class PathParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<
         verify(mockParamConfigBuilder).setType(ParamType.PATH);
         verify(mockParamConfigBuilder).setName("a");
         verify(mockAnnotation).value();
+    }
+
+    @Override
+    public AnnotationHandler<PathParam> getToTest() {
+        return toTest;
     }
 }

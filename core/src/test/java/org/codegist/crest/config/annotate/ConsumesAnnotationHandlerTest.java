@@ -18,15 +18,14 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config.annotate.jaxrs;
+package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.config.annotate.DownToMethodAnnotationBaseTest;
+import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.Consumes;
 import org.junit.Test;
 
-import javax.ws.rs.Consumes;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -40,21 +39,23 @@ public class ConsumesAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldFillMethodsProducesWithFirstAnnotationValue() throws Exception {
+    public void handleInterfaceAnnotationShouldSetMethodsConsumes() throws Exception {
         when(mockAnnotation.value()).thenReturn(new String[]{"a","b"});
-        when(mockInterfaceConfigBuilder.setMethodsProduces("a")).thenReturn(mockInterfaceConfigBuilder);
+
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-        verify(mockAnnotation, times(2)).value();
-        verify(mockInterfaceConfigBuilder).setMethodsProduces("a");
+
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsConsumes("a","b");
     }
 
     @Test
-    public void handleMethodAnnotationShouldFillProducesWithFirstAnnotationValue() throws Exception {
+    public void handleMethodAnnotationShouldSetConsumes() throws Exception {
         when(mockAnnotation.value()).thenReturn(new String[]{"a","b"});
-        when(mockMethodConfigBuilder.setProduces("a")).thenReturn(mockMethodConfigBuilder);
+
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-        verify(mockAnnotation, times(2)).value();
-        verify(mockMethodConfigBuilder).setProduces("a");
+
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setConsumes("a","b");
     }
 
     @Override

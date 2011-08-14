@@ -29,13 +29,13 @@ import java.lang.annotation.Annotation;
  */
 public abstract class DownToMethodAnnotationBaseTest<A extends Annotation> extends AnnotationBaseTest<A> {
 
-    public DownToMethodAnnotationBaseTest(Class<A> annotation, AnnotationHandler<A> toTest) {
-        super(annotation, toTest);
+    public DownToMethodAnnotationBaseTest(Class<A> annotation) {
+        super(annotation);
     }
 
     @Test
     public void handleParamAnnotationShouldDoNothing() throws Exception {
-        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        getToTest().handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
     }
 
 }

@@ -29,18 +29,18 @@ import java.lang.annotation.Annotation;
  */
 public abstract class ParamOnlyAnnotationBaseTest<A extends Annotation> extends AnnotationBaseTest<A> {
 
-    public ParamOnlyAnnotationBaseTest(Class<A> annotation, AnnotationHandler<A> toTest) {
-        super(annotation, toTest);
+    public ParamOnlyAnnotationBaseTest(Class<A> annotation) {
+        super(annotation);
     }
 
     @Test
     public void handleInterfaceAnnotationShouldDoNothing() throws Exception {
-        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        getToTest().handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
     }
 
     @Test
     public void handleMethodAnnotationShouldDoNothing() throws Exception {
-        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        getToTest().handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
     }
 
 }

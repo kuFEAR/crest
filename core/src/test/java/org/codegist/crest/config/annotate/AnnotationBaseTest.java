@@ -39,16 +39,15 @@ public abstract class AnnotationBaseTest<A extends Annotation> {
     protected final InterfaceConfigBuilder mockInterfaceConfigBuilder = mock(InterfaceConfigBuilder.class);
     protected final MethodConfigBuilder mockMethodConfigBuilder = mock(MethodConfigBuilder.class);
     protected final ParamConfigBuilder mockParamConfigBuilder = mock(ParamConfigBuilder.class);
-    protected final AnnotationHandler<A> toTest;
 
-    public AnnotationBaseTest(Class<A> annotation, AnnotationHandler<A> toTest){
+    public AnnotationBaseTest(Class<A> annotation){
         this.mockAnnotation = mock(annotation);
-        this.toTest = toTest;
     }
 
+    public abstract AnnotationHandler<A> getToTest();
 
     @After
     public void noMoreInteractions(){
-        verifyNoMoreInteractions(mockAnnotation, mockParamConfigBuilder);
+        verifyNoMoreInteractions(mockAnnotation, mockParamConfigBuilder, mockInterfaceConfigBuilder, mockMethodConfigBuilder);
     }
 }

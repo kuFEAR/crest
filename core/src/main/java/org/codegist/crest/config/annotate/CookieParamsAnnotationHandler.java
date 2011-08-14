@@ -35,6 +35,7 @@ class CookieParamsAnnotationHandler extends NoOpAnnotationHandler<CookieParams> 
     public CookieParamsAnnotationHandler(CookieParamAnnotationHandler handler) {
         this.handler = handler;
     }
+    
     public CookieParamsAnnotationHandler() {
         this(new CookieParamAnnotationHandler());
     }
@@ -52,5 +53,5 @@ class CookieParamsAnnotationHandler extends NoOpAnnotationHandler<CookieParams> 
             handler.handleMethodAnnotation(paramAnnotation, builder);
         }
     }
-    
+
 }

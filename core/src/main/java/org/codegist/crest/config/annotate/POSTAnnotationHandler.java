@@ -33,12 +33,12 @@ class POSTAnnotationHandler extends NoOpAnnotationHandler<POST> {
 
     @Override
     public void handleInterfaceAnnotation(POST annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setMethodsType(MethodType.POST);
     }
 
     @Override
     public void handleMethodAnnotation(POST annotation, MethodConfigBuilder builder) {
-        builder.setType(MethodType.valueOf(annotation.annotationType().getAnnotation(HttpMethod.class).value()));
+        builder.setType(MethodType.POST);
     }
 
 }

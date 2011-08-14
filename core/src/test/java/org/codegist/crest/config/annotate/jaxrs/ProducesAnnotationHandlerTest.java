@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.DownToMethodAnnotationBaseTest;
 import org.junit.Test;
 
@@ -33,8 +34,10 @@ import static org.mockito.Mockito.when;
  */
 public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Produces> {
 
+    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler();
+
     public ProducesAnnotationHandlerTest() {
-        super(Produces.class, new ProducesAnnotationHandler());
+        super(Produces.class);
     }
 
 
@@ -53,5 +56,10 @@ public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
         toTest.handleMethodAnnotation(mockAnnotation,mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setConsumes("a", "b");
         verify(mockAnnotation).value();
+    }
+
+    @Override
+    public AnnotationHandler<Produces> getToTest() {
+        return toTest;
     }
 }

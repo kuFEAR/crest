@@ -21,6 +21,7 @@
 package org.codegist.crest.config.annotate.jaxrs;
 
 import org.codegist.crest.config.MethodType;
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.MethodOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -32,13 +33,21 @@ import static org.mockito.Mockito.verify;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HEADAnnotationHandlerTest extends MethodOnlyAnnotationBaseTest<HEAD> {
+
+    private final HEADAnnotationHandler toTest = new HEADAnnotationHandler();
+
     public HEADAnnotationHandlerTest() {
-        super(HEAD.class, new HEADAnnotationHandler());
+        super(HEAD.class);
     }
 
     @Test
     public void handleMethodAnnotationShouldSetMethodTypeToHEAD() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setType(MethodType.HEAD);
+    }
+
+    @Override
+    public AnnotationHandler<HEAD> getToTest() {
+        return toTest;
     }
 }

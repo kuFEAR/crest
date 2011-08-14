@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.ParamOnlyAnnotationBaseTest;
 import org.junit.Test;
 
@@ -32,8 +33,11 @@ import static org.mockito.Mockito.when;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class DefaultValueAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<DefaultValue> {
+
+    private final DefaultValueAnnotationHandler toTest = new DefaultValueAnnotationHandler();
+
     public DefaultValueAnnotationHandlerTest() {
-        super(DefaultValue.class, new DefaultValueAnnotationHandler());
+        super(DefaultValue.class);
     }
 
     @Test
@@ -43,5 +47,10 @@ public class DefaultValueAnnotationHandlerTest extends ParamOnlyAnnotationBaseTe
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockAnnotation).value();
         verify(mockParamConfigBuilder).setDefaultValue("a");
+    }
+
+    @Override
+    public AnnotationHandler<DefaultValue> getToTest() {
+        return toTest;
     }
 }
