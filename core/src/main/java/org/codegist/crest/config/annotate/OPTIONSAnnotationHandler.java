@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.HttpMethod;
 import org.codegist.crest.annotate.OPTIONS;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;

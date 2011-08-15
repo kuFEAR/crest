@@ -141,4 +141,13 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     public void dispose() {
         Disposables.dispose(channelFactory);
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            dispose();
+        } finally {
+            super.finalize();
+        }
+    }
 }

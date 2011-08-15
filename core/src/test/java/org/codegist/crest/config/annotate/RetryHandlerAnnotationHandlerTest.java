@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.RetryHandler;
+import org.codegist.crest.handler.MaxAttemptRetryHandler;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class RetryHandlerAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<RetryHandler> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final RetryHandlerAnnotationHandler toTest = new RetryHandlerAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public RetryHandlerAnnotationHandlerTest() {
+        super(RetryHandler.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsRetryHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class) MaxAttemptRetryHandler.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsRetryHandler(MaxAttemptRetryHandler.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetRetryHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)MaxAttemptRetryHandler.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setRetryHandler(MaxAttemptRetryHandler.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<RetryHandler> getToTest() {
         return toTest;
     }
 }

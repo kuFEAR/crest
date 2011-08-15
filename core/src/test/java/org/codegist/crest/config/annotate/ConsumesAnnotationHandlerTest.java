@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
 import org.codegist.crest.annotate.Consumes;
 import org.junit.Test;
 

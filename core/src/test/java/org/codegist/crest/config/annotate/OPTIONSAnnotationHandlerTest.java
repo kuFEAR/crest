@@ -21,7 +21,6 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.OPTIONS;
-import org.codegist.crest.annotate.POST;
 import org.codegist.crest.config.MethodType;
 import org.junit.Test;
 

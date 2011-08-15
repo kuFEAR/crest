@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.FormParam;
 import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.config.ParamConfigBuilder;
 import org.codegist.crest.config.ParamType;

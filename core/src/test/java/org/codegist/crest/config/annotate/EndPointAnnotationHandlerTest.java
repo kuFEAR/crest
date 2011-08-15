@@ -20,7 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.EndPoint;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +29,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class EndPointAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<EndPoint> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final EndPointAnnotationHandler toTest = new EndPointAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public EndPointAnnotationHandlerTest() {
+        super(EndPoint.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsEndPoint() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsEndPoint("a");
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetEndPoint() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setEndPoint("a");
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<EndPoint> getToTest() {
         return toTest;
     }
 }

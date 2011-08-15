@@ -20,45 +20,42 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.Encoded;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class EncodedAnnotationHandlerTest extends AnnotationBaseTest<Encoded> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final EncodedAnnotationHandler toTest = new EncodedAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public EncodedAnnotationHandlerTest() {
+        super(Encoded.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetParamsEncoded() throws Exception {
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
-        verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setParamsEncoded(true);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetParamsEncoded() throws Exception {
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockMethodConfigBuilder).setParamsEncoded(true);
+    }
 
-        verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+    @Test
+    public void handleParamsAnnotationShouldSetEncoded() throws Exception {
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockParamConfigBuilder).setEncoded(true);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<Encoded> getToTest() {
         return toTest;
     }
 }

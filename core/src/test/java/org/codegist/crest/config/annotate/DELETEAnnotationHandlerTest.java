@@ -20,13 +20,11 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
 import org.codegist.crest.annotate.DELETE;
 import org.codegist.crest.config.MethodType;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

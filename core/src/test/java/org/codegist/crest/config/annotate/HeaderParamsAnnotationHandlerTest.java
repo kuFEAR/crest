@@ -20,8 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.CookieParam;
-import org.codegist.crest.annotate.CookieParams;
 import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.annotate.HeaderParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;

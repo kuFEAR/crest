@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.RequestInterceptor;
+import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class RequestInterceptorAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<RequestInterceptor> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final RequestInterceptorAnnotationHandler toTest = new RequestInterceptorAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public RequestInterceptorAnnotationHandlerTest() {
+        super(RequestInterceptor.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsRequestInterceptor() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class) NoOpRequestInterceptor.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsRequestInterceptor(NoOpRequestInterceptor.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetRequestInterceptor() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)NoOpRequestInterceptor.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setRequestInterceptor(NoOpRequestInterceptor.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<RequestInterceptor> getToTest() {
         return toTest;
     }
 }

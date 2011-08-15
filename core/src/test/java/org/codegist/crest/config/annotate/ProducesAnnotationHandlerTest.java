@@ -20,7 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.Produces;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +29,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Produces> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public ProducesAnnotationHandlerTest() {
+        super(Produces.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetParamsProduces() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsProduces("a");
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetProduces() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setProduces("a");
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<Produces> getToTest() {
         return toTest;
     }
 }

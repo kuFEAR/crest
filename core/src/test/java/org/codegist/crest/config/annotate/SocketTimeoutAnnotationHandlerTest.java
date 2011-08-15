@@ -20,7 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.SocketTimeout;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +29,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class SocketTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<SocketTimeout> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final SocketTimeoutAnnotationHandler toTest = new SocketTimeoutAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public SocketTimeoutAnnotationHandlerTest() {
+        super(SocketTimeout.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
+    public void handleInterfaceAnnotationShouldSetMethodsSocketTimeout() throws Exception {
         when(mockAnnotation.value()).thenReturn(12);
-
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsSocketTimeout(12);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
+    public void handleMethodAnnotationShouldSetSocketTimeout() throws Exception {
         when(mockAnnotation.value()).thenReturn(12);
-
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setSocketTimeout(12);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<SocketTimeout> getToTest() {
         return toTest;
     }
 }

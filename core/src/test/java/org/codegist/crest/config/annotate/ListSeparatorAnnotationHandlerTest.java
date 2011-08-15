@@ -20,7 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.ListSeparator;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +29,40 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class ListSeparatorAnnotationHandlerTest extends AnnotationBaseTest<ListSeparator> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final ListSeparatorAnnotationHandler toTest = new ListSeparatorAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public ListSeparatorAnnotationHandlerTest() {
+        super(ListSeparator.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetParamsListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setParamsListSeparator("a");
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setParamsListSeparator("a");
+    }
+
+    @Test
+    public void handleParametersAnnotationShouldSetListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn("a");
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockParamConfigBuilder).setListSeparator("a");
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<ListSeparator> getToTest() {
         return toTest;
     }
 }

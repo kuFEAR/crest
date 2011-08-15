@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.EntityWriter;
+import org.codegist.crest.entity.UrlEncodedFormEntityWriter;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class EntityWriterAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<EntityWriter> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final EntityWriterAnnotationHandler toTest = new EntityWriterAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public EntityWriterAnnotationHandlerTest() {
+        super(EntityWriter.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsEntityWriter() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class) UrlEncodedFormEntityWriter.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsEntityWriter(UrlEncodedFormEntityWriter.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetEntityWriter() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)UrlEncodedFormEntityWriter.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setEntityWriter(UrlEncodedFormEntityWriter.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<EntityWriter> getToTest() {
         return toTest;
     }
 }

@@ -21,7 +21,6 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.GET;
-import org.codegist.crest.annotate.HttpMethod;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.MethodType;

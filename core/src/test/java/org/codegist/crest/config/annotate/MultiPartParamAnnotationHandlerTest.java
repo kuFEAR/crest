@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.FormParam;
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.config.ParamConfigBuilder;
 import org.codegist.crest.config.ParamType;
@@ -28,7 +27,6 @@ import org.codegist.crest.util.MultiParts;
 import org.junit.After;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;

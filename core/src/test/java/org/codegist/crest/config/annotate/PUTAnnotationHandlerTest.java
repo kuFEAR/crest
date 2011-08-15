@@ -20,7 +20,6 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.DELETE;
 import org.codegist.crest.annotate.PUT;
 import org.codegist.crest.config.MethodType;
 import org.junit.Test;

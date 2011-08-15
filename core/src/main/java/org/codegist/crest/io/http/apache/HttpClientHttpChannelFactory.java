@@ -116,4 +116,12 @@ public final class HttpClientHttpChannelFactory implements HttpChannelFactory, D
         client.getConnectionManager().shutdown();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            dispose();
+        } finally {
+            super.finalize();
+        }
+    }
 }

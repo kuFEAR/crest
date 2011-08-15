@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.ErrorHandler;
+import org.codegist.crest.handler.ErrorDelegatorHandler;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class ErrorHandlerAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ErrorHandler> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final ErrorHandlerAnnotationHandler toTest = new ErrorHandlerAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public ErrorHandlerAnnotationHandlerTest() {
+        super(ErrorHandler.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsErrorHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class) ErrorDelegatorHandler.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsErrorHandler(ErrorDelegatorHandler.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetErrorHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)ErrorDelegatorHandler.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setErrorHandler(ErrorDelegatorHandler.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<ErrorHandler> getToTest() {
         return toTest;
     }
 }

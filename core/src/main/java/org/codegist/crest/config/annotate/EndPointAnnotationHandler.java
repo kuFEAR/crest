@@ -22,6 +22,7 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -32,5 +33,9 @@ class EndPointAnnotationHandler extends NoOpAnnotationHandler<EndPoint> {
     public void handleInterfaceAnnotation(EndPoint annotation, InterfaceConfigBuilder builder) {
         builder.setMethodsEndPoint(annotation.value());
     }
-    
+
+    @Override
+    public void handleMethodAnnotation(EndPoint annotation, MethodConfigBuilder builder) throws Exception {
+        builder.setEndPoint(annotation.value());
+    }
 }

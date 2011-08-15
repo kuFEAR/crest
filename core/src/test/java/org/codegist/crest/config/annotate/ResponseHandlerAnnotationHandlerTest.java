@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.ResponseHandler;
+import org.codegist.crest.handler.DefaultResponseHandler;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,32 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class ResponseHandlerAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ResponseHandler> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final ResponseHandlerAnnotationHandler toTest = new ResponseHandlerAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public ResponseHandlerAnnotationHandlerTest() {
+        super(ResponseHandler.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetMethodsResponseHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class) DefaultResponseHandler.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setMethodsResponseHandler(DefaultResponseHandler.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetResponseHandler() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)DefaultResponseHandler.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setResponseHandler(DefaultResponseHandler.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<ResponseHandler> getToTest() {
         return toTest;
     }
 }

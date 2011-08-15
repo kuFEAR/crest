@@ -20,7 +20,8 @@
 
 package org.codegist.crest.config.annotate;
 
-import org.codegist.crest.annotate.ConnectionTimeout;
+import org.codegist.crest.annotate.Serializer;
+import org.codegist.crest.serializer.ToStringSerializer;
 import org.junit.Test;
 
 import static org.mockito.Mockito.verify;
@@ -29,36 +30,40 @@ import static org.mockito.Mockito.when;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ConnectionTimeoutAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<ConnectionTimeout> {
+public class SerializerAnnotationHandlerTest extends AnnotationBaseTest<Serializer> {
 
-    private final ConnectionTimeoutAnnotationHandler toTest = new ConnectionTimeoutAnnotationHandler();
+    private final SerializerAnnotationHandler toTest = new SerializerAnnotationHandler();
 
-    public ConnectionTimeoutAnnotationHandlerTest() {
-        super(ConnectionTimeout.class);
+    public SerializerAnnotationHandlerTest() {
+        super(Serializer.class);
     }
 
     @Test
-    public void handleInterfaceAnnotationShouldSetMethodsConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleInterfaceAnnotationShouldSetParamsSerializer() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)ToStringSerializer.class);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsConnectionTimeout(12);
+        verify(mockInterfaceConfigBuilder).setParamsSerializer(ToStringSerializer.class);
     }
 
     @Test
-    public void handleMethodAnnotationShouldSetConnectionTimeout() throws Exception {
-        when(mockAnnotation.value()).thenReturn(12);
-
+    public void handleMethodsAnnotationShouldSetSerializer() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)ToStringSerializer.class);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
-
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setConnectionTimeout(12);
+        verify(mockMethodConfigBuilder).setParamsSerializer(ToStringSerializer.class);
+    }
+
+    @Test
+    public void handleParametersAnnotationShouldSetSerializer() throws Exception {
+        when(mockAnnotation.value()).thenReturn((Class)ToStringSerializer.class);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockParamConfigBuilder).setSerializer(ToStringSerializer.class);
     }
 
     @Override
-    public AnnotationHandler<ConnectionTimeout> getToTest() {
+    public AnnotationHandler<Serializer> getToTest() {
         return toTest;
     }
 }
