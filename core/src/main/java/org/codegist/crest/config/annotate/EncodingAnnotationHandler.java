@@ -20,22 +20,29 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.Encoding;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 
+import java.nio.charset.Charset;
+
 /**
  * @author laurent.gilles@codegist.org
  */
-class EncodingAnnotationHandler extends NoOpAnnotationHandler<Encoding> {
+class EncodingAnnotationHandler extends StringBasedAnnotationHandler<Encoding> {
+
+    EncodingAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleInterfaceAnnotation(Encoding annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsCharset(annotation.value());
+        builder.setMethodsCharset(Charset.forName(ph(annotation.value())));
     }
 
     @Override
     public void handleMethodAnnotation(Encoding annotation, MethodConfigBuilder builder) throws Exception {
-        builder.setCharset(annotation.value());
+        builder.setCharset(Charset.forName(ph(annotation.value())));
     }
 }

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.CookieParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -32,27 +33,31 @@ import static org.codegist.crest.config.ParamType.COOKIE;
  */
 class CookieParamAnnotationHandler extends ParamAnnotationHandler<CookieParam> {
 
+    CookieParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(CookieParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(COOKIE)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleMethodAnnotation(CookieParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(COOKIE)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
                   
     @Override
     public void handleParameterAnnotation(CookieParam annotation, ParamConfigBuilder builder) {
         builder.setType(COOKIE)
-               .setName(annotation.value())
-               .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+               .setName(ph(annotation.value()))
+               .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
     
 }

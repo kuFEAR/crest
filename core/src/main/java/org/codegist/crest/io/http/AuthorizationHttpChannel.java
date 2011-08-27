@@ -27,7 +27,10 @@ import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.AuthorizationToken;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +58,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private String fullContentType = null;
     private HttpEntityWriter httpEntityWriter = null;
 
-    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, MethodType methodType, String url, Charset charset, Map<String, EntityParamExtractor> httpEntityParamExtrator) throws UnsupportedEncodingException {
+    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, MethodType methodType, String url, Charset charset, Map<String, EntityParamExtractor> httpEntityParamExtrator) {
         this.url = url;
         this.methodType = methodType;
         this.charset = charset;
@@ -68,17 +71,6 @@ public class AuthorizationHttpChannel implements HttpChannel {
         }
     }
 
-
-    private void authenticate() throws IOException {
-        AuthorizationToken token;
-        try {
-            token = authenticatorManager.authorize(methodType, url, arrify(parameters, EncodedPair.class));
-        } catch (Exception e) {
-            throw CRestException.handle(e);
-        }
-        delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
-    }
-
     public Response send() throws IOException {
         if(hasEntityParamExtrator()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -88,6 +80,16 @@ public class AuthorizationHttpChannel implements HttpChannel {
         }
         authenticate();
         return this.delegate.send();
+    }
+
+    private void authenticate() throws IOException {
+        AuthorizationToken token;
+        try {
+            token = authenticatorManager.authorize(methodType, url, arrify(parameters, EncodedPair.class));
+        } catch (Exception e) {
+            throw CRestException.handle(e);
+        }
+        delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
     }
 
     public void setContentType(String contentType) throws IOException {

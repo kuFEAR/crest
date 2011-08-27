@@ -34,9 +34,18 @@ public class Classes {
     }
 
     public static <T> T getFieldValue(Object ref, String fieldName, Class<?> klass) throws NoSuchFieldException, IllegalAccessException {
-        Field classField = klass.getDeclaredField(fieldName);
-        classField.setAccessible(true);
-        return (T) classField.get(ref);
+        try {
+            Field classField = klass.getDeclaredField(fieldName);
+            classField.setAccessible(true);
+            return (T) classField.get(ref);
+        }catch(NoSuchFieldException e){
+            if(klass.getSuperclass() == null || klass.getSuperclass().equals(Object.class)) {
+                throw e;
+            }else{
+                return getFieldValue(ref, fieldName, klass.getSuperclass());
+            }
+        }
+
     }
 
     public static Method byName(Class<?> klass, String name){

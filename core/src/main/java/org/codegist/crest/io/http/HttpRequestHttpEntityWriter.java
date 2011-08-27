@@ -33,16 +33,15 @@ import java.io.OutputStream;
  */
 class RequestEntityWriter implements HttpEntityWriter {
 
+    private static final Logger LOGGER = Logger.getLogger(Request.class);
     private final Request request;
-    private final Logger logger;
 
-    RequestEntityWriter(Request request, Logger logger) {
+    RequestEntityWriter(Request request) {
         this.request = request;
-        this.logger = logger;
     }
 
     public void writeEntityTo(OutputStream out) throws IOException {
-        OutputStream os = !logger.isTraceOn() ? out : new LoggingOutputStream(out, logger);
+        OutputStream os = !LOGGER.isTraceOn() ? out : new LoggingOutputStream(out, LOGGER);
         try {
             request.getMethodConfig().getEntityWriter().writeTo(request, os);
         } catch (Exception e) {

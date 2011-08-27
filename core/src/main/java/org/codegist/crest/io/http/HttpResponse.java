@@ -88,7 +88,7 @@ public class HttpResponse implements Response, Disposable {
         return request;
     }
 
-    public InputStream asStream() throws Exception {
+    public InputStream asStream() {
         return inputStream;
     }
 

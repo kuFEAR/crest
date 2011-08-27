@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.MatrixParam;
 import org.codegist.crest.annotate.MatrixParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MatrixParamsAnnotationHandler.class})
+@PrepareForTest({MatrixParamsAnnotationHandler.class, MatrixParamAnnotationHandler.class})
 public class MatrixParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<MatrixParams> {
 
 
-    private final MatrixParamAnnotationHandler mockMatrixParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final MatrixParamAnnotationHandler mockMatrixParamAnnotationHandler = mock(MatrixParamAnnotationHandler.class);
     private final MatrixParamsAnnotationHandler toTest = new MatrixParamsAnnotationHandler(mockMatrixParamAnnotationHandler);
     private final MatrixParam[] mockAnnotations = { mock(MatrixParam.class), mock(MatrixParam.class)};
 
@@ -53,9 +50,9 @@ public class MatrixParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(MatrixParamAnnotationHandler.class).withNoArguments().thenReturn(mockMatrixParamAnnotationHandler);
-        new MatrixParamsAnnotationHandler();
-        verifyNew(MatrixParamAnnotationHandler.class).withNoArguments();
+        whenNew(MatrixParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockMatrixParamAnnotationHandler);
+        new MatrixParamsAnnotationHandler(crestConfig);
+        verifyNew(MatrixParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -85,22 +82,5 @@ public class MatrixParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
     @Override
     public AnnotationHandler<MatrixParams> getToTest() {
         return toTest;
-    }
-
-    public static class PublicParamAnnotationHandler extends MatrixParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(MatrixParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(MatrixParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(MatrixParam annotation, ParamConfigBuilder builder) {
-            
-        }
     }
 }

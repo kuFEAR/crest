@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.ListSeparator;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -28,21 +29,25 @@ import org.codegist.crest.config.ParamConfigBuilder;
 /**
  * @author laurent.gilles@codegist.org
  */
-class ListSeparatorAnnotationHandler extends NoOpAnnotationHandler<ListSeparator> {
+class ListSeparatorAnnotationHandler extends StringBasedAnnotationHandler<ListSeparator> {
+
+    ListSeparatorAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleInterfaceAnnotation(ListSeparator annotation, InterfaceConfigBuilder builder) {
-        builder.setParamsListSeparator(annotation.value());
+        builder.setParamsListSeparator(ph(annotation.value()));
     }
 
     @Override
     public void handleMethodAnnotation(ListSeparator annotation, MethodConfigBuilder builder) {
-        builder.setParamsListSeparator(annotation.value());
+        builder.setParamsListSeparator(ph(annotation.value()));
     }
                   
     @Override
     public void handleParameterAnnotation(ListSeparator annotation, ParamConfigBuilder builder) {
-        builder.setListSeparator(annotation.value());
+        builder.setListSeparator(ph(annotation.value()));
     }
     
 }

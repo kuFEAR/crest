@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public class QueryParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<QueryParam> {
 
-    private final QueryParamAnnotationHandler toTest = new QueryParamAnnotationHandler();
+    private final QueryParamAnnotationHandler toTest = new QueryParamAnnotationHandler(crestConfig);
 
     public QueryParamAnnotationHandlerTest() {
         super(QueryParam.class);
@@ -49,6 +49,16 @@ public class QueryParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockParamConfigBuilder).setType(ParamType.QUERY);
         verify(mockParamConfigBuilder).setName("a");
+        verify(mockAnnotation).value();
+    }
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndName() throws Exception {
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockParamConfigBuilder).setType(ParamType.QUERY);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL);
         verify(mockAnnotation).value();
     }
 

@@ -20,8 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.QueryParam;
 
@@ -30,10 +31,14 @@ import static org.codegist.crest.config.ParamType.QUERY;
 /**
  * @author laurent.gilles@codegist.org
  */
-class QueryParamAnnotationHandler extends NoOpAnnotationHandler<QueryParam> {
+class QueryParamAnnotationHandler extends StringBasedAnnotationHandler<QueryParam> {
+
+    QueryParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(QueryParam annotation, ParamConfigBuilder builder) {
-        builder.setType(QUERY).setName(annotation.value());
+        builder.setType(QUERY).setName(ph(annotation.value()));
     }
 }

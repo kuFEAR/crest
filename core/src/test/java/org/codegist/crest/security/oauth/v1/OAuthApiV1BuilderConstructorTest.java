@@ -22,6 +22,7 @@ package org.codegist.crest.security.oauth.v1;
 
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.security.oauth.OAuthToken;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -36,7 +37,7 @@ public class OAuthApiV1BuilderConstructorTest {
 
     @Test
     public void shouldUseCRestBuilder() throws Exception {
-        OAuthApiV1Builder toTest = new OAuthApiV1Builder(mock(OAuthToken.class));
+        OAuthApiV1Builder toTest = new OAuthApiV1Builder(mock(OAuthToken.class), Values.ENDPOINT);
         Field crestBuilder = OAuthApiV1Builder.class.getDeclaredField("crestBuilder");
         crestBuilder.setAccessible(true);
         assertEquals(CRestBuilder.class, crestBuilder.get(toTest).getClass());

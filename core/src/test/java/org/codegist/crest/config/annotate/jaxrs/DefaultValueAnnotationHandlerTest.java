@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 public class DefaultValueAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<DefaultValue> {
 
-    private final DefaultValueAnnotationHandler toTest = new DefaultValueAnnotationHandler();
+    private final DefaultValueAnnotationHandler toTest = new DefaultValueAnnotationHandler(crestConfig);
 
     public DefaultValueAnnotationHandlerTest() {
         super(DefaultValue.class);
@@ -47,6 +47,14 @@ public class DefaultValueAnnotationHandlerTest extends ParamOnlyAnnotationBaseTe
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockAnnotation).value();
         verify(mockParamConfigBuilder).setDefaultValue("a");
+    }
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndFillDefaultValueWithAnnotationValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        when(mockParamConfigBuilder.setDefaultValue(EXPECTED_MERGE_VAL)).thenReturn(mockParamConfigBuilder);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL);
     }
 
     @Override

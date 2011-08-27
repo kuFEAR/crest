@@ -36,6 +36,8 @@ import static org.codegist.crest.test.util.Resources.getFile;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class Values {
+    public static final String ISO_8859_1_STR = "iso-8859-1";
+    public static final Charset ISO_8859_1= Charset.forName(ISO_8859_1_STR);
     public static final Charset UTF8 = Charset.forName("utf-8");
     public static final String FORMAT = "dd/MM/yyyy HH:mm:ss";
     public static final String DATE_STR = "13/03/1983 00:35:10";
@@ -43,11 +45,13 @@ public class Values {
     public static final Date DATE;
     public static final File FILE1 = getFile("org/codegist/crest/File1.txt");
     public static final String FILE1_CONTENT;
+    public static final String ENDPOINT = "http://localhost";
 
     public static final String SOME_STRING = "hello £ world";
     public static final byte[] SOME_STRING_UTF8_BYTES = SOME_STRING.getBytes(UTF8);
     public static final File IMAGE1 = getFile("org/codegist/crest/image1.gif");
-    
+
+    public static final String URL_ENCODED_FORM = "p1=v%201&p1=v%202&p3=v3";
 
     static {
         Calendar CAL = GregorianCalendar.getInstance();

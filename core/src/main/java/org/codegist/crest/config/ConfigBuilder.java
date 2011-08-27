@@ -24,12 +24,6 @@ import org.codegist.crest.CRestConfig;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.util.ComponentFactory;
 
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static org.codegist.crest.util.Placeholders.merge;
-
 /**
  * Handy builders for {@link DefaultInterfaceConfig}.
  * <p>Support auto empty/null ignore and defaults methods and params values at respectively interface and method levels.
@@ -41,64 +35,20 @@ import static org.codegist.crest.util.Placeholders.merge;
 abstract class ConfigBuilder {
 
     private final CRestConfig crestConfig;
-    private final Map<Pattern, String> placeholders;
 
-    ConfigBuilder(CRestConfig crestConfig, Map<Pattern,String> placeholders) {
+    ConfigBuilder(CRestConfig crestConfig) {
         this.crestConfig = crestConfig;
-        this.placeholders = placeholders;
     }
 
     public CRestConfig getCRestConfig() {
         return crestConfig;
     }
 
-    public Map<Pattern, String> getPlaceholders() {
-        return placeholders;
+    public <T> T override(String property, T defaultIfNotFound) {
+        return crestConfig.get(property, defaultIfNotFound);
     }
 
-    protected String ph(String str) {
-        return merge(placeholders, str);
-    }
-
-    protected <T> T defaultIfUndefined(T value, String defProp, Class<? extends T> def)  {
-        if(value != null) {
-            return value;
-        }else{
-            Object prop = crestConfig.get(defProp);
-            if(prop != null) {
-                return (prop instanceof Class) ? newInstance((Class<T>)prop) : (T) prop;
-            }else{
-                return newInstance(def);
-            }
-        }
-    }
-
-    protected <T> T[] defaultIfUndefined(T[] value, String defProp, T[] def) {
-        return (value != null && value.length > 0) ? value : crestConfig.get(defProp, def);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T> T defaultIfUndefined(T value, String defProp) {
-        return defaultIfUndefined(value, defProp, null);
-
-    }
-    protected <T> T defaultIfUndefined(T value, String defProp, T def) {
-        return value != null ? value : crestConfig.get(defProp, def);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <T> T[] newInstance(Class<T>[] classes)  {
-        if (classes == null) {
-            return null;
-        }
-        T[] instances = (T[]) Array.newInstance(classes.getClass().getComponentType(), classes.length);
-        for (int i = 0; i < instances.length; i++) {
-            instances[i] = newInstance(classes[i]);
-        }
-        return instances;
-    }
-
-    protected <T> T newInstance(Class<T> clazz) {
+    protected <T> T instantiate(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }else{

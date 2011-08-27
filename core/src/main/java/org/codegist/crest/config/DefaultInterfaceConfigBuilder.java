@@ -11,28 +11,25 @@ import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.Registry;
 
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceConfigBuilder {
 
     private final Class interfaze;
     private final Map<Method, MethodConfigBuilder> methodBuilders;
 
-    public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
-        super(crestConfig, placeholders);
+    public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+        super(crestConfig);
         this.interfaze = interfaze;
         this.methodBuilders = new HashMap<Method, MethodConfigBuilder>();
         for (Method m : interfaze.getDeclaredMethods()) {
-            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(m, crestConfig, placeholders, mimeDeserializerRegistry, classSerializerRegistry));
+            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(m, crestConfig, mimeDeserializerRegistry, classSerializerRegistry));
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public InterfaceConfig build() throws Exception {
         Map<Method, MethodConfig> mConfig = new HashMap<Method, MethodConfig>();
         for (Map.Entry<Method, MethodConfigBuilder> entry : methodBuilders.entrySet()) {
@@ -48,7 +45,7 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
     /* METHODS SETTINGS METHODS */
 
 
-    public InterfaceConfigBuilder setMethodsCharset(String charset) {
+    public InterfaceConfigBuilder setMethodsCharset(Charset charset) {
         for (MethodConfigBuilder b : methodBuilders.values()) {
             b.setCharset(charset);
         }
@@ -183,11 +180,11 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
         return this;
     }
 
-    private static final class CompositeParamConfigBuilder implements ParamConfigBuilder {
+    static final class CompositeParamConfigBuilder implements ParamConfigBuilder {
 
         private final ParamConfigBuilder[] builders;
 
-        private CompositeParamConfigBuilder(ParamConfigBuilder[] builders) {
+        CompositeParamConfigBuilder(ParamConfigBuilder[] builders) {
             this.builders = builders.clone();
         }
 

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.annotate.HeaderParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class HeaderParamsAnnotationHandler extends NoOpAnnotationHandler<HeaderParams> 
         this.handler = handler;
     }
 
-    public HeaderParamsAnnotationHandler() {
-        this(new HeaderParamAnnotationHandler());
+    public HeaderParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new HeaderParamAnnotationHandler(crestConfig));
     }
 
     @Override

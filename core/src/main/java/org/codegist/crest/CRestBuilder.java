@@ -144,7 +144,9 @@ public class CRestBuilder {
     public CRest build() {
         HttpChannelFactory plainChannelFactory = buildHttpChannelInitiator();
         Authorization authorization = buildAuthorization(plainChannelFactory);
+
         putIfAbsent(crestProperties, Authorization.class.getName(), authorization);
+        putIfAbsent(crestProperties, CRestConfig.class.getName() + "#placeholders", compile(placeholders));
 
         CRestConfig crestConfig = new DefaultCRestConfig(crestProperties);
 
@@ -161,7 +163,7 @@ public class CRestBuilder {
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, baseResponseDeserializer, customTypeResponseDeserializer);
 
         Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build(crestConfig);
-        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestConfig, compile(placeholders), mimeDeserializerRegistry, classSerializerRegistry);
+        InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestConfig, mimeDeserializerRegistry, classSerializerRegistry);
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(crestConfig));
 
 
@@ -233,20 +235,17 @@ public class CRestBuilder {
         if(accessTokenRefreshUrl == null) {
             return null;
         }
-        return new OAuthApiV1Builder(consumerOAuthToken)
-                .refreshAccessTokenFrom(accessTokenRefreshUrl)
+
+        int indexOfProtocol = accessTokenRefreshUrl.indexOf("://") + 3;
+        int indexOfServer = accessTokenRefreshUrl.indexOf('/', indexOfProtocol);
+        String endPoint = accessTokenRefreshUrl.substring(0, indexOfServer);
+        String path = accessTokenRefreshUrl.substring(indexOfServer);
+
+        return new OAuthApiV1Builder(consumerOAuthToken, endPoint)
+                .refreshAccessTokenFrom(path)
                 .using(channelFactory)
                 .build();
     }
-
-
-
-
-
-
-
-
-
 
 
     public CRestBuilder bind(Deserializer deserializer, String... mimeTypes) {

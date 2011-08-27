@@ -33,51 +33,56 @@ public final class OAuthApiV1Builder {
 
     private final CRestBuilder crestBuilder;
     private final OAuthToken consumerToken;
+    private final String oauthEndPoint;
+
     private VariantProvider variantProvider = DefaultVariantProvider.INSTANCE;
     private HttpChannelFactory channelFactory = new HttpURLConnectionHttpChannelFactory();
     private MethodType methodType = MethodType.POST;
     private Class<? extends OAuthInterface> oauthInterfaceCls = FormOAuthInterface.class;
-    private String requestTokenUrl = "";
-    private String accessTokenUrl = "";
-    private String refreshAccessTokenUrl = "";
+    private String requestTokenPath = "";
+    private String accessTokenPath = "";
+    private String refreshAccessTokenPath = "";
 
     public OAuthApiV1 build(){
-        OAuthInterface oauthInterface = crestBuilder.placeholder("oauth.access-token-path", accessTokenUrl)
-                                                    .placeholder("oauth.request-token-path", requestTokenUrl)
-                                                    .placeholder("oauth.refresh-access-token-path", refreshAccessTokenUrl)
+        OAuthInterface oauthInterface = crestBuilder.placeholder("oauth.end-point", oauthEndPoint)
+                                                    .placeholder("oauth.access-token.path", accessTokenPath)
+                                                    .placeholder("oauth.request-token.path", requestTokenPath)
+                                                    .placeholder("oauth.refresh-access-token.path", refreshAccessTokenPath)
                                                     .setHttpChannelFactory(channelFactory)
                                                     .build(oauthInterfaceCls);
         return new OAuthApiV1(
                 methodType,
-                requestTokenUrl,
-                accessTokenUrl,
-                refreshAccessTokenUrl,
+                oauthEndPoint,
+                requestTokenPath,
+                accessTokenPath,
+                refreshAccessTokenPath,
                 oauthInterface,
                 consumerToken,
                 variantProvider);
     }
 
-    public OAuthApiV1Builder(OAuthToken consumerToken){
-        this(consumerToken, new CRestBuilder());
+    public OAuthApiV1Builder(OAuthToken consumerToken, String oauthEndPoint){
+        this(consumerToken, oauthEndPoint, new CRestBuilder());
     }
 
-    OAuthApiV1Builder(OAuthToken consumerToken, CRestBuilder crestBuilder){
+    OAuthApiV1Builder(OAuthToken consumerToken, String oauthEndPoint, CRestBuilder crestBuilder){
         this.consumerToken = consumerToken;
+        this.oauthEndPoint = oauthEndPoint;
         this.crestBuilder = crestBuilder;
     }
 
-    public OAuthApiV1Builder getRequestTokenFrom(String url){
-        this.requestTokenUrl = url;
+    public OAuthApiV1Builder getRequestTokenFrom(String path){
+        this.requestTokenPath = path;
         return this;
     }
 
-    public OAuthApiV1Builder getAccessTokenFrom(String url){
-        this.accessTokenUrl = url;
+    public OAuthApiV1Builder getAccessTokenFrom(String path){
+        this.accessTokenPath = path;
         return this;
     }
 
-    public OAuthApiV1Builder refreshAccessTokenFrom(String url){
-        this.refreshAccessTokenUrl = url;
+    public OAuthApiV1Builder refreshAccessTokenFrom(String path){
+        this.refreshAccessTokenPath = path;
         return this;
     }
 

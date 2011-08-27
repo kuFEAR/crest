@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  */
 public class EndPointAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<EndPoint> {
 
-    private final EndPointAnnotationHandler toTest = new EndPointAnnotationHandler();
+    private final EndPointAnnotationHandler toTest = new EndPointAnnotationHandler(crestConfig);
 
     public EndPointAnnotationHandlerTest() {
         super(EndPoint.class);
@@ -46,11 +46,27 @@ public class EndPointAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
     }
 
     @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetMethodsEndPoint() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsEndPoint(EXPECTED_MERGE_VAL);
+    }
+
+    @Test
     public void handleMethodsAnnotationShouldSetEndPoint() throws Exception {
         when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockAnnotation).value();
         verify(mockMethodConfigBuilder).setEndPoint("a");
+    }
+
+    @Test
+    public void handleMethodsAnnotationShouldMergePlaceholdersAndSetEndPoint() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setEndPoint(EXPECTED_MERGE_VAL);
     }
 
     @Override

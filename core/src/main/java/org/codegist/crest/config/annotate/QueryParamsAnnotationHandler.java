@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.annotate.QueryParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class QueryParamsAnnotationHandler extends NoOpAnnotationHandler<QueryParams> {
         this.handler = handler;
     }
 
-    public QueryParamsAnnotationHandler() {
-        this(new QueryParamAnnotationHandler());
+    public QueryParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new QueryParamAnnotationHandler(crestConfig));
     }
 
     @Override

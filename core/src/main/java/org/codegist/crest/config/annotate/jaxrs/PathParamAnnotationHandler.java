@@ -20,8 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.PathParam;
 
@@ -30,11 +31,15 @@ import static org.codegist.crest.config.ParamType.PATH;
 /**
  * @author laurent.gilles@codegist.org
  */
-class PathParamAnnotationHandler extends NoOpAnnotationHandler<PathParam> {
+class PathParamAnnotationHandler extends StringBasedAnnotationHandler<PathParam> {
+
+    PathParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(PathParam annotation, ParamConfigBuilder builder) {
-        builder.setType(PATH).setName(annotation.value());
+        builder.setType(PATH).setName(ph(annotation.value()));
     }
     
 }

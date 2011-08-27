@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.annotate.MultiPartParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class MultiPartParamsAnnotationHandler extends NoOpAnnotationHandler<MultiPartPa
         this.handler = handler;
     }
 
-    public MultiPartParamsAnnotationHandler() {
-        this(new MultiPartParamAnnotationHandler());
+    public MultiPartParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new MultiPartParamAnnotationHandler(crestConfig));
     }
 
     @Override

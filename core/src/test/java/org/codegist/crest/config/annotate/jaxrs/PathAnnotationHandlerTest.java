@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 public class PathAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Path> {
 
-    private final PathAnnotationHandler toTest = new PathAnnotationHandler();
+    private final PathAnnotationHandler toTest = new PathAnnotationHandler(crestConfig);
 
     public PathAnnotationHandlerTest() {
         super(Path.class);
@@ -48,11 +48,27 @@ public class PathAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Pa
         verify(mockAnnotation).value();
     }
 
+
+    @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndAppendMethodsPathWithAnnotationValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockInterfaceConfigBuilder).appendMethodsPath(EXPECTED_MERGE_VAL);
+        verify(mockAnnotation).value();
+    }
+
     @Test
     public void handleMethodAnnotationShouldAppendPathWithAnnotationValue() throws Exception {
         when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).appendPath("a");
+        verify(mockAnnotation).value();
+    }
+    @Test
+    public void handleMethodAnnotationShouldMergePlaceholdersAndAppendPathWithAnnotationValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockMethodConfigBuilder).appendPath(EXPECTED_MERGE_VAL);
         verify(mockAnnotation).value();
     }
 

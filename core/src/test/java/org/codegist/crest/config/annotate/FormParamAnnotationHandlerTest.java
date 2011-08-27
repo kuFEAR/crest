@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
  */
 public class FormParamAnnotationHandlerTest extends AnnotationBaseTest<FormParam> {
 
-    private final FormParamAnnotationHandler toTest = new FormParamAnnotationHandler();
+    private final FormParamAnnotationHandler toTest = new FormParamAnnotationHandler(crestConfig);
     private final ParamConfigBuilder mockParamConfigBuilder = mock(ParamConfigBuilder.class);
 
     public FormParamAnnotationHandlerTest() {
@@ -72,6 +72,21 @@ public class FormParamAnnotationHandlerTest extends AnnotationBaseTest<FormParam
         verify(mockAnnotation).value();
         verify(mockAnnotation).defaultValue();
     }
+    @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetParamsTypeAndNameAndDefaultValue() throws Exception {
+        when(mockInterfaceConfigBuilder.startMethodsExtraParamConfig()).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setName(any(String.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH + "b");
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockInterfaceConfigBuilder).startMethodsExtraParamConfig();
+        verify(mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+    }
 
     @Test
     public void handleMethodAnnotationShouldSetParamsTypeAndNameAndDefaultValue() throws Exception {
@@ -106,6 +121,22 @@ public class FormParamAnnotationHandlerTest extends AnnotationBaseTest<FormParam
     }
 
     @Test
+    public void handleMethodAnnotationShouldMergePlaceholdersAndSetParamsTypeAndNameAndDefaultValue() throws Exception {
+        when(mockMethodConfigBuilder.startExtraParamConfig()).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setName(any(String.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH + "b");
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockMethodConfigBuilder).startExtraParamConfig();
+        verify(mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+    }
+
+    @Test
     public void handleParameterAnnotationShouldSetTypeAndNameAndDefaultValue() throws Exception {
         when(super.mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(super.mockParamConfigBuilder);
         when(super.mockParamConfigBuilder.setName(any(String.class))).thenReturn(super.mockParamConfigBuilder);
@@ -131,6 +162,21 @@ public class FormParamAnnotationHandlerTest extends AnnotationBaseTest<FormParam
         verify(super.mockParamConfigBuilder).setType(ParamType.FORM);
         verify(super.mockParamConfigBuilder).setName("a");
         verify(super.mockParamConfigBuilder).setDefaultValue(null);
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+    }
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndNameAndDefaultValue() throws Exception {
+        when(super.mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(super.mockParamConfigBuilder);
+        when(super.mockParamConfigBuilder.setName(any(String.class))).thenReturn(super.mockParamConfigBuilder);
+        when(super.mockParamConfigBuilder.setDefaultValue(anyString())).thenReturn(super.mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH + "b");
+        toTest.handleParameterAnnotation(mockAnnotation, super.mockParamConfigBuilder);
+        verify(super.mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(super.mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(super.mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
         verify(mockAnnotation).value();
         verify(mockAnnotation).defaultValue();
     }

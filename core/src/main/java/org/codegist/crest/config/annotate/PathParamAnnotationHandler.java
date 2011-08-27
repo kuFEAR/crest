@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -32,27 +33,31 @@ import static org.codegist.crest.config.ParamType.PATH;
  */
 class PathParamAnnotationHandler extends ParamAnnotationHandler<PathParam> {
 
+    PathParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(PathParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(PATH)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleMethodAnnotation(PathParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(PATH)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleParameterAnnotation(PathParam annotation, ParamConfigBuilder builder) {
         builder.setType(PATH)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
     
 }

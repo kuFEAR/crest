@@ -20,13 +20,16 @@
 
 package org.codegist.crest.util;
 
+import org.codegist.common.lang.Objects;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestBuilderFactory;
 
-import static org.codegist.crest.util.Params.isNull;
+import java.util.Collection;
+
+import static org.codegist.common.collect.Collections.containsOnlyNulls;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -38,15 +41,18 @@ public final class Requests {
     }
 
     public static Request from(RequestBuilderFactory factory, MethodConfig mc, Object[] args){
-        RequestBuilder builder = factory.create().params(mc.getExtraParams());
+        RequestBuilder builder = factory.create().addParams(mc.getExtraParams());
 
         for (int i = 0; i < mc.getParamCount(); i++) {
-            Object value = args[i];
+            Collection<Object> values = Objects.asCollection(args[i]);
             ParamConfig pc = mc.getParamConfig(i);
-            if(isNull(value) && pc.getDefaultValue() == null) {
-                continue;
+            if(containsOnlyNulls(values)) {
+                if(pc.getDefaultValue() != null) {
+                    builder.addParam(pc);
+                }
+            }else{
+                builder.addParam(pc, values);
             }
-            builder.addParam(pc, value);
         }
 
         return builder.build(mc);

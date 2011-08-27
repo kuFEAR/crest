@@ -20,19 +20,24 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.DefaultValue;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-class DefaultValueAnnotationHandler extends NoOpAnnotationHandler<DefaultValue> {
+class DefaultValueAnnotationHandler extends StringBasedAnnotationHandler<DefaultValue> {
+
+    DefaultValueAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(DefaultValue annotation, ParamConfigBuilder builder) {
-        builder.setDefaultValue(annotation.value());
+        builder.setDefaultValue(ph(annotation.value()));
     }
     
 }

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.FormParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -32,27 +33,31 @@ import static org.codegist.crest.config.ParamType.FORM;
  */
 class FormParamAnnotationHandler extends ParamAnnotationHandler<FormParam> {
 
+    FormParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(FormParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleMethodAnnotation(FormParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
                   
     @Override
     public void handleParameterAnnotation(FormParam annotation, ParamConfigBuilder builder) {
         builder.setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
     
 }

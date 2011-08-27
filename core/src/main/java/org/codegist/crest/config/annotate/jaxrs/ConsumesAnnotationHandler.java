@@ -20,28 +20,33 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.Consumes;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-class ConsumesAnnotationHandler extends NoOpAnnotationHandler<Consumes> {
+class ConsumesAnnotationHandler extends StringBasedAnnotationHandler<Consumes> {
+
+    ConsumesAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleInterfaceAnnotation(Consumes annotation, InterfaceConfigBuilder builder) {
         if(annotation.value().length >= 1) {
-            builder.setMethodsProduces(annotation.value()[0]);
+            builder.setMethodsProduces(ph(annotation.value()[0]));
         }
     }
 
     @Override
     public void handleMethodAnnotation(Consumes annotation, MethodConfigBuilder builder) {
         if(annotation.value().length >= 1) {
-            builder.setProduces(annotation.value()[0]);
+            builder.setProduces(ph(annotation.value()[0]));
         }
     }
 

@@ -34,15 +34,15 @@ public class AuthorizationHttpChannelFactory implements HttpChannelFactory {
 
     private final HttpChannelFactory delegate;
     private final Authorization authorization;
-    private final Map<String, EntityParamExtractor> httpEntityParamsParsers;
+    private final Map<String, EntityParamExtractor> httpEntityParamExtractors;
 
-    public AuthorizationHttpChannelFactory(HttpChannelFactory delegate, Authorization authorization, Map<String, EntityParamExtractor> httpEntityParamsParsers) {
+    public AuthorizationHttpChannelFactory(HttpChannelFactory delegate, Authorization authorization, Map<String, EntityParamExtractor> httpEntityParamExtractors) {
         this.delegate = delegate;
         this.authorization = authorization;
-        this.httpEntityParamsParsers = httpEntityParamsParsers;
+        this.httpEntityParamExtractors = httpEntityParamExtractors;
     }
 
     public HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException {
-        return new AuthorizationHttpChannel(delegate.open(methodType, url, charset), authorization, methodType, url, charset, httpEntityParamsParsers);
+        return new AuthorizationHttpChannel(delegate.open(methodType, url, charset), authorization, methodType, url, charset, httpEntityParamExtractors);
     }
 }

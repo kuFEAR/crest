@@ -27,7 +27,7 @@ import org.codegist.crest.config.MethodConfigBuilder;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class DeserializerAnnotationHandler extends NoOpAnnotationHandler<Deserializer> {
+class DeserializerAnnotationHandler extends NoOpAnnotationHandler<Deserializer> {
 
     @Override
     public void handleInterfaceAnnotation(Deserializer annotation, InterfaceConfigBuilder builder) throws Exception {

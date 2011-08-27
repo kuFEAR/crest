@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.annotate.HeaderParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HeaderParamsAnnotationHandler.class})
+@PrepareForTest({HeaderParamsAnnotationHandler.class, HeaderParamAnnotationHandler.class})
 public class HeaderParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<HeaderParams> {
 
 
-    private final HeaderParamAnnotationHandler mockHeaderParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final HeaderParamAnnotationHandler mockHeaderParamAnnotationHandler = mock(HeaderParamAnnotationHandler.class);
     private final HeaderParamsAnnotationHandler toTest = new HeaderParamsAnnotationHandler(mockHeaderParamAnnotationHandler);
     private final HeaderParam[] mockAnnotations = { mock(HeaderParam.class), mock(HeaderParam.class)};
 
@@ -52,9 +49,9 @@ public class HeaderParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(HeaderParamAnnotationHandler.class).withNoArguments().thenReturn(mockHeaderParamAnnotationHandler);
-        new HeaderParamsAnnotationHandler();
-        verifyNew(HeaderParamAnnotationHandler.class).withNoArguments();
+        whenNew(HeaderParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockHeaderParamAnnotationHandler);
+        new HeaderParamsAnnotationHandler(crestConfig);
+        verifyNew(HeaderParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -84,22 +81,5 @@ public class HeaderParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
     @Override
     public AnnotationHandler<HeaderParams> getToTest() {
         return toTest;
-    }
-
-    public static class PublicParamAnnotationHandler extends HeaderParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(HeaderParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(HeaderParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(HeaderParam annotation, ParamConfigBuilder builder) {
-            
-        }
     }
 }

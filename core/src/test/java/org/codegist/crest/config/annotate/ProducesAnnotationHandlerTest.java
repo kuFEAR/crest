@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  */
 public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Produces> {
 
-    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler();
+    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler(crestConfig);
 
     public ProducesAnnotationHandlerTest() {
         super(Produces.class);
@@ -46,11 +46,27 @@ public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
     }
 
     @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetParamsProduces() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsProduces(EXPECTED_MERGE_VAL);
+    }
+
+    @Test
     public void handleMethodsAnnotationShouldSetProduces() throws Exception {
         when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockAnnotation).value();
         verify(mockMethodConfigBuilder).setProduces("a");
+    }
+
+    @Test
+    public void handleMethodsAnnotationShouldMergePlaceholdersAndSetProduces() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setProduces(EXPECTED_MERGE_VAL);
     }
 
     @Override

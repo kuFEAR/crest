@@ -46,13 +46,35 @@ final class MultiPartTextSerializer implements Serializer<MultiPart<Param>> {
         ParamConfig pc = multipart.getParamConfig();
         String partContentType = MultiParts.getContentType(pc);
         String partFileName = MultiParts.getFileName(pc);
+
+        StringBuilder multiPartHeaderSb = new StringBuilder()
+                .append("--")
+                .append(multipart.getBoundary())
+                .append(LRLN)
+                .append("Content-Disposition: form-data; name=\"")
+                .append(pc.getName())
+                .append("\"");
+
+        if(isNotBlank(partFileName)) {
+            multiPartHeaderSb
+                    .append("; filename=\"")
+                    .append(partFileName)
+                    .append("\"");
+        }
+
+        multiPartHeaderSb
+                .append(LRLN)
+                .append("Content-Type: ")
+                .append(defaultIfBlank(partContentType, "text/plain"))
+                .append("; charset=")
+                .append(charset.displayName())
+                .append(LRLN).append(LRLN);
+
+        String multiPartHeader = multiPartHeaderSb.toString();
+
         DataOutputStream out = new DataOutputStream(outputStream);
-        String partialContentDiposition = "--" + multipart.getBoundary() + LRLN + "Content-Disposition: form-data; name=\"" + pc.getName() + "\"";
-        String contentDisposition = partialContentDiposition + (isNotBlank(partFileName) ? "; filename=\"" + partFileName + "\"" + LRLN : LRLN);
-        String contentType = "Content-Type: " + defaultIfBlank(partContentType, "text/plain") + "; charset=" + charset.displayName() + LRLN + LRLN;
         for(EncodedPair pair : pc.getParamProcessor().process(multipart.getValue(), charset, false)){
-            out.writeBytes(contentDisposition);
-            out.writeBytes(contentType);
+            out.writeBytes(multiPartHeader);
             out.write(pair.getValue().getBytes(charset));
             out.writeBytes(LRLN);
         }

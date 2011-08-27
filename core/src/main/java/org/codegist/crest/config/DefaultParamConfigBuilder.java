@@ -10,7 +10,6 @@ import org.codegist.crest.util.Registry;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static org.codegist.crest.config.ParamConfig.*;
 import static org.codegist.crest.config.ParamType.COOKIE;
@@ -19,64 +18,64 @@ import static org.codegist.crest.config.ParamType.HEADER;
 @SuppressWarnings("unchecked")
 class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuilder {
 
-    private final Map<String,Object> metas = new HashMap<String,Object>();
-
     private final Class<?> clazz;
     private final Type genericType;
     private final Registry<Class<?>, Serializer> classSerializerRegistry;
+    private final Class<? extends ParamProcessor> paramProcessor;
+    private final Map<String,Object> metas = new HashMap<String,Object>();
 
-    private String name;
-    private String defaultValue;
-    private ParamType type;
-    private String listSeparator;
-    private Serializer serializer;
-    private Boolean encoded;
+    private String name = null;
+    private String defaultValue = null;
+    private ParamType type = ParamType.getDefault();
+    private String listSeparator = null;
+    private Class<? extends Serializer> serializer = null;
+    private Boolean encoded = false;
 
-    DefaultParamConfigBuilder(CRestConfig crestConfig, Map<Pattern,String> placeholders, Registry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
-        super(crestConfig, placeholders);
+    DefaultParamConfigBuilder(CRestConfig crestConfig, Registry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
+        super(crestConfig);
         this.clazz = Types.getComponentClass(clazz, genericType);
         this.genericType = Types.getComponentType(clazz, genericType);
         this.classSerializerRegistry = classSerializerRegistry;
+
+        this.name = override(PARAM_CONFIG_DEFAULT_NAME, this.name);
+        this.defaultValue = override(PARAM_CONFIG_DEFAULT_VALUE, this.defaultValue);
+        this.type = override(PARAM_CONFIG_DEFAULT_TYPE, this.type);
+        this.listSeparator = override(PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, this.listSeparator);
+        this.serializer = override(PARAM_CONFIG_DEFAULT_SERIALIZER, this.serializer);
+        this.encoded = override(PARAM_CONFIG_DEFAULT_ENCODED, this.encoded);
+        this.paramProcessor = override(PARAM_CONFIG_DEFAULT_PROCESSOR, null);
+
+        Map<String,Object> pMetas = override(PARAM_CONFIG_DEFAULT_METAS, this.metas);
+        if(pMetas != this.metas) {
+            this.metas.clear();
+            this.metas.putAll(pMetas);
+        }
     }
 
     /**
      * @inheritDoc
      */
     public ParamConfig build() throws Exception {
-        String pName = defaultIfUndefined(this.name, PARAM_CONFIG_DEFAULT_NAME);
-        String pDefaultValue = defaultIfUndefined(this.defaultValue, PARAM_CONFIG_DEFAULT_VALUE);
-        ParamType pType = defaultIfUndefined(this.type, PARAM_CONFIG_DEFAULT_TYPE, ParamType.getDefault());
-        Map<String,Object> pMetas = defaultIfUndefined(this.metas, PARAM_CONFIG_DEFAULT_METAS);
-        String pListSeparator = defaultIfUndefined(this.listSeparator, PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, null);
-        Serializer pSerializer = defaultIfUndefined(this.serializer, PARAM_CONFIG_DEFAULT_SERIALIZER);
-        Boolean pEncoded = defaultIfUndefined(this.encoded, PARAM_CONFIG_DEFAULT_ENCODED, (COOKIE.equals(pType) || HEADER.equals(pType)));
-        ParamProcessor paramProcessor =  defaultIfUndefined(null, PARAM_CONFIG_DEFAULT_PROCESSOR, ParamProcessorFactory.newInstance(pType, pListSeparator));
-
-        if (pSerializer == null) {
-            // if null, then choose which serializer to apply using default rules
-            pSerializer = classSerializerRegistry.get(clazz);
-        }
-
         return new DefaultParamConfig(
                 genericType,
                 clazz,
-                pName,
-                pDefaultValue,
-                pType,
-                pMetas,
-                pSerializer,
-                pEncoded,
-                paramProcessor);
+                name,
+                defaultValue,
+                type,
+                metas,
+                serializer != null ?  instantiate(serializer) : classSerializerRegistry.get(clazz),
+                (COOKIE.equals(type) || HEADER.equals(type)) ? true : encoded,
+                paramProcessor != null ? instantiate(paramProcessor) : ParamProcessorFactory.newInstance(type, listSeparator));
     }
 
     public ParamConfigBuilder setName(String name) {
-        this.name = ph(name);
+        this.name = name;
         return this;
     }
 
 
     public ParamConfigBuilder setDefaultValue(String defaultValue) {
-        this.defaultValue = ph(defaultValue);
+        this.defaultValue = defaultValue;
         return this;
     }
 
@@ -102,7 +101,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     }
 
     public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
-        this.serializer = newInstance(serializer);
+        this.serializer = serializer;
         return this;
     }
 }

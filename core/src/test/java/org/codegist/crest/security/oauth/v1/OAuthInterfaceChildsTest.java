@@ -40,13 +40,14 @@ public class OAuthInterfaceChildsTest {
         assertNotNull(QueryOAuthInterface.class.getAnnotation(Encoded.class));
         assertNotNull(QueryOAuthInterface.class.getAnnotation(Deserializer.class));
         assertEquals(OAuthTokenDeserializer.class, QueryOAuthInterface.class.getAnnotation(Deserializer.class).value());
+        assertEquals("{oauth.end-point}", QueryOAuthInterface.class.getAnnotation(EndPoint.class).value());
 
         Method getAccessToken = byName(QueryOAuthInterface.class, "getAccessToken");
         Method getRequestToken = byName(QueryOAuthInterface.class, "getRequestToken");
         Method refreshAccessToken = byName(QueryOAuthInterface.class, "refreshAccessToken");
 
         assertNotNull(getAccessToken.getAnnotation(Path.class));
-        assertEquals("{oauth.access-token-path}", getAccessToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.access-token.path}", getAccessToken.getAnnotation(Path.class).value());
 
         assertEquals(QueryParam.class, getAccessToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_consumer_key", ((QueryParam)getAccessToken.getParameterAnnotations()[0][0]).value());
@@ -64,7 +65,7 @@ public class OAuthInterfaceChildsTest {
         assertEquals("oauth_signature", ((QueryParam)getAccessToken.getParameterAnnotations()[6][0]).value());
 
         assertNotNull(getRequestToken.getAnnotation(Path.class));
-        assertEquals("{oauth.request-token-path}", getRequestToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.request-token.path}", getRequestToken.getAnnotation(Path.class).value());
 
         assertEquals(QueryParam.class, getRequestToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_consumer_key", ((QueryParam)getRequestToken.getParameterAnnotations()[0][0]).value());
@@ -82,7 +83,7 @@ public class OAuthInterfaceChildsTest {
         assertEquals("oauth_signature", ((QueryParam)getRequestToken.getParameterAnnotations()[6][0]).value());
 
         assertNotNull(refreshAccessToken.getAnnotation(Path.class));
-        assertEquals("{oauth.refresh-access-token-path}", refreshAccessToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.refresh-access-token.path}", refreshAccessToken.getAnnotation(Path.class).value());
 
         assertEquals(QueryParam.class, refreshAccessToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_token", ((QueryParam)refreshAccessToken.getParameterAnnotations()[0][0]).value());
@@ -109,13 +110,14 @@ public class OAuthInterfaceChildsTest {
         assertNotNull(FormOAuthInterface.class.getAnnotation(Encoded.class));
         assertNotNull(FormOAuthInterface.class.getAnnotation(Deserializer.class));
         assertEquals(OAuthTokenDeserializer.class, FormOAuthInterface.class.getAnnotation(Deserializer.class).value());
+        assertEquals("{oauth.end-point}", FormOAuthInterface.class.getAnnotation(EndPoint.class).value());
 
         Method getAccessToken = byName(FormOAuthInterface.class, "getAccessToken");
         Method getRequestToken = byName(FormOAuthInterface.class, "getRequestToken");
         Method refreshAccessToken = byName(FormOAuthInterface.class, "refreshAccessToken");
 
         assertNotNull(getAccessToken.getAnnotation(Path.class));
-        assertEquals("{oauth.access-token-path}", getAccessToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.access-token.path}", getAccessToken.getAnnotation(Path.class).value());
 
         assertEquals(FormParam.class, getAccessToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_consumer_key", ((FormParam)getAccessToken.getParameterAnnotations()[0][0]).value());
@@ -133,7 +135,7 @@ public class OAuthInterfaceChildsTest {
         assertEquals("oauth_signature", ((FormParam)getAccessToken.getParameterAnnotations()[6][0]).value());
 
         assertNotNull(getRequestToken.getAnnotation(Path.class));
-        assertEquals("{oauth.request-token-path}", getRequestToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.request-token.path}", getRequestToken.getAnnotation(Path.class).value());
 
         assertEquals(FormParam.class, getRequestToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_consumer_key", ((FormParam)getRequestToken.getParameterAnnotations()[0][0]).value());
@@ -151,7 +153,7 @@ public class OAuthInterfaceChildsTest {
         assertEquals("oauth_signature", ((FormParam)getRequestToken.getParameterAnnotations()[6][0]).value());
 
         assertNotNull(refreshAccessToken.getAnnotation(Path.class));
-        assertEquals("{oauth.refresh-access-token-path}", refreshAccessToken.getAnnotation(Path.class).value());
+        assertEquals("{oauth.refresh-access-token.path}", refreshAccessToken.getAnnotation(Path.class).value());
 
         assertEquals(FormParam.class, refreshAccessToken.getParameterAnnotations()[0][0].annotationType());
         assertEquals("oauth_token", ((FormParam)refreshAccessToken.getParameterAnnotations()[0][0]).value());

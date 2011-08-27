@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
  */
 public class CookieParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<CookieParam> {
 
-    private final CookieParamAnnotationHandler toTest = new CookieParamAnnotationHandler();
+    private final CookieParamAnnotationHandler toTest = new CookieParamAnnotationHandler(crestConfig);
 
     public CookieParamAnnotationHandlerTest() {
         super(CookieParam.class);
@@ -50,6 +50,17 @@ public class CookieParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTes
         verify(mockAnnotation).value();
         verify(mockParamConfigBuilder).setType(COOKIE);
         verify(mockParamConfigBuilder).setName("a");
+    }
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndFillNameWithAnnotationValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        when(mockParamConfigBuilder.setType(COOKIE)).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setName(EXPECTED_MERGE_VAL)).thenReturn(mockParamConfigBuilder);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockParamConfigBuilder).setType(COOKIE);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL);
     }
 
 

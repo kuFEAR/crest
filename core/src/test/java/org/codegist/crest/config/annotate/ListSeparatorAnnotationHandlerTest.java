@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  */
 public class ListSeparatorAnnotationHandlerTest extends AnnotationBaseTest<ListSeparator> {
 
-    private final ListSeparatorAnnotationHandler toTest = new ListSeparatorAnnotationHandler();
+    private final ListSeparatorAnnotationHandler toTest = new ListSeparatorAnnotationHandler(crestConfig);
 
     public ListSeparatorAnnotationHandlerTest() {
         super(ListSeparator.class);
@@ -46,6 +46,14 @@ public class ListSeparatorAnnotationHandlerTest extends AnnotationBaseTest<ListS
     }
 
     @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetParamsListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setParamsListSeparator(EXPECTED_MERGE_VAL);
+    }
+
+    @Test
     public void handleMethodsAnnotationShouldSetListSeparator() throws Exception {
         when(mockAnnotation.value()).thenReturn("a");
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
@@ -54,11 +62,27 @@ public class ListSeparatorAnnotationHandlerTest extends AnnotationBaseTest<ListS
     }
 
     @Test
+    public void handleMethodsAnnotationShouldMergePlaceholdersAndSetListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setParamsListSeparator(EXPECTED_MERGE_VAL);
+    }
+
+    @Test
     public void handleParametersAnnotationShouldSetListSeparator() throws Exception {
         when(mockAnnotation.value()).thenReturn("a");
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockAnnotation).value();
         verify(mockParamConfigBuilder).setListSeparator("a");
+    }
+
+    @Test
+    public void handleParametersAnnotationShouldMergePlaceholdersAndSetListSeparator() throws Exception {
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockParamConfigBuilder).setListSeparator(EXPECTED_MERGE_VAL);
     }
 
     @Override

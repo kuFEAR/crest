@@ -18,47 +18,41 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.io.http;
 
-import org.codegist.crest.NonInstanciableClassTest;
+import org.codegist.crest.config.ParamConfig;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public class ParamsTest extends NonInstanciableClassTest {
-    public ParamsTest() {
-        super(Params.class);
+public class HttpParamTest {
+
+    private final ParamConfig paramConfig = mock(ParamConfig.class);
+    private final Collection<Object> value = (Collection<Object>)(Collection)asList("a","b");
+    private final HttpParam toTest = new HttpParam(paramConfig,value);
+
+    @Test
+    public void getValueShouldReturnIt(){
+        assertEquals(value, toTest.getValue());
     }
 
     @Test
-    public void shouldReturnTrueIfObjectIsNull(){
-        assertTrue(Params.isNull(null));
+    public void getParamConfigReturnIt(){
+        assertSame(paramConfig, toTest.getParamConfig());
     }
 
     @Test
-    public void shouldReturnTrueIfCollectionIsEmpty(){
-        assertTrue(Params.isNull(new ArrayList()));
-    }
-
-    @Test
-    public void shouldReturnTrueIfCollectionContainsOnlyNulls(){
-        assertTrue(Params.isNull(asList(null,null)));
-    }
-
-    @Test
-    public void shouldReturnFalseIfObjectIsNotNull(){
-        assertFalse(Params.isNull(""));
-    }
-
-    @Test
-    public void shouldReturnFalseIfCollectionContainsNonNulls(){
-        assertFalse(Params.isNull(asList(null,"",null)));
+    public void toStringShouldReturnSomethingUsefull(){
+        when(paramConfig.getName()).thenReturn("name");
+        assertEquals("HttpParam[name=name,value=[a, b]]", toTest.toString());
     }
 }

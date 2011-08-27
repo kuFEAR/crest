@@ -38,8 +38,6 @@ import java.util.Map;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface ParamConfig {
-    
-    
 
     String PARAM_CONFIG_DEFAULT_TYPE = ParamConfig.class.getName() + "#param-type";
     String PARAM_CONFIG_DEFAULT_LIST_SEPARATOR = ParamConfig.class.getName() + "#list-separator";

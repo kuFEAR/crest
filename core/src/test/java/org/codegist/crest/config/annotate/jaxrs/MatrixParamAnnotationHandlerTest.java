@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public class MatrixParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<MatrixParam> {
 
-    private final MatrixParamAnnotationHandler toTest = new MatrixParamAnnotationHandler();
+    private final MatrixParamAnnotationHandler toTest = new MatrixParamAnnotationHandler(crestConfig);
 
     public MatrixParamAnnotationHandlerTest() {
         super(MatrixParam.class);
@@ -49,6 +49,15 @@ public class MatrixParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTes
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockParamConfigBuilder).setType(ParamType.MATRIX);
         verify(mockParamConfigBuilder).setName("a");
+        verify(mockAnnotation).value();
+    }
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndName() throws Exception {
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockParamConfigBuilder).setType(ParamType.MATRIX);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL);
         verify(mockAnnotation).value();
     }
 

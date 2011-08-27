@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.HeaderParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -32,27 +33,31 @@ import static org.codegist.crest.config.ParamType.HEADER;
  */
 class HeaderParamAnnotationHandler extends ParamAnnotationHandler<HeaderParam> {
 
+    HeaderParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(HeaderParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(HEADER)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleMethodAnnotation(HeaderParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(HEADER)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
                   
     @Override
     public void handleParameterAnnotation(HeaderParam annotation, ParamConfigBuilder builder) {
         builder.setType(HEADER)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
     
 }

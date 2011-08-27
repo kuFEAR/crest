@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public class PathParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<PathParam> {
 
-    private final PathParamAnnotationHandler toTest = new PathParamAnnotationHandler();
+    private final PathParamAnnotationHandler toTest = new PathParamAnnotationHandler(crestConfig);
 
     public PathParamAnnotationHandlerTest() {
         super(PathParam.class);
@@ -49,6 +49,17 @@ public class PathParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockParamConfigBuilder).setType(ParamType.PATH);
         verify(mockParamConfigBuilder).setName("a");
+        verify(mockAnnotation).value();
+    }
+
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndName() throws Exception {
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockParamConfigBuilder).setType(ParamType.PATH);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL);
         verify(mockAnnotation).value();
     }
 

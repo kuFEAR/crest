@@ -36,6 +36,7 @@ import static org.codegist.crest.util.Pairs.fromUrlEncoded;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class UrlEncodedFormEntityParamExtractor implements EntityParamExtractor {
+
     public List<EncodedPair> extract(String contentType, Charset charset, InputStream entity) throws IOException {
         String formContent = IOs.toString(entity, charset);
         if(isNotBlank(formContent)) {
@@ -44,4 +45,5 @@ public class UrlEncodedFormEntityParamExtractor implements EntityParamExtractor 
             return emptyList();
         }
     }
+
 }

@@ -146,6 +146,7 @@ public class OAuthApiV1Test extends OAuthTest {
     private OAuthApiV1 newToTest(MethodType methodType, OAuthInterface expectedInterface){
         return new OAuthApiV1(
                 methodType,
+                ENDPOINT,
                 GET_REQUEST_TOKEN_URL,
                 GET_ACCESS_TOKEN_URL,
                 REFRESH_ACCESS_TOKEN_URL,

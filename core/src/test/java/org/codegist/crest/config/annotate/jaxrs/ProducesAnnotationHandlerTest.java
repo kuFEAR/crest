@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Produces> {
 
-    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler();
+    private final ProducesAnnotationHandler toTest = new ProducesAnnotationHandler(crestConfig);
 
     public ProducesAnnotationHandlerTest() {
         super(Produces.class);
@@ -49,12 +49,27 @@ public class ProducesAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
         verify(mockAnnotation).value();
     }
 
+    @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetMethodsConsumesWithGivenValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(new String[]{VAL_WITH_PH + "a", VAL_WITH_PH + "b"});
+        toTest.handleInterfaceAnnotation(mockAnnotation,mockInterfaceConfigBuilder);
+        verify(mockInterfaceConfigBuilder).setMethodsConsumes(EXPECTED_MERGE_VAL + "a", EXPECTED_MERGE_VAL + "b");
+        verify(mockAnnotation).value();
+    }
+
 
     @Test
     public void handleMethodAnnotationShouldSetMethodsConsumesWithGivenValue() throws Exception {
         when(mockAnnotation.value()).thenReturn(new String[]{"a","b"});
         toTest.handleMethodAnnotation(mockAnnotation,mockMethodConfigBuilder);
         verify(mockMethodConfigBuilder).setConsumes("a", "b");
+        verify(mockAnnotation).value();
+    }
+    @Test
+    public void handleMethodAnnotationShouldMergePlaceholdersAndSetMethodsConsumesWithGivenValue() throws Exception {
+        when(mockAnnotation.value()).thenReturn(new String[]{VAL_WITH_PH + "a", VAL_WITH_PH + "b"});
+        toTest.handleMethodAnnotation(mockAnnotation,mockMethodConfigBuilder);
+        verify(mockMethodConfigBuilder).setConsumes(EXPECTED_MERGE_VAL + "a", EXPECTED_MERGE_VAL + "b");
         verify(mockAnnotation).value();
     }
 

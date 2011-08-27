@@ -57,6 +57,15 @@ public final class MultiParts {
         return getFileName(param.getParamConfig());
     }
 
+    public static boolean hasMultiPart(ParamConfig[] paramConfigs){
+        for(ParamConfig cfg : paramConfigs){
+            if(hasMultiPart(cfg.getMetaDatas())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static boolean hasMultiPart(Map<String,Object> metadatas){
         return metadatas.containsKey(MULTIPART_FLAG);
     }

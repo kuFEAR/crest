@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public class FormParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<FormParam> {
 
-    private final FormParamAnnotationHandler toTest = new FormParamAnnotationHandler();
+    private final FormParamAnnotationHandler toTest = new FormParamAnnotationHandler(crestConfig);
 
     public FormParamAnnotationHandlerTest() {
         super(FormParam.class);
@@ -49,6 +49,16 @@ public class FormParamAnnotationHandlerTest extends ParamOnlyAnnotationBaseTest<
         toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
         verify(mockParamConfigBuilder).setType(ParamType.FORM);
         verify(mockParamConfigBuilder).setName("a");
+        verify(mockAnnotation).value();
+    }
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndName() throws Exception {
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH);
+        toTest.handleParameterAnnotation(mockAnnotation, mockParamConfigBuilder);
+        verify(mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL);
         verify(mockAnnotation).value();
     }
 

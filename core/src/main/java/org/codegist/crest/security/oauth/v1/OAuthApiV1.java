@@ -39,25 +39,25 @@ class OAuthApiV1 implements OAuthApi {
 
     private static final EncodedPair CALLBACK = toPreEncodedPair("oauth_callback", "oob");
     private final MethodType methodType;
-    private final String requestTokenUrl;
-    private final String accessTokenUrl;
-    private final String refreshAccessTokenUrl;
+    private final String requestTokenPath;
+    private final String accessTokenPath;
+    private final String refreshAccessTokenPath;
     private final OAuthToken consumerToken;
     private final OAuthInterface oauthInterface;
     private final VariantProvider variantProvider;
 
-    public OAuthApiV1(MethodType methodType, String requestTokenUrl, String accessTokenUrl, String refreshAccessTokenUrl, OAuthInterface oauthInterface, OAuthToken consumerToken, VariantProvider variantProvider) {
+    public OAuthApiV1(MethodType methodType, String oauthEndPoint, String requestTokenPath, String accessTokenPath, String refreshAccessTokenPath, OAuthInterface oauthInterface, OAuthToken consumerToken, VariantProvider variantProvider) {
         this.methodType = methodType;
-        this.requestTokenUrl = requestTokenUrl;
-        this.accessTokenUrl = accessTokenUrl;
-        this.refreshAccessTokenUrl = refreshAccessTokenUrl;
+        this.requestTokenPath = oauthEndPoint + requestTokenPath;
+        this.accessTokenPath = oauthEndPoint + accessTokenPath;
+        this.refreshAccessTokenPath = oauthEndPoint + refreshAccessTokenPath;
         this.oauthInterface = oauthInterface;
         this.consumerToken = consumerToken;
         this.variantProvider = variantProvider;
     }
 
     public OAuthToken getRequestToken() throws Exception {
-        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, methodType, requestTokenUrl, EMPTY_HTTP_PAIRS, CALLBACK);
+        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, methodType, requestTokenPath, EMPTY_HTTP_PAIRS, CALLBACK);
         Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.getRequestToken(
                 params.get("oauth_consumer_key"),
@@ -71,7 +71,7 @@ class OAuthApiV1 implements OAuthApi {
     }
 
     public OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) throws Exception {
-        List<EncodedPair> oauthPairs = oauth(variantProvider, requestOAuthToken, methodType, accessTokenUrl, EMPTY_HTTP_PAIRS,  pair("oauth_verifier", verifier));
+        List<EncodedPair> oauthPairs = oauth(variantProvider, requestOAuthToken, methodType, accessTokenPath, EMPTY_HTTP_PAIRS,  pair("oauth_verifier", verifier));
         Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.getAccessToken(
                 params.get("oauth_consumer_key"),
@@ -85,7 +85,7 @@ class OAuthApiV1 implements OAuthApi {
     }
 
     public OAuthToken refreshAccessToken(OAuthToken token) throws Exception {
-        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, token, methodType, refreshAccessTokenUrl, EMPTY_HTTP_PAIRS,  token.getAttribute("oauth_session_handle"));
+        List<EncodedPair> oauthPairs = oauth(variantProvider, consumerToken, token, methodType, refreshAccessTokenPath, EMPTY_HTTP_PAIRS,  token.getAttribute("oauth_session_handle"));
         Map<String,String> params = asMap(oauthPairs);
         return oauthInterface.refreshAccessToken(
                 params.get("oauth_token"),

@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.annotate.MultiPartParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MultiPartParamsAnnotationHandler.class})
+@PrepareForTest({MultiPartParamsAnnotationHandler.class, MultiPartParamAnnotationHandler.class})
 public class MultiPartParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<MultiPartParams> {
 
 
-    private final MultiPartParamAnnotationHandler mockMultiPartParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final MultiPartParamAnnotationHandler mockMultiPartParamAnnotationHandler = mock(MultiPartParamAnnotationHandler.class);
     private final MultiPartParamsAnnotationHandler toTest = new MultiPartParamsAnnotationHandler(mockMultiPartParamAnnotationHandler);
     private final MultiPartParam[] mockAnnotations = { mock(MultiPartParam.class), mock(MultiPartParam.class)};
 
@@ -52,9 +49,9 @@ public class MultiPartParamsAnnotationHandlerTest extends DownToMethodAnnotation
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(MultiPartParamAnnotationHandler.class).withNoArguments().thenReturn(mockMultiPartParamAnnotationHandler);
-        new MultiPartParamsAnnotationHandler();
-        verifyNew(MultiPartParamAnnotationHandler.class).withNoArguments();
+        whenNew(MultiPartParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockMultiPartParamAnnotationHandler);
+        new MultiPartParamsAnnotationHandler(crestConfig);
+        verifyNew(MultiPartParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -84,22 +81,5 @@ public class MultiPartParamsAnnotationHandlerTest extends DownToMethodAnnotation
     @Override
     public AnnotationHandler<MultiPartParams> getToTest() {
         return toTest;
-    }
-
-    public static class PublicParamAnnotationHandler extends MultiPartParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(MultiPartParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(MultiPartParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(MultiPartParam annotation, ParamConfigBuilder builder) {
-            
-        }
     }
 }

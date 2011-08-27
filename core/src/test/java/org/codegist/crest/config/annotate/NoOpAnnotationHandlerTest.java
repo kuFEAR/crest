@@ -18,28 +18,27 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.util;
+package org.codegist.crest.config.annotate;
 
-import org.codegist.common.lang.Objects;
-
-import java.util.Iterator;
+import org.junit.Test;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public final class Params {
+public class NoOpAnnotationHandlerTest {
 
-    private Params(){
-        throw new IllegalStateException();
+    private final NoOpAnnotationHandler toTest = new NoOpAnnotationHandler();
+
+    @Test
+    public void handleInterfaceAnnotationShouldDoNothing() throws Exception {
+        toTest.handleInterfaceAnnotation(null,null);
     }
-
-    public static boolean isNull(Object value){
-        Iterator<Object> iter = Objects.iterate(value);
-        while(iter.hasNext()){
-            if(iter.next() != null) {
-                return false;
-            }
-        }
-        return true;
+    @Test
+    public void handleMethodAnnotationShouldDoNothing() throws Exception {
+        toTest.handleMethodAnnotation(null,null);
+    }
+    @Test
+    public void handleParameterAnnotationShouldDoNothing() throws Exception {
+        toTest.handleParameterAnnotation(null,null);
     }
 }

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.Consumes;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -27,16 +28,20 @@ import org.codegist.crest.config.MethodConfigBuilder;
 /**
  * @author laurent.gilles@codegist.org
  */
-class ConsumesAnnotationHandler extends NoOpAnnotationHandler<Consumes> {
+class ConsumesAnnotationHandler extends StringBasedAnnotationHandler<Consumes> {
+
+    ConsumesAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleInterfaceAnnotation(Consumes annotation, InterfaceConfigBuilder builder) {
-        builder.setMethodsConsumes(annotation.value());
+        builder.setMethodsConsumes(ph(annotation.value()));
     }
 
     @Override
     public void handleMethodAnnotation(Consumes annotation, MethodConfigBuilder builder) {
-        builder.setConsumes(annotation.value());
+        builder.setConsumes(ph(annotation.value()));
     }
 
 }

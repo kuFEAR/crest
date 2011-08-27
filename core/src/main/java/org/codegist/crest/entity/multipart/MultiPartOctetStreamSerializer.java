@@ -45,10 +45,20 @@ abstract class MultiPartOctetStreamSerializer<T> implements Serializer<MultiPart
         ParamConfig pc = multipart.getParamConfig();
         String fileName = getFileName(multipart);
         String contentType = getContentType(multipart);
+
+        StringBuilder headerSb = new StringBuilder()
+                .append("--").append(multipart.getBoundary()).append(LRLN)
+                .append("Content-Disposition: form-data; name=\"").append(pc.getName()).append("\"");
+        if(isNotBlank(fileName)) {
+            headerSb.append("; filename=\"").append(fileName).append("\"");
+        }
+        headerSb
+                .append(LRLN)
+                .append("Content-Type: ").append(contentType)
+                .append(LRLN).append(LRLN);
+
         DataOutputStream out = new DataOutputStream(outputStream);
-        out.writeBytes("--" + multipart.getBoundary() + LRLN + "Content-Disposition: form-data; name=\"" + pc.getName() + "\"");
-        out.writeBytes(isNotBlank(fileName) ? "; filename=\"" + fileName + "\"" + LRLN : LRLN);
-        out.writeBytes("Content-Type: " + contentType + LRLN + LRLN);
+        out.writeBytes(headerSb.toString());
         pc.getSerializer().serialize(multipart.getValue(), charset, out);
         out.writeBytes(LRLN);
     }

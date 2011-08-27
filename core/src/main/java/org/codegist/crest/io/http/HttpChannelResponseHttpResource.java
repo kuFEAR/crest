@@ -22,6 +22,7 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.log.Logger;
+import org.codegist.crest.io.Response;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import java.util.zip.GZIPInputStream;
  */
 class HttpChannelResponseHttpResource implements HttpResource {
 
-    private static final Logger LOGGER = Logger.getLogger("org.codegist.crest.io.http.HttpResponse");
+    private static final Logger RESPONSE_LOGGER = Logger.getLogger(Response.class);
     private final HttpChannel.Response response;
     private final InputStream inputStream;
     private final String contentEncoding;
@@ -82,12 +83,12 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
     private static InputStream getEntity(HttpChannel.Response response, Charset charset) throws IOException {
         InputStream stream = "gzip".equals(response.getContentEncoding()) ? new GZIPInputStream(response.getEntity()) : response.getEntity();
-        if(!LOGGER.isTraceOn()) {
+        if(!RESPONSE_LOGGER.isTraceOn()) {
             return stream;
-        }else{
+        } else {
             byte[] dump = IOs.toByteArray(stream, true);
-            LOGGER.trace("Received Http Response");
-            LOGGER.trace(new String(dump, charset));
+            RESPONSE_LOGGER.trace("Received Http Response");
+            RESPONSE_LOGGER.trace(new String(dump, charset));
             return new ByteArrayInputStream(dump);
         }
     }
@@ -101,8 +102,6 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
         private final String mimeType;
         private final Charset charset;
-
-
 
         private ContentType(String contentType) {
             String pMimeType = DEFAULT_MIME_TYPE;

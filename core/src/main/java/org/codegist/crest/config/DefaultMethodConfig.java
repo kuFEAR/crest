@@ -30,10 +30,6 @@ import org.codegist.crest.serializer.Deserializer;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 
-/**
- * Default immutable in-memory implementation of {@link org.codegist.crest.config.MethodConfig}
- * @author Laurent Gilles (laurent.gilles@codegist.org)
- */
 class DefaultMethodConfig implements MethodConfig {
 
     private final Charset charset;

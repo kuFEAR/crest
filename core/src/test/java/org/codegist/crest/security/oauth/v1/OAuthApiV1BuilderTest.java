@@ -33,6 +33,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.IOException;
 
+import static org.codegist.crest.test.util.Values.ENDPOINT;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -46,10 +47,10 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest(OAuthApiV1Builder.class)
 public class OAuthApiV1BuilderTest {
 
-    private static final OAuthToken token = mock(OAuthToken.class);
-    private static final CRestBuilder mockCRestBuilder = mock(CRestBuilder.class);
+    private final OAuthToken token = mock(OAuthToken.class);
+    private final CRestBuilder mockCRestBuilder = mock(CRestBuilder.class);
 
-    private final OAuthApiV1Builder toTest = new OAuthApiV1Builder(token, mockCRestBuilder);
+    private final OAuthApiV1Builder toTest = new OAuthApiV1Builder(token, ENDPOINT, mockCRestBuilder);
 
     @Test
     public void shouldUseDefaults() throws Exception {
@@ -58,14 +59,15 @@ public class OAuthApiV1BuilderTest {
 
         OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
-                .withArguments(MethodType.POST, "", "", "", expectedOAuthInterface, token, DefaultVariantProvider.INSTANCE)
+                .withArguments(MethodType.POST, ENDPOINT, "", "", "", expectedOAuthInterface, token, DefaultVariantProvider.INSTANCE)
                 .thenReturn(mockBuilderResult);
 
         OAuthApiV1 actual = toTest.build();
         assertEquals(mockBuilderResult, actual);
-        verify(mockCRestBuilder).placeholder("oauth.access-token-path", "");
-        verify(mockCRestBuilder).placeholder("oauth.request-token-path", "");
-        verify(mockCRestBuilder).placeholder("oauth.refresh-access-token-path", "");
+        verify(mockCRestBuilder).placeholder("oauth.end-point", ENDPOINT);
+        verify(mockCRestBuilder).placeholder("oauth.access-token.path", "");
+        verify(mockCRestBuilder).placeholder("oauth.request-token.path", "");
+        verify(mockCRestBuilder).placeholder("oauth.refresh-access-token.path", "");
         verify(mockCRestBuilder).setHttpChannelFactory(any(HttpURLConnectionHttpChannelFactory.class));
     }
     
@@ -82,7 +84,7 @@ public class OAuthApiV1BuilderTest {
 
         OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
-                .withArguments(methodType, requestTokenUrl, accessTokenUrl, refreshTokenUrl, expectedOAuthInterface, token, mockVariantProvider)
+                .withArguments(methodType, ENDPOINT, requestTokenUrl, accessTokenUrl, refreshTokenUrl, expectedOAuthInterface, token, mockVariantProvider)
                 .thenReturn(mockBuilderResult);
 
         OAuthApiV1 actual = toTest
@@ -94,9 +96,10 @@ public class OAuthApiV1BuilderTest {
                 .using(mockVariantProvider)
                 .build();
         assertEquals(mockBuilderResult, actual);
-        verify(mockCRestBuilder).placeholder("oauth.access-token-path", accessTokenUrl);
-        verify(mockCRestBuilder).placeholder("oauth.request-token-path", requestTokenUrl);
-        verify(mockCRestBuilder).placeholder("oauth.refresh-access-token-path", refreshTokenUrl);
+        verify(mockCRestBuilder).placeholder("oauth.end-point", ENDPOINT);
+        verify(mockCRestBuilder).placeholder("oauth.access-token.path", accessTokenUrl);
+        verify(mockCRestBuilder).placeholder("oauth.request-token.path", requestTokenUrl);
+        verify(mockCRestBuilder).placeholder("oauth.refresh-access-token.path", refreshTokenUrl);
         verify(mockCRestBuilder).setHttpChannelFactory(mockChannelFactory);
     }
 

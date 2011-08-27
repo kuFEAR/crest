@@ -130,7 +130,7 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
                     LOGGER.debug("Entity Content-Type : %s (ignored as previously set)", contentType);
                 }
             }
-            httpChannel.writeEntityWith(new RequestEntityWriter(request, LOGGER));
+            httpChannel.writeEntityWith(new RequestEntityWriter(request));
         }
 
         HttpChannel.Response response = httpChannel.send();

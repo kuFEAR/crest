@@ -20,8 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.FormParam;
 
@@ -30,11 +31,15 @@ import static org.codegist.crest.config.ParamType.FORM;
 /**
  * @author laurent.gilles@codegist.org
  */
-class FormParamAnnotationHandler extends NoOpAnnotationHandler<FormParam> {
+class FormParamAnnotationHandler extends StringBasedAnnotationHandler<FormParam> {
+
+    FormParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(FormParam annotation, ParamConfigBuilder builder) {
-        builder.setType(FORM).setName(annotation.value());
+        builder.setType(FORM).setName(ph(annotation.value()));
     }
     
 }

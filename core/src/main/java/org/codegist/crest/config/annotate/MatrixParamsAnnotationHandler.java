@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.MatrixParam;
 import org.codegist.crest.annotate.MatrixParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class MatrixParamsAnnotationHandler extends NoOpAnnotationHandler<MatrixParams> 
         this.handler = handler;
     }
 
-    public MatrixParamsAnnotationHandler() {
-        this(new MatrixParamAnnotationHandler());
+    public MatrixParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new MatrixParamAnnotationHandler(crestConfig));
     }
 
     @Override

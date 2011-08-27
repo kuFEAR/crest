@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.MultiPartParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -34,30 +35,34 @@ import static org.codegist.crest.util.MultiParts.toMetaDatas;
  */
 class MultiPartParamAnnotationHandler extends ParamAnnotationHandler<MultiPartParam> {
 
+    MultiPartParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(MultiPartParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
-                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())))
+                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(ph(annotation.contentType())), nullIfUnset(ph(annotation.fileName()))));
     }
 
     @Override
     public void handleMethodAnnotation(MultiPartParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
-                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())))
+                .setMetaDatas(MultiParts.toMetaDatas(nullIfUnset(ph(annotation.contentType())), nullIfUnset(ph(annotation.fileName()))));
     }
 
     @Override
     public void handleParameterAnnotation(MultiPartParam annotation, ParamConfigBuilder builder) {
         builder.setType(FORM)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()))
-                .setMetaDatas(toMetaDatas(nullIfUnset(annotation.contentType()), nullIfUnset(annotation.fileName())));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())))
+                .setMetaDatas(toMetaDatas(nullIfUnset(ph(annotation.contentType())), nullIfUnset(ph(annotation.fileName()))));
     }
     
 }

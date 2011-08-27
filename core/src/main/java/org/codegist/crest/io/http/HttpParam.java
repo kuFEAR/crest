@@ -25,7 +25,6 @@ import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.param.Param;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class HttpParam implements Param {
 
@@ -34,7 +33,7 @@ public class HttpParam implements Param {
 
     public HttpParam(ParamConfig config, Collection<Object> value) {
         this.config = config;
-        this.value = value.isEmpty() ? Collections.<Object>singleton(config.getDefaultValue()) : value;
+        this.value = value;
     }
 
     public Collection<Object> getValue() {

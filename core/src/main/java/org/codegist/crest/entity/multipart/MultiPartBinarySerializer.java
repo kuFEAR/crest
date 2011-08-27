@@ -20,6 +20,7 @@
 
 package org.codegist.crest.entity.multipart;
 
+import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
 
@@ -43,15 +44,24 @@ final class MultiPartBinarySerializer implements Serializer<MultiPart<Param>> {
     static {    
         Map<Class, Serializer> map = new HashMap<Class, Serializer>();
         map.put(File.class, MultiPartFileSerializer.INSTANCE);
-        map.put(InputStream.class, MultiPartInputStreamSerializer.INTANCE);
+        map.put(InputStream.class, MultiPartInputStreamSerializer.INSTANCE);
         BINARY_SERIALIZERS = unmodifiableMap(map);
     }
 
     public void serialize(MultiPart<Param> multipart, Charset charset, OutputStream out) throws Exception {
-        Class<?> paramClass = multipart.getParamConfig().getValueClass();
-        Serializer<MultiPart<?>> serializer = BINARY_SERIALIZERS.get(paramClass);
+        Serializer<MultiPart<?>> serializer = getSerializer(multipart.getParamConfig().getValueClass());
+        serialize(multipart, charset, out, serializer);
+    }
+
+    static Serializer<MultiPart<?>> getSerializer(Class<?> clazz){
+        return BINARY_SERIALIZERS.get(clazz);
+    }
+
+    static void serialize(MultiPart<Param> multipart, Charset charset, OutputStream out, Serializer<MultiPart<?>> serializer) throws Exception {
+        ParamConfig pc = multipart.getParamConfig();
+        String boundary = multipart.getBoundary();
         for(Object value : multipart.getValue().getValue()){
-            MultiPart<?> valueMultiPart = new MultiPart<Object>(multipart.getParamConfig(), value, multipart.getBoundary());
+            MultiPart<?> valueMultiPart = new MultiPart<Object>(pc, value, boundary);
             serializer.serialize(valueMultiPart, charset, out);
         }
     }

@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.annotate.PathParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PathParamsAnnotationHandler.class})
+@PrepareForTest({PathParamsAnnotationHandler.class, PathParamAnnotationHandler.class})
 public class PathParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<PathParams> {
 
 
-    private final PathParamAnnotationHandler mockPathParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final PathParamAnnotationHandler mockPathParamAnnotationHandler = mock(PathParamAnnotationHandler.class);
     private final PathParamsAnnotationHandler toTest = new PathParamsAnnotationHandler(mockPathParamAnnotationHandler);
     private final PathParam[] mockAnnotations = { mock(PathParam.class), mock(PathParam.class)};
 
@@ -52,9 +49,9 @@ public class PathParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseT
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(PathParamAnnotationHandler.class).withNoArguments().thenReturn(mockPathParamAnnotationHandler);
-        new PathParamsAnnotationHandler();
-        verifyNew(PathParamAnnotationHandler.class).withNoArguments();
+        whenNew(PathParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockPathParamAnnotationHandler);
+        new PathParamsAnnotationHandler(crestConfig);
+        verifyNew(PathParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -84,22 +81,5 @@ public class PathParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseT
     @Override
     public AnnotationHandler<PathParams> getToTest() {
         return toTest;
-    }
-
-    public static class PublicParamAnnotationHandler extends PathParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(PathParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(PathParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(PathParam annotation, ParamConfigBuilder builder) {
-            
-        }
     }
 }

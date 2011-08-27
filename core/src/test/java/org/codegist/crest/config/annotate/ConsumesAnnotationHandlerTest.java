@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  */
 public class ConsumesAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Consumes> {
 
-    private final ConsumesAnnotationHandler toTest = new ConsumesAnnotationHandler();
+    private final ConsumesAnnotationHandler toTest = new ConsumesAnnotationHandler(crestConfig);
 
     public ConsumesAnnotationHandlerTest() {
         super(Consumes.class);
@@ -55,6 +55,26 @@ public class ConsumesAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
 
         verify(mockAnnotation).value();
         verify(mockMethodConfigBuilder).setConsumes("a","b");
+    }
+
+    @Test
+    public void handleInterfaceAnnotationShouldReplacePlaceholdersAndSetMethodsConsumes() throws Exception {
+        when(mockAnnotation.value()).thenReturn(new String[]{VAL_WITH_PH + "a",VAL_WITH_PH + "b"});
+
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsConsumes(EXPECTED_MERGE_VAL + "a",EXPECTED_MERGE_VAL + "b");
+    }
+
+    @Test
+    public void handleMethodAnnotationShouldReplacePlaceholdersAndSetConsumes() throws Exception {
+        when(mockAnnotation.value()).thenReturn(new String[]{VAL_WITH_PH + "a",VAL_WITH_PH + "b"});
+
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setConsumes(EXPECTED_MERGE_VAL + "a",EXPECTED_MERGE_VAL + "b");
     }
 
     @Override

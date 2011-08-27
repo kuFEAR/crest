@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.QueryParam;
 import org.codegist.crest.annotate.QueryParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({QueryParamsAnnotationHandler.class})
+@PrepareForTest({QueryParamsAnnotationHandler.class, QueryParamAnnotationHandler.class})
 public class QueryParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<QueryParams> {
 
 
-    private final QueryParamAnnotationHandler mockQueryParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final QueryParamAnnotationHandler mockQueryParamAnnotationHandler = mock(QueryParamAnnotationHandler.class);
     private final QueryParamsAnnotationHandler toTest = new QueryParamsAnnotationHandler(mockQueryParamAnnotationHandler);
     private final QueryParam[] mockAnnotations = { mock(QueryParam.class), mock(QueryParam.class)};
 
@@ -52,9 +49,9 @@ public class QueryParamsAnnotationHandlerTest extends DownToMethodAnnotationBase
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(QueryParamAnnotationHandler.class).withNoArguments().thenReturn(mockQueryParamAnnotationHandler);
-        new QueryParamsAnnotationHandler();
-        verifyNew(QueryParamAnnotationHandler.class).withNoArguments();
+        whenNew(QueryParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockQueryParamAnnotationHandler);
+        new QueryParamsAnnotationHandler(crestConfig);
+        verifyNew(QueryParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -84,22 +81,5 @@ public class QueryParamsAnnotationHandlerTest extends DownToMethodAnnotationBase
     @Override
     public AnnotationHandler<QueryParams> getToTest() {
         return toTest;
-    }
-
-    public static class PublicParamAnnotationHandler extends QueryParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(QueryParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(QueryParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(QueryParam annotation, ParamConfigBuilder builder) {
-            
-        }
     }
 }

@@ -29,6 +29,4 @@ public interface PathTemplate {
 
     PathBuilder getBuilder(Charset charset);
 
-    String getUrlTemplate();
-
 }

@@ -20,12 +20,17 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
 import org.codegist.crest.config.ParamConfigBuilder;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.After;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -35,10 +40,20 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
  */
 public abstract class AnnotationBaseTest<A extends Annotation> {
 
+    protected final Map<Pattern,String> placeholders = new HashMap<Pattern, String>();
+    {
+        placeholders.put(Pattern.compile("\\{" + Pattern.quote("ph.1") + "\\}"), "val-1");
+        placeholders.put(Pattern.compile("\\{" + Pattern.quote("ph.2") + "\\}"), "val-2");
+    }
+    protected final CRestConfig crestConfig = CRestConfigs.mockDefaultBehavior(placeholders);
+
     protected final A mockAnnotation;
     protected final InterfaceConfigBuilder mockInterfaceConfigBuilder = mock(InterfaceConfigBuilder.class);
     protected final MethodConfigBuilder mockMethodConfigBuilder = mock(MethodConfigBuilder.class);
     protected final ParamConfigBuilder mockParamConfigBuilder = mock(ParamConfigBuilder.class);
+
+    protected static final String VAL_WITH_PH = "a|{ph.1}|{ph.1}|{ph.2}|{ph.3}|a";
+    protected static final String EXPECTED_MERGE_VAL = "a|val-1|val-1|val-2|{ph.3}|a";
 
     public AnnotationBaseTest(Class<A> annotation){
         this.mockAnnotation = mock(annotation);

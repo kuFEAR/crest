@@ -27,21 +27,18 @@ import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Params.class)
 public class RequestsTest extends NonInstanciableClassTest {
     public RequestsTest() {
         super(Requests.class);
@@ -53,32 +50,42 @@ public class RequestsTest extends NonInstanciableClassTest {
 
     @Test
     public void shouldBuildARequestFromGivenParams(){
-        Object[] args = new Object[]{"1",null};
-        ParamConfig[] extraparams = new ParamConfig[]{};
+        Object[] args = new Object[]{"1",new Object[]{"a","b"}, new Object[]{null}, asList("a","b", "c"), null};
+
+        ParamConfig[] extraparams = {};
         ParamConfig pc1 = mock(ParamConfig.class);
         ParamConfig pc2 = mock(ParamConfig.class);
+        ParamConfig pc3 = mock(ParamConfig.class);
+        ParamConfig pc4 = mock(ParamConfig.class);
+        ParamConfig pc5 = mock(ParamConfig.class);
         Request expected = mock(Request.class);
 
-        when(mockMethodConfig.getExtraParams()).thenReturn(extraparams);
         when(mockRequestBuilderFactory.create()).thenReturn(mockRequestBuilder);
-        when(mockRequestBuilder.params(extraparams)).thenReturn(mockRequestBuilder);
+        when(mockMethodConfig.getExtraParams()).thenReturn(extraparams);
+        when(mockRequestBuilder.addParams(extraparams)).thenReturn(mockRequestBuilder);
 
-        mockStatic(Params.class);
+
         when(mockMethodConfig.getParamCount()).thenReturn(args.length);
-        when(mockMethodConfig.getParamConfig(0)).thenReturn(pc1);
-        when(Params.isNull("1")).thenReturn(false);
-        when(pc1.getDefaultValue()).thenReturn("");
 
+        when(mockMethodConfig.getParamConfig(0)).thenReturn(pc1);
         when(mockMethodConfig.getParamConfig(1)).thenReturn(pc2);
-        when(Params.isNull(null)).thenReturn(true);
-        when(pc2.getDefaultValue()).thenReturn(null);
+        when(mockMethodConfig.getParamConfig(2)).thenReturn(pc3);
+        when(mockMethodConfig.getParamConfig(3)).thenReturn(pc4);
+        when(mockMethodConfig.getParamConfig(4)).thenReturn(pc5);
+        when(pc5.getDefaultValue()).thenReturn("default");
 
         when(mockRequestBuilder.build(mockMethodConfig)).thenReturn(expected);
 
         Request actual = Requests.from(mockRequestBuilderFactory, mockMethodConfig, args);
 
         assertSame(expected, actual);
-        verify(mockRequestBuilder).addParam(pc1, "1");
+        verify(mockRequestBuilder).addParams(extraparams);
+        verify(mockRequestBuilder).addParam(pc1, Collections.<Object>singleton("1"));
+        verify(mockRequestBuilder).addParam(pc2, Arrays.<Object>asList("a","b"));
+        verify(mockRequestBuilder).addParam(pc4, Arrays.<Object>asList("a","b","c"));
+        verify(mockRequestBuilder).addParam(pc5);
+        verify(mockRequestBuilder).build(mockMethodConfig);
+        verifyNoMoreInteractions(mockRequestBuilder);
 
     }
 }

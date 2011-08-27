@@ -21,7 +21,10 @@
 package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.Encoding;
+import org.codegist.crest.test.util.Values;
 import org.junit.Test;
+
+import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +34,7 @@ import static org.mockito.Mockito.when;
  */
 public class EncodingAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<Encoding> {
 
-    private final EncodingAnnotationHandler toTest = new EncodingAnnotationHandler();
+    private final EncodingAnnotationHandler toTest = new EncodingAnnotationHandler(crestConfig);
 
     public EncodingAnnotationHandlerTest() {
         super(Encoding.class);
@@ -39,18 +42,36 @@ public class EncodingAnnotationHandlerTest extends DownToMethodAnnotationBaseTes
 
     @Test
     public void handleInterfaceAnnotationShouldSetMethodsCharset() throws Exception {
-        when(mockAnnotation.value()).thenReturn("a");
+        when(mockAnnotation.value()).thenReturn(Values.ISO_8859_1_STR);
         toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
         verify(mockAnnotation).value();
-        verify(mockInterfaceConfigBuilder).setMethodsCharset("a");
+        verify(mockInterfaceConfigBuilder).setMethodsCharset(Values.ISO_8859_1);
+    }
+
+    @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetMethodsCharset() throws Exception {
+        placeholders.put(Pattern.compile("\\{" + Pattern.quote("ph.3") + "\\}"), Values.ISO_8859_1_STR);
+        when(mockAnnotation.value()).thenReturn("{ph.3}");
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockInterfaceConfigBuilder).setMethodsCharset(Values.ISO_8859_1);
     }
 
     @Test
     public void handleMethodsAnnotationShouldSetCharset() throws Exception {
-        when(mockAnnotation.value()).thenReturn("a");
+        when(mockAnnotation.value()).thenReturn(Values.ISO_8859_1_STR);
         toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
         verify(mockAnnotation).value();
-        verify(mockMethodConfigBuilder).setCharset("a");
+        verify(mockMethodConfigBuilder).setCharset(Values.ISO_8859_1);
+    }
+
+    @Test
+    public void handleMethodsAnnotationShouldMergePlaceholdersAndSetCharset() throws Exception {
+        placeholders.put(Pattern.compile("\\{" + Pattern.quote("ph.3") + "\\}"), Values.ISO_8859_1_STR);
+        when(mockAnnotation.value()).thenReturn("{ph.3}");
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockAnnotation).value();
+        verify(mockMethodConfigBuilder).setCharset(Values.ISO_8859_1);
     }
 
     @Override

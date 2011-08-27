@@ -23,6 +23,8 @@ package org.codegist.crest.io;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
 
+import java.util.Collection;
+
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
@@ -30,10 +32,10 @@ public interface RequestBuilder {
 
     Request build(MethodConfig methodConfig);
 
-    RequestBuilder params(ParamConfig[] paramConfigs);
+    RequestBuilder addParams(ParamConfig[] paramConfigs);
 
     RequestBuilder addParam(ParamConfig paramConfig);
 
-    RequestBuilder addParam(ParamConfig paramConfig, Object value);
+    RequestBuilder addParam(ParamConfig paramConfig, Collection<Object> values);
 
 }

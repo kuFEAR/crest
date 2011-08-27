@@ -29,7 +29,7 @@ import java.io.InputStream;
  */
 final class MultiPartInputStreamSerializer extends MultiPartOctetStreamSerializer<InputStream> {
 
-    static final MultiPartInputStreamSerializer INTANCE = new MultiPartInputStreamSerializer();
+    static final MultiPartInputStreamSerializer INSTANCE = new MultiPartInputStreamSerializer();
 
     @Override
     String getFileName(MultiPart<InputStream> multipart) {

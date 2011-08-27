@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.MatrixParam;
 import org.codegist.crest.config.InterfaceConfigBuilder;
 import org.codegist.crest.config.MethodConfigBuilder;
@@ -32,27 +33,31 @@ import static org.codegist.crest.config.ParamType.MATRIX;
  */
 class MatrixParamAnnotationHandler extends ParamAnnotationHandler<MatrixParam> {
 
+    MatrixParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
+
     @Override
     public void handleInterfaceAnnotation(MatrixParam annotation, InterfaceConfigBuilder builder) {
         builder.startMethodsExtraParamConfig()
                 .setType(MATRIX)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
 
     @Override
     public void handleMethodAnnotation(MatrixParam annotation, MethodConfigBuilder builder) {
         builder.startExtraParamConfig()
                 .setType(MATRIX)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
                   
     @Override
     public void handleParameterAnnotation(MatrixParam annotation, ParamConfigBuilder builder) {
         builder.setType(MATRIX)
-                .setName(annotation.value())
-                .setDefaultValue(nullIfUnset(annotation.defaultValue()));
+                .setName(ph(annotation.value()))
+                .setDefaultValue(nullIfUnset(ph(annotation.defaultValue())));
     }
     
 }

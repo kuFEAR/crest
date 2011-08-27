@@ -29,6 +29,7 @@ import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -39,7 +40,7 @@ public interface InterfaceConfigBuilder {
 
     MethodConfigBuilder startMethodConfig(Method meth);
 
-    InterfaceConfigBuilder setMethodsCharset(String charset);
+    InterfaceConfigBuilder setMethodsCharset(Charset charset);
 
     InterfaceConfigBuilder setMethodsSocketTimeout(int socketTimeout);
 

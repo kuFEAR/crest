@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.CookieParam;
 import org.codegist.crest.annotate.CookieParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CookieParamsAnnotationHandler.class})
+@PrepareForTest({CookieParamsAnnotationHandler.class, CookieParamAnnotationHandler.class})
 public class CookieParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<CookieParams> {
 
 
-    private final CookieParamAnnotationHandler mockCookieParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final CookieParamAnnotationHandler mockCookieParamAnnotationHandler = mock(CookieParamAnnotationHandler.class);
     private final CookieParamsAnnotationHandler toTest = new CookieParamsAnnotationHandler(mockCookieParamAnnotationHandler);
     private final CookieParam[] mockAnnotations = { mock(CookieParam.class), mock(CookieParam.class)};
 
@@ -52,9 +49,9 @@ public class CookieParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(CookieParamAnnotationHandler.class).withNoArguments().thenReturn(mockCookieParamAnnotationHandler);
-        new CookieParamsAnnotationHandler();
-        verifyNew(CookieParamAnnotationHandler.class).withNoArguments();
+        whenNew(CookieParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockCookieParamAnnotationHandler);
+        new CookieParamsAnnotationHandler(crestConfig);
+        verifyNew(CookieParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -86,20 +83,4 @@ public class CookieParamsAnnotationHandlerTest extends DownToMethodAnnotationBas
         return toTest;
     }
 
-    public static class PublicParamAnnotationHandler extends CookieParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(CookieParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(CookieParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(CookieParam annotation, ParamConfigBuilder builder) {
-            
-        }
-    }
 }

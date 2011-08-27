@@ -50,10 +50,10 @@ public class HttpResourceInputStream extends InputStreamWrapper {
             return;
         }
         try {
-            super.close();
-        } finally {
             LOGGER.debug("Releasing underlying network resources.");
             resource.close();
+        } finally {
+            super.close();
         }
     }
 

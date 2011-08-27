@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
  */
 public class MultiPartParamAnnotationHandlerTest extends AnnotationBaseTest<MultiPartParam> {
 
-    private final MultiPartParamAnnotationHandler toTest = new MultiPartParamAnnotationHandler();
+    private final MultiPartParamAnnotationHandler toTest = new MultiPartParamAnnotationHandler(crestConfig);
     private final ParamConfigBuilder mockParamConfigBuilder = mock(ParamConfigBuilder.class);
 
     public MultiPartParamAnnotationHandlerTest() {
@@ -91,6 +91,29 @@ public class MultiPartParamAnnotationHandlerTest extends AnnotationBaseTest<Mult
     }
 
     @Test
+    public void handleInterfaceAnnotationShouldMergePlaceholdersAndSetParamsTypeAndNameAndDefaultValue() throws Exception {
+        when(mockInterfaceConfigBuilder.startMethodsExtraParamConfig()).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setName(any(String.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setDefaultValue(anyString())).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setMetaDatas(any(Map.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH + "b");
+        when(mockAnnotation.contentType()).thenReturn(VAL_WITH_PH + "c");
+        when(mockAnnotation.fileName()).thenReturn(VAL_WITH_PH + "d");
+        toTest.handleInterfaceAnnotation(mockAnnotation, mockInterfaceConfigBuilder);
+        verify(mockInterfaceConfigBuilder).startMethodsExtraParamConfig();
+        verify(mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
+        verify(mockParamConfigBuilder).setMetaDatas(MultiParts.toMetaDatas(EXPECTED_MERGE_VAL + "c", EXPECTED_MERGE_VAL + "d"));
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+        verify(mockAnnotation).contentType();
+        verify(mockAnnotation).fileName();
+    }
+
+    @Test
     public void handleMethodAnnotationShouldSetParamsTypeAndNameAndDefaultValue() throws Exception {
         when(mockMethodConfigBuilder.startExtraParamConfig()).thenReturn(mockParamConfigBuilder);
         when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
@@ -137,6 +160,29 @@ public class MultiPartParamAnnotationHandlerTest extends AnnotationBaseTest<Mult
     }
 
     @Test
+    public void handleMethodAnnotationShouldMergePlaceholdersAndSetParamsTypeAndNameAndDefaultValue() throws Exception {
+        when(mockMethodConfigBuilder.startExtraParamConfig()).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setName(any(String.class))).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setDefaultValue(anyString())).thenReturn(mockParamConfigBuilder);
+        when(mockParamConfigBuilder.setMetaDatas(any(Map.class))).thenReturn(mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH + "b");
+        when(mockAnnotation.contentType()).thenReturn(VAL_WITH_PH + "c");
+        when(mockAnnotation.fileName()).thenReturn(VAL_WITH_PH + "d");
+        toTest.handleMethodAnnotation(mockAnnotation, mockMethodConfigBuilder);
+        verify(mockMethodConfigBuilder).startExtraParamConfig();
+        verify(mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
+        verify(mockParamConfigBuilder).setMetaDatas(MultiParts.toMetaDatas(EXPECTED_MERGE_VAL + "c", EXPECTED_MERGE_VAL + "d"));
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+        verify(mockAnnotation).contentType();
+        verify(mockAnnotation).fileName();
+    }
+
+    @Test
     public void handleParameterAnnotationShouldSetTypeAndNameAndDefaultValue() throws Exception {
         when(super.mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(super.mockParamConfigBuilder);
         when(super.mockParamConfigBuilder.setName(any(String.class))).thenReturn(super.mockParamConfigBuilder);
@@ -172,6 +218,27 @@ public class MultiPartParamAnnotationHandlerTest extends AnnotationBaseTest<Mult
         verify(super.mockParamConfigBuilder).setName("a");
         verify(super.mockParamConfigBuilder).setDefaultValue(null);
         verify(super.mockParamConfigBuilder).setMetaDatas(MultiParts.toMetaDatas(null,null));
+        verify(mockAnnotation).value();
+        verify(mockAnnotation).defaultValue();
+        verify(mockAnnotation).contentType();
+        verify(mockAnnotation).fileName();
+    }
+
+    @Test
+    public void handleParameterAnnotationShouldMergePlaceholdersAndSetTypeAndNameAndDefaultValue() throws Exception {
+        when(super.mockParamConfigBuilder.setType(any(ParamType.class))).thenReturn(super.mockParamConfigBuilder);
+        when(super.mockParamConfigBuilder.setName(any(String.class))).thenReturn(super.mockParamConfigBuilder);
+        when(super.mockParamConfigBuilder.setDefaultValue(anyString())).thenReturn(super.mockParamConfigBuilder);
+        when(super.mockParamConfigBuilder.setMetaDatas(any(Map.class))).thenReturn(super.mockParamConfigBuilder);
+        when(mockAnnotation.value()).thenReturn(VAL_WITH_PH + "a");
+        when(mockAnnotation.defaultValue()).thenReturn(VAL_WITH_PH +"b");
+        when(mockAnnotation.contentType()).thenReturn(VAL_WITH_PH +"c");
+        when(mockAnnotation.fileName()).thenReturn(VAL_WITH_PH +"d");
+        toTest.handleParameterAnnotation(mockAnnotation, super.mockParamConfigBuilder);
+        verify(super.mockParamConfigBuilder).setType(ParamType.FORM);
+        verify(super.mockParamConfigBuilder).setName(EXPECTED_MERGE_VAL + "a");
+        verify(super.mockParamConfigBuilder).setDefaultValue(EXPECTED_MERGE_VAL + "b");
+        verify(super.mockParamConfigBuilder).setMetaDatas(MultiParts.toMetaDatas(EXPECTED_MERGE_VAL + "c", EXPECTED_MERGE_VAL + "d"));
         verify(mockAnnotation).value();
         verify(mockAnnotation).defaultValue();
         verify(mockAnnotation).contentType();

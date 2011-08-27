@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.PathParam;
 import org.codegist.crest.annotate.PathParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class PathParamsAnnotationHandler extends NoOpAnnotationHandler<PathParams> {
         this.handler = handler;
     }
 
-    public PathParamsAnnotationHandler() {
-        this(new PathParamAnnotationHandler());
+    public PathParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new PathParamAnnotationHandler(crestConfig));
     }
 
     @Override

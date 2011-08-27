@@ -28,6 +28,8 @@ import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
 
+import java.nio.charset.Charset;
+
 /**
  * @author laurent.gilles@codegist.org
  */
@@ -35,7 +37,7 @@ public interface MethodConfigBuilder {
 
     MethodConfig build() throws Exception;
 
-    MethodConfigBuilder setCharset(String charset);
+    MethodConfigBuilder setCharset(Charset charset);
 
     MethodConfigBuilder setConsumes(String... mimeTypes);
 

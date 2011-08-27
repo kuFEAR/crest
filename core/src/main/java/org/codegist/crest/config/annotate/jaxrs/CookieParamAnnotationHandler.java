@@ -20,8 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.CookieParam;
 
@@ -30,11 +31,15 @@ import static org.codegist.crest.config.ParamType.COOKIE;
 /**
  * @author laurent.gilles@codegist.org
  */
-class CookieParamAnnotationHandler extends NoOpAnnotationHandler<CookieParam> {
+class CookieParamAnnotationHandler extends StringBasedAnnotationHandler<CookieParam> {
+
+    CookieParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(CookieParam annotation, ParamConfigBuilder builder) {
-        builder.setType(COOKIE).setName(annotation.value());
+        builder.setType(COOKIE).setName(ph(annotation.value()));
     }
     
 }

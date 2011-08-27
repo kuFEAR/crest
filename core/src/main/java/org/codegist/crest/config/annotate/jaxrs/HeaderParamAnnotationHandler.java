@@ -20,8 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.ParamConfigBuilder;
-import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
+import org.codegist.crest.config.annotate.StringBasedAnnotationHandler;
 
 import javax.ws.rs.HeaderParam;
 
@@ -30,11 +31,15 @@ import static org.codegist.crest.config.ParamType.HEADER;
 /**
  * @author laurent.gilles@codegist.org
  */
-class HeaderParamAnnotationHandler extends NoOpAnnotationHandler<HeaderParam> {
+class HeaderParamAnnotationHandler extends StringBasedAnnotationHandler<HeaderParam> {
+
+    HeaderParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     @Override
     public void handleParameterAnnotation(HeaderParam annotation, ParamConfigBuilder builder) {
-        builder.setType(HEADER).setName(annotation.value());
+        builder.setType(HEADER).setName(ph(annotation.value()));
     }
     
 }

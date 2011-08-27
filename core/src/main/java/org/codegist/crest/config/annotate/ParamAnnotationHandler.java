@@ -20,12 +20,18 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
+
 import java.lang.annotation.Annotation;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-abstract class ParamAnnotationHandler<T extends Annotation> extends NoOpAnnotationHandler<T> {
+abstract class ParamAnnotationHandler<T extends Annotation> extends StringBasedAnnotationHandler<T> {
+
+    ParamAnnotationHandler(CRestConfig crestConfig) {
+        super(crestConfig);
+    }
 
     protected String nullIfUnset(String value){
         return value.length() > 0 ? value : null;

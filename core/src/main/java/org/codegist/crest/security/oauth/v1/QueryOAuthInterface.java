@@ -25,10 +25,11 @@ import org.codegist.crest.security.oauth.OAuthToken;
 
 @GET
 @Encoded
+@EndPoint("{oauth.end-point}")
 @Deserializer(OAuthTokenDeserializer.class)
 interface QueryOAuthInterface extends OAuthInterface {
 
-    @Path("{oauth.access-token-path}")
+    @Path("{oauth.access-token.path}")
     OAuthToken getAccessToken(
             @QueryParam("oauth_consumer_key") String oauthConsumerKey,
             @QueryParam("oauth_signature_method") String oauthSignatureMethod,
@@ -39,7 +40,7 @@ interface QueryOAuthInterface extends OAuthInterface {
             @QueryParam("oauth_signature") String oauthSignature
     );
 
-    @Path("{oauth.request-token-path}")
+    @Path("{oauth.request-token.path}")
     OAuthToken getRequestToken(
             @QueryParam("oauth_consumer_key") String oauthConsumerKey,
             @QueryParam("oauth_signature_method") String oauthSignatureMethod,
@@ -50,7 +51,7 @@ interface QueryOAuthInterface extends OAuthInterface {
             @QueryParam("oauth_signature") String oauthSignature
     );
 
-    @Path("{oauth.refresh-access-token-path}")
+    @Path("{oauth.refresh-access-token.path}")
     OAuthToken refreshAccessToken(
             @QueryParam("oauth_token") String oauthToken,
             @QueryParam("oauth_consumer_key") String oauthConsumerKey,

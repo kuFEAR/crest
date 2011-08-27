@@ -25,6 +25,7 @@ import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.param.Param;
+import org.codegist.crest.serializer.Serializer;
 
 import java.io.DataOutputStream;
 import java.io.OutputStream;
@@ -43,6 +44,18 @@ public class MultiPartEntityWriter implements EntityWriter {
     private static final String FULL_BOUNDARY = "--" + BOUNDARY;
     private static final String LRLN = "\r\n";
 
+    private final Serializer<MultiPart<Param>> binarySerializer;
+    private final Serializer<MultiPart<Param>> textSerializer;
+
+    public MultiPartEntityWriter() {
+        this(MultiPartBinarySerializer.INSTANCE, MultiPartTextSerializer.INSTANCE);
+    }
+
+    MultiPartEntityWriter(Serializer<MultiPart<Param>> binarySerializer, Serializer<MultiPart<Param>> textSerializer) {
+        this.binarySerializer = binarySerializer;
+        this.textSerializer = textSerializer;
+    }
+
     public String getContentType(Request request) {
         return MULTIPART + BOUNDARY;
     }
@@ -52,22 +65,19 @@ public class MultiPartEntityWriter implements EntityWriter {
     }
 
     public void writeTo(Request request, OutputStream outputStream) throws Exception {
-
         DataOutputStream out = new DataOutputStream(outputStream);
         List<Param> formParams = request.getParams(FORM);
-        if (!formParams.isEmpty()) {
-            Charset charset = request.getMethodConfig().getCharset();
+        Charset charset = request.getMethodConfig().getCharset();
 
-            for (Param param: formParams) {
-                ParamConfig pc = param.getParamConfig();
-                Class<?> paramClass = pc.getValueClass();
-                MultiPart<Param> multiPart = new MultiPart<Param>(pc, param, BOUNDARY);
+        for (Param param: formParams) {
+            ParamConfig pc = param.getParamConfig();
+            Class<?> paramClass = pc.getValueClass();
+            MultiPart<Param> multiPart = new MultiPart<Param>(pc, param, BOUNDARY);
 
-                if(MultiPartBinarySerializer.isBinary(paramClass)) {
-                    MultiPartBinarySerializer.INSTANCE.serialize(multiPart, charset, out);
-                }else{
-                    MultiPartTextSerializer.INSTANCE.serialize(multiPart, charset, out);
-                }
+            if(MultiPartBinarySerializer.isBinary(paramClass)) {
+                binarySerializer.serialize(multiPart, charset, out);
+            }else{
+                textSerializer.serialize(multiPart, charset, out);
             }
         }
         out.writeBytes(FULL_BOUNDARY + "--" + LRLN);

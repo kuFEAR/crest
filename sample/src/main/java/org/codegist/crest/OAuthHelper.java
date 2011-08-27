@@ -43,27 +43,29 @@ public class OAuthHelper {
 //        "http://www.flickr.com/services/oauth/authorize?oauth_token=%s");
         // Yahoo
         OAuthHelper.doAccessTokenRetrievalWorkflow(
+        "https://api.login.yahoo.com",
         "",
         "",
-        "https://api.login.yahoo.com/oauth/v2/get_request_token",
-        "https://api.login.yahoo.com/oauth/v2/get_token",
-        "https://api.login.yahoo.com/oauth/v2/get_token",
-        "https://api.login.yahoo.com/oauth/v2/request_auth?oauth_token=%s");
+        "/oauth/v2/get_request_token",
+        "/oauth/v2/get_token",
+        "/oauth/v2/get_token",
+        "/oauth/v2/request_auth?oauth_token=%s");
 //
         // Twitter
 //        OAuthHelper.doAccessTokenRetrievalWorkflow(
+//                "https://api.twitter.com",
 //                "",
 //                "",
 //
-//                "https://api.twitter.com/oauth/request_token",
-//                "https://api.twitter.com/oauth/access_token",
-//                "http://api.twitter.com/oauth/authorize?oauth_token=%s");
+//                "/oauth/request_token",
+//                "/oauth/access_token",
+//                "/oauth/authorize?oauth_token=%s");
     }
 
 
-    private static void doAccessTokenRetrievalWorkflow(String consumerTok, String consumerSecret,String requestUrl, String accessUrl, String refreshUrl, String redirect) throws Exception {
+    private static void doAccessTokenRetrievalWorkflow(String endpoint, String consumerTok, String consumerSecret,String requestUrl, String accessUrl, String refreshUrl, String redirect) throws Exception {
 
-        OAuthApi api = new OAuthApiV1Builder(new OAuthToken(consumerTok, consumerSecret))
+        OAuthApi api = new OAuthApiV1Builder(new OAuthToken(consumerTok, consumerSecret), endpoint)
                         .useGet()
                         .getRequestTokenFrom(requestUrl)
                         .getAccessTokenFrom(accessUrl)

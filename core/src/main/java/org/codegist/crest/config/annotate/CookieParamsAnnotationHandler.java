@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.CookieParam;
 import org.codegist.crest.annotate.CookieParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class CookieParamsAnnotationHandler extends NoOpAnnotationHandler<CookieParams> 
         this.handler = handler;
     }
     
-    public CookieParamsAnnotationHandler() {
-        this(new CookieParamAnnotationHandler());
+    public CookieParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new CookieParamAnnotationHandler(crestConfig));
     }
 
     @Override

@@ -20,6 +20,8 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.common.lang.State;
+import org.codegist.common.lang.Validate;
 import org.codegist.common.net.Urls;
 
 import java.io.UnsupportedEncodingException;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.codegist.common.lang.Validate.isTrue;
@@ -38,8 +39,8 @@ import static org.codegist.common.lang.Validate.isTrue;
  */
 public final class RegexPathTemplate implements PathTemplate {
 
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("(\\w[-\\w\\.]*)(?::(.+))?");
-    private static final Pattern DEFAULT_PATTERN = Pattern.compile("([^/]+?)");
+    private static final Pattern TEMPLATE_NAME_PATTERN = Pattern.compile("^\\w[-\\w\\.]+$");
+    private static final Pattern DEFAULT_VALIDATION_PATTERN = Pattern.compile("^[^/]+$");
 
     private final String urlTemplate;
     private final Map<String, PathTemplate> templates;
@@ -53,10 +54,6 @@ public final class RegexPathTemplate implements PathTemplate {
         return new DefaultPathBuilder(charset);
     }
 
-    public String getUrlTemplate() {
-        return urlTemplate;
-    }
-
     private final class DefaultPathBuilder implements PathBuilder {
 
         private final Map<String, PathTemplate> remainingTemplates = new HashMap<String, PathTemplate>(templates);
@@ -68,9 +65,7 @@ public final class RegexPathTemplate implements PathTemplate {
         }
 
         public PathBuilder merge(String templateName, String templateValue, boolean encoded) throws UnsupportedEncodingException {
-            if (!remainingTemplates.containsKey(templateName)) {
-                throw new IllegalArgumentException("Path parameters is unknown or has already been provided for base uri '" + urlTemplate + "'! Param: " + templateName);
-            }
+            Validate.isTrue(remainingTemplates.containsKey(templateName), "Path parameters is unknown or has already been provided for base uri '%s' (template:%s)! Param: %s", url, urlTemplate, templateName);
             PathTemplate template = remainingTemplates.remove(templateName);
             template.validate(templateValue);
             String tmpl = "{" + templateName + "}";
@@ -87,9 +82,7 @@ public final class RegexPathTemplate implements PathTemplate {
         }
 
         public String build() {
-            if (!remainingTemplates.isEmpty()) {
-                throw new IllegalStateException("Not all path templates have been merged! (url=" + url + ")");
-            }
+            State.isTrue(remainingTemplates.isEmpty(), "Not all path templates have been merged! (url=%s)", url);
             return url.toString();
         }
     }
@@ -103,14 +96,8 @@ public final class RegexPathTemplate implements PathTemplate {
             this.validator = validator;
         }
 
-        public String getName() {
-            return name;
-        }
-
         public void validate(String value) {
-            if (!validator.matcher(value).matches()) {
-                throw new IllegalArgumentException("Path param " + name + "=" + value + " don't matches expected format " + validator);
-            }
+            Validate.isTrue(validator.matcher(value).matches(), "Path param %s=%s don't matches expected format %s" , name,value,validator);
         }
     }
 
@@ -122,19 +109,20 @@ public final class RegexPathTemplate implements PathTemplate {
             String tok = t.next();
             if (CurlyBraceTokenizer.insideBraces(tok)) {
                 tok = CurlyBraceTokenizer.stripBraces(tok);
-                Matcher m = TEMPLATE_PATTERN.matcher(tok);
+
+                int index = tok.indexOf(':'); // first index of : as it can't appears in the name
                 String name;
-                Pattern regex;
-                if (m.find()) {
-                    name = m.group(1);
-                    regex = m.group(2) != null ? Pattern.compile(m.group(2)) : DEFAULT_PATTERN;
-                } else {
-                    throw new IllegalArgumentException("Template doesn't match the expected format: " + TEMPLATE_PATTERN);
+                Pattern validationPattern;
+                if(index > -1) {
+                    name = tok.substring(0, index);
+                    validationPattern = Pattern.compile("^" + tok.substring(index + 1) + "$");
+                }else{
+                    name = tok;
+                    validationPattern = DEFAULT_VALIDATION_PATTERN;
                 }
-                if (templates.containsKey(name)) {
-                    throw new IllegalArgumentException("Template with name=" + name + " already defined!");
-                }
-                templates.put(name, new PathTemplate(name, regex));
+                Validate.isTrue(TEMPLATE_NAME_PATTERN.matcher(name).matches(), "Template name '%s' doesn't match the expected format: %s", name, TEMPLATE_NAME_PATTERN);
+                Validate.isFalse(templates.containsKey(name), "Template name '%s' is already defined!", name);
+                templates.put(name, new PathTemplate(name, validationPattern));
                 baseUrl.append("{").append(name).append("}");
             } else {
                 baseUrl.append(tok);
@@ -145,18 +133,6 @@ public final class RegexPathTemplate implements PathTemplate {
         return new RegexPathTemplate(url, templates);
     }
 
-//
-//    public static void main(String[] args) {
-//        RegexPathTemplate.create("http://localhost/fgfg{aaa:\\d+}/{bbb:.*}/{ccc:\\d{5}}/{ddd}/df").buildFor(
-//                new HashMap<String, String>() {{
-//                    put("aaa", "123");
-//                    put("bbb", "ss");
-//                    put("ccc", "12345");
-//                    put("ddd", "dd");
-//                }},
-//                null, null
-//        );
-//    }
 
 
     /**
@@ -223,18 +199,13 @@ public final class RegexPathTemplate implements PathTemplate {
         }
 
         /**
-         * Strips token from enclosed curly braces. If token is not enclosed method
-         * has no side effect.
+         * Strips token from enclosed curly braces. 
          *
          * @param token text to verify
          * @return text stripped from curly brace begin-end pair.
          */
         public static String stripBraces(String token) {
-            if (insideBraces(token)) {
-                return token.substring(1, token.length() - 1);
-            } else {
-                return token;
-            }
+            return token.substring(1, token.length() - 1);
         }
 
         public boolean hasNext() {
@@ -242,11 +213,7 @@ public final class RegexPathTemplate implements PathTemplate {
         }
 
         public String next() {
-            if (hasNext()) {
-                return tokens.get(tokenIdx++);
-            } else {
-                throw new IllegalStateException("no more elements");
-            }
+            return tokens.get(tokenIdx++);
         }
     }
 

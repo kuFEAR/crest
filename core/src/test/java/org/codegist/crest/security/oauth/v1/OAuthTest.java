@@ -43,10 +43,11 @@ public abstract class OAuthTest {
     protected final VariantProvider mockVariantProvider = mock(VariantProvider.class);
 
     public static final Charset UTF_8 = Charset.forName("utf-8");
-    public static final String GET_REQUEST_TOKEN_URL = "http://some-host:8182/get/request-token";
-    public static final String GET_ACCESS_TOKEN_URL = "http://some-host:8182/get/access-token";
-    public static final String REFRESH_ACCESS_TOKEN_URL = "http://some-host:8182/refresh/access-token";
-    public static final String URL_NO_QUERY = "http://some-host:8182/some/path";
+    public static final String ENDPOINT = "http://some-host:8182";
+    public static final String GET_REQUEST_TOKEN_URL = "/get/request-token";
+    public static final String GET_ACCESS_TOKEN_URL = "/get/access-token";
+    public static final String REFRESH_ACCESS_TOKEN_URL = "/refresh/access-token";
+    public static final String URL_NO_QUERY = ENDPOINT + "/some/path";
 
     public static final EncodedPair[] PAIRS = {new SimpleEncodedPair("some", "query2"),new SimpleEncodedPair("string", "for%20test"),new SimpleEncodedPair("some", "query1")};
 

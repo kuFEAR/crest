@@ -22,9 +22,6 @@ package org.codegist.crest.config.annotate;
 
 import org.codegist.crest.annotate.FormParam;
 import org.codegist.crest.annotate.FormParams;
-import org.codegist.crest.config.InterfaceConfigBuilder;
-import org.codegist.crest.config.MethodConfigBuilder;
-import org.codegist.crest.config.ParamConfigBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -38,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FormParamsAnnotationHandler.class})
+@PrepareForTest({FormParamsAnnotationHandler.class, FormParamAnnotationHandler.class})
 public class FormParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseTest<FormParams> {
 
 
-    private final FormParamAnnotationHandler mockFormParamAnnotationHandler = mock(PublicParamAnnotationHandler.class);
+    private final FormParamAnnotationHandler mockFormParamAnnotationHandler = mock(FormParamAnnotationHandler.class);
     private final FormParamsAnnotationHandler toTest = new FormParamsAnnotationHandler(mockFormParamAnnotationHandler);
     private final FormParam[] mockAnnotations = { mock(FormParam.class), mock(FormParam.class)};
 
@@ -52,9 +49,9 @@ public class FormParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseT
 
     @Test
     public void defaultContructorShouldUseDefaultInnerHandler() throws Exception {
-        whenNew(FormParamAnnotationHandler.class).withNoArguments().thenReturn(mockFormParamAnnotationHandler);
-        new FormParamsAnnotationHandler();
-        verifyNew(FormParamAnnotationHandler.class).withNoArguments();
+        whenNew(FormParamAnnotationHandler.class).withArguments(crestConfig).thenReturn(mockFormParamAnnotationHandler);
+        new FormParamsAnnotationHandler(crestConfig);
+        verifyNew(FormParamAnnotationHandler.class).withArguments(crestConfig);
     }
 
     @Test
@@ -86,20 +83,4 @@ public class FormParamsAnnotationHandlerTest extends DownToMethodAnnotationBaseT
         return toTest;
     }
 
-    public static class PublicParamAnnotationHandler extends FormParamAnnotationHandler{
-        @Override
-        public void handleInterfaceAnnotation(FormParam annotation, InterfaceConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleMethodAnnotation(FormParam annotation, MethodConfigBuilder builder) {
-
-        }
-
-        @Override
-        public void handleParameterAnnotation(FormParam annotation, ParamConfigBuilder builder) {
-            
-        }
-    }
 }

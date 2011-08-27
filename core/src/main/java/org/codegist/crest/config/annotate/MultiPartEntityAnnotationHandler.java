@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class MultiPartEntityAnnotationHandler extends NoOpAnnotationHandler<MultiPartEntity> {
+class MultiPartEntityAnnotationHandler extends NoOpAnnotationHandler<MultiPartEntity> {
 
     @Override
     public void handleInterfaceAnnotation(MultiPartEntity annotation, InterfaceConfigBuilder builder)throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException  {

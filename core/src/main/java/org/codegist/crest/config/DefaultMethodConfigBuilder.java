@@ -1,6 +1,5 @@
 package org.codegist.crest.config;
 
-import org.codegist.common.lang.State;
 import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.entity.EntityWriter;
@@ -18,14 +17,12 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 import static org.codegist.common.collect.Arrays.*;
+import static org.codegist.common.lang.Validate.notBlank;
 import static org.codegist.crest.config.MethodConfig.*;
 
-@SuppressWarnings("unchecked")
 class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBuilder {
 
     private final Method method;
@@ -33,30 +30,63 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private final List<ParamConfigBuilder> methodParamConfigBuilders = new ArrayList<ParamConfigBuilder>();
     private final Registry<String,Deserializer> mimeDeserializerRegistry;
     private final Registry<Class<?>,Serializer> classSerializerRegistry;
-    private final List<String> pathParts = new ArrayList<String>();
-    private final List<Deserializer> deserializers = new ArrayList<Deserializer>();
-    private final List<String> consumes = new ArrayList<String>();
+    private final ParamConfig[] extraParams;
 
-    private String charset;
-    private MethodType meth;
-    private String produces;
-    private Integer socketTimeout;
-    private Integer connectionTimeout;
-    private RequestInterceptor requestInterceptor;
-    private ResponseHandler responseHandler;
-    private ErrorHandler errorHandler;
-    private RetryHandler retryHandler;
-    private EntityWriter entityWriter;
+    private String endPoint = null;
+    private String produces = null;
+    private Charset charset = Charset.forName("UTF-8");
+    private MethodType meth = MethodType.getDefault();
+    private Integer socketTimeout = 20000;
+    private Integer connectionTimeout = 20000;
+    private Class<? extends RequestInterceptor> requestInterceptor = NoOpRequestInterceptor.class;
+    private Class<? extends ResponseHandler> responseHandler = DefaultResponseHandler.class;
+    private Class<? extends ErrorHandler> errorHandler = ErrorDelegatorHandler.class;
+    private Class<? extends RetryHandler> retryHandler = MaxAttemptRetryHandler.class;
+    private Class<? extends EntityWriter> entityWriter = null;
+    private final List<Class<? extends Deserializer>> deserializers = new ArrayList<Class<? extends Deserializer>>();
+    private final List<String> pathSegments = new ArrayList<String>();
+    private final List<String> consumes = new ArrayList<String>(asList("*/*"));
 
-    DefaultMethodConfigBuilder(Method method, CRestConfig crestConfig, Map<Pattern,String> placeholders, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
-        super(crestConfig,placeholders);
+    DefaultMethodConfigBuilder(Method method, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+        super(crestConfig);
         this.method = method;
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
         this.classSerializerRegistry = classSerializerRegistry;
 
         for (int i = 0; i < method.getParameterTypes().length; i++) {
-            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(crestConfig, placeholders, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
+            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(crestConfig, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
             this.methodParamConfigBuilders.add(pcb);
+        }
+
+        this.endPoint = override(METHOD_CONFIG_DEFAULT_ENDPOINT, this.endPoint);
+        this.produces = override(METHOD_CONFIG_DEFAULT_PRODUCES, this.produces);
+        this.charset = override(METHOD_CONFIG_DEFAULT_CHARSET, this.charset);
+        this.meth = override(METHOD_CONFIG_DEFAULT_TYPE, this.meth);
+        this.socketTimeout = override(METHOD_CONFIG_DEFAULT_SO_TIMEOUT, this.socketTimeout);
+        this.connectionTimeout = override(METHOD_CONFIG_DEFAULT_CO_TIMEOUT, this.connectionTimeout);
+        this.requestInterceptor = override(METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR, this.requestInterceptor);
+        this.responseHandler = override(METHOD_CONFIG_DEFAULT_RESPONSE_HANDLER, this.responseHandler);
+        this.errorHandler = override(METHOD_CONFIG_DEFAULT_ERROR_HANDLER, this.errorHandler);
+        this.retryHandler = override(METHOD_CONFIG_DEFAULT_RETRY_HANDLER, this.retryHandler);
+        this.entityWriter = override(METHOD_CONFIG_DEFAULT_ENTITY_WRITER, this.entityWriter);
+        this.extraParams = override(METHOD_CONFIG_DEFAULT_EXTRA_PARAMS, new ParamConfig[0]);
+
+        List<Class<? extends Deserializer>> pDeserializers = override(METHOD_CONFIG_DEFAULT_DESERIALIZERS, this.deserializers);
+        if(pDeserializers != this.deserializers) {
+            this.deserializers.clear();
+            this.deserializers.addAll(pDeserializers);
+        }
+
+        List<String> pConsumes = override(METHOD_CONFIG_DEFAULT_CONSUMES, this.consumes);
+        if(pConsumes != this.consumes) {
+            this.consumes.clear();
+            this.consumes.addAll(pConsumes);
+        }
+
+        List<String> pPathSegments = override(METHOD_CONFIG_DEFAULT_PATH, this.pathSegments);
+        if(pPathSegments != this.pathSegments) {
+            this.pathSegments.clear();
+            this.pathSegments.addAll(pPathSegments);
         }
     }
 
@@ -64,63 +94,67 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
      * @inheritDoc
      */
     public MethodConfig build() throws Exception {
-        ParamConfig[] pConfigMethod = build(methodParamConfigBuilders);
-        ParamConfig[] extraParams = build(extraParamBuilders);
-        String[] paths = arrify(pathParts, String.class);
-
-        // make local copies so that we don't mess with builder state to be able to call build multiple times on it
-        String path = paths.length > 1 ? Urls.normalizeSlashes(join("/", paths)) : paths[0];
-        Deserializer[] pDeserializers = arrify(this.deserializers, Deserializer.class);
-        String[] pConsumes = arrify(this.consumes, String.class);
-
-        pDeserializers = defaultIfUndefined(pDeserializers, METHOD_CONFIG_DEFAULT_DESERIALIZERS, new Deserializer[0]);
-        path = defaultIfUndefined(path, METHOD_CONFIG_DEFAULT_PATH, "");
-        pConsumes = defaultIfUndefined(pConsumes, METHOD_CONFIG_DEFAULT_CONSUMES, new String[]{"*/*"});
-
-        int pSocketTimeout = defaultIfUndefined(this.socketTimeout, METHOD_CONFIG_DEFAULT_SO_TIMEOUT, 20000);
-        int pConnectionTimeout = defaultIfUndefined(this.connectionTimeout, METHOD_CONFIG_DEFAULT_CO_TIMEOUT, 20000);
-        String pCharset = defaultIfUndefined(this.charset, METHOD_CONFIG_DEFAULT_CHARSET, "UTF-8");
-        MethodType pMeth = defaultIfUndefined(this.meth, METHOD_CONFIG_DEFAULT_HTTP_METHOD, MethodType.getDefault());
-        String pProduces = defaultIfUndefined(this.produces, METHOD_CONFIG_DEFAULT_PRODUCES);
-        ParamConfig[] pExtraParams = defaultIfUndefined(extraParams, METHOD_CONFIG_DEFAULT_EXTRA_PARAMS, new ParamConfig[0]);
-        RequestInterceptor pRequestInterceptor = defaultIfUndefined(this.requestInterceptor, METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR, NoOpRequestInterceptor.class);
-        ResponseHandler pResponseHandler = defaultIfUndefined(this.responseHandler, METHOD_CONFIG_DEFAULT_RESPONSE_HANDLER, DefaultResponseHandler.class);
-        ErrorHandler pErrorHandler = defaultIfUndefined(this.errorHandler, METHOD_CONFIG_DEFAULT_ERROR_HANDLER, ErrorDelegatorHandler.class);
-        RetryHandler pRetryHandler = defaultIfUndefined(this.retryHandler, METHOD_CONFIG_DEFAULT_RETRY_HANDLER, MaxAttemptRetryHandler.class);
-        EntityWriter pEntityWriter = defaultIfUndefined(this.entityWriter, METHOD_CONFIG_DEFAULT_ENTITY_WRITER);
-
-        if(pEntityWriter == null && pMeth.hasEntity()) {
-            Class<? extends EntityWriter> entityWriterCls = UrlEncodedFormEntityWriter.class;
-            for(ParamConfig cfg : merge(ParamConfig.class, pConfigMethod, pExtraParams)){
-                if(MultiParts.hasMultiPart(cfg.getMetaDatas())) {
-                    entityWriterCls = MultiPartEntityWriter.class;
-                    break;
-                }
-            }
-            pEntityWriter = newInstance(entityWriterCls);
-        }
+        ParamConfig[] pConfigMethod = buildParams(methodParamConfigBuilders);
+        ParamConfig[] pExtraParams = merge(ParamConfig.class, extraParams, buildParams(extraParamBuilders));
+        ParamConfig[] allParams = merge(ParamConfig.class, pConfigMethod, pExtraParams);
 
         return new DefaultMethodConfig(
-                Charset.forName(pCharset),
+                charset,
                 method,
-                RegexPathTemplate.create(path),
-                pProduces,
-                pConsumes,
-                pMeth,
-                pSocketTimeout,
-                pConnectionTimeout,
-                pEntityWriter,
-                pRequestInterceptor,
-                pResponseHandler,
-                pErrorHandler,
-                pRetryHandler,
-                pDeserializers,
+                RegexPathTemplate.create(buildPath()),
+                produces,
+                arrify(this.consumes, String.class),
+                meth,
+                socketTimeout,
+                connectionTimeout,
+                getEntityWriter(allParams),
+                instantiate(requestInterceptor),
+                instantiate(responseHandler),
+                instantiate(errorHandler),
+                instantiate(retryHandler),
+                getDeserializers(),
                 pConfigMethod,
                 pExtraParams
         );
     }
 
-    private static ParamConfig[] build(List<ParamConfigBuilder> paramConfigBuilders) throws Exception {
+    private Deserializer[] getDeserializers(){
+        List<Deserializer> pDeserializers = new ArrayList<Deserializer>();
+
+        for(Class<? extends Deserializer> deserializerCls : this.deserializers){
+            pDeserializers.add(instantiate(deserializerCls));
+        }
+        for(String consume : consumes){
+            if("*/*".equals(consume)) {
+                continue;
+            }
+            pDeserializers.add(mimeDeserializerRegistry.get(consume));
+        }
+
+        return arrify(pDeserializers, Deserializer.class);
+    }
+
+    private EntityWriter getEntityWriter(ParamConfig[] params){
+        if(this.entityWriter != null) {
+            return instantiate(this.entityWriter);
+        }else if(!meth.hasEntity()) {
+            return null;
+        }else if(MultiParts.hasMultiPart(params)) {
+            return instantiate(MultiPartEntityWriter.class);
+        }else{
+            return instantiate(UrlEncodedFormEntityWriter.class);
+        }
+    }
+
+    private String buildPath(){
+        notBlank(endPoint, "No end-point provided, method: %s", method);
+        List<String> pPathParts = new ArrayList<String>(pathSegments);
+        pPathParts.add(0, endPoint);
+        String[] paths = arrify(pPathParts, String.class);
+        return paths.length > 1 ? Urls.normalizeSlashes(join("/", paths)) : paths[0];
+    }
+
+    private static ParamConfig[] buildParams(List<ParamConfigBuilder> paramConfigBuilders) throws Exception {
         ParamConfig[] pc = new ParamConfig[paramConfigBuilders.size()];
         for (int i = 0; i < paramConfigBuilders.size(); i++) {
             pc[i] = paramConfigBuilders.get(i).build();
@@ -128,53 +162,40 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return pc;
     }
 
-    public MethodConfigBuilder setCharset(String charset){
-        this.charset = ph(charset);
-        return this;
-    }
-
-    public MethodConfigBuilder setConsumes(String... mimeTypes) {
-        State.notNull(mimeDeserializerRegistry, "Can't lookup a deserializer by mime-type. Please provide a DeserializerFactory");
-        this.deserializers.clear();
-        this.consumes.clear();
-
-        String[] mimes = new String[mimeTypes.length];
-        for (int i = 0; i < mimeTypes.length; i++) {
-            String mMime = ph(mimeTypes[i]);
-            this.deserializers.add(mimeDeserializerRegistry.get(mMime));
-            mimes[i] = mMime;
-        }
-        this.consumes.addAll(asList(mimes));
-        return this;
-    }
-
-    public MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializer) {
-        this.deserializers.add(newInstance(deserializer));
-        return this;
-    }
-
-    public MethodConfigBuilder setProduces(String contentType) {
-        this.produces = ph(contentType);
-        return this;
-    }
-
     public ParamConfigBuilder startParamConfig(int index) {
         return methodParamConfigBuilders.get(index);
     }
 
     public ParamConfigBuilder startExtraParamConfig() {
-        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(getCRestConfig(), getPlaceholders(), classSerializerRegistry, String.class, String.class);
+        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(getCRestConfig(), classSerializerRegistry, String.class, String.class);
         extraParamBuilders.add(pcb);
         return pcb;
     }
 
+
+    public MethodConfigBuilder setConsumes(String... mimeTypes) {
+        this.consumes.clear();
+        this.consumes.addAll(asList(mimeTypes));
+        return this;
+    }
+
+    public MethodConfigBuilder setCharset(Charset charset){
+        this.charset = charset;
+        return this;
+    }
+
+    public MethodConfigBuilder setProduces(String contentType) {
+        this.produces = contentType;
+        return this;
+    }
+
     public MethodConfigBuilder appendPath(String path) {
-        pathParts.add(ph(path));
+        pathSegments.add(path);
         return this;
     }
 
     public MethodConfigBuilder setEndPoint(String endPoint) {
-        this.pathParts.add(0, ph(endPoint));
+        this.endPoint = endPoint;
         return this;
     }
 
@@ -193,28 +214,34 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return this;
     }
 
+    public MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializer) {
+        this.deserializers.clear();
+        this.deserializers.add(deserializer);
+        return this;
+    }
+
     public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls)  {
-        this.requestInterceptor = newInstance(interceptorCls);
+        this.requestInterceptor = interceptorCls;
         return this;
     }
 
     public MethodConfigBuilder setResponseHandler(Class<? extends ResponseHandler> responseHandlerClass)   {
-        this.responseHandler  = newInstance(responseHandlerClass);
+        this.responseHandler  = responseHandlerClass;
         return this;
     }
 
     public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass)   {
-        this.errorHandler = newInstance(methodHandlerClass);
+        this.errorHandler = methodHandlerClass;
         return this;
     }
 
     public MethodConfigBuilder setRetryHandler(Class<? extends RetryHandler> retryHandlerClass)   {
-        this.retryHandler = newInstance(retryHandlerClass);
+        this.retryHandler = retryHandlerClass;
         return this;
     }
 
     public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass)   {
-        this.entityWriter = newInstance(bodyWriterClass);
+        this.entityWriter = bodyWriterClass;
         return this;
     }
 

@@ -24,6 +24,10 @@ import org.codegist.crest.CRestConfig;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -33,15 +37,19 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class CRestConfigs {
 
+    private static final String BOOL_TRUE = "true";
+    private static final String BOOL_FALSE = "false";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+
     public static CRestConfig mockBehavior(String booleanTrue, String booleanFalse, String dateFormat){
-       return mockBehavior(booleanTrue, booleanFalse, dateFormat, mock(CRestConfig.class));
+       return mockBehavior(booleanTrue, booleanFalse, dateFormat, Collections.<Pattern, String>emptyMap(), mock(CRestConfig.class));
     }
 
     public static CRestConfig mockDefaultBehavior(){
-        return mockBehavior("true", "false", "yyyy-MM-dd'T'HH:mm:ssZ", mock(CRestConfig.class));
+        return mockBehavior(BOOL_TRUE, BOOL_FALSE, DATE_FORMAT, Collections.<Pattern, String>emptyMap(), mock(CRestConfig.class));
     }
 
-    public static CRestConfig mockBehavior(String booleanTrue, String booleanFalse, String dateFormat, CRestConfig mockCrestConfig){
+    public static CRestConfig mockBehavior(String booleanTrue, String booleanFalse, String dateFormat, Map<Pattern,String> placeholders, CRestConfig mockCrestConfig){
         when(mockCrestConfig.getBooleanTrue()).thenReturn(booleanTrue);
         when(mockCrestConfig.getBooleanFalse()).thenReturn(booleanFalse);
         when(mockCrestConfig.getDateFormat()).thenReturn(dateFormat);
@@ -52,8 +60,12 @@ public class CRestConfigs {
                 return invocation.getArguments()[1];
             }
         });
+        when(mockCrestConfig.get(CRestConfig.class.getName() + "#placeholders")).thenReturn(placeholders);
         return mockCrestConfig;
     }
 
+    public static CRestConfig mockDefaultBehavior(Map<Pattern,String> placeholders){
+        return mockBehavior(BOOL_TRUE, BOOL_FALSE, DATE_FORMAT, placeholders, mock(CRestConfig.class));
+    }
 
 }

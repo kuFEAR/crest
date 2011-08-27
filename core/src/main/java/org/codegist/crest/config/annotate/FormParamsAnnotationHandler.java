@@ -20,6 +20,7 @@
 
 package org.codegist.crest.config.annotate;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.annotate.FormParam;
 import org.codegist.crest.annotate.FormParams;
 import org.codegist.crest.config.InterfaceConfigBuilder;
@@ -36,8 +37,8 @@ class FormParamsAnnotationHandler extends NoOpAnnotationHandler<FormParams> {
         this.handler = handler;
     }
 
-    public FormParamsAnnotationHandler() {
-        this(new FormParamAnnotationHandler());
+    public FormParamsAnnotationHandler(CRestConfig crestConfig) {
+        this(new FormParamAnnotationHandler(crestConfig));
     }
 
     @Override

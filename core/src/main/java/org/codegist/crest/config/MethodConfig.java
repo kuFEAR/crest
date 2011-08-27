@@ -35,11 +35,12 @@ import java.nio.charset.Charset;
  */
 public interface MethodConfig {
 
+    String METHOD_CONFIG_DEFAULT_ENDPOINT = MethodConfig.class.getName() + "#endpoint";
     String METHOD_CONFIG_DEFAULT_CHARSET = MethodConfig.class.getName() + "#charset";
     String METHOD_CONFIG_DEFAULT_SO_TIMEOUT = MethodConfig.class.getName() + "#socket-timeout";
     String METHOD_CONFIG_DEFAULT_CO_TIMEOUT = MethodConfig.class.getName() + "#connection-timeout";
     String METHOD_CONFIG_DEFAULT_PATH = MethodConfig.class.getName() + "#path";
-    String METHOD_CONFIG_DEFAULT_HTTP_METHOD = MethodConfig.class.getName() + "#http-method";
+    String METHOD_CONFIG_DEFAULT_TYPE = MethodConfig.class.getName() + "#http-method";
     String METHOD_CONFIG_DEFAULT_PRODUCES = MethodConfig.class.getName() + "#produces";
     String METHOD_CONFIG_DEFAULT_CONSUMES = MethodConfig.class.getName() + "#consumes";
     String METHOD_CONFIG_DEFAULT_EXTRA_PARAMS = MethodConfig.class.getName() + "#extra-params";
@@ -48,7 +49,7 @@ public interface MethodConfig {
     String METHOD_CONFIG_DEFAULT_REQUEST_INTERCEPTOR = MethodConfig.class.getName() + "#request-interceptor";
     String METHOD_CONFIG_DEFAULT_RETRY_HANDLER = MethodConfig.class.getName() + "#retry-handler";
     String METHOD_CONFIG_DEFAULT_DESERIALIZERS = MethodConfig.class.getName() + "#deserializer";
-    String METHOD_CONFIG_DEFAULT_ENTITY_WRITER = MethodConfig.class.getName() + "#body-writer";
+    String METHOD_CONFIG_DEFAULT_ENTITY_WRITER = MethodConfig.class.getName() + "#entity-writer";
     
     Charset getCharset();
 

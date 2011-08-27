@@ -27,18 +27,18 @@ import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.param.Param;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
-import static org.codegist.common.lang.Objects.asCollection;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class HttpRequestBuilderFactory implements RequestBuilderFactory {
+
     public RequestBuilder create() {
         return new Builder();
     }
-    
 
     private static class Builder implements RequestBuilder {
 
@@ -62,7 +62,7 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
             );
         }
 
-        public Builder params(ParamConfig[] paramConfigs) {
+        public Builder addParams(ParamConfig[] paramConfigs) {
             for(ParamConfig param : paramConfigs){
                 addParam(param);
             }
@@ -70,10 +70,10 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
         }
 
         public Builder addParam(ParamConfig paramConfig) {
-            return addParam(paramConfig, paramConfig.getDefaultValue());
+            return addParam(paramConfig, Collections.<Object>singletonList(paramConfig.getDefaultValue()));
         }
 
-        public Builder addParam(ParamConfig paramConfig, Object value) {
+        public Builder addParam(ParamConfig paramConfig, Collection<Object> values) {
             List<Param> params;
             switch(paramConfig.getType()){
                 case COOKIE:
@@ -95,9 +95,9 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
                     params = queryParams;
                     break;
                 default:
-                    throw new IllegalStateException("Unsupported param type ! (type=" + paramConfig.getType() + ")");
+                    throw new IllegalArgumentException("Unsupported param type ! (type=" + paramConfig.getType() + ")");
             }
-            params.add(new HttpParam(paramConfig, asCollection(value)));
+            params.add(new HttpParam(paramConfig, values));
             return this;
         }
     }
