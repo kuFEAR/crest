@@ -32,9 +32,6 @@ final class DefaultCRestConfig implements CRestConfig {
 
     private final Map<String,Object> config;
 
-    public DefaultCRestConfig() {
-        this(Collections.<String, Object>emptyMap());
-    }
     public DefaultCRestConfig(Map<String, Object> m) {
         this.config = m;
     }

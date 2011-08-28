@@ -20,28 +20,14 @@
 
 package org.codegist.crest.io.http.apache;
 
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.params.ConnPerRouteBean;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpChannelFactory;
 
-import java.net.ProxySelector;
 import java.nio.charset.Charset;
 
 /**
@@ -49,8 +35,6 @@ import java.nio.charset.Charset;
 */
 public final class HttpClientHttpChannelFactory implements HttpChannelFactory, Disposable {
 
-    private static final int HTTP_PORT = 80;
-    private static final int HTTPS_PORT = 443;
     private final HttpClient client;
 
     public HttpClientHttpChannelFactory(HttpClient client) {
@@ -81,35 +65,10 @@ public final class HttpClientHttpChannelFactory implements HttpChannelFactory, D
             default:
                 throw new IllegalArgumentException("Method " + methodType + " not supported");
         }
+
+        HttpProtocolParams.setContentCharset(request.getParams(), charset.displayName());
+
         return new HttpClientHttpChannel(client, request);
-    }
-
-    public static HttpChannelFactory create(int maxConcurrentConnection, int maxConnectionPerRoute) {
-        DefaultHttpClient httpClient;
-        if (maxConcurrentConnection > 1 || maxConnectionPerRoute > 1) {
-            HttpParams params = new BasicHttpParams();
-            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            if (maxConnectionPerRoute > 1) {
-                ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(maxConnectionPerRoute));
-            }
-            if (maxConcurrentConnection > 1) {
-                ConnManagerParams.setMaxTotalConnections(params, maxConcurrentConnection);
-            } else {
-                ConnManagerParams.setMaxTotalConnections(params, 1);
-            }
-
-            SchemeRegistry schemeRegistry = new SchemeRegistry();
-            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), HTTP_PORT));
-            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT));
-
-            ClientConnectionManager cm = new ThreadSafeClientConnManager(params, schemeRegistry);
-            httpClient = new DefaultHttpClient(cm, params);
-        } else {
-            httpClient = new DefaultHttpClient();
-        }
-
-        httpClient.setRoutePlanner(new ProxySelectorRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry(), ProxySelector.getDefault()));
-        return new HttpClientHttpChannelFactory(httpClient);
     }
 
     public void dispose() {

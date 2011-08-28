@@ -122,21 +122,17 @@ public final class HttpClientHttpChannel implements HttpChannel {
         }
 
         public void close() {
-            HttpClientHttpChannel.close(response, request);
-        }
-    }
-
-    private static void close(HttpResponse response, HttpUriRequest request){
-        try {
-            if(response != null && response.getEntity() != null) {
-                LOGGER.trace("Consuming Response Content...");
-                response.getEntity().consumeContent();
+            try {
+                if(response != null && response.getEntity() != null) {
+                    LOGGER.trace("Consuming Response Content...");
+                    response.getEntity().consumeContent();
+                }
+            } catch (IOException e) {
+                LOGGER.warn(e, "Failed to consume content for request %s", request);
+            } finally {
+                LOGGER.trace("Abording Request...");
+                request.abort();
             }
-        } catch (IOException e) {
-            LOGGER.warn(e, "Failed to consume content for request %s", request);
-        } finally {
-            LOGGER.trace("Abording Request...");
-            request.abort();
         }
     }
 

@@ -32,7 +32,7 @@ import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.*;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactories;
 import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
@@ -178,7 +178,7 @@ public class CRestBuilder {
         if (httpChannelFactory == null) {
             if (useHttpClient) {
                 int concurrenceLevel = crestProperties.containsKey(CREST_CONCURRENCY_LEVEL) ? (Integer) crestProperties.get(CREST_CONCURRENCY_LEVEL) : 1;
-                return HttpClientHttpChannelFactory.create(concurrenceLevel, concurrenceLevel);
+                return HttpClientHttpChannelFactories.create(concurrenceLevel, concurrenceLevel);
             } else {
                 return new HttpURLConnectionHttpChannelFactory();
             }

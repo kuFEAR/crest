@@ -41,8 +41,10 @@ public final class HttpURLConnectionHttpChannel implements HttpChannel {
 
 
     public HttpURLConnectionHttpChannel(HttpURLConnection con, MethodType methodType){
-        this.con = con;
         this.methodType = methodType;
+        this.con = con;
+        this.con.setRequestProperty("Connection", "Keep-Alive");
+        this.con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
     }
 
     public void setSocketTimeout(int timeout) throws IOException {
@@ -74,8 +76,6 @@ public final class HttpURLConnectionHttpChannel implements HttpChannel {
     }
 
     public Response send() throws IOException {
-        con.setRequestProperty("Connection", "Keep-Alive");
-        con.setRequestProperty("User-Agent", "CodeGist-CRest Agent");
         if(methodType.hasEntity()) {
             if(httpEntityWriter.getContentLength() >= 0) {
                con.setRequestProperty("Content-Length", String.valueOf(httpEntityWriter.getContentLength()));
@@ -114,11 +114,11 @@ public final class HttpURLConnectionHttpChannel implements HttpChannel {
         }
 
         public String getContentType() {
-            return con.getHeaderField("Content-Type");
+            return con.getContentType();
         }
 
         public String getContentEncoding() {
-            return con.getHeaderField("Content-Encoding");
+            return con.getContentEncoding();
         }
 
         public void close() {
