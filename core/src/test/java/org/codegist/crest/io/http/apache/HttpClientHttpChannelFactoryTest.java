@@ -25,8 +25,10 @@ import org.apache.http.client.methods.*;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.test.util.Values;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,17 +37,28 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpClientHttpChannelFactory.class,HttpClientHttpChannel.class})
+@PrepareForTest({HttpClientHttpChannelFactory.class,HttpClientHttpChannel.class, HttpClientFactory.class})
 public class HttpClientHttpChannelFactoryTest {
 
     private final HttpClient client = mock(HttpClient.class);
     private final HttpClientHttpChannelFactory toTest = new HttpClientHttpChannelFactory(client);
+
+    @Test
+    public void crestConfigConstructorShouldUseHttpClientFactory() throws NoSuchFieldException, IllegalAccessException {
+        HttpClient expected = mock(HttpClient.class);
+        CRestConfig crestConfig = mock(CRestConfig.class);
+        mockStatic(HttpClientFactory.class);
+        when(HttpClientFactory.create(crestConfig, HttpClientHttpChannelFactory.class)).thenReturn(expected);
+        HttpClientHttpChannelFactory toTest = new HttpClientHttpChannelFactory(crestConfig);
+        assertSame(expected, Classes.getFieldValue(toTest, "client"));
+    }
 
     @Test
     public void openShouldCreateAHttpClientHttpChannelInstanceWithClientForGET() throws Exception {

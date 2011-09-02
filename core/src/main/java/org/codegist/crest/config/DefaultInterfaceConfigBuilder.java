@@ -1,5 +1,6 @@
 package org.codegist.crest.config;
 
+import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.entity.EntityWriter;
 import org.codegist.crest.handler.ErrorHandler;
@@ -21,12 +22,13 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
     private final Class interfaze;
     private final Map<Method, MethodConfigBuilder> methodBuilders;
 
+
     public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
         super(crestConfig);
         this.interfaze = interfaze;
         this.methodBuilders = new HashMap<Method, MethodConfigBuilder>();
         for (Method m : interfaze.getDeclaredMethods()) {
-            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(m, crestConfig, mimeDeserializerRegistry, classSerializerRegistry));
+            this.methodBuilders.put(m, new DefaultMethodConfigBuilder(this, m, crestConfig, mimeDeserializerRegistry, classSerializerRegistry));
         }
     }
 
@@ -240,5 +242,10 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
             }
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder("Interface").append("interface", interfaze).toString();
     }
 }

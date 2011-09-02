@@ -24,6 +24,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpChannelFactory;
@@ -35,10 +36,16 @@ import java.nio.charset.Charset;
 */
 public final class HttpClientHttpChannelFactory implements HttpChannelFactory, Disposable {
 
+    public static final String HTTP_CLIENT_PROP = HttpClientHttpChannelFactory.class.getName() + HttpClientFactory.HTTP_CLIENT;
+
     private final HttpClient client;
 
     public HttpClientHttpChannelFactory(HttpClient client) {
         this.client = client;
+    }
+
+    public HttpClientHttpChannelFactory(CRestConfig crestConfig) {
+        this(HttpClientFactory.create(crestConfig, HttpClientHttpChannelFactory.class));
     }
 
     public HttpChannel open(MethodType methodType, String url, Charset charset) {

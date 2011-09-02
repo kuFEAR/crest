@@ -42,7 +42,7 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
     public RefreshAuthorizationRetryHandler(CRestConfig crestConfig) {
         this.max = crestConfig.getMaxAttempts() + 1;
         this.unauthorizedStatusCode = crestConfig.<Integer>get(UNAUTHORIZED_STATUS_CODE_PROP);
-        authorization = crestConfig.get(Authorization.class);
+        this.authorization = crestConfig.get(Authorization.class);
     }
 
     public boolean retry(RequestException exception, int attemptNumber) throws Exception {

@@ -1,5 +1,7 @@
 package org.codegist.crest.config;
 
+import org.codegist.common.lang.State;
+import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.ParamProcessor;
@@ -18,6 +20,7 @@ import static org.codegist.crest.config.ParamType.HEADER;
 @SuppressWarnings("unchecked")
 class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuilder {
 
+    private final MethodConfigBuilder parent;
     private final Class<?> clazz;
     private final Type genericType;
     private final Registry<Class<?>, Serializer> classSerializerRegistry;
@@ -31,8 +34,10 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     private Class<? extends Serializer> serializer = null;
     private Boolean encoded = false;
 
-    DefaultParamConfigBuilder(CRestConfig crestConfig, Registry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
+
+    DefaultParamConfigBuilder(MethodConfigBuilder parent, CRestConfig crestConfig, Registry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
         super(crestConfig);
+        this.parent = parent;
         this.clazz = Types.getComponentClass(clazz, genericType);
         this.genericType = Types.getComponentType(clazz, genericType);
         this.classSerializerRegistry = classSerializerRegistry;
@@ -56,6 +61,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
      * @inheritDoc
      */
     public ParamConfig build() throws Exception {
+        validate();
         return new DefaultParamConfig(
                 genericType,
                 clazz,
@@ -66,6 +72,10 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
                 serializer != null ?  instantiate(serializer) : classSerializerRegistry.get(clazz),
                 (COOKIE.equals(type) || HEADER.equals(type)) ? true : encoded,
                 paramProcessor != null ? instantiate(paramProcessor) : ParamProcessorFactory.newInstance(type, listSeparator));
+    }
+
+    private void validate(){
+        State.notBlank(name, "Parameter name is mandatory. This is probably due to a missing or empty named param annotation (one of the following: @CookieParam, @FormParam, @HeaderParam, @MatrixParam, @MultiPartParam, @PathParam, @QueryParam).\nLocation information:\n%s", this);
     }
 
     public ParamConfigBuilder setName(String name) {
@@ -103,5 +113,14 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
         this.serializer = serializer;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder("Param")
+                .append("class", clazz)
+                .append("type", type)
+                .append("method", parent)
+                .toString();
     }
 }

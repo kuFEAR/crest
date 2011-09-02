@@ -53,8 +53,8 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -64,6 +64,8 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Registry.class, DefaultMethodConfigBuilder.class, DefaultParamConfigBuilder.class, RegexPathTemplate.class, ComponentFactory.class})
 public class DefaultMethodConfigBuilderTest {
+
+    private final InterfaceConfigBuilder interfaceConfigBuilder = mock(InterfaceConfigBuilder.class);
 
     private final DefaultParamConfigBuilder mockParamConfigBuilder1 = mock(DefaultParamConfigBuilder.class);
     private final DefaultParamConfigBuilder mockParamConfigBuilder2 = mock(DefaultParamConfigBuilder.class);
@@ -84,13 +86,20 @@ public class DefaultMethodConfigBuilderTest {
     private final ParamConfig mockExtraParamConfig2 = mock(ParamConfig.class);
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalStateException.class)
     public void shouldUseDefaultValueForEndpoint() throws Exception {
         DefaultMethodConfigBuilder toTest = newToTest();
         try {
             toTest.build();
         } catch (Exception e) {
-            assertEquals("No end-point provided, method: " + method, e.getMessage());
+            assertEquals("End-point is mandatory. This is probably due to a missing or empty @EndPoint annotation.\n" +
+                    "Either provide an @EndPoint annotation or build a CRest instance as follow:\n" +
+                    "\n" +
+                    "   String defaultEndPoint = ...;\n" +
+                    "   CRest crest = CRest.property(MethodConfig.METHOD_CONFIG_DEFAULT_ENDPOINT, defaultEndPoint).build();\n" +
+                    "\n" +
+                    "Location information:\n" +
+                    "Method[method=public abstract void org.codegist.crest.test.util.TestInterface.m1(java.lang.String,int),interface=Mock for InterfaceConfigBuilder, hashCode: "+interfaceConfigBuilder.hashCode()+"]", e.getMessage());
             throw e;
         }
     }
@@ -731,24 +740,25 @@ public class DefaultMethodConfigBuilderTest {
 
     public DefaultMethodConfigBuilder newToTest() throws Exception {
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(CRestConfig.class, Registry.class, Class.class, Type.class)
-                .withArguments(mockCRestConfig, mockClassSerializerRegistry, String.class, String.class)
+                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, Registry.class, Class.class, Type.class)
+                .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(String.class), eq(String.class))
                 .thenReturn(mockParamConfigBuilder1, mockExtraParamConfigBuilder1, mockExtraParamConfigBuilder2);
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(CRestConfig.class, Registry.class, Class.class, Type.class)
-                .withArguments(mockCRestConfig, mockClassSerializerRegistry, int.class, int.class)
+                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, Registry.class, Class.class, Type.class)
+                .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(int.class), eq(int.class))
                 .thenReturn(mockParamConfigBuilder2);
 
         DefaultMethodConfigBuilder ret = new DefaultMethodConfigBuilder(
+                interfaceConfigBuilder,
                 method,
                 mockCRestConfig,
                 mockMimeDeserializerRegistry,
                 mockClassSerializerRegistry
         );
         verifyNew(DefaultParamConfigBuilder.class)
-                .withArguments(mockCRestConfig, mockClassSerializerRegistry, String.class, String.class);
+                .withArguments(ret, mockCRestConfig, mockClassSerializerRegistry, String.class, String.class);
         verifyNew(DefaultParamConfigBuilder.class)
-                .withArguments(mockCRestConfig, mockClassSerializerRegistry, int.class, int.class);
+                .withArguments(ret, mockCRestConfig, mockClassSerializerRegistry, int.class, int.class);
 
         when(mockParamConfigBuilder1.build()).thenReturn(mockM1ParamConfig1);
         when(mockParamConfigBuilder2.build()).thenReturn(mockM1ParamConfig2);

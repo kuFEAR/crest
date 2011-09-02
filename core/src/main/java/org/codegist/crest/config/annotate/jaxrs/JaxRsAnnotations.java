@@ -20,9 +20,9 @@
 
 package org.codegist.crest.config.annotate.jaxrs;
 
+import org.codegist.common.reflect.Classes;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 
-import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,27 +36,30 @@ public final class JaxRsAnnotations {
     private JaxRsAnnotations(){
         throw new IllegalStateException();
     }
-    public static final  Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> MAPPING;
-
-    static {
+    
+    public static boolean isJaxRsAware(){
+        return Classes.isClassKnown("javax.ws.rs.GET", JaxRsAnnotations.class.getClassLoader());
+    }
+    
+    public static Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> getMapping() {
         Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> handlers = new HashMap<Class<? extends Annotation>, Class<? extends AnnotationHandler>>();
-        handlers.put(Consumes.class, ConsumesAnnotationHandler.class);
-        handlers.put(CookieParam.class, CookieParamAnnotationHandler.class);
-        handlers.put(DELETE.class, DELETEAnnotationHandler.class);
-        handlers.put(Encoded.class, EncodedAnnotationHandler.class);
-        handlers.put(FormParam.class, FormParamAnnotationHandler.class);
-        handlers.put(GET.class, GETAnnotationHandler.class);
-        handlers.put(HEAD.class, HEADAnnotationHandler.class);
-        handlers.put(HeaderParam.class, HeaderParamAnnotationHandler.class);
-        handlers.put(MatrixParam.class, MatrixParamAnnotationHandler.class);
-        handlers.put(OPTIONS.class, OPTIONSAnnotationHandler.class);
-        handlers.put(Path.class, PathAnnotationHandler.class);
-        handlers.put(PathParam.class, PathParamAnnotationHandler.class);
-        handlers.put(POST.class, POSTAnnotationHandler.class);
-        handlers.put(Produces.class, ProducesAnnotationHandler.class);
-        handlers.put(PUT.class, PUTAnnotationHandler.class);
-        handlers.put(QueryParam.class, QueryParamAnnotationHandler.class);
-        handlers.put(DefaultValue.class, DefaultValueAnnotationHandler.class);
-        MAPPING = Collections.unmodifiableMap(handlers);
+        handlers.put(javax.ws.rs.Consumes.class, ConsumesAnnotationHandler.class);
+        handlers.put(javax.ws.rs.CookieParam.class, CookieParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.DELETE.class, DELETEAnnotationHandler.class);
+        handlers.put(javax.ws.rs.Encoded.class, EncodedAnnotationHandler.class);
+        handlers.put(javax.ws.rs.FormParam.class, FormParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.GET.class, GETAnnotationHandler.class);
+        handlers.put(javax.ws.rs.HEAD.class, HEADAnnotationHandler.class);
+        handlers.put(javax.ws.rs.HeaderParam.class, HeaderParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.MatrixParam.class, MatrixParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.OPTIONS.class, OPTIONSAnnotationHandler.class);
+        handlers.put(javax.ws.rs.Path.class, PathAnnotationHandler.class);
+        handlers.put(javax.ws.rs.PathParam.class, PathParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.POST.class, POSTAnnotationHandler.class);
+        handlers.put(javax.ws.rs.Produces.class, ProducesAnnotationHandler.class);
+        handlers.put(javax.ws.rs.PUT.class, PUTAnnotationHandler.class);
+        handlers.put(javax.ws.rs.QueryParam.class, QueryParamAnnotationHandler.class);
+        handlers.put(javax.ws.rs.DefaultValue.class, DefaultValueAnnotationHandler.class);
+        return Collections.unmodifiableMap(handlers);
     }
 }

@@ -49,7 +49,7 @@ public class CommonDeserializationsTest<T extends IDeserializations> extends Bas
         return crest(arrify(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .bind(new CommaSeparatedIntDeserializer(), int[].class)
+                        .bindDeserializer(CommaSeparatedIntDeserializer.class, int[].class)
                         .build());
             }
         })));

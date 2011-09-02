@@ -26,6 +26,7 @@ import org.junit.Test;
 import javax.ws.rs.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -37,29 +38,34 @@ public class JaxRsAnnotationsTest extends NonInstanciableClassTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void mappingShouldBeUnmodifiable(){
-        JaxRsAnnotations.MAPPING.clear();
+        JaxRsAnnotations.getMapping().clear();
+    }
+
+    @Test
+    public void isJaxRsAwareShouldReturnTrueAsAvailableInTestClassPath(){
+        assertTrue(JaxRsAnnotations.isJaxRsAware());
     }
 
     @Test
     public void mappingShouldContainsAllSupportedJaxRsAnnotations(){
-        assertEquals(17, JaxRsAnnotations.MAPPING.size());
-        assertEquals(ConsumesAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(Consumes.class));
-        assertEquals(CookieParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(CookieParam.class));
-        assertEquals(DELETEAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(DELETE.class));
-        assertEquals(EncodedAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(Encoded.class));
-        assertEquals(FormParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(FormParam.class));
-        assertEquals(GETAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(GET.class));
-        assertEquals(HEADAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(HEAD.class));
-        assertEquals(HeaderParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(HeaderParam.class));
-        assertEquals(MatrixParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(MatrixParam.class));
-        assertEquals(OPTIONSAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(OPTIONS.class));
-        assertEquals(PathAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(Path.class));
-        assertEquals(PathParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(PathParam.class));
-        assertEquals(POSTAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(POST.class));
-        assertEquals(ProducesAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(Produces.class));
-        assertEquals(PUTAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(PUT.class));
-        assertEquals(QueryParamAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(QueryParam.class));
-        assertEquals(DefaultValueAnnotationHandler.class, JaxRsAnnotations.MAPPING.get(DefaultValue.class));
+        assertEquals(17, JaxRsAnnotations.getMapping().size());
+        assertEquals(ConsumesAnnotationHandler.class, JaxRsAnnotations.getMapping().get(Consumes.class));
+        assertEquals(CookieParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(CookieParam.class));
+        assertEquals(DELETEAnnotationHandler.class, JaxRsAnnotations.getMapping().get(DELETE.class));
+        assertEquals(EncodedAnnotationHandler.class, JaxRsAnnotations.getMapping().get(Encoded.class));
+        assertEquals(FormParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(FormParam.class));
+        assertEquals(GETAnnotationHandler.class, JaxRsAnnotations.getMapping().get(GET.class));
+        assertEquals(HEADAnnotationHandler.class, JaxRsAnnotations.getMapping().get(HEAD.class));
+        assertEquals(HeaderParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(HeaderParam.class));
+        assertEquals(MatrixParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(MatrixParam.class));
+        assertEquals(OPTIONSAnnotationHandler.class, JaxRsAnnotations.getMapping().get(OPTIONS.class));
+        assertEquals(PathAnnotationHandler.class, JaxRsAnnotations.getMapping().get(Path.class));
+        assertEquals(PathParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(PathParam.class));
+        assertEquals(POSTAnnotationHandler.class, JaxRsAnnotations.getMapping().get(POST.class));
+        assertEquals(ProducesAnnotationHandler.class, JaxRsAnnotations.getMapping().get(Produces.class));
+        assertEquals(PUTAnnotationHandler.class, JaxRsAnnotations.getMapping().get(PUT.class));
+        assertEquals(QueryParamAnnotationHandler.class, JaxRsAnnotations.getMapping().get(QueryParam.class));
+        assertEquals(DefaultValueAnnotationHandler.class, JaxRsAnnotations.getMapping().get(DefaultValue.class));
     }
 
 

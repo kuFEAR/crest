@@ -51,7 +51,19 @@ public class ResponseDeserializerByClassTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenResponseExpectedTypeIsNotRecognized() throws Exception {
         when(mockResponse.getExpectedType()).thenReturn((Class)String.class);
-        toTest.deserialize(mockResponse);
+        try {
+            toTest.deserialize(mockResponse);
+        } catch (Exception e) {
+            assertEquals("Cannot deserialize response to class 'class java.lang.String', cancelling deserialization.\n" +
+                    "This happens after response's Content-Type based deserialization have failed deserializing the response because of an unknown or not present response Content-Type.\n" +
+                    "CRest has a predefined list of known classes for common data type (ei:primitives, InputStream, Reader etc...). These deserializers are used when CRest cannot deserialize the response based on the server response's content-type.\n" +
+                    "The method return type does not fall in the predefined list of known types. You can write your own deserializer and bind it as follow:\n" +
+                    "\n" +
+                    "  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, MyOwnType.class).build();\n" +
+                    "or, if the server can provide a Content-Type:\n" +
+                    "  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, \"the-content-type\").build();", e.getMessage());
+            throw e;
+        }
     }
 
     @Test

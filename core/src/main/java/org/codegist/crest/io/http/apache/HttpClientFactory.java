@@ -21,6 +21,7 @@
 package org.codegist.crest.io.http.apache;
 
 import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -34,35 +35,36 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.codegist.crest.io.http.HttpChannelFactory;
+import org.codegist.crest.CRestConfig;
 
 import java.net.ProxySelector;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public final class HttpClientHttpChannelFactories {
+public final class HttpClientFactory {
 
+    static final String HTTP_CLIENT = "#user-http-client";
     private static final int HTTP_PORT = 80;
     private static final int HTTPS_PORT = 443;
 
-    private HttpClientHttpChannelFactories(){
+    private HttpClientFactory(){
         throw new IllegalStateException();
     }
 
-    public static HttpChannelFactory create(int maxConcurrentConnection, int maxConnectionPerRoute) {
-        DefaultHttpClient httpClient;
-        if (maxConcurrentConnection > 1 || maxConnectionPerRoute > 1) {
+    public static HttpClient create(CRestConfig crestConfig, Class<?> source) {
+        HttpClient httpClient = crestConfig.get(source.getName() + HTTP_CLIENT);
+        if(httpClient != null){
+            return httpClient;
+        }
+
+
+        int concurrencyLevel = crestConfig.getConcurrencyLevel();
+        if (concurrencyLevel > 1) {
             HttpParams params = new BasicHttpParams();
             HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            if (maxConnectionPerRoute > 1) {
-                ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(maxConnectionPerRoute));
-            }
-            if (maxConcurrentConnection > 1) {
-                ConnManagerParams.setMaxTotalConnections(params, maxConcurrentConnection);
-            } else {
-                ConnManagerParams.setMaxTotalConnections(params, 1);
-            }
+            ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(concurrencyLevel));
+            ConnManagerParams.setMaxTotalConnections(params, concurrencyLevel);
 
             SchemeRegistry schemeRegistry = new SchemeRegistry();
             schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), HTTP_PORT));
@@ -73,8 +75,7 @@ public final class HttpClientHttpChannelFactories {
         } else {
             httpClient = new DefaultHttpClient();
         }
-
-        httpClient.setRoutePlanner(new ProxySelectorRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry(), ProxySelector.getDefault()));
-        return new HttpClientHttpChannelFactory(httpClient);
+        ((DefaultHttpClient) httpClient).setRoutePlanner(new ProxySelectorRoutePlanner(httpClient.getConnectionManager().getSchemeRegistry(), ProxySelector.getDefault()));
+        return httpClient;
     }
 }

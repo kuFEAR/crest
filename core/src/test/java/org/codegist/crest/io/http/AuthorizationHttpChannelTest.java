@@ -131,7 +131,8 @@ public class AuthorizationHttpChannelTest {
 
         when(authenticatorManager.authorize(MethodType.getDefault(), url, pairsToAuthenticate)).thenReturn(token);
         when(delegate.send()).thenReturn(expected);
-
+        when(delegate.send()).thenReturn(expected);
+        when(mockHttpEntityWriter.getContentLength()).thenReturn(123);
         toTest.setContentType("content-type-1;charset=utf-8");
         toTest.writeEntityWith(mockHttpEntityWriter);
 
@@ -144,6 +145,7 @@ public class AuthorizationHttpChannelTest {
         inOrder.verify(delegate).send();
         assertTrue(entityCaptor.getValue().getClass().getName().contains("RewritableHttpEntityWriter"));
         assertSame(mockHttpEntityWriter, Classes.getFieldValue(entityCaptor.getValue(), "delegate"));
+        assertSame(123, entityCaptor.getValue().getContentLength());
 
     }
 

@@ -56,28 +56,6 @@ public class CRestTest {
     }
 
     @Test
-    public void jaxrsAwareShouldReturnAJaxrsAwareCRestBuilder(){
-        CRestBuilder expected = mock(CRestBuilder.class);
-        when(builder.jaxrsAware()).thenReturn(expected);
-
-        assertSame(expected, CRest.jaxrsAware());
-
-        verify(builder).jaxrsAware();
-        verifyNoMoreInteractions(builder);
-    }
-
-    @Test
-    public void useHttpClientShouldReturnAHttpClientReadyCRestBuilder(){
-        CRestBuilder expected = mock(CRestBuilder.class);
-        when(builder.useHttpClient()).thenReturn(expected);
-
-        assertSame(expected, CRest.useHttpClient());
-
-        verify(builder).useHttpClient();
-        verifyNoMoreInteractions(builder);
-    }
-
-    @Test
     public void placeholderShouldReturnACRestBuilderWithPlaceholderSet(){
         CRestBuilder expected = mock(CRestBuilder.class);
         when(builder.placeholder("n","v")).thenReturn(expected);
@@ -139,32 +117,6 @@ public class CRestTest {
 
 
 
-
-    @Test
-    public void getJaxrsAwareShouldReturnAJaxrsAwareCRest(){
-        CRestBuilder expectedBuilder = mock(CRestBuilder.class);
-        CRest expected = mock(CRest.class);
-        when(builder.jaxrsAware()).thenReturn(expectedBuilder);
-        when(expectedBuilder.build()).thenReturn(expected);
-
-        assertSame(expected, CRest.getJaxrsAwareInstance());
-
-        verify(builder).jaxrsAware();
-        verifyNoMoreInteractions(builder);
-    }
-
-    @Test
-    public void getHttpClientInstanceShouldReturnAHttpClientReadyCRest(){
-        CRestBuilder expectedBuilder = mock(CRestBuilder.class);
-        CRest expected = mock(CRest.class);
-        when(builder.useHttpClient()).thenReturn(expectedBuilder);
-        when(expectedBuilder.build()).thenReturn(expected);
-
-        assertSame(expected, CRest.getHttpClientInstance());
-
-        verify(builder).useHttpClient();
-        verifyNoMoreInteractions(builder);
-    }
 
     @Test
     public void getInstanceWithPlaceholdersShouldReturnACRestWithPlaceholdersSet(){

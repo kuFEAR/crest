@@ -31,6 +31,18 @@ import static org.codegist.common.lang.Validate.isTrue;
  */
 public class ResponseDeserializerByMimeType implements ResponseDeserializer {
 
+    private static final String MIME_TYPE_NOT_FOUND_ERROR = new StringBuilder("Cannot deserialize response to response's mimeType '%s', cancelling deserialization.\n")
+        .append("CRest has a predefined list of 'known' mime-type for common data type (ei:xml, json, plaintext). ")
+        .append("If the server response if effectively one of these common types, but not part of CRest's default mime type lists, then you can build a CRest instance of follow:\n\n")
+        .append("  CRest crest = new CRestBuilder().bindJsonDeserializerWith(\"server-given-mime-type\").build();\n")
+        .append("or\n")
+        .append("  CRest crest = new CRestBuilder().bindXmlDeserializerWith(\"server-given-mime-type\").build();\n")
+        .append("or\n")
+        .append("  CRest crest = new CRestBuilder().bindPlainTextDeserializerWith(\"server-given-mime-type\").build();\n\n")
+        .append("This will add \"server-given-mime-type\" mime type to the prefedined list of common mime for the respective deserializer.\n")
+        .append("Otherwise, if the mime type represent a custom type, then you can write your own deserializer and bind it as follow:\n\n")
+        .append("  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, \"server-given-mime-type\").build();").toString();
+
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByMimeType.class);
     private final Registry<String, Deserializer> mimeDeserializerRegistry;
 
@@ -40,7 +52,7 @@ public class ResponseDeserializerByMimeType implements ResponseDeserializer {
 
     public <T> T deserialize(Response response) throws Exception {
         String mimeType = response.getContentType();
-        isTrue(mimeDeserializerRegistry.contains(mimeType), "Unknown mimeType %s, cancelling deserialization", mimeType);
+        isTrue(mimeDeserializerRegistry.contains(mimeType), MIME_TYPE_NOT_FOUND_ERROR, mimeType);
         LOG.debug("Trying to deserialize response to Mime Type: %s.", mimeType);
         return mimeDeserializerRegistry.get(mimeType).<T>deserialize(
                 (Class<T>) response.getExpectedType(),

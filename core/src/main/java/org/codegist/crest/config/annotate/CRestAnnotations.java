@@ -36,9 +36,7 @@ public final class CRestAnnotations {
         throw new IllegalStateException();
     }
 
-    public static final  Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> MAPPING;
-
-    static {
+    public static Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> getMapping(){
         Map<Class<? extends Annotation>, Class<? extends AnnotationHandler>> handlers = new HashMap<Class<? extends Annotation>, Class<? extends AnnotationHandler>>();
         handlers.put(ConnectionTimeout.class, ConnectionTimeoutAnnotationHandler.class);
         handlers.put(Consumes.class, ConsumesAnnotationHandler.class);
@@ -77,6 +75,6 @@ public final class CRestAnnotations {
         handlers.put(SocketTimeout.class, SocketTimeoutAnnotationHandler.class);
         handlers.put(MultiPartEntity.class, MultiPartEntityAnnotationHandler.class);
         handlers.put(Deserializer.class, DeserializerAnnotationHandler.class);
-        MAPPING = Collections.unmodifiableMap(handlers);
+        return Collections.unmodifiableMap(handlers);
     }
 }

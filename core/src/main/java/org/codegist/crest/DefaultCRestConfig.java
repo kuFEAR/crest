@@ -22,7 +22,6 @@ package org.codegist.crest;
 
 import org.codegist.common.collect.Maps;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**

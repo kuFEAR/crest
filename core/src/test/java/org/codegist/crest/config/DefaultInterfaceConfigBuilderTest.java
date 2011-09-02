@@ -77,7 +77,7 @@ public class DefaultInterfaceConfigBuilderTest {
 
         when(mockM1MethodConfigBuilder.build()).thenReturn(mockMethodConfigM1);
         when(mockM2MethodConfigBuilder.build()).thenReturn(mockMethodConfigM2);
-        whenNew(DefaultInterfaceConfig.class).withArguments(interfaze, expectedMethodConfigs).thenReturn(expected);
+        whenNew(DefaultInterfaceConfig.class).withArguments( interfaze, expectedMethodConfigs).thenReturn(expected);
 
         InterfaceConfig actual = toTest.build();
         assertSame(expected, actual);
@@ -229,10 +229,10 @@ public class DefaultInterfaceConfigBuilderTest {
     {
         try {
             whenNew(DefaultMethodConfigBuilder.class)
-                    .withArguments(M1, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry)
+                    .withArguments(isA(InterfaceConfigBuilder.class), eq(M1), eq(mockCRestConfig), eq(mockMimeDeserializerRegistry), eq(mockClassSerializerRegistry))
                     .thenReturn(mockM1MethodConfigBuilder);
             whenNew(DefaultMethodConfigBuilder.class)
-                    .withArguments(M2, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry)
+                    .withArguments(isA(InterfaceConfigBuilder.class), eq(M2), eq(mockCRestConfig), eq(mockMimeDeserializerRegistry), eq(mockClassSerializerRegistry))
                     .thenReturn(mockM2MethodConfigBuilder);
             toTest = new DefaultInterfaceConfigBuilder(
                     interfaze,
@@ -241,9 +241,9 @@ public class DefaultInterfaceConfigBuilderTest {
                     mockClassSerializerRegistry
             );
             verifyNew(DefaultMethodConfigBuilder.class)
-                    .withArguments(M1, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry);
+                    .withArguments(toTest, M1, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry);
             verifyNew(DefaultMethodConfigBuilder.class)
-                    .withArguments(M2, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry);
+                    .withArguments(toTest, M2, mockCRestConfig, mockMimeDeserializerRegistry, mockClassSerializerRegistry);
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
         }

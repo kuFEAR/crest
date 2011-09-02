@@ -37,50 +37,50 @@ public class CRestAnnotationsTest extends NonInstanciableClassTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void mappingShouldBeUnmodifiable(){
-        CRestAnnotations.MAPPING.clear();
+        CRestAnnotations.getMapping().clear();
     }
 
     @Test
     public void mappingShouldContainsAllSupportedJaxRsAnnotations(){
         
-        assertEquals(37, CRestAnnotations.MAPPING.size());
-        assertEquals(ConnectionTimeoutAnnotationHandler.class, CRestAnnotations.MAPPING.get(ConnectionTimeout.class));
-        assertEquals(ConsumesAnnotationHandler.class, CRestAnnotations.MAPPING.get(Consumes.class));
-        assertEquals(CookieParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(CookieParam.class));
-        assertEquals(CookieParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(CookieParams.class));
-        assertEquals(DELETEAnnotationHandler.class, CRestAnnotations.MAPPING.get(DELETE.class));
-        assertEquals(EncodedAnnotationHandler.class, CRestAnnotations.MAPPING.get(Encoded.class));
-        assertEquals(EncodingAnnotationHandler.class, CRestAnnotations.MAPPING.get(Encoding.class));
-        assertEquals(EndPointAnnotationHandler.class, CRestAnnotations.MAPPING.get(EndPoint.class));
-        assertEquals(EntityWriterAnnotationHandler.class, CRestAnnotations.MAPPING.get(EntityWriter.class));
-        assertEquals(ErrorHandlerAnnotationHandler.class, CRestAnnotations.MAPPING.get(ErrorHandler.class));
-        assertEquals(FormParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(FormParam.class));
-        assertEquals(FormParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(FormParams.class));
-        assertEquals(GETAnnotationHandler.class, CRestAnnotations.MAPPING.get(GET.class));
-        assertEquals(HEADAnnotationHandler.class, CRestAnnotations.MAPPING.get(HEAD.class));
-        assertEquals(HeaderParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(HeaderParam.class));
-        assertEquals(HeaderParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(HeaderParams.class));
-        assertEquals(ListSeparatorAnnotationHandler.class, CRestAnnotations.MAPPING.get(ListSeparator.class));
-        assertEquals(MatrixParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(MatrixParam.class));
-        assertEquals(MatrixParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(MatrixParams.class));
-        assertEquals(MultiPartParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(MultiPartParam.class));
-        assertEquals(MultiPartParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(MultiPartParams.class));
-        assertEquals(OPTIONSAnnotationHandler.class, CRestAnnotations.MAPPING.get(OPTIONS.class));
-        assertEquals(PathAnnotationHandler.class, CRestAnnotations.MAPPING.get(Path.class));
-        assertEquals(PathParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(PathParam.class));
-        assertEquals(PathParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(PathParams.class));
-        assertEquals(POSTAnnotationHandler.class, CRestAnnotations.MAPPING.get(POST.class));
-        assertEquals(ProducesAnnotationHandler.class, CRestAnnotations.MAPPING.get(Produces.class));
-        assertEquals(PUTAnnotationHandler.class, CRestAnnotations.MAPPING.get(PUT.class));
-        assertEquals(QueryParamAnnotationHandler.class, CRestAnnotations.MAPPING.get(QueryParam.class));
-        assertEquals(QueryParamsAnnotationHandler.class, CRestAnnotations.MAPPING.get(QueryParams.class));
-        assertEquals(RequestInterceptorAnnotationHandler.class, CRestAnnotations.MAPPING.get(RequestInterceptor.class));
-        assertEquals(ResponseHandlerAnnotationHandler.class, CRestAnnotations.MAPPING.get(ResponseHandler.class));
-        assertEquals(RetryHandlerAnnotationHandler.class, CRestAnnotations.MAPPING.get(RetryHandler.class));
-        assertEquals(SerializerAnnotationHandler.class, CRestAnnotations.MAPPING.get(Serializer.class));
-        assertEquals(SocketTimeoutAnnotationHandler.class, CRestAnnotations.MAPPING.get(SocketTimeout.class));
-        assertEquals(MultiPartEntityAnnotationHandler.class, CRestAnnotations.MAPPING.get(MultiPartEntity.class));
-        assertEquals(DeserializerAnnotationHandler.class, CRestAnnotations.MAPPING.get(Deserializer.class));
+        assertEquals(37, CRestAnnotations.getMapping().size());
+        assertEquals(ConnectionTimeoutAnnotationHandler.class, CRestAnnotations.getMapping().get(ConnectionTimeout.class));
+        assertEquals(ConsumesAnnotationHandler.class, CRestAnnotations.getMapping().get(Consumes.class));
+        assertEquals(CookieParamAnnotationHandler.class, CRestAnnotations.getMapping().get(CookieParam.class));
+        assertEquals(CookieParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(CookieParams.class));
+        assertEquals(DELETEAnnotationHandler.class, CRestAnnotations.getMapping().get(DELETE.class));
+        assertEquals(EncodedAnnotationHandler.class, CRestAnnotations.getMapping().get(Encoded.class));
+        assertEquals(EncodingAnnotationHandler.class, CRestAnnotations.getMapping().get(Encoding.class));
+        assertEquals(EndPointAnnotationHandler.class, CRestAnnotations.getMapping().get(EndPoint.class));
+        assertEquals(EntityWriterAnnotationHandler.class, CRestAnnotations.getMapping().get(EntityWriter.class));
+        assertEquals(ErrorHandlerAnnotationHandler.class, CRestAnnotations.getMapping().get(ErrorHandler.class));
+        assertEquals(FormParamAnnotationHandler.class, CRestAnnotations.getMapping().get(FormParam.class));
+        assertEquals(FormParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(FormParams.class));
+        assertEquals(GETAnnotationHandler.class, CRestAnnotations.getMapping().get(GET.class));
+        assertEquals(HEADAnnotationHandler.class, CRestAnnotations.getMapping().get(HEAD.class));
+        assertEquals(HeaderParamAnnotationHandler.class, CRestAnnotations.getMapping().get(HeaderParam.class));
+        assertEquals(HeaderParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(HeaderParams.class));
+        assertEquals(ListSeparatorAnnotationHandler.class, CRestAnnotations.getMapping().get(ListSeparator.class));
+        assertEquals(MatrixParamAnnotationHandler.class, CRestAnnotations.getMapping().get(MatrixParam.class));
+        assertEquals(MatrixParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(MatrixParams.class));
+        assertEquals(MultiPartParamAnnotationHandler.class, CRestAnnotations.getMapping().get(MultiPartParam.class));
+        assertEquals(MultiPartParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(MultiPartParams.class));
+        assertEquals(OPTIONSAnnotationHandler.class, CRestAnnotations.getMapping().get(OPTIONS.class));
+        assertEquals(PathAnnotationHandler.class, CRestAnnotations.getMapping().get(Path.class));
+        assertEquals(PathParamAnnotationHandler.class, CRestAnnotations.getMapping().get(PathParam.class));
+        assertEquals(PathParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(PathParams.class));
+        assertEquals(POSTAnnotationHandler.class, CRestAnnotations.getMapping().get(POST.class));
+        assertEquals(ProducesAnnotationHandler.class, CRestAnnotations.getMapping().get(Produces.class));
+        assertEquals(PUTAnnotationHandler.class, CRestAnnotations.getMapping().get(PUT.class));
+        assertEquals(QueryParamAnnotationHandler.class, CRestAnnotations.getMapping().get(QueryParam.class));
+        assertEquals(QueryParamsAnnotationHandler.class, CRestAnnotations.getMapping().get(QueryParams.class));
+        assertEquals(RequestInterceptorAnnotationHandler.class, CRestAnnotations.getMapping().get(RequestInterceptor.class));
+        assertEquals(ResponseHandlerAnnotationHandler.class, CRestAnnotations.getMapping().get(ResponseHandler.class));
+        assertEquals(RetryHandlerAnnotationHandler.class, CRestAnnotations.getMapping().get(RetryHandler.class));
+        assertEquals(SerializerAnnotationHandler.class, CRestAnnotations.getMapping().get(Serializer.class));
+        assertEquals(SocketTimeoutAnnotationHandler.class, CRestAnnotations.getMapping().get(SocketTimeout.class));
+        assertEquals(MultiPartEntityAnnotationHandler.class, CRestAnnotations.getMapping().get(MultiPartEntity.class));
+        assertEquals(DeserializerAnnotationHandler.class, CRestAnnotations.getMapping().get(Deserializer.class));
     }
 
 

@@ -28,7 +28,7 @@ import org.codegist.crest.NonInstanciableClassTest;
 public class HttpClientHttpChannelFactoriesNonInstantiableTest extends NonInstanciableClassTest {
 
     public HttpClientHttpChannelFactoriesNonInstantiableTest() {
-        super(HttpClientHttpChannelFactories.class);
+        super(HttpClientFactory.class);
     }
 
 }

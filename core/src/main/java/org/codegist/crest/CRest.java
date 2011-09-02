@@ -23,40 +23,18 @@ package org.codegist.crest;
 import java.util.Map;
 
 /**
- * CRest rest-bounded instances behave as follow :
- * <p>- methods with a java.io.InputStream or java.io.Reader return type are always considered as expecting the raw server response. Server InputStream/Reader is then return. It is of the responsability of the client to properly call close() on the given Stream in order to free network resources.
- * <p>- otherwise response is auto-marshalled to the method's return type.
- * <p>- method's arguments are serialized as follow for the normal default case :
- * <p>&nbsp;&nbsp;. Objects and primitives types are being serialized using the String.valueOf() method
- * <p>&nbsp;&nbsp;. Primitive Arrays/Object Arrays/Collections are serialized by calling String.valueOf() for each item and joining the result in a comma separated string.
- * <p>&nbsp;&nbsp;. java.util.Date are serialized to the ISO-8601 date format
- * @see CRest#build(Class)
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public abstract class CRest {
 
-    /**
-     * Build rest-bounded instances of the given interface
-     *
-     * @param interfaze Interface class to get the instance from
-     * @param <T>       Interface class to get the instance from
-     * @return An instance of the given interface
-     * @throws CRestException if anything goes wrong
-     * @see org.codegist.crest.handler.ResponseHandler
-     * @see org.codegist.crest.handler.DefaultResponseHandler
-     */
     public abstract <T> T build(Class<T> interfaze) throws CRestException;
 
     public static CRest getInstance(){
         return new CRestBuilder().build();
     }
 
-    public static CRest getHttpClientInstance(){
-        return useHttpClient().build();
-    }
-
-    public static CRest getJaxrsAwareInstance(){
-        return jaxrsAware().build();
+    public static CRest getInstance(String endpoint){
+        return endpoint(endpoint).build();
     }
 
     public static CRest getInstance(Map<String,String> placeholders){
@@ -75,12 +53,12 @@ public abstract class CRest {
         return basicAuth(username, password).build();
     }
 
-    public static CRestBuilder jaxrsAware(){
-        return new CRestBuilder().jaxrsAware();
+    public static CRestBuilder endpoint(String endpoint) {
+        return new CRestBuilder().endpoint(endpoint);
     }
 
-    public static CRestBuilder useHttpClient(){
-        return new CRestBuilder().useHttpClient();
+    public static CRestBuilder property(String name, String value){
+        return new CRestBuilder().property(name, value);
     }
 
     public static CRestBuilder placeholder(String name, String value){

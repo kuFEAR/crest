@@ -28,26 +28,64 @@
 
         <menu name="About CRest">
             <item name="What is CRest" href="./index.html"/>
-            <item name="Quick Start" href="./quick-start.html"/>
-            <item name="Going Deeper" href="./deeper.html"/>
             <item name="Resources" href="./resources.html"/>
             <item name="Contact" href="./contact.html"/>
         </menu>
 
-        <menu name="Support" href="./support.html">
-            <item name="Android" href="./android.html"/>
-            <item name="OAuth" href="./oauth.html"/>
-            <item name="ASF HttpClient" href="./httpclient.html"/>
-            <item name="Jackson Processor" href="./jackson.html"/>
-            <item name="CGLib" href="./cglib.html"/>
-        </menu>
-
-        <menu name="Examples">
-            <item name="Google" href="./sample-google.html"/>
-            <item name="Twitter" href="./sample-twitter.html"/>
-            <item name="Flickr" href="./sample-flickr.html"/>
-            <item name="Delicious" href="./sample-delicious.html"/>
-            <item name="More" href="./sample/index.html"/>
+        <menu name="Tutorials">
+            <item name="Quick Start" href="./quick-start.html"/>
+            <!-- quickly shows the minimal requirement, dependencies, a small code sample -->
+            <item name="Annotations" href="./annotations/index.html">
+                <!-- CRest's annotations description, comparison with Jaxrs annotations -->
+                <item name="JAX-RS" href="./annotations/jaxrs.html"/>
+                <!-- partial jax-rs support details -->
+            </item>
+            <item name="De/Serialization" href="./serialization/index.html">
+                <!-- Explain de/serialization process, default implementations, default registries etc.. -->
+                <item name="Serialization" href="./serialization/serializers.html"/>
+                <!-- detail registries, types etc.. -->
+                <item name="Deserialization" href="./serialization/deserializers.html"/>
+                <!-- detail registries, mime types etc.. -->
+                <item name="Jackson Processor" href="./serialization/jackson.html"/>
+                <!-- Shows how to configure it and use it / dependencies -->
+                <item name="JAXB" href="./serialization/jaxb.html"/>
+                <!-- Shows how to configure it and use it / dependencies -->
+                <item name="SimpleXml" href="./serialization/simplexml.html"/>
+                <!-- Shows how to configure it and use it / dependencies -->
+                <item name="Multipart" href="./serialization/multipart.html"/>
+                <!-- Shows how to configure it and use it / dependencies -->
+            </item>
+            <item name="IO" href="./io/index.html">
+                <!-- quick word about it, redirect to Deeper/logging -->
+                <item name="Apache Http Client" href="./io/httpclient.html"/>
+                <!-- Explain how to use it / dependencies -->
+                <item name="Http URL Connection" href="./io/platform.html"/>
+                <!-- Explain how to use it / dependencies  -->
+            </item>
+            <item name="Authentication" href="./authentication/index.html">
+                <!-- Explain how authentication is implemented -->
+                <item name="Basic Auth" href="./authentication/basic.html"/>
+                <!-- Explain how to use it -->
+                <item name="OAuth 1.0" href="./authentication/oauth.html"/>
+                <!-- Explain how to use it -->
+            </item>
+            <item name="Deeper" href="./deeper/index.html">
+                <item name="Configuration" href="./deeper/configuration.html"/>
+                <!-- Placeholders, XXXConfig default values, preconfigure EndPoint etc...-->
+                <item name="Logging" href="./deeper/logging.html"/>
+                <!-- different logger implementations, show how to turn on/off Request/Response logging -->
+                <item name="Android" href="./deeper/android.html"/>
+                <!-- recommanded configuration, redirect to samples -->
+                <item name="CGLib" href="./deeper/cglib.html"/>
+                <!-- quick word about it -->
+            </item>
+            <item name="Examples"><!-- make them android samples! -->
+                <item name="Google" href="./sample-google.html"/>
+                <item name="Twitter" href="./sample-twitter.html"/>
+                <item name="Flickr" href="./sample-flickr.html"/>
+                <item name="Delicious" href="./sample-delicious.html"/>
+                <item name="More" href="./sample/index.html"/>
+            </item>
         </menu>
 
         <menu ref="reports"/>

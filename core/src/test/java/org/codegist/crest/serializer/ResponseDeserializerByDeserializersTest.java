@@ -72,7 +72,18 @@ public class ResponseDeserializerByDeserializersTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenResponseDoesNotHaveAnyDeserializers() throws Exception {
         when(mockMethodConfig.getDeserializers()).thenReturn(new Deserializer[0]);
-        toTest.deserialize(mockResponse);
+        try {
+            toTest.deserialize(mockResponse);
+        } catch (Exception e) {
+            assertEquals("No deserializers have been configured for the method config ("+mockMethodConfig+"), cancelling deserialization.\n" +
+                    "This happens after both response's Content-Type and method's return type based deserializations have failed deserializing the response.\n" +
+                    "As a last attempt, CRest will try to use the predefined deserializer for the method, defined using @Consumes(\"some-mime-type\") or @Deserializer(MyDeserializer.class) annotations. If not present, then deserialization is not possible at this point.\n" +
+                    "To fix it, try one of the following:\n" +
+                    "  - Ensure the response has a known Content-Type.\n" +
+                    "  - If response Content-Type is unknown, bind it through CRestBuilder using either a common deserializer or providing your own.\n" +
+                    "  - If response Content-Type cannot be changed, bind a deserializer either through @Consumes(\"some-mime-type\") or @Deserializer(MyDeserializer.class) annotation.", e.getMessage());
+            throw e;
+        }
     }
 
     @Test

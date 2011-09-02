@@ -25,6 +25,7 @@ import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.ResponseHandler;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 import org.codegist.crest.util.JaxbSomeDatasResponseHandler;
 import org.codegist.crest.util.model.jaxb.JaxbSomeData;
 import org.junit.runners.Parameterized;
@@ -49,7 +50,7 @@ public class ComplexObjectDeserializationsWithJaxbTest extends CommonComplexObje
     public static Collection<CRestHolder[]> getData() {
         return crest(arrify(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.deserializeXmlWithJaxb().build(), JAXB_SPECIFIC_PROPERTIES);
+                return new CRestHolder(builder.deserializeXmlWith(JaxbDeserializer.class).build(), JAXB_SPECIFIC_PROPERTIES);
             }
         })));
     }

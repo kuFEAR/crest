@@ -20,6 +20,7 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 
@@ -28,6 +29,7 @@ import org.codegist.crest.io.Response;
  */
 public class ResponseDeserializerComposite implements ResponseDeserializer {
 
+    private static final Logger LOG = Logger.getLogger(ResponseDeserializer.class);
     private final ResponseDeserializer[] delegates;
 
     public ResponseDeserializerComposite(ResponseDeserializer... delegates) {
@@ -40,6 +42,7 @@ public class ResponseDeserializerComposite implements ResponseDeserializer {
             try {
                 return deserializer.<T>deserialize(response);
             } catch (IllegalArgumentException e) {
+                LOG.debug(e);
                 deserializationException = e;
             }
         }

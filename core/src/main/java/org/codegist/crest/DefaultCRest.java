@@ -35,11 +35,6 @@ import org.codegist.crest.util.Requests;
 import java.lang.reflect.Method;
 
 /**
- * <p>On top of the behavior described in {@link org.codegist.crest.CRest}, this implementation adds :
- * <p>- {@link org.codegist.crest.interceptor.RequestInterceptor} to intercept any requests before it gets fired.
- * <p>- {@link org.codegist.crest.serializer.Serializer} to customize the serialization process of any types.
- * <p>- {@link org.codegist.crest.handler.ResponseHandler} to customize response handling when interface method's response type is not one of raw types.
- * <p>- {@link org.codegist.crest.handler.ErrorHandler} to customize how the created interface behaves when any error occurs during the method call process.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 class DefaultCRest extends CRest {
@@ -62,7 +57,8 @@ class DefaultCRest extends CRest {
     @SuppressWarnings("unchecked")
     public <T> T build(Class<T> interfaze) throws CRestException {
         try {
-            return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new CRestInvocationHandler(interfaze), new Class[]{interfaze});
+            InterfaceConfig interfaceConfig = configFactory.newConfig(interfaze);
+            return (T) proxyFactory.createProxy(interfaze.getClassLoader(), new CRestInvocationHandler(interfaceConfig), new Class[]{interfaze});
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
@@ -72,8 +68,8 @@ class DefaultCRest extends CRest {
 
         private final InterfaceConfig interfaceConfig;
 
-        private CRestInvocationHandler(Class<T> interfaze) throws Exception {
-            this.interfaceConfig = configFactory.newConfig(interfaze);
+        CRestInvocationHandler(InterfaceConfig interfaceConfig) throws Exception {
+            this.interfaceConfig = interfaceConfig;
         }
 
         @Override

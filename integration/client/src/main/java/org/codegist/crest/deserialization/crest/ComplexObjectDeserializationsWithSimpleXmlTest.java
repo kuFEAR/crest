@@ -24,6 +24,7 @@ import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.annotate.*;
 import org.codegist.crest.deserialization.common.CommonComplexObjectDeserializationsTest;
 import org.codegist.crest.deserialization.common.IComplexObjectDeserializations;
+import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.util.SimpleXmlSomeDatasResponseHandler;
 import org.codegist.crest.util.model.simplexml.SimpleXmlSomeData;
 import org.junit.runners.Parameterized;
@@ -44,7 +45,7 @@ public class ComplexObjectDeserializationsWithSimpleXmlTest extends CommonComple
     public static Collection<CRestHolder[]> getData() {
         return crest(arrify(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.deserializeXmlWithSimpleXml().build(), SIMPLEXML_SPECIFIC_PROPERTIES);
+                return new CRestHolder(builder.deserializeXmlWith(SimpleXmlDeserializer.class).build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
         })));
     }

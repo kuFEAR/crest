@@ -43,7 +43,7 @@ public class CustomAnnotationsTest extends BaseCRestTest<CustomAnnotationsTest.C
         return crest(arrify(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .bind(CustomAnnotationHandler.class, CustomAnnotation.class)
+                        .bindAnnotationHandler(CustomAnnotationHandler.class, CustomAnnotation.class)
                         .build());
             }
         })));

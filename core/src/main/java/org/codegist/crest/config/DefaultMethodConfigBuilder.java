@@ -1,5 +1,7 @@
 package org.codegist.crest.config;
 
+import org.codegist.common.lang.State;
+import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.net.Urls;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.entity.EntityWriter;
@@ -20,11 +22,18 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.codegist.common.collect.Arrays.*;
-import static org.codegist.common.lang.Validate.notBlank;
 import static org.codegist.crest.config.MethodConfig.*;
 
 class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBuilder {
 
+    private static final String ENDPOINT_MSG = new StringBuilder("End-point is mandatory. This is probably due to a missing or empty @EndPoint annotation.\n")
+                                                         .append("Either provide an @EndPoint annotation or build a CRest instance as follow:\n\n")
+                                                         .append("   String defaultEndPoint = ...;\n")
+                                                         .append("   CRest crest = CRest.property(MethodConfig.METHOD_CONFIG_DEFAULT_ENDPOINT, defaultEndPoint).build();\n")
+                                                         .append("\nLocation information:\n%s")
+                                                         .toString();
+
+    private final InterfaceConfigBuilder parent;
     private final Method method;
     private final List<ParamConfigBuilder> extraParamBuilders = new ArrayList<ParamConfigBuilder>();
     private final List<ParamConfigBuilder> methodParamConfigBuilders = new ArrayList<ParamConfigBuilder>();
@@ -47,14 +56,15 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private final List<String> pathSegments = new ArrayList<String>();
     private final List<String> consumes = new ArrayList<String>(asList("*/*"));
 
-    DefaultMethodConfigBuilder(Method method, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+    DefaultMethodConfigBuilder(InterfaceConfigBuilder parent, Method method, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
         super(crestConfig);
+        this.parent = parent;
         this.method = method;
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
         this.classSerializerRegistry = classSerializerRegistry;
 
         for (int i = 0; i < method.getParameterTypes().length; i++) {
-            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(crestConfig, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
+            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(this, crestConfig, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
             this.methodParamConfigBuilders.add(pcb);
         }
 
@@ -94,6 +104,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
      * @inheritDoc
      */
     public MethodConfig build() throws Exception {
+        validate();
         ParamConfig[] pConfigMethod = buildParams(methodParamConfigBuilders);
         ParamConfig[] pExtraParams = merge(ParamConfig.class, extraParams, buildParams(extraParamBuilders));
         ParamConfig[] allParams = merge(ParamConfig.class, pConfigMethod, pExtraParams);
@@ -116,6 +127,10 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
                 pConfigMethod,
                 pExtraParams
         );
+    }
+
+    private void validate(){
+        State.notBlank(endPoint, ENDPOINT_MSG, this);
     }
 
     private Deserializer[] getDeserializers(){
@@ -147,7 +162,6 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     }
 
     private String buildPath(){
-        notBlank(endPoint, "No end-point provided, method: %s", method);
         List<String> pPathParts = new ArrayList<String>(pathSegments);
         pPathParts.add(0, endPoint);
         String[] paths = arrify(pPathParts, String.class);
@@ -167,7 +181,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     }
 
     public ParamConfigBuilder startExtraParamConfig() {
-        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(getCRestConfig(), classSerializerRegistry, String.class, String.class);
+        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(this, getCRestConfig(), classSerializerRegistry, String.class, String.class);
         extraParamBuilders.add(pcb);
         return pcb;
     }
@@ -266,5 +280,13 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
             b.setListSeparator(listSeparator);
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder("Method")
+                .append("method", method)
+                .append("interface", parent)
+                .toString();
     }
 }

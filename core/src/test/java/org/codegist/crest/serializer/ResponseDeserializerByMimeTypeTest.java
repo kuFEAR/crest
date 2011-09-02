@@ -51,7 +51,24 @@ public class ResponseDeserializerByMimeTypeTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenResponseContentTypeIsNotRecognized() throws Exception {
         when(mockResponse.getContentType()).thenReturn("mime3");
-        toTest.deserialize(mockResponse);
+        try {
+            toTest.deserialize(mockResponse);
+        } catch (Exception e) {
+            assertEquals("Cannot deserialize response to response's mimeType 'mime3', cancelling deserialization.\n" +
+                    "CRest has a predefined list of 'known' mime-type for common data type (ei:xml, json, plaintext). If the server response if effectively one of these common types, but not part of CRest's default mime type lists, then you can build a CRest instance of follow:\n" +
+                    "\n" +
+                    "  CRest crest = new CRestBuilder().bindJsonDeserializerWith(\"server-given-mime-type\").build();\n" +
+                    "or\n" +
+                    "  CRest crest = new CRestBuilder().bindXmlDeserializerWith(\"server-given-mime-type\").build();\n" +
+                    "or\n" +
+                    "  CRest crest = new CRestBuilder().bindPlainTextDeserializerWith(\"server-given-mime-type\").build();\n" +
+                    "\n" +
+                    "This will add \"server-given-mime-type\" mime type to the prefedined list of common mime for the respective deserializer.\n" +
+                    "Otherwise, if the mime type represent a custom type, then you can write your own deserializer and bind it as follow:\n" +
+                    "\n" +
+                    "  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, \"server-given-mime-type\").build();", e.getMessage());
+            throw e;
+        }
     }
 
     @Test

@@ -22,6 +22,7 @@ package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.CRestException;
+import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.io.Response;
 
 import java.io.ByteArrayInputStream;
@@ -37,10 +38,19 @@ import static org.codegist.common.lang.Validate.isTrue;
 public class ResponseDeserializerByDeserializers implements ResponseDeserializer {
 
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByDeserializers.class);
+    private static final String NO_DESERIALIZERS_ERROR = new StringBuilder("No deserializers have been configured for the method config (%s), cancelling deserialization.\n")
+        .append("This happens after both response's Content-Type and method's return type based deserializations have failed deserializing the response.\n")
+        .append("As a last attempt, CRest will try to use the predefined deserializer for the method, defined using @Consumes(\"some-mime-type\") or @Deserializer(MyDeserializer.class) annotations. ")
+        .append("If not present, then deserialization is not possible at this point.\n")
+        .append("To fix it, try one of the following:\n")
+        .append("  - Ensure the response has a known Content-Type.\n")
+        .append("  - If response Content-Type is unknown, bind it through CRestBuilder using either a common deserializer or providing your own.\n")
+        .append("  - If response Content-Type cannot be changed, bind a deserializer either through @Consumes(\"some-mime-type\") or @Deserializer(MyDeserializer.class) annotation.").toString();
 
     public <T> T deserialize(Response response) throws Exception {
-        Deserializer[] deserializers = response.getRequest().getMethodConfig().getDeserializers();
-        isTrue(deserializers.length > 0, "No pre-configured deserializers found for request's method, cancelling deserialization");
+        MethodConfig mc = response.getRequest().getMethodConfig();
+        Deserializer[] deserializers = mc.getDeserializers();
+        isTrue(deserializers.length > 0, NO_DESERIALIZERS_ERROR, mc);
 
         InputStream pStream = response.asStream();
         boolean isDumped;

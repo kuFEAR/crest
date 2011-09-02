@@ -21,6 +21,7 @@
 package org.codegist.crest.io.http.apache;
 
 import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.params.ConnManagerPNames;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -33,7 +34,8 @@ import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
-import org.codegist.crest.io.http.HttpChannelFactory;
+import org.codegist.crest.CRestConfig;
+import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -50,42 +52,50 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpClientHttpChannelFactories.class, Scheme.class, PlainSocketFactory.class,SSLSocketFactory.class,ThreadSafeClientConnManager.class, ConnPerRouteBean.class, BasicHttpParams.class, ProxySelector.class,SchemeRegistry.class,HttpClientHttpChannelFactory.class})
-public class HttpClientHttpChannelFactoriesTest {
+@PrepareForTest({HttpClientFactory.class, Scheme.class, PlainSocketFactory.class,SSLSocketFactory.class,ThreadSafeClientConnManager.class, ConnPerRouteBean.class, BasicHttpParams.class, ProxySelector.class,SchemeRegistry.class,HttpClientHttpChannelFactory.class})
+public class HttpClientFactoryTest {
+
+    private final CRestConfig crestConfig = CRestConfigs.mockDefaultBehavior();
+
 
     @Test
     public void createWithOneShouldCreateDefaultHttpClient() throws Exception {
-        DefaultHttpClient expectedClient = mock(DefaultHttpClient.class);
+
+        DefaultHttpClient expected = mock(DefaultHttpClient.class);
         ProxySelectorRoutePlanner planner = mock(ProxySelectorRoutePlanner.class);
         ClientConnectionManager clientConnectionManager = mock(ClientConnectionManager.class);
         SchemeRegistry schemeRegistry = mock(SchemeRegistry.class);
-        HttpClientHttpChannelFactory expected = mock(HttpClientHttpChannelFactory.class);
         ProxySelector proxySelector = mock(ProxySelector.class);
 
-        when(expectedClient.getConnectionManager()).thenReturn(clientConnectionManager);
+        when(expected.getConnectionManager()).thenReturn(clientConnectionManager);
         when(clientConnectionManager.getSchemeRegistry()).thenReturn(schemeRegistry);
 
         mockStatic(ProxySelector.class);
         when(ProxySelector.getDefault()).thenReturn(proxySelector);
 
-        whenNew(DefaultHttpClient.class).withNoArguments().thenReturn(expectedClient);
-        whenNew(HttpClientHttpChannelFactory.class).withArguments(expectedClient).thenReturn(expected);
+        whenNew(DefaultHttpClient.class).withNoArguments().thenReturn(expected);
         whenNew(ProxySelectorRoutePlanner.class)
                 .withArguments(schemeRegistry, proxySelector).thenReturn(planner);
 
-        HttpChannelFactory actual = HttpClientHttpChannelFactories.create(1,1);
+        HttpClient actual = HttpClientFactory.create(crestConfig, getClass());
         assertSame(expected, actual);
 
-        verify(expectedClient).setRoutePlanner(planner);
+        verify(expected).setRoutePlanner(planner);
+    }
+
+    @Test
+    public void createUserSpecificHttpClientShouldReturnIt() throws Exception {
+        HttpClient expected = mock(HttpClient.class);
+        when(crestConfig.get(getClass().getName() + HttpClientFactory.HTTP_CLIENT)).thenReturn(expected);
+        assertSame(expected, HttpClientFactory.create(crestConfig, getClass()));
     }
 
     @Test
     public void createWithMoreThanOneShouldCreateDefaultHttpClientWithConnectionManagerSetup() throws Exception {
-        DefaultHttpClient expectedClient = mock(DefaultHttpClient.class);
+        DefaultHttpClient expected = mock(DefaultHttpClient.class);
         ProxySelectorRoutePlanner planner = mock(ProxySelectorRoutePlanner.class);
         ClientConnectionManager clientConnectionManager = mock(ClientConnectionManager.class);
         SchemeRegistry schemeRegistry = new SchemeRegistry();
-        HttpClientHttpChannelFactory expected = mock(HttpClientHttpChannelFactory.class);
         ProxySelector proxySelector = mock(ProxySelector.class);
         BasicHttpParams httpParams = mock(BasicHttpParams.class);
         ConnPerRouteBean routeBean = mock(ConnPerRouteBean.class);
@@ -95,7 +105,7 @@ public class HttpClientHttpChannelFactoriesTest {
         Scheme sslScheme = new Scheme("https", sslSocketFactory, 443);
         ThreadSafeClientConnManager threadSafeClientConnManager = mock(ThreadSafeClientConnManager.class);
 
-        when(expectedClient.getConnectionManager()).thenReturn(clientConnectionManager);
+        when(expected.getConnectionManager()).thenReturn(clientConnectionManager);
         when(clientConnectionManager.getSchemeRegistry()).thenReturn(schemeRegistry);
 
         mockStatic(ProxySelector.class);
@@ -111,17 +121,17 @@ public class HttpClientHttpChannelFactoriesTest {
         whenNew(Scheme.class).withArguments("http", plainSocketFactory, 80).thenReturn(plainScheme);
         whenNew(Scheme.class).withArguments("https", sslSocketFactory, 443).thenReturn(sslScheme);
         whenNew(ThreadSafeClientConnManager.class).withArguments(httpParams, schemeRegistry).thenReturn(threadSafeClientConnManager);
-        whenNew(ConnPerRouteBean.class).withArguments(3).thenReturn(routeBean);
+        whenNew(ConnPerRouteBean.class).withArguments(2).thenReturn(routeBean);
         whenNew(BasicHttpParams.class).withNoArguments().thenReturn(httpParams);
-        whenNew(DefaultHttpClient.class).withArguments(threadSafeClientConnManager, httpParams).thenReturn(expectedClient);
-        whenNew(HttpClientHttpChannelFactory.class).withArguments(expectedClient).thenReturn(expected);
+        whenNew(DefaultHttpClient.class).withArguments(threadSafeClientConnManager, httpParams).thenReturn(expected);
         whenNew(ProxySelectorRoutePlanner.class)
                 .withArguments(schemeRegistry, proxySelector).thenReturn(planner);
 
-        HttpChannelFactory actual = HttpClientHttpChannelFactories.create(2,3);
+        when(crestConfig.getConcurrencyLevel()).thenReturn(2);
+        HttpClient actual = HttpClientFactory.create(crestConfig, getClass());
         assertSame(expected, actual);
 
-        verify(expectedClient).setRoutePlanner(planner);
+        verify(expected).setRoutePlanner(planner);
         verify(httpParams).setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         verify(httpParams).setParameter(ConnManagerPNames.MAX_CONNECTIONS_PER_ROUTE, routeBean);
         verify(httpParams).setIntParameter(ConnManagerPNames.MAX_TOTAL_CONNECTIONS, 2);

@@ -28,9 +28,11 @@ import org.codegist.crest.config.annotate.JsonEntityAnnotationHandler;
 import org.codegist.crest.config.annotate.XmlEntityAnnotationHandler;
 import org.codegist.crest.entity.JsonEntityWriter;
 import org.codegist.crest.entity.XmlEntityWriter;
+import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
+import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
 import org.codegist.crest.util.Registry;
 import org.codegist.crest.util.model.BunchOfData;
@@ -61,7 +63,6 @@ public abstract class BaseCRestTest<T> {
 
     public static final String TEST_SERVER = System.getProperty("crest.server.end-point", "http://localhost:8080") + "/crest-server";
     private static final boolean TEST_JAXB = Boolean.valueOf(System.getProperty("crest.test.jaxb", "true"));
-    private static final boolean TEST_JAXRS = Boolean.valueOf(System.getProperty("crest.test.jaxrs", "true"));
     private static final String TEST_TMP_DIR = System.getProperty("crest.test.tmp-dir", null);
 
 
@@ -184,15 +185,12 @@ public abstract class BaseCRestTest<T> {
         CRestBuilder builder = CRest
                     .placeholder("crest.server.end-point", TEST_SERVER)
                     .setConcurrencyLevel(2)
-                    .bind(JsonEntityAnnotationHandler.class, JsonEntity.class)
-                    .bind(XmlEntityAnnotationHandler.class, XmlEntity.class)
-                    .setProperty(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>().register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
+                    .bindAnnotationHandler(JsonEntityAnnotationHandler.class, JsonEntity.class)
+                    .bindAnnotationHandler(XmlEntityAnnotationHandler.class, XmlEntity.class)
+                    .property(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>().register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
                     .addProperties(CREST_PROPERTIES);
-        if(TEST_JAXRS) {
-            builder.jaxrsAware();
-        }
         if(!TEST_JAXB) {
-            builder.deserializeXmlWithSimpleXml();
+            builder.deserializeXmlWith(SimpleXmlDeserializer.class);
         }
 
         return builder;
@@ -255,7 +253,7 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(byDefault());
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.useHttpClient().build());
+                return new CRestHolder(builder.setHttpChannelFactory(HttpClientHttpChannelFactory.class).build());
             }
         }));
         return arrify(holders);
@@ -267,15 +265,16 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
+                        .property(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
                         .build());
             }
         }));
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .setProperty(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
-                        .useHttpClient().build());
+                        .property(CRestConfig.CREST_MAX_ATTEMPTS, maxAttempts)
+                        .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                        .build());
             }
         }));
         return arrify(holders);
@@ -291,7 +290,9 @@ public abstract class BaseCRestTest<T> {
         }));
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
-                return new CRestHolder(builder.useHttpClient().build());
+                return new CRestHolder(builder
+                        .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                        .build());
             }
         }));
         return arrify(holders);
@@ -312,7 +313,8 @@ public abstract class BaseCRestTest<T> {
                 return new CRestHolder(builder
                         .addProperties(getEntitySerializerProperties(TEST_JAXB, true))
                         .bindPlainTextDeserializerWith("text/html", "application/custom", "application/custom1", "application/custom2")
-                        .useHttpClient().build());
+                        .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                        .build());
             }
         }));
 
@@ -358,7 +360,7 @@ public abstract class BaseCRestTest<T> {
         holders.addAll(forEachBaseBuilder(new Builder() {
             public CRestHolder build(CRestBuilder builder) {
                 return new CRestHolder(builder
-                        .useHttpClient()
+                        .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
                         .addProperties(getEntitySerializerProperties(false))
                         .build(), SIMPLEXML_SPECIFIC_PROPERTIES);
             }
@@ -375,7 +377,8 @@ public abstract class BaseCRestTest<T> {
                 public CRestHolder build(CRestBuilder builder) {
                     return new CRestHolder(builder
                             .addProperties(getEntitySerializerProperties(true))
-                            .useHttpClient().build(), JAXB_SPECIFIC_PROPERTIES);
+                            .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                            .build(), JAXB_SPECIFIC_PROPERTIES);
                 }
             }));
         }

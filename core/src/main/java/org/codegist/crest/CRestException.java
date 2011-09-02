@@ -40,10 +40,6 @@ public class CRestException extends RuntimeException {
         super(message, cause);
     }
 
-    public CRestException(Throwable cause) {
-        super(cause);
-    }
-
     public static RuntimeException handle(Throwable e) {
         if (e instanceof CRestException) {
             return handle((CRestException) e);

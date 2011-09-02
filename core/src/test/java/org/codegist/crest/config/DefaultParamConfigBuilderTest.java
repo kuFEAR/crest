@@ -66,15 +66,21 @@ public class DefaultParamConfigBuilderTest {
     private static final Class<?> SINGLE_CLASS_TYPE = Classes.byName(TypeHolder.class, "getSingleType").getReturnType();
 
     private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
+    private final MethodConfigBuilder methodConfigBuilder = mock(MethodConfigBuilder.class);
     private final Registry<Class<?>, Serializer> mockClassSerializerRegistry = mock(Registry.class);
 
 
-    @Test
+    @Test(expected=IllegalStateException.class)
     public void shouldUseDefaultValueForName() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
-        assertCommons(actual);
-        assertNull(actual.getName());
+        try {
+            toTest.build();
+        } catch (Exception e) {
+            assertEquals("Parameter name is mandatory. This is probably due to a missing or empty named param annotation (one of the following: @CookieParam, @FormParam, @HeaderParam, @MatrixParam, @MultiPartParam, @PathParam, @QueryParam).\n" +
+                    "Location information:\n" +
+                    "Param[class=interface java.lang.Comparable,type=QUERY,method="+methodConfigBuilder+"]", e.getMessage());
+            throw e;
+        }
     }
     @Test
     public void shouldOverrideValueForName() throws Exception {
@@ -97,7 +103,7 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForDefaultValue() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertNull(actual.getDefaultValue());
     }
@@ -106,7 +112,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_VALUE, "value");
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertEquals("value", actual.getDefaultValue());
     }
@@ -114,7 +120,7 @@ public class DefaultParamConfigBuilderTest {
     public void shouldUseGivenValueForDefaultValue() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setDefaultValue("value").build();
+        ParamConfig actual = toTest.setName("bla").setDefaultValue("value").build();
         assertCommons(actual);
         assertEquals("value", actual.getDefaultValue());
     }
@@ -122,7 +128,7 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForEncoded() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertFalse(actual.isEncoded());
     }
@@ -131,7 +137,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_ENCODED, true);
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertTrue("value", actual.isEncoded());
     }
@@ -139,7 +145,7 @@ public class DefaultParamConfigBuilderTest {
     public void shouldUseGivenValueForEncoded() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setEncoded(true).build();
+        ParamConfig actual = toTest.setName("bla").setEncoded(true).build();
         assertCommons(actual);
         assertTrue("value", actual.isEncoded());
     }
@@ -150,7 +156,7 @@ public class DefaultParamConfigBuilderTest {
         mockStatic(ParamProcessorFactory.class);
         when(ParamProcessorFactory.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockParamProcessor, actual.getParamProcessor());
     }
@@ -162,7 +168,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, "value");
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockParamProcessor, actual.getParamProcessor());
     }
@@ -174,7 +180,7 @@ public class DefaultParamConfigBuilderTest {
 
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setListSeparator("value").build();
+        ParamConfig actual = toTest.setName("bla").setListSeparator("value").build();
         assertCommons(actual);
         assertSame(mockParamProcessor, actual.getParamProcessor());
     }
@@ -182,7 +188,7 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForType() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertEquals(ParamType.QUERY, actual.getType());
         assertFalse(actual.isEncoded());
@@ -192,7 +198,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_TYPE, ParamType.MATRIX);
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertEquals(ParamType.MATRIX, actual.getType());
         assertFalse(actual.isEncoded());
@@ -201,7 +207,7 @@ public class DefaultParamConfigBuilderTest {
     public void shouldUseGivenValueForType() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setType(ParamType.MATRIX).build();
+        ParamConfig actual = toTest.setName("bla").setType(ParamType.MATRIX).build();
         assertCommons(actual);
         assertEquals(ParamType.MATRIX, actual.getType());
         assertFalse(actual.isEncoded());
@@ -210,7 +216,7 @@ public class DefaultParamConfigBuilderTest {
     public void shouldSetEncodedToTrueForCookie() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setType(ParamType.COOKIE).build();
+        ParamConfig actual = toTest.setName("bla").setType(ParamType.COOKIE).build();
         assertCommons(actual);
         assertEquals(ParamType.COOKIE, actual.getType());
         assertTrue(actual.isEncoded());
@@ -219,7 +225,7 @@ public class DefaultParamConfigBuilderTest {
     public void shouldSetEncodedToTrueForHeader() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setType(ParamType.HEADER).build();
+        ParamConfig actual = toTest.setName("bla").setType(ParamType.HEADER).build();
         assertCommons(actual);
         assertEquals(ParamType.HEADER, actual.getType());
         assertTrue(actual.isEncoded());
@@ -232,7 +238,7 @@ public class DefaultParamConfigBuilderTest {
         when(mockClassSerializerRegistry.get(SINGLE_CLASS_TYPE)).thenReturn(mockToStringSerializer);
 
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockToStringSerializer, actual.getSerializer());
     }
@@ -245,7 +251,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_SERIALIZER, TestSerializer.class);
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockTestSerializer, actual.getSerializer());
     }
@@ -257,7 +263,7 @@ public class DefaultParamConfigBuilderTest {
 
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setSerializer(TestSerializer.class).build();
+        ParamConfig actual = toTest.setName("bla").setSerializer(TestSerializer.class).build();
         assertCommons(actual);
         assertSame(mockTestSerializer, actual.getSerializer());
     }
@@ -270,7 +276,7 @@ public class DefaultParamConfigBuilderTest {
         when(ParamProcessorFactory.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
 
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockParamProcessor, actual.getParamProcessor());
     }
@@ -283,7 +289,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_PROCESSOR, TestParamProcessor.class);
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertSame(mockParamProcessor, actual.getParamProcessor());
     }
@@ -291,7 +297,7 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForMetas() throws Exception {
         DefaultParamConfigBuilder toTest = newToTest();
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertTrue(actual.getMetaDatas().isEmpty());
     }
@@ -300,7 +306,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_METAS, Collections.<String,Object>singletonMap("key","value"));
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.build();
+        ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
         assertEquals(Collections.<String,Object>singletonMap("key","value"), actual.getMetaDatas());
     }
@@ -309,7 +315,7 @@ public class DefaultParamConfigBuilderTest {
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_METAS, Collections.<String,Object>singletonMap("key2","value2"));
         DefaultParamConfigBuilder toTest = newToTest();
 
-        ParamConfig actual = toTest.setMetaDatas(Collections.<String,Object>singletonMap("key","value")).build();
+        ParamConfig actual = toTest.setName("bla").setMetaDatas(Collections.<String,Object>singletonMap("key","value")).build();
         assertCommons(actual);
         assertEquals(Collections.<String,Object>singletonMap("key","value"), actual.getMetaDatas());
     }
@@ -333,7 +339,7 @@ public class DefaultParamConfigBuilderTest {
         return newToTest(ARRAY_GENERIC_TYPE, ARRAY_CLASS_TYPE);
     }
     private DefaultParamConfigBuilder newToTest(Type type, Class<?> clazz) throws Exception {
-        return new DefaultParamConfigBuilder(mockCRestConfig, mockClassSerializerRegistry, clazz, type);
+        return (DefaultParamConfigBuilder) new DefaultParamConfigBuilder(methodConfigBuilder, mockCRestConfig, mockClassSerializerRegistry, clazz, type);
     }
 
     public interface TypeHolder {
