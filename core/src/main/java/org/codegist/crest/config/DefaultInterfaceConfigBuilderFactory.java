@@ -23,18 +23,18 @@ package org.codegist.crest.config;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 /**
  * @author laurent.gilles@codegist.org
  */
 public class DefaultInterfaceConfigBuilderFactory implements InterfaceConfigBuilderFactory {
 
-    private final Registry<String, Deserializer> mimeDeserializerRegistry;
-    private final Registry<Class<?>, Serializer> classSerializerRegistry;
+    private final ComponentRegistry<String, Deserializer> mimeDeserializerRegistry;
+    private final ComponentRegistry<Class<?>, Serializer> classSerializerRegistry;
     private final CRestConfig crestConfig;
 
-    public DefaultInterfaceConfigBuilderFactory(CRestConfig crestConfig, Registry<String, Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+    public DefaultInterfaceConfigBuilderFactory(CRestConfig crestConfig, ComponentRegistry<String, Deserializer> mimeDeserializerRegistry, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
         this.crestConfig = crestConfig;
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
         this.classSerializerRegistry = classSerializerRegistry;

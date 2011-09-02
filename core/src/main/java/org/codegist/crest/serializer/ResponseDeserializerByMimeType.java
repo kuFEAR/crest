@@ -22,7 +22,7 @@ package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import static org.codegist.common.lang.Validate.isTrue;
 
@@ -44,9 +44,9 @@ public class ResponseDeserializerByMimeType implements ResponseDeserializer {
         .append("  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, \"server-given-mime-type\").build();").toString();
 
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByMimeType.class);
-    private final Registry<String, Deserializer> mimeDeserializerRegistry;
+    private final ComponentRegistry<String, Deserializer> mimeDeserializerRegistry;
 
-    public ResponseDeserializerByMimeType(Registry<String, Deserializer> mimeDeserializerRegistry) {
+    public ResponseDeserializerByMimeType(ComponentRegistry<String, Deserializer> mimeDeserializerRegistry) {
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
     }
 

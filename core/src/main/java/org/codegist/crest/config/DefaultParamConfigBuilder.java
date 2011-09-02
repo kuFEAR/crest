@@ -7,7 +7,7 @@ import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.ParamProcessor;
 import org.codegist.crest.param.ParamProcessorFactory;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     private final MethodConfigBuilder parent;
     private final Class<?> clazz;
     private final Type genericType;
-    private final Registry<Class<?>, Serializer> classSerializerRegistry;
+    private final ComponentRegistry<Class<?>, Serializer> classSerializerRegistry;
     private final Class<? extends ParamProcessor> paramProcessor;
     private final Map<String,Object> metas = new HashMap<String,Object>();
 
@@ -35,7 +35,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     private Boolean encoded = false;
 
 
-    DefaultParamConfigBuilder(MethodConfigBuilder parent, CRestConfig crestConfig, Registry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
+    DefaultParamConfigBuilder(MethodConfigBuilder parent, CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
         super(crestConfig);
         this.parent = parent;
         this.clazz = Types.getComponentClass(clazz, genericType);

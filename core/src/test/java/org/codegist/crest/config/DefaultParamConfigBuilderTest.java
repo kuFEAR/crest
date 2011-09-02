@@ -30,7 +30,7 @@ import org.codegist.crest.serializer.ToStringSerializer;
 import org.codegist.crest.test.util.CRestConfigs;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.util.ComponentFactory;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -53,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * @author laurent.gilles@codegist.org
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Registry.class, ParamProcessorFactory.class, ComponentFactory.class})
+@PrepareForTest({ComponentRegistry.class, ParamProcessorFactory.class, ComponentFactory.class})
 public class DefaultParamConfigBuilderTest {
 
     private static final Type LIST_GENERIC_TYPE = Classes.byName(TypeHolder.class, "getListType").getGenericReturnType();
@@ -67,7 +67,7 @@ public class DefaultParamConfigBuilderTest {
 
     private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
     private final MethodConfigBuilder methodConfigBuilder = mock(MethodConfigBuilder.class);
-    private final Registry<Class<?>, Serializer> mockClassSerializerRegistry = mock(Registry.class);
+    private final ComponentRegistry<Class<?>, Serializer> mockClassSerializerRegistry = mock(ComponentRegistry.class);
 
 
     @Test(expected=IllegalStateException.class)

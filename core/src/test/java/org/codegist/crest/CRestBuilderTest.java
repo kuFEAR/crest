@@ -36,8 +36,8 @@ import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.util.ComponentFactory;
+import org.codegist.crest.util.ComponentRegistry;
 import org.codegist.crest.util.Placeholders;
-import org.codegist.crest.util.Registry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -186,7 +186,7 @@ public class CRestBuilderTest {
         InterfaceConfigFactory configFactory = Classes.getFieldValue(actual, "configFactory");
         assertEquals(AnnotationDrivenInterfaceConfigFactory.class, configFactory.getClass());
 
-        Registry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
+        ComponentRegistry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
         Map mapping = Classes.getFieldValue(annotationHandlerRegistry, "mapping");
         assertEquals(CRestAnnotations.getMapping().size() + JaxRsAnnotations.getMapping().size(), mapping.size());
         assertTrue(mapping.keySet().containsAll(CRestAnnotations.getMapping().keySet()));
@@ -199,7 +199,7 @@ public class CRestBuilderTest {
         InterfaceConfigFactory configFactory = Classes.getFieldValue(actual, "configFactory");
         assertEquals(AnnotationDrivenInterfaceConfigFactory.class, configFactory.getClass());
 
-        Registry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
+        ComponentRegistry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
         assertEquals(TestAnnotationHandler.class, annotationHandlerRegistry.get(SuppressWarnings.class).getClass());
         Map mapping = Classes.getFieldValue(annotationHandlerRegistry, "mapping");
         assertEquals(CRestAnnotations.getMapping().size() + JaxRsAnnotations.getMapping().size() + 1, mapping.size());
@@ -219,7 +219,7 @@ public class CRestBuilderTest {
         InterfaceConfigFactory configFactory = Classes.getFieldValue(actualCRest, "configFactory");
         assertEquals(AnnotationDrivenInterfaceConfigFactory.class, configFactory.getClass());
 
-        Registry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
+        ComponentRegistry annotationHandlerRegistry = Classes.getFieldValue(configFactory, "handlersRegistry");
         AnnotationHandler actual = (AnnotationHandler) annotationHandlerRegistry.get(SuppressWarnings.class);
         assertEquals(TestAnnotationHandlerWithConfig.class, actual.getClass());
         assertSame(merged, ((TestAnnotationHandlerWithConfig)actual).config);

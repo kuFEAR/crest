@@ -22,7 +22,7 @@ package org.codegist.crest.entity;
 
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 /**
  * @author laurent.gilles@codegist.org
@@ -37,7 +37,7 @@ public class JsonEntityWriter extends SerializingEntityWriter {
     }
 
     private static Serializer getSerializer(CRestConfig crestConfig){
-        Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
+        ComponentRegistry<String,Serializer> registryMime = crestConfig.get(ComponentRegistry.class.getName() + "#serializers-per-mime");
         return registryMime.get(MIME);
     }
 }

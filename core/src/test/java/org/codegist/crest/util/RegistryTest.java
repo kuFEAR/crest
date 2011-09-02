@@ -1,22 +1,22 @@
 /*
- * Copyright 2010 CodeGist.org
- *
- *     Licensed under the Apache License, Version 2.0 (the "License");
- *     you may not use this file except in compliance with the License.
- *     You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *     Unless required by applicable law or agreed to in writing, software
- *     distributed under the License is distributed on an "AS IS" BASIS,
- *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *     See the License for the specific language governing permissions and
- *     limitations under the License.
- *
- *  ===================================================================
- *
- *  More information at http://www.codegist.org.
- */
+* Copyright 2010 CodeGist.org
+*
+*     Licensed under the Apache License, Version 2.0 (the "License");
+*     you may not use this file except in compliance with the License.
+*     You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*     Unless required by applicable law or agreed to in writing, software
+*     distributed under the License is distributed on an "AS IS" BASIS,
+*     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*     See the License for the specific language governing permissions and
+*     limitations under the License.
+*
+*  ===================================================================
+*
+*  More information at http://www.codegist.org.
+*/
 
 package org.codegist.crest.util;
 
@@ -37,30 +37,30 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
- * @author laurent.gilles@codegist.org
- */
+* @author laurent.gilles@codegist.org
+*/
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Registry.class, ComponentFactory.class})
+@PrepareForTest({ComponentRegistry.class, ComponentFactory.class})
 public class RegistryTest {
 
     private static final CRestConfig mockCRestConfig = mock(CRestConfig.class);
-    private static final SomeClass someInstance1 = mock(SomeClass.class);
+
 
     private final Map<String,Object> someConfig = new HashMap<String, Object>();
-    private final Registry.Builder<String,SomeClass> builder = new Registry.Builder<String,SomeClass>()
-            .register(someInstance1, "1")
+    private final ComponentRegistry.Builder<String,SomeClass> builder = new ComponentRegistry.Builder<String,SomeClass>()
+            .register(SomeClass.class, "1")
             .register(SomeClass.class, new String[]{"2"}, someConfig);
 
-    private Registry<String,SomeClass> toTest(){
+    private ComponentRegistry<String,SomeClass> toTest(){
         return toTest(null);
     }
-    private Registry<String,SomeClass> toTest(SomeClass defautlValue){
+    private ComponentRegistry<String,SomeClass> toTest(Class<? extends SomeClass> defautlValue){
         return builder.defaultAs(defautlValue).build(mockCRestConfig);
     }
 
     @Test
     public void containsShouldReturnTrueIfKnown(){
-        Registry<String,SomeClass> toTest = toTest();
+        ComponentRegistry<String,SomeClass> toTest = toTest();
         assertTrue(toTest.contains("1"));
         assertTrue(toTest.contains("2"));
         assertFalse(toTest.contains("3"));
@@ -70,26 +70,21 @@ public class RegistryTest {
 
     @Test
     public void getUnknownItemShouldReturnDefaultValueIfSet(){
-        SomeClass expectedDefaultValue = new SomeClass();
-        Registry<String,SomeClass> toTest = toTest(expectedDefaultValue);
-        assertSame(expectedDefaultValue, toTest.get("3"));
+
+        ComponentRegistry<String,SomeClass> toTest = toTest(SomeClass2.class);
+        assertEquals(SomeClass2.class, toTest.get("3").getClass());
+        assertSame(toTest.get("3"), toTest.get("3"));
     }
 
     @Test(expected = CRestException.class)
     public void getUnknownItemShouldFailIfNoDefaultValueIsSet(){
-        Registry<String,SomeClass> toTest = toTest();
+        ComponentRegistry<String,SomeClass> toTest = toTest();
         toTest.get("3");
     }
 
     @Test
-    public void getARefShouldReturnItDirectly() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Registry<String,SomeClass> toTest = toTest();
-        assertSame(someInstance1, toTest.get("1"));
-    }
-
-    @Test
     public void getAClassShouldBuildItFirstTimePassingMergedConfigToComponentFactoryAndReuseItAfterward() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Registry<String,SomeClass> toTest = toTest();
+        ComponentRegistry<String,SomeClass> toTest = toTest();
         someConfig.put("some", "value");
 
         SomeClass someInstance2 = mock(SomeClass.class);
@@ -107,7 +102,7 @@ public class RegistryTest {
 
     @Test
     public void getAClassShouldBuildItFirstTimePassingNonMergedConfigToComponentFactoryAndReuseItAfterward() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Registry<String,SomeClass> toTest = toTest();
+        ComponentRegistry<String,SomeClass> toTest = toTest();
         SomeClass someInstance2 = mock(SomeClass.class);
         mockStatic(ComponentFactory.class);
         when(ComponentFactory.instantiate(SomeClass.class, mockCRestConfig)).thenReturn(someInstance2);
@@ -120,7 +115,7 @@ public class RegistryTest {
 
     @Test(expected = CRestException.class)
     public void getAClassShouldThrowCRestExceptionIfBuildingItFails() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        Registry<String,SomeClass> toTest = toTest();
+        ComponentRegistry<String,SomeClass> toTest = toTest();
         mockStatic(ComponentFactory.class);
         when(ComponentFactory.instantiate(SomeClass.class, mockCRestConfig)).thenThrow(new NoSuchMethodException());
         toTest.get("2");
@@ -128,4 +123,5 @@ public class RegistryTest {
 
 
     private static class SomeClass {}
+    private static class SomeClass2 extends SomeClass {}
 }

@@ -9,7 +9,7 @@ import org.codegist.crest.handler.RetryHandler;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
@@ -23,7 +23,7 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
     private final Map<Method, MethodConfigBuilder> methodBuilders;
 
 
-    public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+    public DefaultInterfaceConfigBuilder(Class interfaze, CRestConfig crestConfig, ComponentRegistry<String,Deserializer> mimeDeserializerRegistry, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
         super(crestConfig);
         this.interfaze = interfaze;
         this.methodBuilders = new HashMap<Method, MethodConfigBuilder>();

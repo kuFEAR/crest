@@ -43,7 +43,7 @@ public class CRestAnnotationsTest extends NonInstanciableClassTest {
     @Test
     public void mappingShouldContainsAllSupportedJaxRsAnnotations(){
         
-        assertEquals(37, CRestAnnotations.getMapping().size());
+        assertEquals(36, CRestAnnotations.getMapping().size());
         assertEquals(ConnectionTimeoutAnnotationHandler.class, CRestAnnotations.getMapping().get(ConnectionTimeout.class));
         assertEquals(ConsumesAnnotationHandler.class, CRestAnnotations.getMapping().get(Consumes.class));
         assertEquals(CookieParamAnnotationHandler.class, CRestAnnotations.getMapping().get(CookieParam.class));
@@ -79,7 +79,6 @@ public class CRestAnnotationsTest extends NonInstanciableClassTest {
         assertEquals(RetryHandlerAnnotationHandler.class, CRestAnnotations.getMapping().get(RetryHandler.class));
         assertEquals(SerializerAnnotationHandler.class, CRestAnnotations.getMapping().get(Serializer.class));
         assertEquals(SocketTimeoutAnnotationHandler.class, CRestAnnotations.getMapping().get(SocketTimeout.class));
-        assertEquals(MultiPartEntityAnnotationHandler.class, CRestAnnotations.getMapping().get(MultiPartEntity.class));
         assertEquals(DeserializerAnnotationHandler.class, CRestAnnotations.getMapping().get(Deserializer.class));
     }
 

@@ -30,15 +30,16 @@ import java.util.Map;
 /**
  * @author laurent.gilles@codegist.org
  */
-public final class Registry<K,T> {
+public final class ComponentRegistry<K,T> {
 
-    private final Map<K, Object> mapping;
+    private final Map<K, ItemDescriptor<T>> mapping;
     private final Map<K, T> cache = new HashMap<K, T>();
-    private final T defaultIfNotFound;
+    private final ItemDescriptor<T> defaultIfNotFoundDescriptor;
     private final CRestConfig crestConfig;
+    private T defaultIfNotFound;
 
-    Registry(Map<K, Object> mapping, CRestConfig crestConfig, T defaultIfNotFound) {
-        this.defaultIfNotFound = defaultIfNotFound;
+    ComponentRegistry(Map<K, ItemDescriptor<T>> mapping, CRestConfig crestConfig, ItemDescriptor<T> defaultIfNotFoundDescriptor) {
+        this.defaultIfNotFoundDescriptor = defaultIfNotFoundDescriptor;
         this.mapping = mapping;
         this.crestConfig = crestConfig;
     }
@@ -56,28 +57,20 @@ public final class Registry<K,T> {
     }
 
     private synchronized T buildAndCache(K key, CRestConfig crestConfig) {
-        Object item = mapping.get(key);
-        if (item == null) {
-            if(defaultIfNotFound == null) {
-                throw new CRestException("No item bound to key: " + key);
-            }else{
-                item = defaultIfNotFound;
-            }
+        T value;
+        ItemDescriptor<T> item = mapping.get(key);
+        if (item != null) {
+            value = item.instanciate(crestConfig);
+        }else if(defaultIfNotFound != null) {
+            value = defaultIfNotFound;
+        }else if(defaultIfNotFoundDescriptor != null) {
+            value = defaultIfNotFound = defaultIfNotFoundDescriptor.instanciate(crestConfig);
+        }else{      
+            throw new CRestException("No item bound to key: " + key);
         }
-        T val;
-        if (item instanceof ItemDescriptor) {
-            val = ((ItemDescriptor<T>) item).instanciate(crestConfig);
-        } else {
-            val = (T) item;
-        }
-        return cache(key, val);
+        cache.put(key, value);
+        return value;
     }
-
-    private T cache(K key, T item) {
-        cache.put(key, item);
-        return item;
-    }
-
 
     static final class ItemDescriptor<T> {
         private final Class<? extends T> clazz;
@@ -101,11 +94,11 @@ public final class Registry<K,T> {
 
     public static final class Builder<K,T> {
 
-        private final Map<K, Object> mapping = new HashMap<K, Object>();
-        private T defaultIfNotFound;
+        private final Map<K, ItemDescriptor<T>> mapping = new HashMap<K, ItemDescriptor<T>>();
+        private ItemDescriptor<T> defaultIfNotFoundDescriptor;
 
-        public Registry<K,T> build(CRestConfig crestConfig) {
-            return new Registry<K,T>(mapping, crestConfig, defaultIfNotFound);
+        public ComponentRegistry<K,T> build(CRestConfig crestConfig) {
+            return new ComponentRegistry<K,T>(mapping, crestConfig, defaultIfNotFoundDescriptor);
         }
 
         public Builder<K,T> register(Class<? extends T> item, K... keys) {
@@ -120,13 +113,6 @@ public final class Registry<K,T> {
             return this;
         }
 
-        public Builder<K,T> register(T item, K... keys) {
-            for (K mt : keys) {
-                mapping.put(mt, item);
-            }
-            return this;
-        }
-
         public Builder<K,T> register(Map<K, Class<? extends T>> mapping) {
             for (Map.Entry<K, Class<? extends T>> e : mapping.entrySet()) {
                 register(e.getValue(), e.getKey());
@@ -134,11 +120,14 @@ public final class Registry<K,T> {
             return this;
         }
 
-        public Builder<K,T> defaultAs(T item) {
-            this.defaultIfNotFound = item;
-            return this;
+        public Builder<K,T> defaultAs(Class<? extends T> item) {
+            return defaultAs(item, Collections.<String, Object>emptyMap());
         }
 
+        public Builder<K,T> defaultAs(Class<? extends T> item, Map<String, Object> itemConfig) {
+            this.defaultIfNotFoundDescriptor = new ItemDescriptor<T>(item, itemConfig);
+            return this;
+        }
     }
 }
 

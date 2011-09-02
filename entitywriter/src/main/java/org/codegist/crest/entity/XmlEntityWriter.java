@@ -23,7 +23,7 @@ package org.codegist.crest.entity;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class XmlEntityWriter extends SerializingEntityWriter {
     }
 
     private static Serializer<List<Param>> getSerializer(CRestConfig crestConfig){
-        Registry<String,Serializer> registryMime = crestConfig.get(Registry.class.getName() + "#serializers-per-mime");
+        ComponentRegistry<String,Serializer> registryMime = crestConfig.get(ComponentRegistry.class.getName() + "#serializers-per-mime");
         return registryMime.get(MIME);
     }
 }

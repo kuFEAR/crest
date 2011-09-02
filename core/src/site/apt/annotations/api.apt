@@ -1,0 +1,134 @@
+    ----
+    Annotations | Annotation API
+    ----
+
+Annotation API
+
+    <<CRest>> offers a set of annotations to describe a REST endpoint that reflects and extends the JAX-RS annotatation API.
+
+    You'll find below a comparison of <<CRest>>'s Annotation API, and their JAX-RS equivalents:
+
+* Method annotations
+
+*---------+-------------+-------+---------+-------------+
+|         || Annotation || Type || Method || Description
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @EndPoint\     |  X    |   X     | Sets the method end point
+| JAX-RS  | <None>              |       |         |
+*---------+-------------+-------*---------*------------+
+| CRest\  | @ConnectionTimeout\ |  X    |   X     | Sets the method connection timeout\
+| JAX-RS  | <None>              |       |         | <Default is 20sec>
+*---------+-------------+-------*---------*------------+
+| CRest\  | @SocketTimeout\     |  X    |   X     | Sets the method socket timeout\
+| JAX-RS  | <None>              |       |         | <Default is 20sec>
+*---------+-------------+-------*---------*------------+
+| CRest\  | @Deserializer\     |  X\   |   X\    | Defines the response deserializer\
+| JAX-RS  | <None>             |       |         | <See {{{../serialization/deserialization.html}Deserialization}} page for default behavior details>
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @EntityWriter\     |  X\   |   X\    | Defines the method entity writer\
+| JAX-RS  | <None>             |       |         | <Default behavior will handle POST/PUT entities as application/x-www-form-urlencoded and MultiPart request as multipart/form-data encoded>
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @RequestInterceptor\     |  X\   |   X\    | Defines the method request interceptor, for request auditing, canceling etc..
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @ErrorHandler\     |  X\   |   X\    | Defines the method error handler on request failure\
+| JAX-RS  | <None>             |       |         | <Default behavior wrap and rethrow any exception as a runtime CRestException>
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @ResponseHandler\     |  X\   |   X\    | Defines the method response handler on request success\
+| JAX-RS  | <None>             |       |         | <Default behavior try to deserialize the response>
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @RetryHandler\     |  X\   |   X\    | Defines the method retry handler on request failure\
+| JAX-RS  | <None>             |       |         | <Default behavior will not retry and will delegate any error to the error handler>
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @Consumes\  |  X\   |   X\    | Indicate what content type a method expects, adds an Accept header. Also pre-select the mime-type related deserilializer\
+| JAX-RS  | @Produces   |  X\   |   X     | <See {{{../serialization/deserialization.html}Deserialization}} page for default behavior details>
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @Produces\  |  X\   |   X\    | Sets the request Content-Type header\
+| JAX-RS  | @Consumes   |  X\   |   X     | <Default behavior will set it to application/x-www-form-urlencoded for POST/PUT request, and to multipart/form-data for multipart requests>
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @Encoding\  |  X    |   X     | Sets the encoding used for url and form content encoding\
+| JAX-RS  | <None>      |       |         | <Default is UTF-8>
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @Path\       |  X\   |   X\    | Indicates the path for a method\
+| JAX-RS  | @Path        |  X    |   X     | If specified both at interface and method level, the complete path is the concatenation of the two values.
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @GET\       |  X\   |   X\    | Indicates the interface method uses HTTP GET
+| JAX-RS  | @GET        |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @POST\      |  X\   |   X\    | Indicates the interface method uses HTTP POST
+| JAX-RS  | @POST       |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @PUT\       |  X\   |   X\    | Indicates the interface method uses HTTP PUT
+| JAX-RS  | @PUT        |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @DELETE\    |  X\   |   X\    | Indicates the interface method uses HTTP DELETE
+| JAX-RS  | @DELETE     |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @HEAD\      |  X\   |   X\    | Indicates the interface method uses HTTP HEAD
+| JAX-RS  | @HEAD       |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @OPTIONS\   |  X\   |   X\    | Indicates the interface method uses HTTP OPTIONS
+| JAX-RS  | @OPTIONS    |       |   X     |
+*---------+-------------+-------*---------*-------------+
+| CRest\  | @QueryParams\      |  X    |   X     | List of default query string parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @MatrixParams\     |  X    |   X     | List of default path matrix parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @PathParams\       |  X    |   X     | List of default path segment parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @HeaderParams\     |  X    |   X     | List of default header parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @FormParams\       |  X    |   X     | List of default form paramtesr
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @CookieParams\     |  X    |   X     | List of default cookie parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+| CRest\  | @MultiPartParams\  |  X    |   X     | List of default multipart parameters
+| JAX-RS  | <None>             |       |         |
+*---------+--------------------+-------*---------*-------------+
+
+* Parameter annotations
+
+*---------+--------------------+-------+---------+------------+-------------+
+|         || Annotation        || Type || Method || Parameter || Description
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @Encoded\          |  X\   |   X\    |   X\       | Indicates a parameter should be considered pre-encoded
+| JAX-RS  | @Encoded           |  X    |   X     |   X        |
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @ListSeparator\    |  X    |   X     |   X        | Defines the string to join any array/collection parameter values\
+| JAX-RS  | <None>             |       |         |            | <Default behavior creates many parameters with the same name for each array/collection values>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | <None>             |       |         |   \        | Merged into each @XXXParam annotation
+| JAX-RS  | @DefaultValue      |       |         |   X        | <Default behavior won't send a null or empty array/collection parameter>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @QueryParam\       |  X    |   X\    |   X\       | Defines a query string parameter\
+| JAX-RS  | @QueryParam        |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @MatrixParam\      |  X    |   X\    |   X\       | Defines a path matrix parameter\
+| JAX-RS  | @MatrixParam       |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @PathParam\        |  X    |   X\    |   X\       | Defines a path segment parameter\
+| JAX-RS  | @PathParam         |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @HeaderParam\      |  X    |   X\    |   X\       | Defines a header parameter\
+| JAX-RS  | @HeaderParam       |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @FormParam\        |  X    |   X\    |   X\       | Defines a form paramter\
+| JAX-RS  | @FormParam         |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @CookieParam\      |  X    |   X\    |   X\       | Defines a cookie parameter\
+| JAX-RS  | @CookieParam       |       |   X     |   X        | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @MultiPartParams\  |  X    |   X     |   X        | Defines a multipart parameter\
+| JAX-RS  | <None>             |       |         |            | <Adds a default parameter to the request when applied on interface or method>
+*---------+--------------------+-------*---------*------------*-------------+
+| CRest\  | @Serializer\       |  X\   |   X\    |   X\       | Defines the parameter serializer\
+| JAX-RS  | <None>             |       |         |            | <See {{{../serialization/serialization.html}Serialization}} page for default behavior details>
+*---------+--------------------+-------*---------*------------*-------------+
+
+

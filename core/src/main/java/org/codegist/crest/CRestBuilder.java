@@ -45,7 +45,7 @@ import org.codegist.crest.serializer.jackson.JacksonDeserializer;
 import org.codegist.crest.serializer.jaxb.JaxbDeserializer;
 import org.codegist.crest.serializer.primitive.*;
 import org.codegist.crest.util.ComponentFactory;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import java.io.File;
 import java.io.InputStream;
@@ -79,12 +79,12 @@ public class CRestBuilder {
 
     private final Map<String, Object> jsonDeserializerConfig = new HashMap<String, Object>();
 
-    private final Registry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new Registry.Builder<Class<? extends Annotation>, AnnotationHandler>()
-                            .defaultAs(new NoOpAnnotationHandler())
+    private final ComponentRegistry.Builder<Class<? extends Annotation>, AnnotationHandler> annotationHandlerBuilder = new ComponentRegistry.Builder<Class<? extends Annotation>, AnnotationHandler>()
+                            .defaultAs(NoOpAnnotationHandler.class)
                             .register(CRestAnnotations.getMapping());
 
-    private final Registry.Builder<String,Deserializer> mimeDeserializerBuilder = new Registry.Builder<String,Deserializer>();
-    private final Registry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new Registry.Builder<Class<?>,Deserializer>()
+    private final ComponentRegistry.Builder<String,Deserializer> mimeDeserializerBuilder = new ComponentRegistry.Builder<String,Deserializer>();
+    private final ComponentRegistry.Builder<Class<?>,Deserializer> classDeserializerBuilder = new ComponentRegistry.Builder<Class<?>,Deserializer>()
                             .register(VoidDeserializer.class, Void.class, void.class)
                             .register(ByteArrayDeserializer.class, byte[].class)
                             .register(StringDeserializer.class, String.class)
@@ -107,8 +107,8 @@ public class CRestBuilder {
                             .register(InputStreamDeserializer.class, InputStream.class)
                             .register(ReaderDeserializer.class, Reader.class);
 
-    private final Registry.Builder<Class<?>,Serializer> classSerializerBuilder = new Registry.Builder<Class<?>,Serializer>()
-                            .defaultAs(new ToStringSerializer())
+    private final ComponentRegistry.Builder<Class<?>,Serializer> classSerializerBuilder = new ComponentRegistry.Builder<Class<?>,Serializer>()
+                            .defaultAs(ToStringSerializer.class)
                             .register(DateSerializer.class, Date.class)
                             .register(BooleanSerializer.class, Boolean.class, boolean.class)
                             .register(FileSerializer.class, File.class)
@@ -139,8 +139,8 @@ public class CRestBuilder {
         Authorization authorization = buildAuthorization(plainChannelFactory);
         putIfAbsentAndNotNull(crestProperties, Authorization.class.getName(), authorization);
 
-        Registry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry(crestConfig);
-        Registry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build(crestConfig);
+        ComponentRegistry<String,Deserializer> mimeDeserializerRegistry = buildDeserializerRegistry(crestConfig);
+        ComponentRegistry<Class<?>,Deserializer> classDeserializerRegistry = classDeserializerBuilder.build(crestConfig);
 
         ResponseDeserializer mimeResponseDeserializer = new ResponseDeserializerByMimeType(mimeDeserializerRegistry);
         ResponseDeserializer classResponseDeserializer = new ResponseDeserializerByClass(classDeserializerRegistry);
@@ -151,7 +151,7 @@ public class CRestBuilder {
 
         RequestExecutor requestExecutor = buildRequestExecutor(plainChannelFactory, authorization, baseResponseDeserializer, customTypeResponseDeserializer);
 
-        Registry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build(crestConfig);
+        ComponentRegistry<Class<?>,Serializer> classSerializerRegistry = classSerializerBuilder.build(crestConfig);
         InterfaceConfigBuilderFactory icbf = new DefaultInterfaceConfigBuilderFactory(crestConfig, mimeDeserializerRegistry, classSerializerRegistry);
 
         if(JaxRsAnnotations.isJaxRsAware()) {
@@ -193,7 +193,7 @@ public class CRestBuilder {
         return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, baseResponseDeserializer, customTypeResponseDeserializer));
     }
 
-    private Registry<String,Deserializer> buildDeserializerRegistry(CRestConfig crestConfig) {
+    private ComponentRegistry<String,Deserializer> buildDeserializerRegistry(CRestConfig crestConfig) {
         mimeDeserializerBuilder.register(jsonDeserializer, arrify(jsonMimes, String.class), jsonDeserializerConfig);
         mimeDeserializerBuilder.register(xmlDeserializer, arrify(xmlMimes, String.class), xmlDeserializerConfig);
         mimeDeserializerBuilder.register(StringDeserializer.class, arrify(plainTextMimes, String.class));

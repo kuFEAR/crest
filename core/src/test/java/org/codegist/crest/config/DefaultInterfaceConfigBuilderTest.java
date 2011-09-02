@@ -31,7 +31,7 @@ import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.test.util.TestInterface;
 import org.codegist.crest.test.util.Values;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -52,7 +52,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author laurent.gilles@codegist.org
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Registry.class, DefaultMethodConfigBuilder.class, DefaultInterfaceConfig.class, DefaultInterfaceConfigBuilder.class})
+@PrepareForTest({ComponentRegistry.class, DefaultMethodConfigBuilder.class, DefaultInterfaceConfig.class, DefaultInterfaceConfigBuilder.class})
 public class DefaultInterfaceConfigBuilderTest {
 
     private final DefaultMethodConfigBuilder mockM1MethodConfigBuilder = mock(DefaultMethodConfigBuilder.class);
@@ -60,8 +60,8 @@ public class DefaultInterfaceConfigBuilderTest {
 
     private final Class interfaze = TestInterface.class;
     private final CRestConfig mockCRestConfig = mock(CRestConfig.class);
-    private final Registry<String, Deserializer> mockMimeDeserializerRegistry = mock(Registry.class);
-    private final Registry<Class<?>, Serializer> mockClassSerializerRegistry = mock(Registry.class);
+    private final ComponentRegistry<String, Deserializer> mockMimeDeserializerRegistry = mock(ComponentRegistry.class);
+    private final ComponentRegistry<Class<?>, Serializer> mockClassSerializerRegistry = mock(ComponentRegistry.class);
 
     private final DefaultInterfaceConfigBuilder toTest;
 

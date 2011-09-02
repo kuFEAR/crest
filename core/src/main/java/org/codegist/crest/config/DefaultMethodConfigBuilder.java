@@ -12,8 +12,8 @@ import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.ComponentRegistry;
 import org.codegist.crest.util.MultiParts;
-import org.codegist.crest.util.Registry;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
@@ -29,7 +29,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private static final String ENDPOINT_MSG = new StringBuilder("End-point is mandatory. This is probably due to a missing or empty @EndPoint annotation.\n")
                                                          .append("Either provide an @EndPoint annotation or build a CRest instance as follow:\n\n")
                                                          .append("   String defaultEndPoint = ...;\n")
-                                                         .append("   CRest crest = CRest.property(MethodConfig.METHOD_CONFIG_DEFAULT_ENDPOINT, defaultEndPoint).build();\n")
+                                                         .append("   CRest crest = CRest.endpoint(defaultEndPoint).build();\n")
                                                          .append("\nLocation information:\n%s")
                                                          .toString();
 
@@ -37,8 +37,8 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private final Method method;
     private final List<ParamConfigBuilder> extraParamBuilders = new ArrayList<ParamConfigBuilder>();
     private final List<ParamConfigBuilder> methodParamConfigBuilders = new ArrayList<ParamConfigBuilder>();
-    private final Registry<String,Deserializer> mimeDeserializerRegistry;
-    private final Registry<Class<?>,Serializer> classSerializerRegistry;
+    private final ComponentRegistry<String,Deserializer> mimeDeserializerRegistry;
+    private final ComponentRegistry<Class<?>,Serializer> classSerializerRegistry;
     private final ParamConfig[] extraParams;
 
     private String endPoint = null;
@@ -56,7 +56,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private final List<String> pathSegments = new ArrayList<String>();
     private final List<String> consumes = new ArrayList<String>(asList("*/*"));
 
-    DefaultMethodConfigBuilder(InterfaceConfigBuilder parent, Method method, CRestConfig crestConfig, Registry<String,Deserializer> mimeDeserializerRegistry, Registry<Class<?>, Serializer> classSerializerRegistry) {
+    DefaultMethodConfigBuilder(InterfaceConfigBuilder parent, Method method, CRestConfig crestConfig, ComponentRegistry<String,Deserializer> mimeDeserializerRegistry, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
         super(crestConfig);
         this.parent = parent;
         this.method = method;

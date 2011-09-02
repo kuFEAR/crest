@@ -22,7 +22,7 @@ package org.codegist.crest.config;
 
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.config.annotate.AnnotationHandler;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -43,9 +43,9 @@ import static org.codegist.common.collect.Arrays.merge;
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
     private final InterfaceConfigBuilderFactory icbf;
-    private final Registry<Class<? extends Annotation>, AnnotationHandler> handlersRegistry;
+    private final ComponentRegistry<Class<? extends Annotation>, AnnotationHandler> handlersRegistry;
 
-    public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, Registry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry) {
+    public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, ComponentRegistry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry) {
         this.handlersRegistry = handlersRegistry;
         this.icbf = icbf;
     }

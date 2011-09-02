@@ -22,7 +22,7 @@ package org.codegist.crest.serializer;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 
 import static org.codegist.common.lang.Validate.isTrue;
 
@@ -41,9 +41,9 @@ public class ResponseDeserializerByClass implements ResponseDeserializer {
         .append("  CRest crest = new CRestBuilder().bindDeserializer(MyOwnTypeDeserializer.class, \"the-content-type\").build();").toString();
 
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByClass.class);
-    private final Registry<Class<?>, Deserializer> classDeserializerRegistry;
+    private final ComponentRegistry<Class<?>, Deserializer> classDeserializerRegistry;
 
-    public ResponseDeserializerByClass(Registry<Class<?>, Deserializer> classDeserializerRegistry) {
+    public ResponseDeserializerByClass(ComponentRegistry<Class<?>, Deserializer> classDeserializerRegistry) {
         this.classDeserializerRegistry = classDeserializerRegistry;
     }
 

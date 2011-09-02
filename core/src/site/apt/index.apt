@@ -6,43 +6,49 @@ What is CRest
 
     <<CRest>> (Client Representational State Transfer or Client REST) is a lightweight framework aiming to simplify the integration of external REST services into java applications, somewhat in the way most of the current SOAP WSDL oriented client framework works.
 
-    While SOAP is a protocol, based on a service descriptor format (WSDL) that can be used to automatically generate the client stubs, REST isn't, and REST service implementation varies from one provider to another.
+    <<CRest>> allows the developer to focus on the essential aspects of the integration of a REST service, such as the definition of:
 
-    <<CRest>> allows the developer to only focus on the essential aspects of the integration of a REST service, such as the definition of:
-
-        * the java interface that maps the remote REST methods.
+        * the java interface that reflects the remote REST API.
 
         * the data model the interface will deal with.
 
-    The rest is achieved by annotating the java interface with the relevant information such as the service end-point, the desired timeouts, url formats etc...
+    The rest is achieved by annotating the java interface with the relevant information such as the service end-point, the desired timeouts, parameters etc...
 
     <<CRest>> will handle everything else, from http request generation, execution and auto marshalling of the response.
 
-    Here is a quick example of what a <<CRest>> annotated interface looks like:
+    Here is a quick example of what a <<CRest>> annotated interface would look like:
 
 +-----
 @EndPoint("http://api.twitter.com")
-@ContextPath("/1/statuses")
-@HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
+@Path("/1/statuses")
+@Consumes("application/json")
 public interface StatusService {
 
     @POST
-    @Path("/update.json")
+    @Path("update.json")
     Status updateStatus(
             @FormParam("status") String status,
             @QueryParam("lat") float lat,
             @QueryParam("long") float longitude);
 
-    @Path("/{id}/retweeted_by.json")
+    @Path("{id}/retweeted_by.json")
     User[] getRetweetedBy(
             @PathParam("id") long id,
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
+    @Path("/followers.json")
     User[] getFollowers(@QueryParam("user_id") long userId);
 
 }
 +-----
 
+    And here how you would get an instance of it:
 
++-----
+// Get a CRest instance
+CRest crest = CRest.getInstance();
 
+// Get the StatusService instance
+StatusService statusService = crest.build(StatusService.class);
++-----

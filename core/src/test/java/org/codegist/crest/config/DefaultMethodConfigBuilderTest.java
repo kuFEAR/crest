@@ -36,8 +36,8 @@ import org.codegist.crest.test.util.CRestConfigs;
 import org.codegist.crest.test.util.TestInterface;
 import org.codegist.crest.test.util.Values;
 import org.codegist.crest.util.ComponentFactory;
+import org.codegist.crest.util.ComponentRegistry;
 import org.codegist.crest.util.MultiParts;
-import org.codegist.crest.util.Registry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -62,7 +62,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
  * @author laurent.gilles@codegist.org
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Registry.class, DefaultMethodConfigBuilder.class, DefaultParamConfigBuilder.class, RegexPathTemplate.class, ComponentFactory.class})
+@PrepareForTest({ComponentRegistry.class, DefaultMethodConfigBuilder.class, DefaultParamConfigBuilder.class, RegexPathTemplate.class, ComponentFactory.class})
 public class DefaultMethodConfigBuilderTest {
 
     private final InterfaceConfigBuilder interfaceConfigBuilder = mock(InterfaceConfigBuilder.class);
@@ -76,8 +76,8 @@ public class DefaultMethodConfigBuilderTest {
     private final RegexPathTemplate mockRegexPathTemplate = mock(RegexPathTemplate.class);
     private final Method method = TestInterface.M1;
     private final CRestConfig mockCRestConfig = CRestConfigs.mockDefaultBehavior();
-    private final Registry<String, Deserializer> mockMimeDeserializerRegistry = mock(Registry.class);
-    private final Registry<Class<?>, Serializer> mockClassSerializerRegistry = mock(Registry.class);
+    private final ComponentRegistry<String, Deserializer> mockMimeDeserializerRegistry = mock(ComponentRegistry.class);
+    private final ComponentRegistry<Class<?>, Serializer> mockClassSerializerRegistry = mock(ComponentRegistry.class);
 
     private final ParamConfig mockM1ParamConfig1 = mock(ParamConfig.class);
     private final ParamConfig mockM1ParamConfig2 = mock(ParamConfig.class);
@@ -740,11 +740,11 @@ public class DefaultMethodConfigBuilderTest {
 
     public DefaultMethodConfigBuilder newToTest() throws Exception {
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, Registry.class, Class.class, Type.class)
+                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, ComponentRegistry.class, Class.class, Type.class)
                 .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(String.class), eq(String.class))
                 .thenReturn(mockParamConfigBuilder1, mockExtraParamConfigBuilder1, mockExtraParamConfigBuilder2);
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, Registry.class, Class.class, Type.class)
+                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, ComponentRegistry.class, Class.class, Type.class)
                 .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(int.class), eq(int.class))
                 .thenReturn(mockParamConfigBuilder2);
 

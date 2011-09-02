@@ -34,7 +34,7 @@ import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;
 import org.codegist.crest.serializer.simplexml.SimpleXmlDeserializer;
 import org.codegist.crest.serializer.simplexml.XmlEncodedFormSimpleXmlSerializer;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentRegistry;
 import org.codegist.crest.util.model.BunchOfData;
 import org.codegist.crest.util.model.Data;
 import org.codegist.crest.util.model.SerializerTypes;
@@ -187,7 +187,7 @@ public abstract class BaseCRestTest<T> {
                     .setConcurrencyLevel(2)
                     .bindAnnotationHandler(JsonEntityAnnotationHandler.class, JsonEntity.class)
                     .bindAnnotationHandler(XmlEntityAnnotationHandler.class, XmlEntity.class)
-                    .property(Registry.class.getName() + "#serializers-per-mime", new Registry.Builder<String, Serializer>().register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
+                    .property(ComponentRegistry.class.getName() + "#serializers-per-mime", new ComponentRegistry.Builder<String, Serializer>().register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME).build(new DefaultCRestConfig(CREST_PROPERTIES)))
                     .addProperties(CREST_PROPERTIES);
         if(!TEST_JAXB) {
             builder.deserializeXmlWith(SimpleXmlDeserializer.class);
@@ -200,7 +200,7 @@ public abstract class BaseCRestTest<T> {
         return getEntitySerializerProperties(jaxb, false);
     }
     private static Map<String,Object> getEntitySerializerProperties(boolean jaxb, boolean json){
-        Registry.Builder<String, Serializer> registry = new Registry.Builder<String, Serializer>();
+        ComponentRegistry.Builder<String, Serializer> registry = new ComponentRegistry.Builder<String, Serializer>();
 
         if(jaxb) {
             registry.register(XmlEncodedFormJaxbSerializer.class, XmlEntityWriter.MIME);
@@ -211,7 +211,7 @@ public abstract class BaseCRestTest<T> {
             registry.register(JsonEncodedFormJacksonSerializer.class, JsonEntityWriter.MIME);
         }
 
-        return singletonMap(Registry.class.getName() + "#serializers-per-mime", (Object) registry.build(new DefaultCRestConfig(CREST_PROPERTIES)));
+        return singletonMap(ComponentRegistry.class.getName() + "#serializers-per-mime", (Object) registry.build(new DefaultCRestConfig(CREST_PROPERTIES)));
     }
 
     // these represents the common permutations all test will pass

@@ -1,6 +1,44 @@
     ----
-    JAX-RS Annotations
+    Annotations | JAX-RS Annotations
     ----
 
-bla bla bla
+JAX-RS Annotations
+
+    <<CRest>> currently offers a partial support of the JAX-RS 1.0 annotation API.
+    
+    Currently supported annotations are:
+
+        * javax.ws.rs.GET
+
+        * javax.ws.rs.POST
+
+        * javax.ws.rs.PUT
+
+        * javax.ws.rs.DELETE
+
+        * javax.ws.rs.OPTIONS
+
+        * javax.ws.rs.HEAD
+
+        * javax.ws.rs.Consumes
+
+        * javax.ws.rs.Produces
+
+        * javax.ws.rs.Encoded
+
+        * javax.ws.rs.DefaultValue
+
+        * javax.ws.rs.Path
+
+        * javax.ws.rs.QueryParam
+
+        * javax.ws.rs.PathParam
+
+        * javax.ws.rs.MatrixParam
+
+        * javax.ws.rs.FormParam
+
+        * javax.ws.rs.HeaderParam
+
+        * javax.ws.rs.CookieParam
 

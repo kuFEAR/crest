@@ -1,49 +1,67 @@
 /*
- * Copyright 2010 CodeGist.org
- *
- *     Licensed under the Apache License, Version 2.0 (the "License");
- *     you may not use this file except in compliance with the License.
- *     You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- *     Unless required by applicable law or agreed to in writing, software
- *     distributed under the License is distributed on an "AS IS" BASIS,
- *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *     See the License for the specific language governing permissions and
- *     limitations under the License.
- *
- *  ===================================================================
- *
- *  More information at http://www.codegist.org.
- */
+* Copyright 2010 CodeGist.org
+*
+*     Licensed under the Apache License, Version 2.0 (the "License");
+*     you may not use this file except in compliance with the License.
+*     You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*     Unless required by applicable law or agreed to in writing, software
+*     distributed under the License is distributed on an "AS IS" BASIS,
+*     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*     See the License for the specific language governing permissions and
+*     limitations under the License.
+*
+*  ===================================================================
+*
+*  More information at http://www.codegist.org.
+*/
 
 package org.codegist.crest.serializer;
 
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.io.Response;
-import org.codegist.crest.util.Registry;
+import org.codegist.crest.util.ComponentFactory;
+import org.codegist.crest.util.ComponentRegistry;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
- */
+* @author Laurent Gilles (laurent.gilles@codegist.org)
+*/
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ComponentFactory.class)
 public class ResponseDeserializerByClassTest {
 
-    private final Deserializer mockDeserializerInteger = mock(Deserializer.class);
-    private final Deserializer mockDeserializerInt = mock(Deserializer.class);
+    private final Deserializer2 mockDeserializerInt = mock(Deserializer2.class);
     private final CRestConfig crestConfig = mock(CRestConfig.class);
     private final Response mockResponse = mock(Response.class);
-    private final Registry<Class<?>, Deserializer> registry = new Registry.Builder<Class<?>,Deserializer>()
-            .register(mockDeserializerInteger, Integer.class)
-            .register(mockDeserializerInt, int.class)
+    {
+        mockStatic(ComponentFactory.class);
+        try {
+            when(ComponentFactory.instantiate(eq(Deserializer2.class), any(CRestConfig.class))).thenReturn(mockDeserializerInt);
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+    private final ComponentRegistry<Class<?>, Deserializer> registry = new ComponentRegistry.Builder<Class<?>,Deserializer>()
+            .register(Deserializer1.class, Integer.class)
+            .register(Deserializer2.class, int.class)
             .build(crestConfig);
     private final ResponseDeserializerByClass toTest = new ResponseDeserializerByClass(registry);
 
@@ -78,6 +96,16 @@ public class ResponseDeserializerByClassTest {
         int actual = toTest.<Integer>deserialize(mockResponse);
 
         assertEquals(123, actual);
+    }
+    static class Deserializer1 implements Deserializer {
+        public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
+            return null;
+        }
+    }
+    static class Deserializer2 implements Deserializer {
+        public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
+            return null;
+        }
     }
 
 }

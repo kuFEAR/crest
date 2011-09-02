@@ -1,0 +1,83 @@
+    ----
+    Annotations | User Annotations
+    ----
+
+User Annotations
+
+    <<CRest>> allows you to define your own annotations and let <<CRest>> handle them.
+
+    Here's a quick example:
+
+    Let's say you want to add the time instant as millisecond as a header parameter for each request fired by <<CRest>>.
+
+    In order to do so, let's define a TimeMillisHeaderParam annotation.
+
++-----
+@java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({java.lang.annotation.ElementType.TYPE, java.lang.annotation.ElementType.METHOD})
+public @interface TimeMillisHeaderParam {
+
+    String value() default "timemillis";
+
+}
++-----
+
+    Now let's write the annotation handler <<CRest>> will be using to handle it:
+
++-----
+import static org.codegist.crest.config.ParamType.HEADER;
+import org.codegist.crest.config.InterfaceConfigBuilder;
+import org.codegist.crest.config.MethodConfigBuilder;
+import org.codegist.crest.config.ParamConfigBuilder;
+import org.codegist.crest.config.annotate.AnnotationHandler;
+
+public class TimeMillisHeaderParamAnnotationHandler implements AnnotationHandler<TimeMillisHeaderParam> {
+
+    @Override
+    public void handleInterfaceAnnotation(TimeMillisHeaderParam annotation, InterfaceConfigBuilder builder)  throws Exception {
+        builder.startMethodsExtraParamConfig()
+                .setType(HEADER)
+                .setName(annotation.value())
+                .setDefaultValue(String.valueOf(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void handleMethodAnnotation(TimeMillisHeaderParam annotation, MethodConfigBuilder builder)  throws Exception {
+        builder.startExtraParamConfig()
+                    .setType(HEADER)
+                    .setName(annotation.value())
+                    .setDefaultValue(String.valueOf(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void handleParameterAnnotation(A annotation, ParamConfigBuilder builder) throws Exception {
+        // not applicable
+    }
+
+}
++-----
+
+    Now let's write an interface that uses this annotation:
+
++-----
+@EndPoint("http://some-server")
+public interface MyInterface {
+
+    @Path("somewhere")
+    @TimeMillisHeaderParam
+    public String getSomething();
+
+}
++-----
+
+    Finally, let's wire up everything and start using the interface:
+
++-----
+CRest crest = new CRestBuilder()
+                    .bindAnnotationHandler(TimeMillisHeaderParamAnnotationHandler.class, TimeMillisHeaderParam.class)
+                    .build();
+
+MyInterface myInterface = crest.build(MyInterface.class);
+
+String something = myInterface.getSomething(); // fires a GET http://some-server/somewhere with a header field timemillis=[time millis of the request]
++-----
