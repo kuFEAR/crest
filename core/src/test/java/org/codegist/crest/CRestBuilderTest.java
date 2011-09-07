@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 import static org.codegist.crest.CRestConfig.*;
 import static org.codegist.crest.test.util.Classes.getFieldValue;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
@@ -66,7 +67,18 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({CRestBuilder.class, DefaultCRestConfig.class, HttpURLConnectionHttpChannelFactory.class, ComponentFactory.class})
 public class CRestBuilderTest {
 
+    private final DefaultParamConfigBuilderFactory mockDefaultParamConfigBuilderFactory = mock(DefaultParamConfigBuilderFactory.class);
     private final CRestBuilder toTest = new CRestBuilder();
+
+    {
+        try {
+            whenNew(DefaultParamConfigBuilderFactory.class)
+                    .withArguments(any(CRestConfig.class), any(ComponentRegistry.class))
+                    .thenReturn(mockDefaultParamConfigBuilderFactory);
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     @Test
     public void buildShouldUseJdkProxyFactory() throws NoSuchFieldException, IllegalAccessException {
@@ -89,7 +101,7 @@ public class CRestBuilderTest {
 
     @Test
     public void buildShouldUseHttpURLConnectionHttpChannelFactory() throws Exception{
-        CRestConfig config = mockCRestConfig();
+        CRestConfig config = mockCRestConfig(false);
         HttpURLConnectionHttpChannelFactory expected = mock(HttpURLConnectionHttpChannelFactory.class);
 
         mockStatic(ComponentFactory.class);
@@ -110,7 +122,7 @@ public class CRestBuilderTest {
 
     @Test
     public void setHttpChannelFactoryClassShouldOverrideDefault() throws Exception{
-        CRestConfig config = mockCRestConfig();
+        CRestConfig config = mockCRestConfig(false);
         TestHttpChannelFactory expected = mock(TestHttpChannelFactory.class);
 
         mockStatic(ComponentFactory.class);
@@ -212,7 +224,7 @@ public class CRestBuilderTest {
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("some-prop", new Object());
         CRestConfig merged = mock(CRestConfig.class);
-        CRestConfig config = mockCRestConfig();
+        CRestConfig config = mockCRestConfig(false);
         when(config.merge(map)).thenReturn(merged);
 
         CRest actualCRest = toTest.bindAnnotationHandler(TestAnnotationHandlerWithConfig.class, SuppressWarnings.class, map).build();
@@ -250,6 +262,7 @@ public class CRestBuilderTest {
         Object o = new Object();
         Map<String,Object> expected = new HashMap();
         expected.put(CRestConfig.class.getName() + "#placeholders", o);
+        expected.put(ParamConfigBuilderFactory.class.getName(), mockDefaultParamConfigBuilderFactory);
 
         mockCRestConfig(expected);
         toTest.property(CRestConfig.class.getName() + "#placeholders", o).build();
@@ -301,15 +314,24 @@ public class CRestBuilderTest {
     }
 
 
-    private static Map<String,Object> baseCRestProperties(){
+    private Map<String,Object> baseCRestProperties(){
+        return baseCRestProperties(true);
+    }
+    private Map<String,Object> baseCRestProperties(boolean withParamConfigBuilder){
         Map<String,Object> map = new HashMap<String, Object>();
         map.put(CRestConfig.class.getName() + "#placeholders", new HashMap<String,String>());
+        if(withParamConfigBuilder) {
+            map.put(ParamConfigBuilderFactory.class.getName(), mockDefaultParamConfigBuilderFactory);
+        }
         return map;
     }
-    private static CRestConfig mockCRestConfig() throws Exception {
-        return mockCRestConfig(baseCRestProperties());
+    private CRestConfig mockCRestConfig() throws Exception {
+        return mockCRestConfig(true);
     }
-    private static CRestConfig mockCRestConfig(Map<String,Object> properties) throws Exception {
+    private CRestConfig mockCRestConfig(boolean withParamConfigBuilder) throws Exception {
+        return mockCRestConfig(baseCRestProperties(withParamConfigBuilder));
+    }
+    private CRestConfig mockCRestConfig(Map<String,Object> properties) throws Exception {
         DefaultCRestConfig config = mock(DefaultCRestConfig.class);
         whenNew(DefaultCRestConfig.class)
                 .withParameterTypes(Map.class)

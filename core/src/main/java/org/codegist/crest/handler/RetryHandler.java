@@ -20,21 +20,25 @@
 
 package org.codegist.crest.handler;
 
+import org.codegist.crest.annotate.CRestComponent;
 import org.codegist.crest.io.RequestException;
 
+
 /**
- * Retry handlers are used to control whether a method execution that has failed during the HTTP call should be re-executed or not
- * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <p>RetryHandlers are responsible for deciding whether a request that have failed should be re-tried to not.</p>
+ * <p>RetryHandlers are CRest Components.</p>
+ * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.annotate.CRestComponent
  */
+@CRestComponent
 public interface RetryHandler {
 
     /**
-     *
-     * @param exception
-     * @param attemptNumber starts at 2 as attempt 1 has already been done
-     * @return
-     * @throws Exception
+     * Should return whether to retry or not the request.
+     * @param exception Failure reason
+     * @param attemptNumber current attempt number. Starts at 2, as the first attempt has already been consumed
+     * @return whether to retry or not
+     * @throws Exception Any exception
      */
     boolean retry(RequestException exception, int attemptNumber) throws Exception;
 

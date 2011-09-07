@@ -29,7 +29,6 @@ import org.codegist.crest.config.InterfaceConfigFactory;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.handler.ErrorHandler;
 import org.codegist.crest.handler.ResponseHandler;
-import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
@@ -105,10 +104,8 @@ public class DefaultCRestTest {
         MethodConfig methodConfig = mock(MethodConfig.class);
         Request request = mock(Request.class);
         Response response = mock(Response.class);
-        RequestInterceptor requestInterceptor = mock(RequestInterceptor.class);
         ResponseHandler responseHandler= mock(ResponseHandler.class);
 
-        when(methodConfig.getRequestInterceptor()).thenReturn(requestInterceptor);
         when(methodConfig.getResponseHandler()).thenReturn(responseHandler);
         when(config.getMethodConfig(TestInterface.GET)).thenReturn(methodConfig);
         mockStatic(Requests.class);
@@ -120,7 +117,6 @@ public class DefaultCRestTest {
 
         Object actual = toTest.doInvoke(null, TestInterface.GET, args);
         assertSame(expected, actual);
-        verify(requestInterceptor).beforeFire(request);
     }
 
     @Test
@@ -129,11 +125,9 @@ public class DefaultCRestTest {
         Object[] args = new Object[0];
         MethodConfig methodConfig = mock(MethodConfig.class);
         Request request = mock(Request.class);
-        RequestInterceptor requestInterceptor = mock(RequestInterceptor.class);
         ErrorHandler errorHandler = mock(ErrorHandler.class);
         Exception e = new Exception();
 
-        when(methodConfig.getRequestInterceptor()).thenReturn(requestInterceptor);
         when(methodConfig.getErrorHandler()).thenReturn(errorHandler);
         when(config.getMethodConfig(TestInterface.GET)).thenReturn(methodConfig);
         mockStatic(Requests.class);
@@ -146,7 +140,6 @@ public class DefaultCRestTest {
 
         Object actual = toTest.doInvoke(null, TestInterface.GET, args);
         assertSame(expected, actual);
-        verify(requestInterceptor).beforeFire(request);
         verifyStatic();
         Disposables.dispose(null, e);
     }

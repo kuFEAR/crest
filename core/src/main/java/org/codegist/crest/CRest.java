@@ -23,60 +23,164 @@ package org.codegist.crest;
 import java.util.Map;
 
 /**
+ * <p><b>CRest</b> is an expensive object to create and should be created once at the application bootstrap and re-used. <b>CRest</b> instances are threadsafe.</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @see org.codegist.crest.CRestBuilder
  */
 public abstract class CRest {
 
+    /**
+     * <p>Build an instance of an annotated interface.</p>
+     * <p>Building an instance of an annotated interface is an expensive operation and should be done only once at the application bootstrap, and resulting instances should be re-used. The resulting instances are threadsafe.</p>
+     * @return an instance of an annotated interface
+     */
     public abstract <T> T build(Class<T> interfaze) throws CRestException;
 
+    /**
+     * <p>Build a <b>CRest</b> instance.</p>
+     * @return a <b>CRest</b> instance
+     */
     public static CRest getInstance(){
         return new CRestBuilder().build();
     }
 
+    /**
+     * <p>Build a <b>CRest</b> instance that points by default to the given end-point.</p>
+     * <p>It is not required anymore to set the @EndPoint annotation to the interfaces passed to the resulting <b>CRest</b> instance.</p>
+     * @param endpoint end point to point at
+     * @return a <b>CRest</b> instance
+     * @see org.codegist.crest.CRestBuilder#endpoint(String)
+     */
     public static CRest getInstance(String endpoint){
         return endpoint(endpoint).build();
     }
 
+    /**
+     * <p>Build a <b>CRest</b> instance with the given string-based annotation placeholder replacement map.</p>
+     * @param placeholders placeholder map to use for string-based annotation placeholder replacement
+     * @return a <b>CRest</b> instance
+     * @see org.codegist.crest.CRestBuilder#setPlaceholders(java.util.Map)
+     */
     public static CRest getInstance(Map<String,String> placeholders){
         return placeholders(placeholders).build();
     }
 
+    /**
+     * <p>Build a <b>CRest</b> instance that authenticate all request using OAuth.</p>
+     * @param consumerKey consumer key to use
+     * @param consumerSecret consumer secret to use
+     * @param accessToken access token to use
+     * @param accessTokenSecret access token secret to use
+     * @return a <b>CRest</b> instance
+     * @see org.codegist.crest.CRestBuilder#oauth(String, String, String, String)
+     */
     public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret){
         return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret).build();
     }
 
+    /**
+     * <p>Build a <b>CRest</b> instance that authenticate all request using OAuth.</p>
+     * @param consumerKey consumer key to use
+     * @param consumerSecret consumer secret to use
+     * @param accessToken access token to use
+     * @param accessTokenSecret access token secret to use
+     * @param sessionHandle session handle to use to refresh an expired access token
+     * @param accessTokenRefreshUrl url to use to refresh an expired access token
+     * @return a <b>CRest</b> instance
+     * @see org.codegist.crest.CRestBuilder#oauth(String, String, String, String, String, String)
+     */
     public static CRest getOAuthInstance(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String sessionHandle, String accessTokenRefreshUrl) {
         return oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, accessTokenRefreshUrl).build();
     }
 
+    /**
+     * <p>Build a <b>CRest</b> instance that authenticate all request using Basic Auth.</p>
+     * @param username user name to authenticate the requests with
+     * @param password password to authenticate the requests with
+     * @return a <b>CRest</b> instance
+     * @see org.codegist.crest.CRestBuilder#basicAuth(String, String)
+     */
     public static CRest getBasicAuthInstance(String username, String password){
         return basicAuth(username, password).build();
     }
 
+    /**
+     * <p>Sets the default endpoint all interfaces build through the resulting <b>CRest</b> instance will point at.</p>
+     * @param endpoint end point to point at
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#endpoint(String) 
+     */
     public static CRestBuilder endpoint(String endpoint) {
         return new CRestBuilder().endpoint(endpoint);
     }
 
-    public static CRestBuilder property(String name, String value){
+    /**
+     * <p>Adds given property to the {@link org.codegist.crest.CRestConfig} that will be passed to all <b>CRest</b> components.</p>
+     * @param name property name
+     * @param value property value
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#property(String, Object) 
+     */
+    public static CRestBuilder property(String name, Object value){
         return new CRestBuilder().property(name, value);
     }
 
-    public static CRestBuilder placeholder(String name, String value){
-        return new CRestBuilder().placeholder(name, value);
+    /**
+     * <p>Adds the given placeholder to the string-based annotations placeholders replacement map.</p>
+     * @param placeholder the placeholder to be replaced
+     * @param value the value to replace the placeholder with in string-based annotations
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#placeholder(String, String)  
+     */
+    public static CRestBuilder placeholder(String placeholder, String value){
+        return new CRestBuilder().placeholder(placeholder, value);
     }
 
+    /**
+     * <p>Sets all given placeholders to the string-based annotations placeholders replacement map.</p>
+     * @param placeholders placeholder map to use for string-based annotation placeholder replacement
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#setPlaceholders(java.util.Map)   
+     */                                    
     public static CRestBuilder placeholders(Map<String,String> placeholders){
         return new CRestBuilder().setPlaceholders(placeholders);
     }
 
+    /**
+     * <p>Configures the resulting <b>CRest</b> instance to authenticate all requests using OAuth 1.0</p>
+     * @param consumerKey consumer key to use
+     * @param consumerSecret consumer secret to use
+     * @param accessToken access token to use
+     * @param accessTokenSecret access token secret to use
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#oauth(String, String, String, String) 
+     */
     public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret){
         return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret);
     }
 
+    /**
+     * <p>Configures the resulting <b>CRest</b> instance to authenticate all requests using OAuth 1.0</p>
+     * @param consumerKey consumer key to use
+     * @param consumerSecret consumer secret to use
+     * @param accessToken access token to use
+     * @param accessTokenSecret access token secret to use
+     * @param sessionHandle session handle to use to refresh an expired access token
+     * @param accessTokenRefreshUrl url to use to refresh an expired access token
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#oauth(String, String, String, String, String, String) 
+     */
     public static CRestBuilder oauth(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret, String sessionHandle, String accessTokenRefreshUrl){
         return new CRestBuilder().oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, accessTokenRefreshUrl);
     }
 
+    /**
+     * <p>Configures the resulting <b>CRest</b> instance to authenticate all requests using Basic Auth</p>
+     * @param username user name to authenticate the requests with
+     * @param password password to authenticate the requests with
+     * @return a CRestBuilder instance
+     * @see org.codegist.crest.CRestBuilder#basicAuth(String, String) 
+     */
     public static CRestBuilder basicAuth(String username, String password){
         return new CRestBuilder().basicAuth(username, password);
     }

@@ -20,6 +20,7 @@
 
 package org.codegist.crest.security.oauth.v1;
 
+import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
@@ -48,14 +49,17 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class OAuthApiV1BuilderTest {
 
     private final OAuthToken token = mock(OAuthToken.class);
+    private final CRest crest = mock(CRest.class);
     private final CRestBuilder mockCRestBuilder = mock(CRestBuilder.class);
-
     private final OAuthApiV1Builder toTest = new OAuthApiV1Builder(token, ENDPOINT, mockCRestBuilder);
+    {
+        when(mockCRestBuilder.build()).thenReturn(crest);
+    }
 
     @Test
     public void shouldUseDefaults() throws Exception {
         FormOAuthInterface expectedOAuthInterface = mock(FormOAuthInterface.class);
-        when(mockCRestBuilder.build(FormOAuthInterface.class)).thenReturn(expectedOAuthInterface);
+        when(crest.build(FormOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
         OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)
@@ -80,7 +84,7 @@ public class OAuthApiV1BuilderTest {
         HttpChannelFactory mockChannelFactory = mock(HttpChannelFactory.class);
         VariantProvider mockVariantProvider = mock(VariantProvider.class);
         QueryOAuthInterface expectedOAuthInterface = mock(QueryOAuthInterface.class);
-        when(mockCRestBuilder.build(QueryOAuthInterface.class)).thenReturn(expectedOAuthInterface);
+        when(crest.build(QueryOAuthInterface.class)).thenReturn(expectedOAuthInterface);
 
         OAuthApiV1 mockBuilderResult = mock(OAuthApiV1.class);
         whenNew(OAuthApiV1.class)

@@ -339,7 +339,7 @@ public class DefaultParamConfigBuilderTest {
         return newToTest(ARRAY_GENERIC_TYPE, ARRAY_CLASS_TYPE);
     }
     private DefaultParamConfigBuilder newToTest(Type type, Class<?> clazz) throws Exception {
-        return (DefaultParamConfigBuilder) new DefaultParamConfigBuilder(methodConfigBuilder, mockCRestConfig, mockClassSerializerRegistry, clazz, type);
+        return (DefaultParamConfigBuilder) new DefaultParamConfigBuilder(mockCRestConfig, mockClassSerializerRegistry, clazz, type, methodConfigBuilder);
     }
 
     public interface TypeHolder {

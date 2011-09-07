@@ -29,7 +29,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     private static final String ENDPOINT_MSG = new StringBuilder("End-point is mandatory. This is probably due to a missing or empty @EndPoint annotation.\n")
                                                          .append("Either provide an @EndPoint annotation or build a CRest instance as follow:\n\n")
                                                          .append("   String defaultEndPoint = ...;\n")
-                                                         .append("   CRest crest = CRest.endpoint(defaultEndPoint).build();\n")
+                                                         .append("   CRest crest = CRest.getInstance(defaultEndPoint);\n")
                                                          .append("\nLocation information:\n%s")
                                                          .toString();
 
@@ -64,7 +64,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         this.classSerializerRegistry = classSerializerRegistry;
 
         for (int i = 0; i < method.getParameterTypes().length; i++) {
-            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(this, crestConfig, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i]);
+            ParamConfigBuilder pcb = new DefaultParamConfigBuilder(crestConfig, classSerializerRegistry, method.getParameterTypes()[i], method.getGenericParameterTypes()[i], this);
             this.methodParamConfigBuilders.add(pcb);
         }
 
@@ -181,7 +181,7 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
     }
 
     public ParamConfigBuilder startExtraParamConfig() {
-        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(this, getCRestConfig(), classSerializerRegistry, String.class, String.class);
+        ParamConfigBuilder pcb = new DefaultParamConfigBuilder(getCRestConfig(), classSerializerRegistry, String.class, String.class, this);
         extraParamBuilders.add(pcb);
         return pcb;
     }

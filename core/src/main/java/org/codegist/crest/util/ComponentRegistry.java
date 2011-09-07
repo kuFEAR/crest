@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 
  * @author laurent.gilles@codegist.org
  */
 public final class ComponentRegistry<K,T> {

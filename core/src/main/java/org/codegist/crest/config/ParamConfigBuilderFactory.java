@@ -18,26 +18,15 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.config;
 
-import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
-
-import java.util.Collection;
+import java.lang.reflect.Type;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-public interface RequestBuilder {
+public interface ParamConfigBuilderFactory {
 
-    Request build(MethodConfig methodConfig);
-
-    RequestBuilder addParams(ParamConfig... paramConfigs);
-
-    RequestBuilder addParam(ParamConfig paramConfig);
-
-    RequestBuilder addParam(ParamConfig paramConfig, Object value);
-
-    RequestBuilder addParam(ParamConfig paramConfig, Collection<Object> values);
-
+    ParamConfigBuilder newInstance(Class<?> type, Type genericType);
+    
 }

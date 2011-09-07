@@ -20,20 +20,24 @@
 
 package org.codegist.crest.handler;
 
+import org.codegist.crest.annotate.CRestComponent;
 import org.codegist.crest.io.Request;
 
 /**
- * Error handler gets invoked when an exception occurs during the io firing.
- * <p>If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <p>ErrorHandlers are used called when any error occures during the request execution, after the all retry attempts have been consumed.</p>
+ * <p>ErrorHandlers are CRest Components.</p>
+ * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.annotate.CRestComponent
  */
+@CRestComponent
 public interface ErrorHandler {
 
     /**
-     * @param e       Exception occured
-     * @param <T>     Expected return type
-     * @return any value of the expected error type when exception is ignored
-     * @throws Exception Any thrown exception while be delegated to the client using the relative rest interface.
+     * <p>Handles the exception</p>
+     * @param e Exception occured
+     * @param <T> Expected return type
+     * @return any method compatible return type value if the exception can be ignored
+     * @throws Exception Any thrown exception to throw back to the caller
      * @see ErrorHandler
      */
     <T> T handle(Request request, Exception e) throws Exception;

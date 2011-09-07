@@ -78,7 +78,6 @@ class DefaultCRest extends CRest {
             Request request = Requests.from(requestBuilderFactory, mc, args);
             Response response = null;
             try {
-                mc.getRequestInterceptor().beforeFire(request);
                 response = requestExecutor.execute(request);
                 return mc.getResponseHandler().handle(response);
             }catch(Exception e){

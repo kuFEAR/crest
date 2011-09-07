@@ -8,37 +8,37 @@ JAX-RS Annotations
     
     Currently supported annotations are:
 
-        * javax.ws.rs.GET
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/GET.html}javax.ws.rs.GET}}
 
-        * javax.ws.rs.POST
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/POST.html}javax.ws.rs.POST}}
 
-        * javax.ws.rs.PUT
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/PUT.html}javax.ws.rs.PUT}}
 
-        * javax.ws.rs.DELETE
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/DELETE.html}javax.ws.rs.DELETE}}
 
-        * javax.ws.rs.OPTIONS
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/OPTIONS.html}javax.ws.rs.OPTIONS}}
 
-        * javax.ws.rs.HEAD
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/HEAD.html}javax.ws.rs.HEAD}}
 
-        * javax.ws.rs.Consumes
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Consumes.html}javax.ws.rs.Consumes}}
 
-        * javax.ws.rs.Produces
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Produces.html}javax.ws.rs.Produces}}
 
-        * javax.ws.rs.Encoded
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Encoded.html}javax.ws.rs.Encoded}}
 
-        * javax.ws.rs.DefaultValue
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/DefaultValue.html}javax.ws.rs.DefaultValue}}
 
-        * javax.ws.rs.Path
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Path.html}javax.ws.rs.Path}}
 
-        * javax.ws.rs.QueryParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/QueryParam.html}javax.ws.rs.QueryParam}}
 
-        * javax.ws.rs.PathParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/PathParam.html}javax.ws.rs.PathParam}}
 
-        * javax.ws.rs.MatrixParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/MatrixParam.html}javax.ws.rs.MatrixParam}}
 
-        * javax.ws.rs.FormParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/FormParam.html}javax.ws.rs.FormParam}}
 
-        * javax.ws.rs.HeaderParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/HeaderParam.html}javax.ws.rs.HeaderParam}}
 
-        * javax.ws.rs.CookieParam
+        * {{{http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/CookieParam.html}javax.ws.rs.CookieParam}}
 

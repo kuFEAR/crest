@@ -20,13 +20,15 @@
 
 package org.codegist.crest.interceptor;
 
-import org.codegist.crest.io.Request;
+import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.io.RequestBuilder;
 
 /**
  * Empty io interceptor. Does nothing.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class NoOpRequestInterceptor implements RequestInterceptor {
-    public void beforeFire(Request request) throws Exception {
+    public void beforeFire(RequestBuilder requestBuilder, MethodConfig mc, Object[] args) throws Exception {
+
     }
 }

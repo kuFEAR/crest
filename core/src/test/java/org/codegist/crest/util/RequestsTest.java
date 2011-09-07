@@ -23,6 +23,7 @@ package org.codegist.crest.util;
 import org.codegist.crest.NonInstanciableClassTest;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
+import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestBuilderFactory;
@@ -49,7 +50,7 @@ public class RequestsTest extends NonInstanciableClassTest {
     private final MethodConfig mockMethodConfig = mock(MethodConfig.class);
 
     @Test
-    public void shouldBuildARequestFromGivenParams(){
+    public void shouldBuildARequestFromGivenParams() throws Exception {
         Object[] args = new Object[]{"1",new Object[]{"a","b"}, new Object[]{null}, asList("a","b", "c"), null};
 
         ParamConfig[] extraparams = {};
@@ -58,6 +59,7 @@ public class RequestsTest extends NonInstanciableClassTest {
         ParamConfig pc3 = mock(ParamConfig.class);
         ParamConfig pc4 = mock(ParamConfig.class);
         ParamConfig pc5 = mock(ParamConfig.class);
+        RequestInterceptor requestInterceptor = mock(RequestInterceptor.class);
         Request expected = mock(Request.class);
 
         when(mockRequestBuilderFactory.create()).thenReturn(mockRequestBuilder);
@@ -72,7 +74,9 @@ public class RequestsTest extends NonInstanciableClassTest {
         when(mockMethodConfig.getParamConfig(2)).thenReturn(pc3);
         when(mockMethodConfig.getParamConfig(3)).thenReturn(pc4);
         when(mockMethodConfig.getParamConfig(4)).thenReturn(pc5);
+        when(mockMethodConfig.getRequestInterceptor()).thenReturn(requestInterceptor);
         when(pc5.getDefaultValue()).thenReturn("default");
+
 
         when(mockRequestBuilder.build(mockMethodConfig)).thenReturn(expected);
 
@@ -84,6 +88,7 @@ public class RequestsTest extends NonInstanciableClassTest {
         verify(mockRequestBuilder).addParam(pc2, Arrays.<Object>asList("a","b"));
         verify(mockRequestBuilder).addParam(pc4, Arrays.<Object>asList("a","b","c"));
         verify(mockRequestBuilder).addParam(pc5);
+        verify(requestInterceptor).beforeFire(mockRequestBuilder, mockMethodConfig, args);
         verify(mockRequestBuilder).build(mockMethodConfig);
         verifyNoMoreInteractions(mockRequestBuilder);
 

@@ -20,42 +20,27 @@
 
 package org.codegist.crest.config;
 
+import org.codegist.crest.CRestConfig;
 import org.codegist.crest.serializer.Serializer;
+import org.codegist.crest.util.ComponentRegistry;
 
-import java.util.Map;
+import java.lang.reflect.Type;
 
 /**
  * @author laurent.gilles@codegist.org
  */
-public interface ParamConfigBuilder {
+public class DefaultParamConfigBuilderFactory implements ParamConfigBuilderFactory {
 
-    ParamConfig build() throws Exception;
+    private final ComponentRegistry<Class<?>, Serializer> classSerializerRegistry;
+    private final CRestConfig crestConfig;
 
-    ParamConfigBuilder setName(String name);
+    public DefaultParamConfigBuilderFactory(CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
+        this.crestConfig = crestConfig;
+        this.classSerializerRegistry = classSerializerRegistry;
+    }
 
-    ParamConfigBuilder setDefaultValue(String defaultValue);
+    public ParamConfigBuilder newInstance(Class<?> type, Type genericType) {
+        return new DefaultParamConfigBuilder(crestConfig, classSerializerRegistry, type, genericType);
+    }
 
-    ParamConfigBuilder setListSeparator(String listSeparator);
-
-    ParamConfigBuilder setEncoded(boolean encoded);
-
-    ParamConfigBuilder setMetaDatas(Map<String,Object> metadatas);
-
-    ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer);
-
-    ParamConfigBuilder setType(ParamType type);
-
-    ParamConfigBuilder forCookie();
-
-    ParamConfigBuilder forQuery();
-
-    ParamConfigBuilder forPath();
-
-    ParamConfigBuilder forForm();
-
-    ParamConfigBuilder forMultiPart();
-
-    ParamConfigBuilder forHeader();
-
-    ParamConfigBuilder forMatrix();
 }

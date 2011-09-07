@@ -49,6 +49,7 @@ public final class OAuthApiV1Builder {
                                                     .placeholder("oauth.request-token.path", requestTokenPath)
                                                     .placeholder("oauth.refresh-access-token.path", refreshAccessTokenPath)
                                                     .setHttpChannelFactory(channelFactory)
+                                                    .build()
                                                     .build(oauthInterfaceCls);
         return new OAuthApiV1(
                 methodType,

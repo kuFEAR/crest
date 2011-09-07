@@ -20,15 +20,32 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.annotate.CRestComponent;
+
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * <p>Deserializers are used during response deserialization process</p>
+ * <p>Deserializers are CRest Components.</p>
  * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.annotate.CRestComponent
  */
+@CRestComponent
 public interface Deserializer {
 
+    /**
+     * <p>Deserializes the given input stream to the given type.</p>
+     * <p>Implementation is responsible for closing the given input stream.</p>
+     * @param type the type to deserialize to
+     * @param genericType the generic type to deserialize to
+     * @param stream the input stream to deserialize
+     * @param charset the input stream charset if text-based
+     * @param <T> the type to deserialize to
+     * @return the deserialized input stream
+     * @throws Exception Any exception thrown during deserialization
+     */
     <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception;
 
 }

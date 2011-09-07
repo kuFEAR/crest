@@ -8,6 +8,7 @@ import org.codegist.crest.param.ParamProcessor;
 import org.codegist.crest.param.ParamProcessorFactory;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.ComponentRegistry;
+import org.codegist.crest.util.MultiParts;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -35,7 +36,11 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     private Boolean encoded = false;
 
 
-    DefaultParamConfigBuilder(MethodConfigBuilder parent, CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
+    DefaultParamConfigBuilder(CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType) {
+        this(crestConfig, classSerializerRegistry, clazz, genericType, null);
+    }
+    
+    DefaultParamConfigBuilder(CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry, Class<?> clazz, Type genericType, MethodConfigBuilder parent) {
         super(crestConfig);
         this.parent = parent;
         this.clazz = Types.getComponentClass(clazz, genericType);
@@ -113,6 +118,35 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
         this.serializer = serializer;
         return this;
+    }
+
+    public ParamConfigBuilder forCookie() {
+        return setType(ParamType.COOKIE);
+    }
+
+    public ParamConfigBuilder forQuery() {
+        return setType(ParamType.QUERY);
+    }
+
+    public ParamConfigBuilder forPath() {
+        return setType(ParamType.PATH);
+    }
+
+    public ParamConfigBuilder forForm() {
+        return setType(ParamType.FORM);
+    }
+
+    public ParamConfigBuilder forHeader() {
+        return setType(ParamType.HEADER);
+    }
+
+    public ParamConfigBuilder forMatrix() {
+        return setType(ParamType.MATRIX);
+    }
+
+    public ParamConfigBuilder forMultiPart() {
+        this.metas.put(MultiParts.MULTIPART_FLAG, true);
+        return forForm();
     }
 
     @Override

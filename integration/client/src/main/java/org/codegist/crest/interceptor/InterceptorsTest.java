@@ -27,7 +27,8 @@ import org.codegist.crest.annotate.EndPoint;
 import org.codegist.crest.annotate.GET;
 import org.codegist.crest.annotate.Path;
 import org.codegist.crest.annotate.RequestInterceptor;
-import org.codegist.crest.io.Request;
+import org.codegist.crest.config.MethodConfig;
+import org.codegist.crest.io.RequestBuilder;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 
@@ -98,9 +99,10 @@ public class InterceptorsTest extends BaseCRestTest<InterceptorsTest.CustomInter
 
         static boolean hit = false;
 
-        public void beforeFire(Request request) throws Exception {
+        public void beforeFire(RequestBuilder requestBuilder, MethodConfig mc, Object[] args) throws Exception {
             hit = true;
         }
+
         static void reset(){
             hit = false;
         }
@@ -109,9 +111,10 @@ public class InterceptorsTest extends BaseCRestTest<InterceptorsTest.CustomInter
 
         static boolean hit = false;
 
-        public void beforeFire(Request request) throws Exception {
+        public void beforeFire(RequestBuilder requestBuilder, MethodConfig mc, Object[] args) throws Exception {
             hit = true;
         }
+
         static void reset(){
             hit = false;
         }

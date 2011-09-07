@@ -28,6 +28,7 @@ import org.codegist.crest.handler.*;
 import org.codegist.crest.interceptor.NoOpRequestInterceptor;
 import org.codegist.crest.interceptor.RequestInterceptor;
 import org.codegist.crest.io.Request;
+import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestException;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.serializer.Deserializer;
@@ -96,7 +97,7 @@ public class DefaultMethodConfigBuilderTest {
                     "Either provide an @EndPoint annotation or build a CRest instance as follow:\n" +
                     "\n" +
                     "   String defaultEndPoint = ...;\n" +
-                    "   CRest crest = CRest.property(MethodConfig.METHOD_CONFIG_DEFAULT_ENDPOINT, defaultEndPoint).build();\n" +
+                    "   CRest crest = CRest.getInstance(defaultEndPoint);\n" +
                     "\n" +
                     "Location information:\n" +
                     "Method[method=public abstract void org.codegist.crest.test.util.TestInterface.m1(java.lang.String,int),interface=Mock for InterfaceConfigBuilder, hashCode: "+interfaceConfigBuilder.hashCode()+"]", e.getMessage());
@@ -740,12 +741,12 @@ public class DefaultMethodConfigBuilderTest {
 
     public DefaultMethodConfigBuilder newToTest() throws Exception {
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, ComponentRegistry.class, Class.class, Type.class)
-                .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(String.class), eq(String.class))
+                .withParameterTypes(CRestConfig.class, ComponentRegistry.class, Class.class, Type.class, MethodConfigBuilder.class)
+                .withArguments(eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(String.class), eq(String.class), isA(MethodConfigBuilder.class))
                 .thenReturn(mockParamConfigBuilder1, mockExtraParamConfigBuilder1, mockExtraParamConfigBuilder2);
         whenNew(DefaultParamConfigBuilder.class)
-                .withParameterTypes(MethodConfigBuilder.class, CRestConfig.class, ComponentRegistry.class, Class.class, Type.class)
-                .withArguments(isA(MethodConfigBuilder.class), eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(int.class), eq(int.class))
+                .withParameterTypes(CRestConfig.class, ComponentRegistry.class, Class.class, Type.class, MethodConfigBuilder.class)
+                .withArguments(eq(mockCRestConfig), eq(mockClassSerializerRegistry), eq(int.class), eq(int.class), isA(MethodConfigBuilder.class))
                 .thenReturn(mockParamConfigBuilder2);
 
         DefaultMethodConfigBuilder ret = new DefaultMethodConfigBuilder(
@@ -756,9 +757,9 @@ public class DefaultMethodConfigBuilderTest {
                 mockClassSerializerRegistry
         );
         verifyNew(DefaultParamConfigBuilder.class)
-                .withArguments(ret, mockCRestConfig, mockClassSerializerRegistry, String.class, String.class);
+                .withArguments(mockCRestConfig, mockClassSerializerRegistry, String.class, String.class, ret);
         verifyNew(DefaultParamConfigBuilder.class)
-                .withArguments(ret, mockCRestConfig, mockClassSerializerRegistry, int.class, int.class);
+                .withArguments(mockCRestConfig, mockClassSerializerRegistry, int.class, int.class, ret);
 
         when(mockParamConfigBuilder1.build()).thenReturn(mockM1ParamConfig1);
         when(mockParamConfigBuilder2.build()).thenReturn(mockM1ParamConfig2);
@@ -782,7 +783,7 @@ public class DefaultMethodConfigBuilderTest {
         }
     }
     public static class TestRequestInterceptor implements RequestInterceptor {
-        public void beforeFire(Request request) throws Exception {
+        public void beforeFire(RequestBuilder requestBuilder, MethodConfig mc, Object[] args) throws Exception {
 
         }
     }

@@ -20,11 +20,7 @@
 
 package org.codegist.crest.interceptor;
 
-import org.codegist.crest.io.Request;
 import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -36,8 +32,6 @@ public class NoOpRequestInterceptorTest {
 
     @Test
     public void shouldDoNothing() throws Exception {
-        Request mockRequest = mock(Request.class);
-        toTest.beforeFire(mockRequest);
-        verifyNoMoreInteractions(mockRequest);
+        toTest.beforeFire(null, null, null);
     }
 }

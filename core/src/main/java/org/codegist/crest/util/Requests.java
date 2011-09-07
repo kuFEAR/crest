@@ -40,9 +40,8 @@ public final class Requests {
         throw new IllegalStateException() ;
     }
 
-    public static Request from(RequestBuilderFactory factory, MethodConfig mc, Object[] args){
+    public static Request from(RequestBuilderFactory factory, MethodConfig mc, Object[] args) throws Exception {
         RequestBuilder builder = factory.create().addParams(mc.getExtraParams());
-
         for (int i = 0; i < mc.getParamCount(); i++) {
             Collection<Object> values = Objects.asCollection(args[i]);
             ParamConfig pc = mc.getParamConfig(i);
@@ -54,7 +53,7 @@ public final class Requests {
                 builder.addParam(pc, values);
             }
         }
-
+        mc.getRequestInterceptor().beforeFire(builder, mc, args);
         return builder.build(mc);
     }
 }

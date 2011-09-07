@@ -242,6 +242,57 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
             }
             return this;
         }
+
+        public ParamConfigBuilder forCookie() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forCookie();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forQuery() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forQuery();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forPath() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forPath();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forForm() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forForm();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forHeader() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forHeader();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forMatrix() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forMatrix();
+            }
+            return this;
+        }
+
+        public ParamConfigBuilder forMultiPart() {
+            for(ParamConfigBuilder builder : builders){
+                builder.forMultiPart();
+            }
+            return this;
+        }
+
+
     }
 
     @Override

@@ -20,24 +20,26 @@
 
 package org.codegist.crest.serializer;
 
+import org.codegist.crest.annotate.CRestComponent;
+
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**
- * Serializes are used to serialize a object to a single String.
- * <p> If implementor declares a constructor with a Map argument, it will be called with the user custom properties.
- *
- * @param <T> Optional parameter value type
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <p>Serializers are used during serialization process of interface method's parameters</p>
+ * <p>Serializers are CRest Components.</p>
+ * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.annotate.CRestComponent
  */
+@CRestComponent
 public interface Serializer<T> {
 
     /**
-     * Serialize the current arg context into a single string
-     *
-     * @param value argument value
-     * @return serialized version of the argument
-     * @throws NullPointerException when value is null
+     * <p>Serializes the given object into the given outputstream.</p>
+     * @param value value to serialize
+     * @param charset charset to use to write in the outputstream is text-bases
+     * @param out serialization destination
+     * @throws Exception Any exception thrown during serialization
      */
     void serialize(T value, Charset charset, OutputStream out) throws Exception;
 

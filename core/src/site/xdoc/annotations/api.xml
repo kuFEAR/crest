@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2010 CodeGist.org
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~  ===================================================================
+  ~
+  ~  More information at http://www.codegist.org.
+  -->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Annotations | Annotation API</title>
+  </properties>
+
+  <body>
+
+    <section name="Annotation API">
+      <p>
+         <strong>CRest</strong> offers a set of annotations to describe a REST endpoint that reflects and extends the JAX-RS annotatation API.
+      </p>
+      <p>
+         Annotations accepts only constant values, but in a day to day usage, it can be usefull to have their value change given some environment state. One common use case would be for the <a href="../apidocs/org/codegist/crest/annotate/EndPoint.html">@EndPoint</a> annotation to change its value if you are running your application in a test, integration or production environment.
+      </p>
+      <p>
+         In order to address that, <strong>CRest</strong> support placeholders for String-value based annotations, so to come back to the <a href="../apidocs/org/codegist/crest/annotate/EndPoint.html">@EndPoint</a> example, you would then do something like:
+      </p>
+      <source>
+@EndPoint("http://{my.interface.host}")
+public interface MyInterface {
+    ...
+}
+      </source>
+      <p>
+          And then build it as follow:
+      </p>
+      <source>
+String myInterfaceHost = ...;
+
+CRest crest = CRest.placeholder("my.interface.host", myInterfaceHost).build();
+
+MyInterface myInterface = crest.build(MyInterface.class);
+    </source>
+        <p>
+        You'll find below a comparison of <strong>CRest</strong>'s Annotation API, and their JAX-RS equivalents:
+      </p>
+
+        <subsection name="Method annotations">
+
+            <table border="0">
+              <tr>
+                <th rowspan="2"/>
+                <th rowspan="2" valign="middle">Annotation</th>
+                <th colspan="2">Applies to</th>
+                <th rowspan="2" valign="middle">Description</th>
+              </tr>
+              <tr>
+                <th>Interface</th>
+                <th>Method</th>
+              </tr>
+
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/EndPoint.html">@EndPoint</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Sets the method end point</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/ConnectionTimeout.html">@ConnectionTimeout</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Sets the method connection timeout<br/><i>Default is 20sec</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/SocketTimeout.html">@SocketTimeout</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Sets the method socket timeout<br/><i>Default is 20sec</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Deserializer.html">@Deserializer</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the response deserializer<br/><i>See <a href="../serialization/deserialization.html">Deserialization</a> page for default behavior details</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/EntityWriter.html">@EntityWriter</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the method entity writer<br/><i>Default behavior will handle POST/PUT entities as application/x-www-form-urlencoded and MultiPart request as multipart/form-data encoded</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/RequestInterceptor.html">@RequestInterceptor</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the method request interceptor, for request auditing, canceling etc..</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/ErrorHandler.html">@ErrorHandler</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the method error handler on request failure<br/><i>Default behavior wrap and rethrow any exception as a runtime CRestException</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/ResponseHandler.html">@ResponseHandler</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the method response handler on request success<br/><i>Default behavior try to deserialize the response</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/RetryHandler.html">@RetryHandler</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="Yes"/></td>
+                <td>Defines the method retry handler on request failure<br/><i>Default behavior will not retry and will delegate any error to the error handler</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Consumes.html">@Consumes</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Produces.html">@Produces</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicate what content type a method expects, adds an Accept header. Also pre-select the mime-type related deserializer<br/><i>See <a href="../serialization/serialization.html">Serialization</a> page for default behavior details</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Produces.html">@Produces</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Consumes.html">@Consumes</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Sets the request Content-Type header<br/><i>Default behavior will set it to application/x-www-form-urlencoded for POST/PUT request, and to multipart/form-data for multipart requests</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Encoding.html">@Encoding</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Sets the encoding used for url and form content encoding<br/><i>Default is UTF-8</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Path.html">@Path</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Path.html">@Path</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the path for a method<br/>If specified both at interface and method level, the complete path is the concatenation of the two values</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/GET.html">@GET</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/GET.html">@GET</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP GET<br/><i>Default if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/POST.html">@POST</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/POST.html">@POST</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP POST<br/><i>Default is GET if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/PUT.html">@PUT</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/PUT.html">@PUT</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP PUT<br/><i>Default is GET if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/DELETE.html">@DELETE</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/DELETE.html">@DELETE</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP DELETE<br/><i>Default is GET if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/HEAD.html">@HEAD</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/HEAD.html">@HEAD</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP HEAD<br/><i>Default is GET if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/OPTIONS.html">@OPTIONS</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/OPTIONS.html">@OPTIONS</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates the interface method uses HTTP OPTIONS<br/><i>Default is GET if not specified</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/QueryParams.html">@QueryParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default query string parameters</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/MatrixParams.html">@MatrixParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default path matrix parameters</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/PathParams.html">@PathParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default path segments</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/HeaderParams.html">@HeaderParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default headers</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/FormParams.html">@FormParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default form parameters</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/CookieParams.html">@CookieParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default cookies</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/MultiPartParams.html">@MultiPartParams</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>List of default multipart parameters</td>
+              </tr>
+            </table>
+        </subsection>
+
+
+        <subsection name="Parameter annotations">
+
+            <table border="0">
+              <tr>
+                <th rowspan="2"/>
+                <th rowspan="2" valign="middle">Annotation</th>
+                <th colspan="3">Applies to</th>
+                <th rowspan="2" valign="middle">Description</th>
+              </tr>
+              <tr>
+                <th>Interface</th>
+                <th>Method</th>
+                <th>Parameter</th>
+              </tr>
+
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Encoded.html">@Encoded</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/Encoded.html">@Encoded</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Indicates a parameter should be considered pre-encoded</td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/ListSeparator.html">@ListSeparator</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the string to join any array/collection parameter values<br/><i>Default behavior creates many parameters with the same name for each array/collection values</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><i>None</i><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/DefaultValue.html">@DefaultValue</a></td>
+                <td align="center"><img src="../images/cross.png" alt="No"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/cross.png" alt="No"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/cross.png" alt="No"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td><strong>CRest</strong> merges it into each @XXXParam annotation<br/><i>Default behavior won't send a null or empty array/collection parameter</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/QueryParam.html">@QueryParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/QueryParam.html">@QueryParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a query string parameter<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/MatrixParam.html">@MatrixParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/MatrixParam.html">@MatrixParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a path matrix parameter<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/PathParam.html">@PathParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/PathParam.html">@PathParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a path segment(s)<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/HeaderParam.html">@HeaderParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/HeaderParam.html">@HeaderParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a header<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/FormParam.html">@FormParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/FormParam.html">@FormParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a form parameter<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/CookieParam.html">@CookieParam</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/CookieParam.html">@CookieParam</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a cookie<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/MultiPartParams.html">@MultiPartParams</a><br/><a href="http://jsr311.java.net/nonav/releases/1.1/javax/ws/rs/MultiPartParams.html">@MultiPartParams</a></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/tick.png" alt="Yes"/></td>
+                <td>Defines a multipart parameter<br/><i>Adds a default parameter to the request when applied on interface or method</i></td>
+              </tr>
+              <tr>
+                <td>CRest<br/>JAX-RS</td>
+                <td><a href="../apidocs/org/codegist/crest/annotate/Serializer.html">@Serializer</a><br/><i>None</i></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td align="center"><img src="../images/tick.png" alt="Yes"/><br/><img src="../images/cross.png" alt="No"/></td>
+                <td>Defines the parameter serializer<br/><i>See <a href="../serialization/serialization.html">Serialization</a> page for default behavior details</i></td>
+              </tr>
+            </table>
+        </subsection>
+    </section>
+
+  </body>
+
+</document>

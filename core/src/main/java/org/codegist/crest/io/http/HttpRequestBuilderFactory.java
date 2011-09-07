@@ -62,7 +62,7 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
             );
         }
 
-        public Builder addParams(ParamConfig[] paramConfigs) {
+        public Builder addParams(ParamConfig... paramConfigs) {
             for(ParamConfig param : paramConfigs){
                 addParam(param);
             }
@@ -70,34 +70,37 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
         }
 
         public Builder addParam(ParamConfig paramConfig) {
-            return addParam(paramConfig, Collections.<Object>singletonList(paramConfig.getDefaultValue()));
+            return addParam(paramConfig, paramConfig.getDefaultValue());
+        }
+
+        public Builder addParam(ParamConfig paramConfig, Object value) {
+            return addParam(paramConfig, Collections.singleton(value));
         }
 
         public Builder addParam(ParamConfig paramConfig, Collection<Object> values) {
-            List<Param> params;
+            HttpParam param = new HttpParam(paramConfig, values);
             switch(paramConfig.getType()){
                 case COOKIE:
-                    params = cookieParams;
+                    cookieParams.add(param);
                     break;
                 case FORM:
-                    params = formParams;
+                    formParams.add(param);
                     break;
                 case HEADER:
-                    params = headerParams;
+                    headerParams.add(param);
                     break;
                 case MATRIX:
-                    params = matrixParams;
+                    matrixParams.add(param);
                     break;
                 case PATH:
-                    params = pathParams;
+                    pathParams.add(param);
                     break;
                 case QUERY:
-                    params = queryParams;
+                    queryParams.add(param);
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported param type ! (type=" + paramConfig.getType() + ")");
             }
-            params.add(new HttpParam(paramConfig, values));
             return this;
         }
     }

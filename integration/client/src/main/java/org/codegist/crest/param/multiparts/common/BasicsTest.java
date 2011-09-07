@@ -20,7 +20,10 @@
 
 package org.codegist.crest.param.multiparts.common;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.MultiPartParam;
+import org.codegist.crest.annotate.POST;
+import org.codegist.crest.annotate.Path;
 import org.codegist.crest.param.common.IBasicsTest;
 
 import java.util.EnumSet;

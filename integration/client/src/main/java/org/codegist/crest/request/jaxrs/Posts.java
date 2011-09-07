@@ -20,7 +20,10 @@
 
 package org.codegist.crest.request.jaxrs;
 
-import org.codegist.crest.annotate.*;
+import org.codegist.crest.annotate.EndPoint;
+import org.codegist.crest.annotate.JsonEntity;
+import org.codegist.crest.annotate.MultiPartParam;
+import org.codegist.crest.annotate.XmlEntity;
 import org.codegist.crest.request.common.EntityRequests;
 
 import javax.ws.rs.Consumes;

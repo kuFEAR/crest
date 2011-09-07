@@ -6,6 +6,11 @@ User Annotations
 
     <<CRest>> allows you to define your own annotations and let <<CRest>> handle them.
 
+
+THAT A LIE !!! THAT DOES NOT WORK !!
+
+
+
     Here's a quick example:
 
     Let's say you want to add the time instant as millisecond as a header parameter for each request fired by <<CRest>>.

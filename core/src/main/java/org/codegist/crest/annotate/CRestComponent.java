@@ -18,26 +18,20 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.annotate;
 
-import org.codegist.crest.config.MethodConfig;
-import org.codegist.crest.config.ParamConfig;
-
-import java.util.Collection;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * <p>Purely documentation annotation, not look-up by <b>CRest</b>.</p>
+ * <p>Any inteface annotated with it means its implementations will be auto-instantiated on demand by <b>CRest</b> and if a one-argument constructor that takes an instance of {@link org.codegist.crest.CRestConfig} is found, <b>CRest</b> will call it with the current config.</p>
+ * <p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface RequestBuilder {
-
-    Request build(MethodConfig methodConfig);
-
-    RequestBuilder addParams(ParamConfig... paramConfigs);
-
-    RequestBuilder addParam(ParamConfig paramConfig);
-
-    RequestBuilder addParam(ParamConfig paramConfig, Object value);
-
-    RequestBuilder addParam(ParamConfig paramConfig, Collection<Object> values);
-
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE})
+public @interface CRestComponent {
 }

@@ -37,7 +37,7 @@ public interface StatusService {
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
-    @Path("/followers.json")
+    @Path("followers.json")
     User[] getFollowers(@QueryParam("user_id") long userId);
 
 }
