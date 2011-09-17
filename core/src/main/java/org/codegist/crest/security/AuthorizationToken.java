@@ -21,7 +21,8 @@
 package org.codegist.crest.security;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <p>Authorization token holder to be used in the HTTP Authorization header</p>
+ * @author laurent.gilles@codegist.org
  */
 public class AuthorizationToken {
 

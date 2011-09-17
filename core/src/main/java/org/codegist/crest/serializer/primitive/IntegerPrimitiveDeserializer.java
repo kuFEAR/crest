@@ -24,9 +24,14 @@ import static java.lang.Integer.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class IntegerPrimitiveDeserializer extends PrimitiveDeserializer {
+
+    /**
+     * @inheritDoc
+     */
     public Integer deserialize(String value) {
         return isBlank(value) ? 0 : valueOf(value);
     }

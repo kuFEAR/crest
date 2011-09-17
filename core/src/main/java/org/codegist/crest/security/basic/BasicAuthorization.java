@@ -37,14 +37,25 @@ public class BasicAuthorization implements Authorization {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final AuthorizationToken token;
 
+    /**
+     *
+     * @param name user name
+     * @param password password
+     */
     public BasicAuthorization(String name, String password) {
         this.token = new AuthorizationToken("Basic", encodeToString((name + ":" + password).getBytes(UTF8)));
     }
 
+    /**
+     * @inheritDoc
+     */
     public AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters) {
         return token;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void refresh() {
         throw new UnsupportedOperationException();
     }

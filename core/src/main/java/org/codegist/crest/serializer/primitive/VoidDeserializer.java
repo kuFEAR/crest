@@ -28,9 +28,14 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class VoidDeserializer implements Deserializer {
+
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) {
         IOs.close(stream);
         return null;

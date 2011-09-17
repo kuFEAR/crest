@@ -33,20 +33,49 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * <p><a href="http://jackson.codehaus.org/">Jackson</a> JSON deserializer implementation</p>
  * @author laurent.gilles@codegist.org
  */
 public class JacksonDeserializer implements Deserializer {
 
     private static final String PREFIX = JacksonDeserializer.class.getName();
+
+    /**
+     * <p>CRestConfig property to provide a custom jackson {@link org.codehaus.jackson.map.ObjectMapper} instance.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * ObjectMapper mapper = ...;
+     * CRest crest = CRest.property(JacksonDeserializer.OBJECT_MAPPER_PROP, mapper).buid();
+     * </pre></code>
+     * <p>Default is auto-instantiated</p>
+     * <p>Expects a {@link org.codehaus.jackson.map.ObjectMapper} instance</p>
+     */
     public static final String OBJECT_MAPPER_PROP = PREFIX + JacksonFactory.JACKSON_OBJECT_MAPPER;
+
+    /**
+     * <p>CRestConfig property to turn on/off jackson deserialization features.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * Map&lt;DeserializationConfig.Feature, Boolean&gt; features = ...;
+     * CRest crest = CRest.property(JacksonDeserializer.JACKSON_DESERIALIZER_CONFIG_PROP, features).buid();
+     * </pre></code>
+     * <p>Default is auto-instantiated</p>
+     * <p>Expects a {@link java.util.Map}&lt;{@link org.codehaus.jackson.map.DeserializationConfig.Feature}, {@link java.lang.Boolean}&gt; instance</p>
+     */
     public static final String JACKSON_DESERIALIZER_CONFIG_PROP = PREFIX + JacksonFactory.JACKSON_DESERIALIZER_CONFIG;
 
     private final ObjectMapper jackson;
 
+    /**
+     * @param crestConfig CRest injected CRestConfig
+     */
     public JacksonDeserializer(CRestConfig crestConfig) {
         this.jackson = JacksonFactory.createObjectMapper(crestConfig, getClass());
     }
 
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws IOException {
         try {
             return jackson.<T>readValue(new InputStreamReader(stream, charset), TypeFactory.type(genericType));

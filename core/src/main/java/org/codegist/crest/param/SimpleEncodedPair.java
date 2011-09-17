@@ -29,6 +29,10 @@ public class SimpleEncodedPair implements EncodedPair {
     private final String name;
     private final String value;
 
+    /**
+     * @param name pre-encoded name
+     * @param value pre-encoded value
+     */
     public SimpleEncodedPair(String name, String value) {
         this.name = name;
         this.value = value;

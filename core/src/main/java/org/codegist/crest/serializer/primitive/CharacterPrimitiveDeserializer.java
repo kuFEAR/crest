@@ -23,9 +23,14 @@ package org.codegist.crest.serializer.primitive;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class CharacterPrimitiveDeserializer extends CharacterWrapperDeserializer {
+
+    /**
+     * @inheritDoc
+     */
     public Character deserialize(String value) {
         return isBlank(value) ? (char) 0 : super.deserialize(value);
     }

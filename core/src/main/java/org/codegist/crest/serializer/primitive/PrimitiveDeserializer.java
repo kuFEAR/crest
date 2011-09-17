@@ -28,12 +28,16 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public abstract class PrimitiveDeserializer<T> extends TypeDeserializer<T> {
 
     protected abstract T deserialize(String value);
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected T deserialize(InputStream stream, Charset charset) throws IOException {
         return deserialize(stream != null ? IOs.toString(stream, charset, true) : null);

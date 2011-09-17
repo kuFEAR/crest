@@ -21,17 +21,18 @@
 package org.codegist.crest.io;
 
 /**
+ * <b>CRest</b>'s {@link org.codegist.crest.io.Request} executor
  * @author laurent.gilles@codegist.org
  */
 public interface RequestExecutor {
 
     /**
-     *
-     * @param request
-     * @return
-     * @throws Exception
-     * @throws RequestException
+     * Executes the given request
+     * @param request request to execute
+     * @return response
+     * @throws RequestException thrown when a request-related problem occured
+     * @throws Exception Any exception thrown during pre-request execution or response wrapping 
      */
-    Response execute(Request request) throws Exception;
+    Response execute(Request request) throws RequestException, Exception;
     
 }

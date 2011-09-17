@@ -20,10 +20,20 @@
 
 package org.codegist.crest.param;
 
+/**
+ * An encoded pair hold pre-encoded name/value pair of values
+ * @author laurent.gilles@codegist.org
+ */
 public interface EncodedPair {
-    
+
+    /**
+     * @return pre-encoded name
+     */
     String getName();
 
+    /**
+     * @return pre-encoded value
+     */
     String getValue();
 
 }

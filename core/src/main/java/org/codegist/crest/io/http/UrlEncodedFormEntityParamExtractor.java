@@ -33,6 +33,7 @@ import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.util.Pairs.fromUrlEncoded;
 
 /**
+ *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class UrlEncodedFormEntityParamExtractor implements EntityParamExtractor {

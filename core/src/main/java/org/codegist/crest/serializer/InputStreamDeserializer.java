@@ -24,11 +24,15 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class InputStreamDeserializer extends TypeDeserializer<InputStream> {
 
     @Override
+    /**
+     * @inheritDoc
+     */
     protected InputStream deserialize(InputStream stream, Charset charset) {
         return stream;
     }

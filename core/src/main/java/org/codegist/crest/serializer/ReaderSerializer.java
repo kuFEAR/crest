@@ -26,9 +26,14 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class ReaderSerializer implements Serializer<Reader> {
+
+    /**
+     * @inheritDoc
+     */
     public void serialize(Reader value, Charset charset, OutputStream out) throws IOException {
         Writer w = new OutputStreamWriter(out, charset);
         IOs.copy(value, w, true);

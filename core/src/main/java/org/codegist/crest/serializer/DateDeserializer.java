@@ -29,7 +29,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
+/**                                       
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class DateDeserializer extends TypeDeserializer<Date> {
@@ -40,6 +41,9 @@ public class DateDeserializer extends TypeDeserializer<Date> {
         this.formatter = new SimpleDateFormat(crestConfig.getDateFormat());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected Date deserialize(InputStream stream, Charset charset) throws Exception {
          synchronized (formatter) {

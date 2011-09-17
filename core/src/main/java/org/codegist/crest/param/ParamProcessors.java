@@ -21,24 +21,58 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.CRestException;
+import org.codegist.crest.config.ParamType;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
 /**
+ * <p>Set of utility functions for dealing with {@link org.codegist.crest.param.ParamProcessor} types.</p>
  * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.param.ParamProcessor
  */
 public final class ParamProcessors {
     
     private ParamProcessors(){
         throw new IllegalStateException();
     }
-    
+
+
+    /**
+     * Returns an instance of a param processor.
+     * @param type parameter type
+     * @param listSeparator list separator if applicable, otherwise null
+     * @return instance of param processor
+     */
+    public static ParamProcessor newInstance(ParamType type, String listSeparator){
+        switch(type){
+            case COOKIE:
+                return listSeparator != null ? new CollectionMergingCookieParamProcessor(listSeparator) : DefaultCookieParamProcessor.INSTANCE;
+            default:
+                return listSeparator != null ? new CollectionMergingParamProcessor(listSeparator) : DefaultParamProcessor.INSTANCE;
+        }
+    }
+
+    /**
+     * Returns an iterator over each param's ParamProcessor results
+     * @param params parameters to iterates param processors results from
+     * @param charset charset to pass to the param processor
+     * @return an iterator over each param's ParamProcessor results
+     * @see org.codegist.crest.config.ParamConfig#getParamProcessor()
+     */
     public static Iterator<EncodedPair> iterate(List<Param> params, Charset charset){
         return iterate(params, charset, true);
     }
 
+    /**
+     * Returns an iterator over each param's ParamProcessor results
+     * @param params parameters to iterates param processors results from
+     * @param charset charset to pass to the param processor
+     * @param encodeIfNeeded if set to false, will turn off auto-encoding for parameter that needs it
+     * @return an iterator over each param's ParamProcessor results
+     * @see org.codegist.crest.config.ParamConfig#getParamProcessor()
+     */
     public static Iterator<EncodedPair> iterate(List<Param> params, Charset charset, boolean encodeIfNeeded){
         return new ProcessIterator(params, charset, encodeIfNeeded);
     }

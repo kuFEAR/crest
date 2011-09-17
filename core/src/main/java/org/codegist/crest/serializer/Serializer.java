@@ -39,7 +39,7 @@ public interface Serializer<T> {
      * @param value value to serialize
      * @param charset charset to use to write in the outputstream is text-bases
      * @param out serialization destination
-     * @throws Exception Any exception thrown during serialization
+     * @throws Exception Any exception thrown during serialization process
      */
     void serialize(T value, Charset charset, OutputStream out) throws Exception;
 

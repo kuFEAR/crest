@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * Handy Jaxb adapter interface used by <b>CRest</b>
  * @author laurent.gilles@codegist.org
  */
 public interface Jaxb {

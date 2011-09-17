@@ -25,6 +25,8 @@ import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 
 /**
+ * <p>Loops over a list of response deserializers until first success.</p>
+ * <p>Loops as long as IllegalArgumentException is thrown (meaning a given response deserializer is not able to deserialize the response)</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class ResponseDeserializerComposite implements ResponseDeserializer {
@@ -32,10 +34,16 @@ public class ResponseDeserializerComposite implements ResponseDeserializer {
     private static final Logger LOG = Logger.getLogger(ResponseDeserializer.class);
     private final ResponseDeserializer[] delegates;
 
+    /**
+     * @param delegates response deserializers to use
+     */
     public ResponseDeserializerComposite(ResponseDeserializer... delegates) {
         this.delegates = delegates.clone();
     }
 
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Response response) throws Exception {
         IllegalArgumentException deserializationException = null;
         for(ResponseDeserializer deserializer : delegates){

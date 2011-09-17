@@ -5,7 +5,7 @@ import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.common.reflect.Types;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.ParamProcessor;
-import org.codegist.crest.param.ParamProcessorFactory;
+import org.codegist.crest.param.ParamProcessors;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.util.ComponentRegistry;
 import org.codegist.crest.util.MultiParts;
@@ -76,7 +76,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
                 metas,
                 serializer != null ?  instantiate(serializer) : classSerializerRegistry.get(clazz),
                 (COOKIE.equals(type) || HEADER.equals(type)) ? true : encoded,
-                paramProcessor != null ? instantiate(paramProcessor) : ParamProcessorFactory.newInstance(type, listSeparator));
+                paramProcessor != null ? instantiate(paramProcessor) : ParamProcessors.newInstance(type, listSeparator));
     }
 
     private void validate(){
@@ -145,7 +145,7 @@ class DefaultParamConfigBuilder extends ConfigBuilder implements ParamConfigBuil
     }
 
     public ParamConfigBuilder forMultiPart() {
-        this.metas.put(MultiParts.MULTIPART_FLAG, true);
+        MultiParts.asMultipart(this.metas);
         return forForm();
     }
 

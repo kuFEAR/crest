@@ -30,6 +30,8 @@ import java.security.PrivilegedAction;
 import static java.lang.reflect.Modifier.isPublic;
 
 /**
+ * CRest Component factory
+ * @see org.codegist.crest.annotate.CRestComponent
  * @author laurent.gilles@codegist.org
  */
 public final class ComponentFactory {
@@ -38,6 +40,17 @@ public final class ComponentFactory {
         throw new IllegalStateException();
     }
 
+    /**
+     * Instanciate the given component class passing the CRestConfig to the constructor if available, otherwise uses the default empty constructor.
+     * @param clazz the component class to instanciate
+     * @param crestConfig the CRestConfig to pass if the component is CRestConfig aware
+     * @param <T> Type of the component
+     * @return the component instance
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws NoSuchMethodException
+     */
     public static <T> T instantiate(Class<T> clazz, CRestConfig crestConfig) throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
         try {
             return accessible(clazz.getDeclaredConstructor(CRestConfig.class)).newInstance(crestConfig);

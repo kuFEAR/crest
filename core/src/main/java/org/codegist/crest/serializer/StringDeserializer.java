@@ -26,8 +26,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+/**
+ * @inheritDoc
+ * @author laurent.gilles@codegist.org
+ */
 public class StringDeserializer extends TypeDeserializer<String> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected String deserialize(InputStream stream, Charset charset) throws IOException {
         return IOs.toString(stream, charset, true);

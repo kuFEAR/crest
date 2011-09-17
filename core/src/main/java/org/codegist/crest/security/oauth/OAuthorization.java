@@ -31,8 +31,7 @@ import java.util.List;
 import static org.codegist.crest.util.Pairs.join;
 
 /**
- * OAuth authentification manager implementation.
- * <p>Refresh implementation is based on oauth_session_handle token extra parameter
+ * <p>OAuth implementation of the {@link org.codegist.crest.security.Authorization} interface.</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class OAuthorization implements Authorization {
@@ -41,15 +40,29 @@ public class OAuthorization implements Authorization {
     private final OAuthApi oauthApi;
     private volatile OAuthToken accessOAuthToken;
 
+    /**
+     * @param accessOAuthToken Access token to use to authentify requests
+     * @param oauth oauthenticator instance
+     */
     public OAuthorization(OAuthToken accessOAuthToken, OAuthenticator oauth) {
         this(accessOAuthToken, oauth, null);        
     }
+
+    /**
+     *
+     * @param accessOAuthToken Access token to use to authentify requests
+     * @param oauth oauthenticator instance
+     * @param oauthApi oauth api to use to refresh access token if it expires
+     */
     public OAuthorization(OAuthToken accessOAuthToken, OAuthenticator oauth, OAuthApi oauthApi) {
         this.oauth = oauth;
         this.oauthApi = oauthApi;
         this.accessOAuthToken = accessOAuthToken;
     }
 
+    /**
+     * @inheritDoc
+     */
     public AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters)  throws Exception{
         List<EncodedPair> oauthParams = oauth.oauth(this.accessOAuthToken, methodType, url, parameters);
         return new AuthorizationToken("OAuth", join(oauthParams, ',', '=', false, true));

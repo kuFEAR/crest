@@ -27,7 +27,8 @@ import org.codegist.crest.util.ComponentRegistry;
 import static org.codegist.common.lang.Validate.isTrue;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * Response deserializer that uses a component registry of deserializers by response Content-Type mime-type.
+ * @author laurent.gilles@codegist.org
  */
 public class ResponseDeserializerByMimeType implements ResponseDeserializer {
 
@@ -46,10 +47,16 @@ public class ResponseDeserializerByMimeType implements ResponseDeserializer {
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByMimeType.class);
     private final ComponentRegistry<String, Deserializer> mimeDeserializerRegistry;
 
+    /**
+     * @param mimeDeserializerRegistry deserializers mime type registry to use
+     */
     public ResponseDeserializerByMimeType(ComponentRegistry<String, Deserializer> mimeDeserializerRegistry) {
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;
     }
 
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Response response) throws Exception {
         String mimeType = response.getContentType();
         isTrue(mimeDeserializerRegistry.contains(mimeType), MIME_TYPE_NOT_FOUND_ERROR, mimeType);

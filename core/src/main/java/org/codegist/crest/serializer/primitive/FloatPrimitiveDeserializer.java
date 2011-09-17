@@ -24,9 +24,14 @@ import static java.lang.Float.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class FloatPrimitiveDeserializer extends PrimitiveDeserializer {
+
+    /**
+     * @inheritDoc
+     */
     public Float deserialize(String value) {
         return isBlank(value) ? (float) 0 : valueOf(value);
     }

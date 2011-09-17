@@ -26,10 +26,14 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class ReaderDeserializer extends TypeDeserializer<Reader> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected Reader deserialize(InputStream stream, Charset charset) {
         return new InputStreamReader(stream, charset);

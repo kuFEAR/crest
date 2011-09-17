@@ -44,7 +44,7 @@ public interface Deserializer {
      * @param charset the input stream charset if text-based
      * @param <T> the type to deserialize to
      * @return the deserialized input stream
-     * @throws Exception Any exception thrown during deserialization
+     * @throws Exception Any exception thrown during deserialization process
      */
     <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception;
 

@@ -23,10 +23,11 @@ package org.codegist.crest.param;
 import org.codegist.crest.NonInstanciableClassTest;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
-public class ParamProcessorFactoryNonInstantiableTest extends NonInstanciableClassTest {
-    public ParamProcessorFactoryNonInstantiableTest() {
-        super(ParamProcessorFactory.class);
+public class ParamProcessorsNonInstanciableTest extends NonInstanciableClassTest {
+
+    public ParamProcessorsNonInstanciableTest() {
+        super(ParamProcessors.class);
     }
 }

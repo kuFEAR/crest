@@ -30,12 +30,19 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-
+/**
+ * OAuth V1.0 implementation of {@link org.codegist.crest.security.oauth.OAuthenticator}
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
 public class OAuthenticatorV1 implements OAuthenticator {
 
     private final VariantProvider variantProvider;
     private final OAuthToken consumerOAuthToken;
 
+    /**
+     *
+     * @param consumerOAuthToken Consumer token to use
+     */
     public OAuthenticatorV1(OAuthToken consumerOAuthToken) {
         this(consumerOAuthToken, DefaultVariantProvider.INSTANCE);
     }
@@ -45,6 +52,9 @@ public class OAuthenticatorV1 implements OAuthenticator {
         this.consumerOAuthToken = consumerOAuthToken;
     }
 
+    /**
+     * @inheritDoc
+     */
     public List<EncodedPair> oauth(OAuthToken accessOAuthToken, MethodType methodType, String url, EncodedPair... parameters) throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
         return OAuthsV1.oauth(variantProvider, consumerOAuthToken, accessOAuthToken, methodType, url, parameters);
     }

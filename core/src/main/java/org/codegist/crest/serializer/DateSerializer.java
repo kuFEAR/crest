@@ -28,7 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @inheritDoc
+ * @author laurent.gilles@codegist.org
  */
 public class DateSerializer extends StringSerializer<Date> {
 
@@ -38,6 +39,9 @@ public class DateSerializer extends StringSerializer<Date> {
         this.formatter = new SimpleDateFormat(crestConfig.getDateFormat());
     }
 
+    /**
+     * @inheritDoc
+     */
     public String serialize(Date value, Charset charset) {
         synchronized (formatter) {
             return formatter.format(value);

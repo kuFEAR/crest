@@ -27,10 +27,14 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class ByteArrayDeserializer extends TypeDeserializer<byte[]> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected byte[] deserialize(InputStream stream, Charset charset) throws Exception {
         return stream != null ? IOs.toByteArray(stream, true) : null;

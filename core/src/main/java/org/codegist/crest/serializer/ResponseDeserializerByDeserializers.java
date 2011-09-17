@@ -33,7 +33,11 @@ import static org.codegist.common.io.IOs.toByteArray;
 import static org.codegist.common.lang.Validate.isTrue;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <p>Response deserializer that uses the {@link org.codegist.crest.config.MethodConfig#getDeserializers()} list to try to deserialize the response.</p>
+ * <p>In most cases, the deserializer array will contain only one item and the deserialization can be done in a streaming fashion.</p>
+ * <p>But if for some reason a rest interface has been annotated with {@link org.codegist.crest.annotate.Consumes} with more than one value, then the response deserialize will first dump the response in memory in order to try to deserialize with deserializers until first success</p>
+ * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.annotate.Consumes
  */
 public class ResponseDeserializerByDeserializers implements ResponseDeserializer {
 
@@ -47,6 +51,9 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
         .append("  - If response Content-Type is unknown, bind it through CRestBuilder using either a common deserializer or providing your own.\n")
         .append("  - If response Content-Type cannot be changed, bind a deserializer either through @Consumes(\"some-mime-type\") or @Deserializer(MyDeserializer.class) annotation.").toString();
 
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Response response) throws Exception {
         MethodConfig mc = response.getRequest().getMethodConfig();
         Deserializer[] deserializers = mc.getDeserializers();
@@ -61,7 +68,7 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
         }else{
             isDumped = false;
         }
-        Exception deserilizationException = null;
+        Exception deserializationException = null;
         for (Deserializer deserializer : deserializers) {
             try {
                 LOG.debug("Trying to deserialize response with user specified deserializer: %s.", deserializer);
@@ -72,13 +79,13 @@ public class ResponseDeserializerByDeserializers implements ResponseDeserializer
                         response.getCharset());
             } catch (Exception e) {
                 LOG.warn(e, "Failed to deserialize response with user specified deserializer: %s. Trying next.", deserializer);
-                deserilizationException = e;
+                deserializationException = e;
                 if(isDumped) {
                     pStream.mark(0);
                     pStream.reset();
                 }
             }
         }
-        throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers), deserilizationException);
+        throw new CRestException("Could not deserialize response with given deserializers " + Arrays.toString(deserializers), deserializationException);
     }
 }

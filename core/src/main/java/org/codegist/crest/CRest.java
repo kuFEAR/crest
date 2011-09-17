@@ -23,9 +23,32 @@ package org.codegist.crest;
 import java.util.Map;
 
 /**
- * <p><b>CRest</b> is an expensive object to create and should be created once at the application bootstrap and re-used. <b>CRest</b> instances are threadsafe.</p>
+ * <p><b>CRest</b> is a rest annotated interface builder.</p>
+ * <p>Here's a quick sample of how to use it.</p>
+ * <p>Given the following interface, reflecting a simple RESTful API:</p>
+ * <code><pre>
+ * &#64;EndPoint("http://some.server")
+ * public interface SimpleRestService {
+ *
+ *     &#64;POST
+ *     &#64;Path("something")
+ *     SimpleResult doSomething(&#64;QueryParam("arg1") int p1, &#64;FormParam("arg2")String p2);
+ *
+ * }
+ * </pre></code>
+ * <p><code>SimpleResult</code> object is a plain POJO annotated with either <a href="http://jaxb.java.net/nonav/2.1/docs/api/javax/xml/bind/annotation/package-summary.html">JAXB</a>, <a href="http://simple.sourceforge.net/download/stream/doc/javadoc/">SimpleXML</a> or <a href="http://jackson.codehaus.org/1.8.4/javadoc/org/codehaus/jackson/annotate/package-summary.html">Jackson</a> annotations depending of the server response format.</p>
+ * <p>And here's how to get a working binded instance of <code>SimpleRestService</code>:</p>
+ * <code><pre>
+ * CRest crest = CRest.getInstance(); // CRest instance should be created once and re-used to build any rest interface instances
+ * SimpleRestService service = crest.build(SimpleRestService.class); // rest interface once built should be kept and re-used for any futur use
+ * </pre></code>
+ * <p><b>CRest</b> handle annotations from {@link org.codegist.crest.annotate} package as well as <a href="http://jsr311.java.net/">JAX-RS 1.0</a> {@link javax.ws.rs} if the later is available in the classpath.</p>
+ * <p>Also note: <b>CRest</b> is an expensive object to create and should be created once at the application bootstrap and re-used. <b>CRest</b> instances are threadsafe.</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  * @see org.codegist.crest.CRestBuilder
+ * @see org.codegist.crest.annotate
+ * @see javax.ws.rs
+ * @see <a href="http://jsr311.java.net/">JAX-RS 1.0</a>
  */
 public abstract class CRest {
 

@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * <p><a href="http://simple.sourceforge.net/">SimpleXml</a> XML deserializer implementation</p>
  * @author laurent.gilles@codegist.org
  */
 public class SimpleXmlDeserializer implements Deserializer {
@@ -37,18 +38,45 @@ public class SimpleXmlDeserializer implements Deserializer {
     private static final String PREFIX = SimpleXmlDeserializer.class.getName();
     private static final boolean DEFAULT_STRICT = true;
 
+    /**
+     * <p>CRestConfig property to use strict mode for deserializing xml</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * CRest crest = CRest.property(SimpleXmlDeserializer.STRICT_PROP, false|true).buid();
+     * </pre></code>
+     * <p>Default is TRUE</p>
+     * <p>Expects a Boolean value</p>
+     * @see  org.simpleframework.xml.Serializer#read(Class, java.io.Reader, boolean)
+     */
     public static final String STRICT_PROP =  PREFIX + "#strict";
+
+    /**
+     * <p>CRestConfig property to provide a custom pre-configured SimpleXml {@link org.simpleframework.xml.Serializer} instance.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * org.simpleframework.xml.Serializer serializer = ...;
+     * CRest crest = CRest.property(SimpleXmlDeserializer.SERIALIZER, serializer).buid();
+     * </pre></code>
+     * <p>Default is auto-instantiated</p>
+     * <p>Expects a {@link org.simpleframework.xml.Serializer} value</p>
+     * @see  org.simpleframework.xml.Serializer
+     */
     public static final String SERIALIZER_PROP =  PREFIX + SimpleXmlFactory.SERIALIZER;
 
     private final boolean strict;
     private final org.simpleframework.xml.Serializer serializer;
 
+    /**
+     * @param crestConfig CRest injected CRestConfig
+     */
     public SimpleXmlDeserializer(CRestConfig crestConfig) {
         serializer = SimpleXmlFactory.createSerializer(crestConfig, getClass());
         strict = crestConfig.get(STRICT_PROP, DEFAULT_STRICT);
     }
 
-
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Class<T> type, Type genericType, InputStream stream, Charset charset) throws Exception {
         try {
             

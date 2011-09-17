@@ -23,7 +23,11 @@ package org.codegist.crest.param;
 import org.codegist.crest.CRestException;
 import org.codegist.crest.NonInstanciableClassTest;
 import org.codegist.crest.config.ParamConfig;
+import org.codegist.crest.config.ParamType;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Iterator;
 import java.util.List;
@@ -33,18 +37,100 @@ import static org.codegist.crest.test.util.Values.UTF8;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class ParamProcessorsTest extends NonInstanciableClassTest {
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ParamProcessors.class)
+public class ParamProcessorsTest {
 
-
-
-    public ParamProcessorsTest() {
-        super(ParamProcessors.class);
+    
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingCookieProcessor() throws Exception {
+        CollectionMergingCookieParamProcessor expected = mock(CollectionMergingCookieParamProcessor.class);
+        whenNew(CollectionMergingCookieParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.COOKIE, "-");
+        assertSame(expected, actual);
     }
 
+    @Test
+    public void shouldReturnAnInstanceOfDefaultCookieProcessor() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.COOKIE, null);
+        assertSame(DefaultCookieParamProcessor.INSTANCE, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingDefaultProcessorForQuery() throws Exception {
+        CollectionMergingParamProcessor expected = mock(CollectionMergingParamProcessor.class);
+        whenNew(CollectionMergingParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.QUERY, "-");
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfDefaultProcessorForQuery() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.QUERY, null);
+        assertSame(DefaultParamProcessor.INSTANCE, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingDefaultProcessorForForm() throws Exception {
+        CollectionMergingParamProcessor expected = mock(CollectionMergingParamProcessor.class);
+        whenNew(CollectionMergingParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.FORM, "-");
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfDefaultProcessorForForm() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.FORM, null);
+        assertSame(DefaultParamProcessor.INSTANCE, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingDefaultProcessorForHeader() throws Exception {
+        CollectionMergingParamProcessor expected = mock(CollectionMergingParamProcessor.class);
+        whenNew(CollectionMergingParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.HEADER, "-");
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfDefaultProcessorForHeader() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.HEADER, null);
+        assertSame(DefaultParamProcessor.INSTANCE, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingDefaultProcessorForMatrix() throws Exception {
+        CollectionMergingParamProcessor expected = mock(CollectionMergingParamProcessor.class);
+        whenNew(CollectionMergingParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.MATRIX, "-");
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfDefaultProcessorForMatrix() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.MATRIX, null);
+        assertSame(DefaultParamProcessor.INSTANCE, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfCollectionMergingDefaultProcessorForPath() throws Exception {
+        CollectionMergingParamProcessor expected = mock(CollectionMergingParamProcessor.class);
+        whenNew(CollectionMergingParamProcessor.class).withArguments("-").thenReturn(expected);
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.PATH, "-");
+        assertSame(expected, actual);
+    }
+
+    @Test
+    public void shouldReturnAnInstanceOfDefaultProcessorForPath() throws Exception {
+        ParamProcessor actual = ParamProcessors.newInstance(ParamType.PATH, null);
+        assertSame(DefaultParamProcessor.INSTANCE, actual);
+    }
+    
     @Test
     public void shouldIterateOverPreProccessedParamValues() throws Exception {
         List<EncodedPair> expected1 = asList(mock(EncodedPair.class), mock(EncodedPair.class));

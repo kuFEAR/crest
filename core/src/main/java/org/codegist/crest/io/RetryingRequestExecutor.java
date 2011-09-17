@@ -24,16 +24,24 @@ import org.codegist.common.lang.Disposables;
 import org.codegist.crest.handler.RetryHandler;
 
 /**
+ * <p>RequestExecutor implementation that used the request method config's retry handler to decides whether a failed request should be retried or not.</p>
  * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.config.MethodConfig#getRetryHandler() 
  */
 public class RetryingRequestExecutor implements RequestExecutor {
 
     private final RequestExecutor delegate;
 
+    /**
+     * @param delegate request executor to delegate the requests execution to
+     */
     public RetryingRequestExecutor(RequestExecutor delegate) {
         this.delegate = delegate;
     }
 
+    /**
+     * @inheritDoc
+     */
     public Response execute(Request request) throws Exception {
         RetryHandler retryHandler = request.getMethodConfig().getRetryHandler();
         RequestException exception = null;

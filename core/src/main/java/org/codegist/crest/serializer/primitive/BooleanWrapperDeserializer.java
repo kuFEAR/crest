@@ -25,6 +25,7 @@ import org.codegist.crest.CRestConfig;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class BooleanWrapperDeserializer extends PrimitiveDeserializer<Boolean> {
@@ -35,6 +36,9 @@ public class BooleanWrapperDeserializer extends PrimitiveDeserializer<Boolean> {
         this.trueString = crestConfig.getBooleanTrue();
     }
 
+    /**
+     * @inheritDoc
+     */
     public Boolean deserialize(String value) {
         return isBlank(value) ? null : trueString.equals(value);
     }

@@ -26,6 +26,7 @@ import org.codegist.crest.serializer.StringSerializer;
 import java.nio.charset.Charset;
 
 /**
+ * @inheritDoc
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class BooleanSerializer extends StringSerializer<Boolean> {
@@ -38,6 +39,9 @@ public class BooleanSerializer extends StringSerializer<Boolean> {
         this.falseString = crestConfig.getBooleanFalse();
     }
 
+    /**
+     * @inheritDoc
+     */
     public String serialize(Boolean value, Charset charset) {
         return value ? trueString : falseString;
     }

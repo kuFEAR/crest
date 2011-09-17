@@ -23,17 +23,17 @@ package org.codegist.crest.serializer;
 import java.nio.charset.Charset;
 
 /**
- * Simple serializer that returns the toString() value of the given value or empty string if null.
- *
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * Serializer that returns the toString() value of the given object.
+ * @param <T>
+ * @author laurent.gilles@codegist.org
  */
 public class ToStringSerializer<T> extends StringSerializer<T> {
     
     /**
-     * Simple serializer that returns the toString() value of the given value or empty string if null.
-     *
-     * @param value Context of the serialization
-     * @return serialized value of param
+     * Returns the toString() of the given object
+     * @param value object to serialize
+     * @param charset charset to use for serializing - ignored here
+     * @return toString() of the given object
      */
     public String serialize(T value, Charset charset) {
         return value.toString();

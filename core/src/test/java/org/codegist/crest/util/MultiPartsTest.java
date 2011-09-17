@@ -44,7 +44,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
 
     @Test
     public void getContentTypeShouldGetContentTypeFromParamConfig(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.CONTENT_TYPE, (Object)"expected");
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.content-type", (Object)"expected");
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig.getMetaDatas()).thenReturn(metaDatas);
 
@@ -61,7 +61,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
 
     @Test
     public void getFileNameShouldGetFileNameFromParamConfig(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.FILENAME, (Object)"expected");
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.filename", (Object)"expected");
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig.getMetaDatas()).thenReturn(metaDatas);
 
@@ -78,7 +78,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
 
     @Test
     public void getContentTypeShouldGetContentTypeFromParam(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.CONTENT_TYPE, (Object)"expected");
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.content-type", (Object)"expected");
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
@@ -99,7 +99,7 @@ public class MultiPartsTest extends NonInstanciableClassTest {
 
     @Test
     public void getFileNameShouldGetFileNameFromParam(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.FILENAME, (Object)"expected");
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.filename", (Object)"expected");
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
@@ -120,13 +120,13 @@ public class MultiPartsTest extends NonInstanciableClassTest {
 
     @Test
     public void hasMultiPartShouldReturnTrueIfMultipartsAreDetected(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.MULTIPART_FLAG, new Object());
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.flag", new Object());
         assertTrue(MultiParts.hasMultiPart(metaDatas));
     }
 
     @Test
     public void hasMultiPartShouldReturnTrueIfMultipartsAreDetectedInParam(){
-        Map<String,Object> metaDatas = Collections.singletonMap(MultiParts.MULTIPART_FLAG, new Object());
+        Map<String,Object> metaDatas = Collections.singletonMap("multipart.flag", new Object());
         Param param = mock(Param.class);
         ParamConfig paramConfig = mock(ParamConfig.class);
         when(paramConfig .getMetaDatas()).thenReturn(metaDatas);
@@ -139,16 +139,16 @@ public class MultiPartsTest extends NonInstanciableClassTest {
     public void putMetaDatasShouldAddMetaDataIntoGivenMap(){
         Map<String,Object> metaDatas = new HashMap<String, Object>();
         MultiParts.putMetaDatas(metaDatas, "contentType", "fileName");
-        assertEquals("contentType", metaDatas.get(MultiParts.CONTENT_TYPE));
-        assertEquals("fileName", metaDatas.get(MultiParts.FILENAME));
-        assertTrue((Boolean)metaDatas.get(MultiParts.MULTIPART_FLAG));
+        assertEquals("contentType", metaDatas.get("multipart.content-type"));
+        assertEquals("fileName", metaDatas.get("multipart.filename"));
+        assertTrue((Boolean)metaDatas.get("multipart.flag"));
     }
 
     @Test
     public void toMetaDatasShouldReturnAMetaDataMapWithGivenMultiPartInfos(){
         Map<String,Object> metaDatas = MultiParts.toMetaDatas("contentType", "fileName");
-        assertEquals("contentType", metaDatas.get(MultiParts.CONTENT_TYPE));
-        assertEquals("fileName", metaDatas.get(MultiParts.FILENAME));
-        assertTrue((Boolean)metaDatas.get(MultiParts.MULTIPART_FLAG));
+        assertEquals("contentType", metaDatas.get("multipart.content-type"));
+        assertEquals("fileName", metaDatas.get("multipart.filename"));
+        assertTrue((Boolean)metaDatas.get("multipart.flag"));
     }
 }

@@ -24,10 +24,23 @@ import org.codegist.crest.config.ParamConfig;
 
 import java.util.Collection;
 
+/**
+ * <p>A Param is the concretization of a {@link org.codegist.crest.config.ParamConfig}.</p>
+ * <p>While a {@link org.codegist.crest.config.ParamConfig} only describe a parameter, a Param is a real instance of a parameter, holding the value(s) associated with it's config.</p>
+ * @author laurent.gilles@codegist.org
+ */
 public interface Param {
-    
-     Collection<Object> getValue();
-    
-     ParamConfig getParamConfig();
+
+    /**
+     * Value(s) of the param. For single valued parameter, returns a one-element collection.
+     * @return value(s) of the param
+     */
+    Collection<Object> getValue();
+
+    /**
+     * The parameter config that describes the param and its value.
+     * @return param config
+     */
+    ParamConfig getParamConfig();
     
 }

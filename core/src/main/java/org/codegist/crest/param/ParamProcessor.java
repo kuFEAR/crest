@@ -24,10 +24,19 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
+ * <p>Param processor are used to transform a {@link org.codegist.crest.param.Param} into a list of pre-encoded pairs ready to be consumed.</p>
  * @author laurent.gilles@codegist.org
  */
 public interface ParamProcessor {
 
+    /**
+     * Tranforms the given param into a ready-to-consume list of encoded pairs.
+     * @param param parameter to process
+     * @param charset charset to use if applicable
+     * @param encodeIfNeeded if set to false, will turn off auto-encoding for parameter that needs it
+     * @return the list of pre-encoded parameters
+     * @throws Exception Any exception thrown during parameter processing
+     */
     List<EncodedPair> process(Param param, Charset charset, boolean encodeIfNeeded) throws Exception;
 
 }

@@ -27,7 +27,8 @@ import org.codegist.crest.util.ComponentRegistry;
 import static org.codegist.common.lang.Validate.isTrue;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * Response deserializer that uses a component registry of deserializers by class type.
+ * @author laurent.gilles@codegist.org
  */
 public class ResponseDeserializerByClass implements ResponseDeserializer {
 
@@ -43,10 +44,16 @@ public class ResponseDeserializerByClass implements ResponseDeserializer {
     private static final Logger LOG = Logger.getLogger(ResponseDeserializerByClass.class);
     private final ComponentRegistry<Class<?>, Deserializer> classDeserializerRegistry;
 
+    /**
+     * @param classDeserializerRegistry class deserializer registry to use
+     */
     public ResponseDeserializerByClass(ComponentRegistry<Class<?>, Deserializer> classDeserializerRegistry) {
         this.classDeserializerRegistry = classDeserializerRegistry;
     }
 
+    /**
+     * @inheritDoc
+     */
     public <T> T deserialize(Response response) throws Exception {
         Class<T> type = (Class<T>) response.getExpectedType();
         isTrue(classDeserializerRegistry.contains(type), CLASS_NOT_FOUND_ERROR, type);

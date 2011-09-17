@@ -25,12 +25,16 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
+ * {@link org.codegist.crest.io.Response} implementation that delegates all calls to the another {@link org.codegist.crest.io.Response}.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class DelegatingResponse implements Response {
 
     private final Response delegate;
 
+    /**
+     * @param delegate Response to delegate all calls to
+     */
     public DelegatingResponse(Response delegate) {
         this.delegate = delegate;
     }

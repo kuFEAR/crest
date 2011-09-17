@@ -34,19 +34,35 @@ public class RequestException extends Exception implements Disposable {
         super(e);
         this.response = null;
     }
+
+    /**
+     * @param message exception message
+     * @param response underlying response, can be null
+     */
     public RequestException(String message, Response response) {
         super(message);
         this.response = response;
     }
 
+    /**
+     * @return whether the given exception has an underlying response
+     */
     public boolean hasResponse() {
         return response != null;
     }
 
+    /**
+     *
+     * @return underlying response, can be null
+     * @see RequestException#hasResponse()
+     */
     public Response getResponse() {
         return response;
     }
 
+    /**
+     * Dispose underlying response if applicable
+     */
     public void dispose() {
         if(hasResponse()) {
             Disposables.dispose(response);

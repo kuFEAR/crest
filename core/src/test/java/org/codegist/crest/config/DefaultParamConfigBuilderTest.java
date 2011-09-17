@@ -24,7 +24,7 @@ import org.codegist.crest.CRestConfig;
 import org.codegist.crest.param.EncodedPair;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.param.ParamProcessor;
-import org.codegist.crest.param.ParamProcessorFactory;
+import org.codegist.crest.param.ParamProcessors;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.ToStringSerializer;
 import org.codegist.crest.test.util.CRestConfigs;
@@ -53,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * @author laurent.gilles@codegist.org
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ComponentRegistry.class, ParamProcessorFactory.class, ComponentFactory.class})
+@PrepareForTest({ComponentRegistry.class, ParamProcessors.class, ComponentFactory.class})
 public class DefaultParamConfigBuilderTest {
 
     private static final Type LIST_GENERIC_TYPE = Classes.byName(TypeHolder.class, "getListType").getGenericReturnType();
@@ -153,8 +153,8 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForListSeparator() throws Exception {
         ParamProcessor mockParamProcessor = mock(ParamProcessor.class);
-        mockStatic(ParamProcessorFactory.class);
-        when(ParamProcessorFactory.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
+        mockStatic(ParamProcessors.class);
+        when(ParamProcessors.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
         DefaultParamConfigBuilder toTest = newToTest();
         ParamConfig actual = toTest.setName("bla").build();
         assertCommons(actual);
@@ -163,8 +163,8 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldOverrideValueForListSeparator() throws Exception {
         ParamProcessor mockParamProcessor = mock(ParamProcessor.class);
-        mockStatic(ParamProcessorFactory.class);
-        when(ParamProcessorFactory.newInstance(ParamType.getDefault(), "value")).thenReturn(mockParamProcessor);
+        mockStatic(ParamProcessors.class);
+        when(ParamProcessors.newInstance(ParamType.getDefault(), "value")).thenReturn(mockParamProcessor);
         mockOverride(ParamConfig.PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, "value");
         DefaultParamConfigBuilder toTest = newToTest();
 
@@ -175,8 +175,8 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseGivenValueForListSeparator() throws Exception {
         ParamProcessor mockParamProcessor = mock(ParamProcessor.class);
-        mockStatic(ParamProcessorFactory.class);
-        when(ParamProcessorFactory.newInstance(ParamType.getDefault(), "value")).thenReturn(mockParamProcessor);
+        mockStatic(ParamProcessors.class);
+        when(ParamProcessors.newInstance(ParamType.getDefault(), "value")).thenReturn(mockParamProcessor);
 
         DefaultParamConfigBuilder toTest = newToTest();
 
@@ -272,8 +272,8 @@ public class DefaultParamConfigBuilderTest {
     @Test
     public void shouldUseDefaultValueForParamProcessor() throws Exception {
         ParamProcessor mockParamProcessor = mock(ParamProcessor.class);
-        mockStatic(ParamProcessorFactory.class);
-        when(ParamProcessorFactory.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
+        mockStatic(ParamProcessors.class);
+        when(ParamProcessors.newInstance(ParamType.getDefault(), null)).thenReturn(mockParamProcessor);
 
         DefaultParamConfigBuilder toTest = newToTest();
         ParamConfig actual = toTest.setName("bla").build();

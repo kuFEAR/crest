@@ -24,9 +24,14 @@ import static java.lang.Short.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class ShortWrapperDeserializer extends PrimitiveDeserializer<Short> {
+
+    /**
+     * @inheritDoc
+     */
     public Short deserialize(String value) {
         return isBlank(value) ?  null : valueOf(value);
     }

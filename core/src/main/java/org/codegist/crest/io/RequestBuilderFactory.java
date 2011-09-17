@@ -21,10 +21,14 @@
 package org.codegist.crest.io;
 
 /**
+ * {@link org.codegist.crest.io.RequestBuilder}'s factory
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface RequestBuilderFactory {
 
+    /**
+     * @return a fresh instance of a RequestBuilder
+     */
     RequestBuilder create();
 
 }

@@ -27,14 +27,13 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
- * Response context, passed to the response handlers and error handlers.
- *
- * @see org.codegist.crest.handler.ResponseHandler
- * @see org.codegist.crest.handler.ErrorHandler
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * <b>CRest</b>'s internal rest interface method call execution response
  */
 public interface Response extends Disposable {
 
+    /**
+     * @return original request
+     */
     Request getRequest();
 
     int getStatusCode() throws Exception;
@@ -45,15 +44,45 @@ public interface Response extends Disposable {
 
     String getContentEncoding() throws Exception;
 
+    /**
+     * @return expected method generic return type
+     */
     Type getExpectedGenericType();
 
+    /**
+     *
+     * @return expected method return type
+     */
     Class<?> getExpectedType();
 
+    /**
+     * @param <T> Method's return type
+     * @return the deserialized response to the expected method return type
+     * @throws Exception Any exception thrown during deserialization process
+     */
     <T> T deserialize() throws Exception;
 
+    /**
+     * @param type type to deserialize the response to
+     * @param <T> type to deserialize the response to
+     * @return deserialized response
+     * @throws Exception Any exception thrown during deserialization process
+     */
     <T> T to(Class<T> type) throws Exception;
 
+    /**
+     *
+     * @param type type to deserialize the response to
+     * @param genericType generic type to deserialize the response to
+     * @param <T> type to deserialize the response to
+     * @return deserialized response
+     * @throws Exception Any exception thrown during deserialization process
+     */
     <T> T to(Class<T> type, Type genericType) throws Exception;
 
+    /**
+     * @return underlying response entity stream
+     * @throws Exception Any exception thrown during transaction
+     */
     InputStream asStream() throws Exception;
 }

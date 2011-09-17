@@ -24,12 +24,23 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**
+ * Abstract serializer for scenarios where the serialized value can be dumped in memory (String)
  * @author laurent.gilles@codegist.org
  */
 public abstract class StringSerializer<V> implements Serializer<V> {
 
+    /**
+     * Returns the string representation of the given value
+     * @param value object to serialize
+     * @param charset charset to use for serialization if applicable
+     * @return the serialized object
+     * @throws Exception Any exception thrown during serialization process
+     */
     public abstract String serialize(V value, Charset charset) throws Exception;
 
+    /**
+     * @inheritDoc
+     */
     public void serialize(V value, Charset charset, OutputStream out) throws Exception {
         out.write(serialize(value, charset).getBytes(charset));
     }

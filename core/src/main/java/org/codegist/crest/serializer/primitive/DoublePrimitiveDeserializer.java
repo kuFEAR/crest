@@ -24,9 +24,14 @@ import static java.lang.Double.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class DoublePrimitiveDeserializer extends PrimitiveDeserializer {
+
+    /**
+     * @inheritDoc
+     */
     public Double deserialize(String value) {
         return isBlank(value) ? (double) 0 : valueOf(value);
     }

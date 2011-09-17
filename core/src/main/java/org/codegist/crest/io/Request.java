@@ -29,17 +29,28 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Context for any io, passed to io's interceptors.
- *
- * @see org.codegist.crest.interceptor.RequestInterceptor
+ * Generic <b>CRest</b> request interface that hold informations relatives to a rest interface method call
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface Request {
 
+    /**
+     * Returns the list of parameters for a given parameter type
+     * @param type parameter type to extract from the request
+     * @return list of parameter for the given type
+     */
     List<Param> getParams(ParamType type);
 
+    /**
+     * Returns the list of pre-processed ready-to-consumes parameters for a given parameter type
+     * @param type parameter type to extract from the request
+     * @return list of pre-processed ready-to-consumes parameters for a given parameter type
+     */
     Iterator<EncodedPair> getEncodedParamsIterator(ParamType type);
 
+    /**
+     * @return request's method config
+     */
     MethodConfig getMethodConfig();
 
 }

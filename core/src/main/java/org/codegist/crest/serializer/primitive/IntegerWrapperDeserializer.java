@@ -24,10 +24,14 @@ import static java.lang.Integer.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class IntegerWrapperDeserializer extends PrimitiveDeserializer<Integer> {
 
+    /**
+     * @inheritDoc
+     */
     public Integer deserialize(String value) {
         return isBlank(value) ?  null : valueOf(value);
     }

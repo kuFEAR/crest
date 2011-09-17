@@ -27,14 +27,18 @@ import java.util.List;
 
 
 /**
- * OAuth authentificator interface
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
 public interface OAuthenticator {
 
     /**
-     * Signs the given io using the given access token and the optional additional oauth headers.
-     * @param accessOAuthToken Access token to be used
+     * Generates the OAuth authorization parameters for the given request
+     * @param accessOAuthToken access token to use
+     * @param methodType request method type
+     * @param url request url
+     * @param parameters request parameters
+     * @return the list OAuth authorization parameters
+     * @throws Exception Any exception thrown during the oauth process
      */
     List<EncodedPair> oauth(OAuthToken accessOAuthToken, MethodType methodType, String url, EncodedPair... parameters) throws Exception;
 

@@ -20,18 +20,18 @@
 
 package org.codegist.crest.annotate;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <p>Purely documentation annotation, not look-up by <b>CRest</b>.</p>
- * <p>Any inteface annotated with it means its implementations will be auto-instantiated on demand by <b>CRest</b> and if a one-argument constructor that takes an instance of {@link org.codegist.crest.CRestConfig} is found, <b>CRest</b> will call it with the current config.</p>
- * <p>
+ * <p>Any inteface in the <b>CRest</b> API annotated with it means its implementations will be auto-instantiated on demand by <b>CRest</b></p>
+ * <p><b>CRest</b>'s state is passed through {@link org.codegist.crest.CRestConfig} and component can be CRest state aware by defining a one-arg constructor that takes a {@link org.codegist.crest.CRestConfig} instance.</p>
+ * <p>When <b>CRest</b> will instantiate the component, the {@link org.codegist.crest.CRestConfig} will be passed to it.</p>
+ * @see org.codegist.crest.util.ComponentFactory
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-@Retention(RetentionPolicy.CLASS)
+@Documented
+@Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE})
 public @interface CRestComponent {
 }

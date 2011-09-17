@@ -27,7 +27,8 @@ import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * {@link org.codegist.crest.security.oauth.v1.OAuthApiV1} builder.
+ * @author laurent.gilles@codegist.org
  */
 public final class OAuthApiV1Builder {
 
@@ -62,6 +63,10 @@ public final class OAuthApiV1Builder {
                 variantProvider);
     }
 
+    /**
+     * @param consumerToken consumer token to use
+     * @param oauthEndPoint base oauth endpoint
+     */
     public OAuthApiV1Builder(OAuthToken consumerToken, String oauthEndPoint){
         this(consumerToken, oauthEndPoint, new CRestBuilder());
     }
@@ -72,32 +77,62 @@ public final class OAuthApiV1Builder {
         this.crestBuilder = crestBuilder;
     }
 
+    /**
+     * Indicates the path context to use for request token
+     * @param path request token path context
+     * @return current builder
+     */
     public OAuthApiV1Builder getRequestTokenFrom(String path){
         this.requestTokenPath = path;
         return this;
     }
 
+    /**
+     * Indicates the path context to use for access token exchange url
+     * @param path access token exchange path context
+     * @return current builder
+     */
     public OAuthApiV1Builder getAccessTokenFrom(String path){
         this.accessTokenPath = path;
         return this;
     }
 
+    /**
+     * Indicates the path context to use for expired token refresh
+     * @param path expired token refresh path context
+     * @return current builder
+     */
     public OAuthApiV1Builder refreshAccessTokenFrom(String path){
         this.refreshAccessTokenPath = path;
         return this;
     }
 
+    /**
+     * Resulting OAuthApi will put OAuth parameter in the query-string rather than as header by default.
+     * @return current builder
+     */
     public OAuthApiV1Builder useGet(){
         this.methodType = MethodType.GET;
         this.oauthInterfaceCls = QueryOAuthInterface.class;
         return this;
     }
 
+    /**
+     * Overrides the default http channel factory that will be used during the oauth process
+     * @param channelFactory custom channel factory
+     * @return current builder
+     * @see org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory
+     */
     public OAuthApiV1Builder using(HttpChannelFactory channelFactory){
         this.channelFactory = channelFactory;
         return this;
     }
 
+    /**
+     * Overrides the default variant provider that will be used during the oauth process
+     * @param variantProvider custom variant provider
+     * @return current builder
+     */
     public OAuthApiV1Builder using(VariantProvider variantProvider){
         this.variantProvider = variantProvider;
         return this;

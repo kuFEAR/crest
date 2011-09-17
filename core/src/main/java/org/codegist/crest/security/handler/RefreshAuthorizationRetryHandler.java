@@ -27,8 +27,11 @@ import org.codegist.crest.io.RequestException;
 import org.codegist.crest.security.Authorization;
 
 /**
- * Authentification retry handler that refresh the authentification if the retry cause is a 401 problem.
- * <p>Requires an {@link org.codegist.crest.security.Authorization} instance to be present in the custom properties.
+ * <p>RetryHandler implementation that tries to detect unauthorized request failure.</p>
+ * <p>When such a failure is detected, it will try to refresh the <b>CRest</b>'s {@link org.codegist.crest.security.Authorization} holder and ask for a further attempts to be made for the current request</p>
+ * <p>Needs a {@link org.codegist.crest.security.Authorization} to be set in the given CRestConfig</p>
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @see org.codegist.crest.security.Authorization#refresh()
  */
 public class RefreshAuthorizationRetryHandler implements RetryHandler {
 
@@ -39,12 +42,18 @@ public class RefreshAuthorizationRetryHandler implements RetryHandler {
     private final int max;
     private final int unauthorizedStatusCode;
 
+    /**
+     * @param crestConfig CRest injected CRestConfig
+     */
     public RefreshAuthorizationRetryHandler(CRestConfig crestConfig) {
         this.max = crestConfig.getMaxAttempts() + 1;
         this.unauthorizedStatusCode = crestConfig.<Integer>get(UNAUTHORIZED_STATUS_CODE_PROP);
         this.authorization = crestConfig.get(Authorization.class);
     }
 
+    /**
+     * @inheritDoc
+     */
     public boolean retry(RequestException exception, int attemptNumber) throws Exception {
         if (attemptNumber > max) {
             LOGGER.debug("Not retrying, maximum failure reached.");

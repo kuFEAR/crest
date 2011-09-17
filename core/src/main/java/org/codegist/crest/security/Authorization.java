@@ -24,18 +24,23 @@ import org.codegist.crest.config.MethodType;
 import org.codegist.crest.param.EncodedPair;
 
 /**
- * AuthentificationManager interface
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author laurent.gilles@codegist.org
  */
 public interface Authorization {
 
     /**
-     * Sign the io
+     * Generates an authorization token for a given request
+     * @param methodType request method type
+     * @param url request url
+     * @param parameters request parameter to sign
+     * @return the request authorization token
+     * @throws Exception Any exception thrown during authorization token generation
      */
     AuthorizationToken authorize(MethodType methodType, String url, EncodedPair... parameters) throws Exception;
 
     /**
-     * Refresh the authentification information
+     * Refreshes internal state when the application has detected authorization credential expiration
+     * @throws Exception Any exception thrown during credential renewal
      */
     void refresh() throws Exception;
 

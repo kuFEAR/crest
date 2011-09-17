@@ -21,13 +21,32 @@
 package org.codegist.crest.security.oauth;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * OAuth token access API
+ * @author laurent.gilles@codegist.org
  */
 public interface OAuthApi {
 
+    /**
+     * Retrieves a request token
+     * @return the request token
+     * @throws Exception Any exception thrown during requests process
+     */
     OAuthToken getRequestToken() throws Exception;
 
+    /**
+     * Exchange a request token with verifier for an access token
+     * @param requestOAuthToken request token to exchange
+     * @param verifier verifier issued by the OAuth server
+     * @return the access token
+     * @throws Exception Any exception thrown during the exchange process
+     */
     OAuthToken getAccessToken(OAuthToken requestOAuthToken, String verifier) throws Exception;
 
-    OAuthToken refreshAccessToken(OAuthToken token) throws Exception;
+    /**
+     * <p>Refreshes the expired access token.</p>
+     * @param accessToken expired access token
+     * @return a new access token
+     * @throws Exception Any exception thrown during the refresh process
+     */
+    OAuthToken refreshAccessToken(OAuthToken accessToken) throws Exception;
 }

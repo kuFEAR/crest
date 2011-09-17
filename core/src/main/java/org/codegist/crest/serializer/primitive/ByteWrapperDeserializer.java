@@ -24,9 +24,14 @@ import static java.lang.Byte.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class ByteWrapperDeserializer extends PrimitiveDeserializer<Byte> {
+
+    /**
+     * @inheritDoc
+     */
     public Byte deserialize(String value) {
         return isBlank(value) ? null : valueOf(value);
     }

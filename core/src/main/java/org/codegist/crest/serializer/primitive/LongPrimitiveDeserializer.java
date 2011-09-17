@@ -24,9 +24,14 @@ import static java.lang.Long.valueOf;
 import static org.codegist.common.lang.Strings.isBlank;
 
 /**
+ * @inheritDoc
  * @author laurent.gilles@codegist.org
  */
 public class LongPrimitiveDeserializer extends PrimitiveDeserializer {
+
+    /**
+     * @inheritDoc
+     */
     public Long deserialize(String value) {
         return isBlank(value) ? (long) 0 : valueOf(value);
     }

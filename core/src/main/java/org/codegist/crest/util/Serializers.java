@@ -27,6 +27,8 @@ import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
 /**
+ * <p>Set of utility functions for dealing with {@link org.codegist.crest.serializer.Serializer} types.</p>
+ * @see org.codegist.crest.serializer.Serializer
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public final class Serializers {
@@ -35,6 +37,16 @@ public final class Serializers {
         throw new IllegalStateException();
     }
 
+    /**
+     * <p>If the given serializer is a {@link org.codegist.crest.serializer.StringSerializer}, then it will directly call {@link org.codegist.crest.serializer.StringSerializer#serialize(Object, java.nio.charset.Charset)}.</p>
+     * <p>This is just done in order to avoid an unecessary wrapping/unwrapping into a ByteArrayOutputStream.</p>
+     * @param serializer serializer to use
+     * @param value value to serialize
+     * @param charset charset to pass to the serializer
+     * @param <T> value type
+     * @return serializer value
+     * @throws Exception Any exception thrown during serialization process
+     */
     public static <T> String serialize(Serializer<T> serializer, T value, Charset charset) throws Exception {
         if(serializer instanceof StringSerializer) {
             return ((StringSerializer<T>)serializer).serialize(value, charset);
