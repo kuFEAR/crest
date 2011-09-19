@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
  * <li>Be a Collection&lt;T&gt;, or an array T[] where T satisfies 2, 3 or 4 above.</li>
  * </ol>
  * <p>Note that for array/Collection, the default behavior will be to create as many pair/value parameters as given values. Values can be merged in one single parameter using the {@link org.codegist.crest.annotate.ListSeparator} annotation</p>
- * <p>When set at interface or method levels, it will applies to all method's parameters where it is not already specified</p>
+ * <p>When set at interface or method levels, it will add a form parameter with the given value for all method's to which it applies</p>
  * @see org.codegist.crest.annotate.Serializer
  * @see org.codegist.crest.annotate.ListSeparator
  * @author laurent.gilles@codegist.org
