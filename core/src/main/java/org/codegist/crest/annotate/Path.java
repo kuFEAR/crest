@@ -57,7 +57,7 @@ public @interface Path {
      * // will fire a GET io at  (...)/article/234
      * </pre></code>
      * <p>Can also contain placeholder that will be replace by any value found in the given placeholder config, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}
-     * @return path
+     * path
      */
     String value();
 }

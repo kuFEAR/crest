@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * <p>Optional method level annotation, sets the method error handler. If not specified, defaults to the method config default value.
- * <p>Can be set at interface level to default all interface method values if not specified at method level.
+ * <p>Can be set at interface level to default all methods values if not specified at method level.
  * @see org.codegist.crest.config.MethodConfig#DEFAULT_ERROR_HANDLER
  * @see org.codegist.crest.config.MethodConfig#getErrorHandler()
  * @author Laurent Gilles (laurent.gilles@codegist.org)

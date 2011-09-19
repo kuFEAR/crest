@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that the annotated method responds to HTTP POST requests
- * <p>Can be set at interface level to default all interface method values if not specified at method level.
- * @see org.codegist.crest.annotate.HttpMethod
- * @author laurent.gilles@codegist.org
+ * <p>Indicates that the annotated method responds to HTTP POST requests</p>
+ * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})

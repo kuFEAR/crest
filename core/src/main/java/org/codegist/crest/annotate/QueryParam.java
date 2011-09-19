@@ -26,8 +26,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * If specified at method parameter level, indicates to inject it into the io query parameter.
- * <p>If specified at interface or method level, indicates to inject a default parameter into the io query parameter for all requests.
+ * <p>Binds a method parameter to be used as a request HTTP query parameter.</p>
+ * <p>Values will be URL encoded unless this is disabled using the {@link org.codegist.crest.annotate.Encoded} annotation.</p>
+ * <p>The type of the parameter must either:</p>
+ * <ol>
+ * <li>Be a primitive</li>
+ * <li>Have a toString() method that returns the value to be used</li>
+ * <li>Any type being handled by <b>CRest</b>, see available {@link org.codegist.crest.serializer.Serializer} implementations for a list of supported types.</li>
+ * <li>Any user specific type given that a {@link org.codegist.crest.serializer.Serializer} has been provided for it.</li>
+ * <li>Be a Collection&lt;T&gt;, or an array T[] where T satisfies 2, 3 or 4 above.</li>
+ * </ol>
+ * <p>Note that for array/Collection, the default behavior will be to create as many pair/value parameters as given values. Values can be merged in one single parameter using the {@link org.codegist.crest.annotate.ListSeparator} annotation</p>
+ * <p>When set at interface or method levels, it will applies to all method's parameters where it is not already specified</p>
+ * @see org.codegist.crest.annotate.Serializer
+ * @see org.codegist.crest.annotate.ListSeparator
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -36,16 +48,12 @@ import java.lang.annotation.Target;
 public @interface QueryParam {
 
     /**
-     * Indicates the parameter name to use
-     * @return parameter name
+     * Defines the name of the request HTTP query parameter that will hold the given value
      */
     String value();
 
     /**
-     * Indicates the parameter default value to use.
-     * <p>At method parameter level, this value is used if the parameter is null
-     * <p>At interface/method levels, this value is used to specifie the value of the parameter to add for each io
-     * @return parameter default value
+     * Defines the default value of the HTTP query parameter if the value being passed is null
      */
     String defaultValue() default "";
 }

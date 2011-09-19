@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.ANNOTATION_TYPE})
 public @interface Param {
     /**
-     * @return param's destination
+     * param's destination
      */
     String value();
 

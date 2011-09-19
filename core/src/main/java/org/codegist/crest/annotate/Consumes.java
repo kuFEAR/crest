@@ -26,7 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * <p>Defines the media types that the method will handle. Also used to set the request's Accept header.</p>
+ * <p>Annotating a method with it will make it ignore the server's response Content-Type during the deserialization process, and force it to use a deserializer that can handle the given media types.</p>
+ * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -34,10 +36,7 @@ import java.lang.annotation.Target;
 public @interface Consumes {
 
     /**
-     * Ends up in Accept-Headers,
-     * - Specifying it will configure the method to use the mapped-deserializers for the given content type and will ignore response content type
-     * - if not specified, response content type is used to automatically select the deserializer to use  
-     * @return
+     * the media-types that the method will handle
      */
     String[] value();
 
