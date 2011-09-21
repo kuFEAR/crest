@@ -79,7 +79,8 @@ public final class ComponentRegistry<K,T> {
         }else if(defaultIfNotFound != null) {
             value = defaultIfNotFound;
         }else if(defaultIfNotFoundDescriptor != null) {
-            value = defaultIfNotFound = defaultIfNotFoundDescriptor.instanciate(crestConfig);
+            defaultIfNotFound = defaultIfNotFoundDescriptor.instanciate(crestConfig);
+            value = defaultIfNotFound;
         }else{      
             throw new CRestException("No item bound to key: " + key);
         }

@@ -25,11 +25,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
+/**
+ * <p>Binds a entity writer for the annotated method entity, overriding the HTTP entity writing behavior.</p>
+ * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 public @interface EntityWriter {
 
+    /**
+     * Binds a entity writer for the annotated method entity
+     */
     Class<? extends org.codegist.crest.entity.EntityWriter> value();
     
 }

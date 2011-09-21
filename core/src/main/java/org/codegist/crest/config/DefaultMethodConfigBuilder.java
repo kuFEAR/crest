@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010 CodeGist.org
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *     You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *     See the License for the specific language governing permissions and
+ *     limitations under the License.
+ *
+ *  ===================================================================
+ *
+ *  More information at http://www.codegist.org.
+ */
+
 package org.codegist.crest.config;
 
 import org.codegist.common.lang.State;
@@ -228,14 +248,14 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return this;
     }
 
-    public MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializer) {
+    public MethodConfigBuilder setDeserializer(Class<? extends Deserializer> deserializerClass) {
         this.deserializers.clear();
-        this.deserializers.add(deserializer);
+        this.deserializers.add(deserializerClass);
         return this;
     }
 
-    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> interceptorCls)  {
-        this.requestInterceptor = interceptorCls;
+    public MethodConfigBuilder setRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorClass)  {
+        this.requestInterceptor = requestInterceptorClass;
         return this;
     }
 
@@ -244,8 +264,8 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return this;
     }
 
-    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> methodHandlerClass)   {
-        this.errorHandler = methodHandlerClass;
+    public MethodConfigBuilder setErrorHandler(Class<? extends ErrorHandler> errorHandlerClass)   {
+        this.errorHandler = errorHandlerClass;
         return this;
     }
 
@@ -254,16 +274,16 @@ class DefaultMethodConfigBuilder extends ConfigBuilder implements MethodConfigBu
         return this;
     }
 
-    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> bodyWriterClass)   {
-        this.entityWriter = bodyWriterClass;
+    public MethodConfigBuilder setEntityWriter(Class<? extends EntityWriter> entityWriterClass)   {
+        this.entityWriter = entityWriterClass;
         return this;
     }
 
     /* PARAMS SETTINGS METHODS */
 
-    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializer) {
+    public MethodConfigBuilder setParamsSerializer(Class<? extends Serializer> serializerClass) {
         for (ParamConfigBuilder b : methodParamConfigBuilders) {
-            b.setSerializer(paramSerializer);
+            b.setSerializer(serializerClass);
         }
         return this;
     }

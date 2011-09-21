@@ -34,6 +34,11 @@ public class DefaultInterfaceConfigBuilderFactory implements InterfaceConfigBuil
     private final ComponentRegistry<Class<?>, Serializer> classSerializerRegistry;
     private final CRestConfig crestConfig;
 
+    /**
+     * @param crestConfig the crest config
+     * @param mimeDeserializerRegistry the deserializer registry per mime type
+     * @param classSerializerRegistry the serializer registry per class tyoe
+     */
     public DefaultInterfaceConfigBuilderFactory(CRestConfig crestConfig, ComponentRegistry<String, Deserializer> mimeDeserializerRegistry, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
         this.crestConfig = crestConfig;
         this.mimeDeserializerRegistry = mimeDeserializerRegistry;

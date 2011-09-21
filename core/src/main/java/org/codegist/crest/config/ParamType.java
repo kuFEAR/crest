@@ -21,10 +21,34 @@
 package org.codegist.crest.config;
 
 /**
+ * REST parameter types
  * @author laurent.gilles@codegist.org
  */
 public enum ParamType {
-    QUERY,PATH,FORM,HEADER,COOKIE,MATRIX;
+    /**
+     * URI query parameter
+     */
+    QUERY,
+    /**
+     * URI path segment parameter
+     */
+    PATH,
+    /**
+     * form parameter
+     */
+    FORM,
+    /**
+     * HTTP Header parameter
+     */
+    HEADER,
+    /**
+     * HTTP Cookie parameter
+     */
+    COOKIE,
+    /**
+     * URI matrix parameter
+     */
+    MATRIX;
 
     public static ParamType getDefault(){
         return QUERY;

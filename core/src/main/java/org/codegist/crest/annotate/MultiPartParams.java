@@ -25,15 +25,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * {@link org.codegist.crest.annotate.HeaderParam} aggregator for interface and method levels, to be used when more than one default header need to be added.
+ * <p>Binds the list of default request multipart parameters of the annotated method.</p>
+ * <p>When set at interface level, it will add a list of multipart parameters for all method's</p>
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})
 public @interface MultiPartParams {
 
+    /**
+     * Defines the list of default request multipart parameters of the annotated method
+     */
     MultiPartParam[] value();
 
 }

@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010 CodeGist.org
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *     You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *     See the License for the specific language governing permissions and
+ *     limitations under the License.
+ *
+ *  ===================================================================
+ *
+ *  More information at http://www.codegist.org.
+ */
+
 package org.codegist.crest.config;
 
 import org.codegist.common.lang.ToStringBuilder;
@@ -68,9 +88,9 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorCls)  {
+    public InterfaceConfigBuilder setMethodsRequestInterceptor(Class<? extends RequestInterceptor> requestInterceptorClass)  {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setRequestInterceptor(requestInterceptorCls);
+            b.setRequestInterceptor(requestInterceptorClass);
         }
         return this;
     }
@@ -82,38 +102,38 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandler)  {
+    public InterfaceConfigBuilder setMethodsErrorHandler(Class<? extends ErrorHandler> errorHandlerClass)  {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setErrorHandler(errorHandler);
+            b.setErrorHandler(errorHandlerClass);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandler)  {
+    public InterfaceConfigBuilder setMethodsRetryHandler(Class<? extends RetryHandler> retryHandlerClass)  {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setRetryHandler(retryHandler);
+            b.setRetryHandler(retryHandlerClass);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> bodyWriter)  {
+    public InterfaceConfigBuilder setMethodsEntityWriter(Class<? extends EntityWriter> entityWriterClass)  {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setEntityWriter(bodyWriter);
+            b.setEntityWriter(entityWriterClass);
         }
         return this;
     }
 
 
-    public InterfaceConfigBuilder setMethodsConsumes(String... mimeType) {
+    public InterfaceConfigBuilder setMethodsConsumes(String... mimeTypes) {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setConsumes(mimeType);
+            b.setConsumes(mimeTypes);
         }
         return this;
     }
 
-    public InterfaceConfigBuilder setMethodsDeserializer(Class<? extends Deserializer> deserializer) {
+    public InterfaceConfigBuilder setMethodsDeserializer(Class<? extends Deserializer> deserializerClass) {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setDeserializer(deserializer);
+            b.setDeserializer(deserializerClass);
         }
         return this;
     }
@@ -161,9 +181,9 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
         return new CompositeParamConfigBuilder(builders);
     }
 
-    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerCls) {
+    public InterfaceConfigBuilder setParamsSerializer(Class<? extends Serializer> paramSerializerClass) {
         for (MethodConfigBuilder b : methodBuilders.values()) {
-            b.setParamsSerializer(paramSerializerCls);
+            b.setParamsSerializer(paramSerializerClass);
         }
         return this;
     }
@@ -236,9 +256,9 @@ class DefaultInterfaceConfigBuilder extends ConfigBuilder implements InterfaceCo
             return this;
         }
 
-        public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializer) {
+        public ParamConfigBuilder setSerializer(Class<? extends Serializer> serializerClass) {
             for(ParamConfigBuilder builder : builders){
-                builder.setSerializer(serializer);
+                builder.setSerializer(serializerClass);
             }
             return this;
         }

@@ -23,10 +23,17 @@ package org.codegist.crest.config;
 import java.lang.reflect.Type;
 
 /**
+ * {@link ParamConfigBuilder} factory
  * @author laurent.gilles@codegist.org
  */
 public interface ParamConfigBuilderFactory {
 
+    /**
+     * Returns a new instance of a {@link ParamConfigBuilder} for the given type
+     * @param type class type of the parameter
+     * @param genericType generic type of the parameter
+     * @return a new instance of a {@link ParamConfigBuilder}
+     */
     ParamConfigBuilder newInstance(Class<?> type, Type genericType);
     
 }

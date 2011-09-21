@@ -24,11 +24,16 @@ import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.io.RequestBuilder;
 
 /**
- * Empty io interceptor. Does nothing.
+ * Empty request interceptor. Does nothing.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class NoOpRequestInterceptor implements RequestInterceptor {
+
+    /**
+     * @inheritDoc
+     */
     public void beforeFire(RequestBuilder requestBuilder, MethodConfig mc, Object[] args) throws Exception {
 
     }
+
 }

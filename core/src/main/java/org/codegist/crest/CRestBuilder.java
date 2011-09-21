@@ -147,7 +147,7 @@ public class CRestBuilder {
         ParamConfigBuilderFactory pcbf = new DefaultParamConfigBuilderFactory(crestConfig, classSerializerRegistry);
         putIfAbsentAndNotNull(crestProperties, ParamConfigBuilderFactory.class.getName(), pcbf);
 
-        ProxyFactory proxyFactory = getInstance(this.proxyFactory, this.proxyFactoryClass, crestConfig);
+        ProxyFactory pProxyFactory = getInstance(this.proxyFactory, this.proxyFactoryClass, crestConfig);
         HttpChannelFactory plainChannelFactory = getInstance(this.httpChannelFactory, this.httpChannelFactoryClass, crestConfig);
 
         Authorization authorization = buildAuthorization(plainChannelFactory);
@@ -170,7 +170,7 @@ public class CRestBuilder {
 
         InterfaceConfigFactory configFactory = new AnnotationDrivenInterfaceConfigFactory(icbf, annotationHandlerBuilder.build(crestConfig));
 
-        return new DefaultCRest(proxyFactory, requestExecutor, requestBuilderFactory, configFactory);
+        return new DefaultCRest(pProxyFactory, requestExecutor, requestBuilderFactory, configFactory);
     }
 
     private static <K,V> void putIfAbsentAndNotNull(Map<K, V> map, K key, V value){
@@ -495,6 +495,11 @@ public class CRestBuilder {
 
     /**
      * <p>Binds a deserializer to a list of response Content-Type mime-types.</p>
+     * <p>By default, <b>CRest</b> handle the following types:</p>
+     * <ul>
+     *   <li>application/xml, text/xml for Xml deserialization</li>
+     *   <li>application/json, application/javascript, text/javascript, text/json for Json deserialization</li>
+     * </ul>
      * @param deserializer Deserializer class to use for the given mime-types
      * @param mimeTypes Response Content-Types to bind deserializer to
      * @return current builder
@@ -505,6 +510,11 @@ public class CRestBuilder {
 
     /**
      * <p>Binds a deserializer to a list of response Content-Type mime-types.</p>
+     * <p>By default, <b>CRest</b> handle the following types:</p>
+     * <ul>
+     *   <li>application/xml, text/xml for Xml deserialization</li>
+     *   <li>application/json, application/javascript, text/javascript, text/json for Json deserialization</li>
+     * </ul>
      * @param deserializer Deserializer class to use for the given mime-types
      * @param mimeTypes Response Content-Types to bind deserializer to
      * @param config State that will be passed to the deserializer along with the CRestConfig object if the deserializer has declared a single argument constructor with CRestConfig parameter type

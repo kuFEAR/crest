@@ -1,3 +1,23 @@
+/*
+ * Copyright 2010 CodeGist.org
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *     You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *     See the License for the specific language governing permissions and
+ *     limitations under the License.
+ *
+ *  ===================================================================
+ *
+ *  More information at http://www.codegist.org.
+ */
+
 package org.codegist.crest.annotate;
 
 import java.lang.annotation.ElementType;
@@ -17,7 +37,8 @@ import java.lang.annotation.Target;
  * <li>Any user specific type given that a {@link org.codegist.crest.serializer.Serializer} has been provided for it.</li>
  * <li>Be a Collection&lt;T&gt;, or an array T[] where T satisfies 2, 3 or 4 above.</li>
  * </ol>
- * <p>Note that for array/Collection, the default behavior will be to create as many pair/value parameters as given values. Values can be merged in one single parameter using the {@link org.codegist.crest.annotate.ListSeparator} annotation</p>
+ * <p>Note that for array/Collection, the default behavior will be to create as many pair/value parameters as values in the array/collection. Values can be merged in one single parameter using the {@link org.codegist.crest.annotate.ListSeparator} annotation</p>
+ * <p>Can contain placeholders, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}.</p>
  * <p>When set at interface or method levels, it will add a URI matrix parameter with the given value for all method's to which it applies</p>
  * @see org.codegist.crest.annotate.Serializer
  * @see org.codegist.crest.annotate.ListSeparator
@@ -25,7 +46,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD, ElementType.PARAMETER})
-@Param("MATRIX")
 public @interface MatrixParam {
 
     /**

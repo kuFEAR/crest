@@ -19,6 +19,6 @@
  */
 
 /**
- * Serializes are used to serialize a object to a single String. 
+ * Contains <b>CRest</b>'s de/serializer interfaces and implementations.
  */
 package org.codegist.crest.serializer;

@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -36,6 +36,7 @@ import java.lang.annotation.Target;
  * <li>Any user specific type given that a {@link org.codegist.crest.serializer.Serializer} has been provided for it.</li>
  * </ol>
  * <p>Note that array/Collection are not supported by default. If one wishes to use them, then the {@link org.codegist.crest.annotate.ListSeparator} annotation must be specified in order to merge the values</p>
+ * <p>Can contain placeholders, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}.</p>
  * <p>When set at interface or method levels, it will default a URI path segment with the given value for all method's to which it applies</p>
  * @see org.codegist.crest.annotate.Serializer
  * @see org.codegist.crest.annotate.ListSeparator
@@ -43,7 +44,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD, ElementType.PARAMETER})
-@Param("PATH")
 public @interface PathParam {
 
     /**

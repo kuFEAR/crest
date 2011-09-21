@@ -18,7 +18,8 @@
  * More information at http://www.codegist.org.
  */
 
+
 /**
- * Interceptors are notified before and after the parameters have been added to the io.
+ * Contains <b>CRest</b>'s request interceptors interfaces and implementations.
  */
 package org.codegist.crest.interceptor;

@@ -31,20 +31,20 @@ import java.lang.reflect.Type;
 import static org.codegist.common.collect.Arrays.merge;
 
 /**
- * <p>Annotation based config factory of any possible interfaces given to the factory.
- * <p>The factory will lookup any annotation in package {@link org.codegist.crest.annotate} on to the given interface.
+ * <p>Annotation based config factory.</p>
+ * <p>The factory will lookup any annotation in the packages {@link org.codegist.crest.annotate} and {@link javax.ws.rs} on the given interface.</p>
  * <p/>
- * <p>- Each config fallback from param to method to interface until one config is found, otherwise defaults to any respective default value ({@link org.codegist.crest.config.InterfaceConfig}, {@link org.codegist.crest.config.MethodConfig},
- *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
- * @see org.codegist.crest.config.InterfaceConfig
- * @see org.codegist.crest.annotate
  */
 public class AnnotationDrivenInterfaceConfigFactory implements InterfaceConfigFactory {
 
     private final InterfaceConfigBuilderFactory icbf;
     private final ComponentRegistry<Class<? extends Annotation>, AnnotationHandler> handlersRegistry;
 
+    /**
+     * @param icbf the interface config builder factory to get InterfaceConfigBuilder instances from
+     * @param handlersRegistry Annotation handlers registry
+     */
     public AnnotationDrivenInterfaceConfigFactory(InterfaceConfigBuilderFactory icbf, ComponentRegistry<Class<? extends Annotation>,AnnotationHandler> handlersRegistry) {
         this.handlersRegistry = handlersRegistry;
         this.icbf = icbf;

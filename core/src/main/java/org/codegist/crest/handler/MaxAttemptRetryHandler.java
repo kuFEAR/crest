@@ -38,11 +38,16 @@ public class MaxAttemptRetryHandler implements RetryHandler {
 
     private static final Logger LOG = Logger.getLogger(MaxAttemptRetryHandler.class);
 
+    /**
+     * @param crestConfig the crest config
+     */
     public MaxAttemptRetryHandler(CRestConfig crestConfig) {
         this.max = crestConfig.getMaxAttempts();
     }
 
-
+    /**
+     * @inheritDoc
+     */
     public boolean retry(RequestException exception, int attemptNumber) throws Exception {
         boolean retry = attemptNumber <= max;
         LOG.debug("Retrying attempt=%d,max=%d,retry=%b,reason=%s", attemptNumber, max, retry, exception != null ? exception.getMessage() : "unknown");

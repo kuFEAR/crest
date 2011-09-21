@@ -21,14 +21,33 @@
 package org.codegist.crest.config;
 
 /**
+ * HTTP method types
  * @author laurent.gilles@codegist.org
  */
 public enum MethodType {
+    /**
+     * GET HTTP Method
+     */
     GET(false),
+    /**
+     * POST HTTP Method
+     */
     POST(true),
+    /**
+     * PUT HTTP Method
+     */
     PUT(true),
+    /**
+     * DELETE HTTP Method
+     */
     DELETE(false),
+    /**
+     * OPTIONS HTTP Method
+     */
     OPTIONS(false),
+    /**
+     * HEAD HTTP Method
+     */
     HEAD(false);
 
     private final boolean hasEntity;
@@ -41,6 +60,9 @@ public enum MethodType {
         this.hasEntity = hasEntity;
     }
 
+    /**
+     * whether the HTTP method type has an HTTP entity
+     */
     public boolean hasEntity() {
         return hasEntity;
     }

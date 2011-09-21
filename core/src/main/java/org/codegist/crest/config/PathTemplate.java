@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -23,10 +23,16 @@ package org.codegist.crest.config;
 import java.nio.charset.Charset;
 
 /**
+ * A path template hold informations relative to an URI with placeholder to be merged
  * @author laurent.gilles@codegist.org
  */
 public interface PathTemplate {
 
+    /**
+     * Returns a PathBuilder that will use the given charset for encoding merged values
+     * @param charset charset for encoding merged values
+     * @return a path builder over the given template
+     */
     PathBuilder getBuilder(Charset charset);
 
 }

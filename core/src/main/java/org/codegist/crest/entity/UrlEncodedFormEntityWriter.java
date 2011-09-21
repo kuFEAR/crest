@@ -36,14 +36,23 @@ import static org.codegist.crest.util.Pairs.join;
  */
 public class UrlEncodedFormEntityWriter implements EntityWriter {
 
+    /**
+     * @inheritDoc
+     */
     public String getContentType(Request request) {
         return "application/x-www-form-urlencoded; charset=" + request.getMethodConfig().getCharset().displayName();
     }
 
+    /**
+     * @inheritDoc
+     */
     public int getContentLength(Request request) {
         return -1;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void writeTo(Request request, OutputStream out) throws IOException {
         Charset charset = request.getMethodConfig().getCharset();
         Writer writer = new OutputStreamWriter(out, charset);

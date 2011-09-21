@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import static org.codegist.common.lang.Validate.isTrue;
 
 /**
+ * Regex driven PathTemplate
  * @author laurent.gilles@codegist.org
  */
 public final class RegexPathTemplate implements PathTemplate {
@@ -50,6 +51,9 @@ public final class RegexPathTemplate implements PathTemplate {
         this.templates = templates;
     }
 
+    /**
+     * @inheritDoc
+     */
     public PathBuilder getBuilder(Charset charset) {
         return new DefaultPathBuilder(charset);
     }
@@ -101,6 +105,11 @@ public final class RegexPathTemplate implements PathTemplate {
         }
     }
 
+    /**
+     * Creates a regex path template for the given URI template
+     * @param urlTemplate uri that can hold placeholders
+     * @return a new regex path template instance
+     */
     public static RegexPathTemplate create(String urlTemplate) {
         StringBuffer baseUrl = new StringBuffer();
         Map<String, PathTemplate> templates = new HashMap<String, PathTemplate>();

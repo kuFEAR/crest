@@ -26,12 +26,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>Binds a deserializer for the annotated method response type, overriding the default deserialization process.</p>
+ * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})
 public @interface Deserializer {
 
+    /**
+     * Defines the deserializer to use to deserialize the annotated method response type
+     */
     Class<? extends org.codegist.crest.serializer.Deserializer> value();
 
 }

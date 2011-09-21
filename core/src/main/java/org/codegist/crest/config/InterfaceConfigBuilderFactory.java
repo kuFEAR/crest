@@ -21,10 +21,16 @@
 package org.codegist.crest.config;
 
 /**
+ * {@link InterfaceConfigBuilder} factory
  * @author laurent.gilles@codegist.org
  */
 public interface InterfaceConfigBuilderFactory {
 
+    /**
+     * Returns a new instance of a {@link InterfaceConfigBuilder} bound to the given REST interface
+     * @param interfaze the REST interface to bound the builder to
+     * @return a new instance of a {@link InterfaceConfigBuilder}
+     */
     InterfaceConfigBuilder newInstance(Class<?> interfaze);
     
 }

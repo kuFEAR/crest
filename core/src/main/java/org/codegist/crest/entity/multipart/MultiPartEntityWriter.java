@@ -56,14 +56,23 @@ public class MultiPartEntityWriter implements EntityWriter {
         this.textSerializer = textSerializer;
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getContentType(Request request) {
         return MULTIPART + BOUNDARY;
     }
 
+    /**
+     * @inheritDoc
+     */
     public int getContentLength(Request request) {
         return -1;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void writeTo(Request request, OutputStream outputStream) throws Exception {
         DataOutputStream out = new DataOutputStream(outputStream);
         List<Param> formParams = request.getParams(FORM);

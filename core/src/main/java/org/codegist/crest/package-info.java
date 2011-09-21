@@ -19,6 +19,6 @@
  */
 
 /**
- * Contains {@link org.codegist.crest.CRest} interfaces and default implementations. 
+ * Contains <b>CRest</b> interfaces and default implementation.
  */
 package org.codegist.crest;

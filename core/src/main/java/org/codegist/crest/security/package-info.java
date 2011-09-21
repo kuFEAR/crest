@@ -19,8 +19,6 @@
  */
 
 /**
- * Authentification components
- * @see org.codegist.crest.DefaultCRest
- * @see org.codegist.crest.CRestContext 
+ * Contains <b>CRest</b>'s authentification interfaces and implementations.
  */
 package org.codegist.crest.security;

@@ -34,14 +34,28 @@ public abstract class AbstractRequestInterceptor implements RequestInterceptor {
 
     private final ParamConfigBuilderFactory paramConfigBuilderFactory;
 
+    /**
+     * @param crestConfig the crest config
+     */
     public AbstractRequestInterceptor(CRestConfig crestConfig) {
         this.paramConfigBuilderFactory = crestConfig.get(ParamConfigBuilderFactory.class);
     }
 
+    /**
+     * Returns a new param config for the given class type
+     * @param type param config class
+     * @return the new param config
+     */
     public ParamConfigBuilder newParamConfig(Class<?> type){
         return newParamConfig(type, type);
     }
 
+    /**
+     * Returns a new param config for the given class and generic type
+     * @param type param config class
+     * @param genericType param config generic type
+     * @return the new param config
+     */
     public ParamConfigBuilder newParamConfig(Class<?> type, Type genericType){
         return paramConfigBuilderFactory.newInstance(type, genericType);
     }

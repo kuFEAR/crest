@@ -29,6 +29,9 @@ import org.codegist.crest.io.Request;
  */
 public class ErrorDelegatorHandler implements ErrorHandler {
 
+    /**
+     * @inheritDoc
+     */
     public <T> T handle(Request request, Exception e) throws Exception {
         throw CRestException.handle(e);
     }

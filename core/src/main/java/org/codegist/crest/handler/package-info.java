@@ -19,6 +19,6 @@
  */
 
 /**
- * Contains retry, response and error handler interfaces and default implementations 
+ * Contains <b>CRest</b>'s event handlers interfaces and implementations.
  */
 package org.codegist.crest.handler;

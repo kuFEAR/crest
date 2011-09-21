@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -26,13 +26,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * {@link QueryParam} aggregator for interface and method levels, to be used when more than one default query parameter need to be added. 
+ * <p>Binds the list of default request HTTP query parameters of the annotated method.</p>
+ * <p>When set at interface level, it will add a list of HTTP query parameters for all method's</p>
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})
 public @interface QueryParams {
 
+    /**
+     * Defines the list of default request HTTP query parameters of the annotated method
+     */
     QueryParam[] value();
 
 }

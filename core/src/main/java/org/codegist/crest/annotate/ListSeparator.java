@@ -26,6 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>Defines a string to use for joining array/Collection values of a method parameter. Default behavior will be to create as many pair/value parameters as values in the array/collection</p>
+ * <p>Can contain placeholders, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}.</p>
+ * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author laurent.gilles@codegist.org
  */
 @Retention(RetentionPolicy.RUNTIME)

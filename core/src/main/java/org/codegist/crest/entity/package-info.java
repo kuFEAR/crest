@@ -18,19 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.config;
-
 /**
- * {@link InterfaceConfig} factory
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * Contains <b>CRest</b>'s entity writers interfaces and implementations.
  */
-public interface InterfaceConfigFactory {
-
-    /**
-     * Returns a new instance of a {@link InterfaceConfig} for the given REST interface
-     * @param interfaze Interface to build the configuration from
-     * @return The interface config object.
-     */
-    InterfaceConfig newConfig(Class<?> interfaze) throws Exception;
-
-}
+package org.codegist.crest.entity;

@@ -25,6 +25,8 @@ import org.codegist.crest.io.RequestException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * <b>CRest</b>'s exception wrapper
+ * <p>Any exception that occures while using a REST interface build by <b>CRest</b>, except for IllegalArgumentException or IllegalStateException, are wrapped into a CRestException and delegated back to the user</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class CRestException extends RuntimeException {
@@ -40,6 +42,12 @@ public class CRestException extends RuntimeException {
         super(message, cause);
     }
 
+    /**
+     * Handles any kind of exception, wrapping it into a CRestException.
+     * <p>NB: IllegalArgumentException and IllegalStateException are not wrapped.</p>
+     * @param e
+     * @return a wrapped CRestException or the original IllegalArgumentException or IllegalStateException
+     */
     public static RuntimeException handle(Throwable e) {
         if (e instanceof CRestException) {
             return handle((CRestException) e);

@@ -34,11 +34,18 @@ public class DefaultParamConfigBuilderFactory implements ParamConfigBuilderFacto
     private final ComponentRegistry<Class<?>, Serializer> classSerializerRegistry;
     private final CRestConfig crestConfig;
 
+    /**
+     * @param crestConfig the crest config
+     * @param classSerializerRegistry the serializer registry per class
+     */
     public DefaultParamConfigBuilderFactory(CRestConfig crestConfig, ComponentRegistry<Class<?>, Serializer> classSerializerRegistry) {
         this.crestConfig = crestConfig;
         this.classSerializerRegistry = classSerializerRegistry;
     }
 
+    /**
+     * @inheritDoc
+     */
     public ParamConfigBuilder newInstance(Class<?> type, Type genericType) {
         return new DefaultParamConfigBuilder(crestConfig, classSerializerRegistry, type, genericType);
     }

@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -27,12 +27,11 @@ import java.lang.annotation.Target;
 
 
 /**
- * <p>Indicates that the annotated method responds to HTTP HEAD requests</p>
+ * <p>Indicates that the annotated method issues HTTP HEAD requests</p>
  * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.METHOD})
-@HttpMethod("HEAD")
 public @interface HEAD {
 }

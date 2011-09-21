@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -27,43 +27,150 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
- * Basic parameter configuration holder object for interface/method extra parameters. Extra parameters are added on top of the method arguments.
- * <p>Implementors must respect the following contract :
- * <p>- No method return null
- * <p>- Defaults values must either be taken from interface's defaults constant or from {@link org.codegist.crest.InterfaceContext#getProperties()}'s defaults overrides.
- *
- * @see MethodConfig
- * @see ParamConfig
- * @see InterfaceConfigFactory
+ * <p>Reflects a REST interface method's parameter configuration</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface ParamConfig {
 
-    String PARAM_CONFIG_DEFAULT_TYPE = ParamConfig.class.getName() + "#param-type";
+    /**
+     * <p>CRestConfig property to override the default parameter type.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * ParamType type = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_TYPE, type).buid();
+     * </pre></code>
+     * <p>Default is QUERY</p>
+     * <p>Expects a {@link org.codegist.crest.config.ParamType}</p>
+     */
+    String PARAM_CONFIG_DEFAULT_TYPE = ParamConfig.class.getName() + "#type";
+
+    /**
+     * <p>CRestConfig property to override the default list separator of array/Collection parameters.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * String listSeparator = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_LIST_SEPARATOR, listSeparator).buid();
+     * </pre></code>
+     * <p>Default behavior is to add as many key/value parameters with the same key as they are values in array/Collection</p>
+     * <p>Expects a String</p>
+     */
     String PARAM_CONFIG_DEFAULT_LIST_SEPARATOR = ParamConfig.class.getName() + "#list-separator";
+
+    /**
+     * <p>CRestConfig property to override the default parameter metadatas.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * Map&lt;String,Object&gt; metadatas = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_METAS, metadatas).buid();
+     * </pre></code>
+     * <p>Default is empty</p>
+     * <p>Expects a {@link java.util.Map}&lt;{@link String},{@link Object}&gt;</p>
+     */
     String PARAM_CONFIG_DEFAULT_METAS = ParamConfig.class.getName() + "#metas";
+
+    /**
+     * <p>CRestConfig property to override the default parameter value.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * String value = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_VALUE, value).buid();
+     * </pre></code>
+     * <p>Default is empty</p>
+     * <p>Expects a String</p>
+     */
     String PARAM_CONFIG_DEFAULT_VALUE = ParamConfig.class.getName() + "#value";
+
+    /**
+     * <p>CRestConfig property to specify the default deserializers to use. This will override the default serialization selection process.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * Class&lt;? extends Serializer&gt; serializerClass = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_SERIALIZER, serializerClass).buid();
+     * </pre></code>
+     * <p>Default is automatically inferred from the context</p>
+     * <p>Expects a {@link Class}&lt;? extends {@link org.codegist.crest.serializer.Serializer}&gt;</p>
+     */
     String PARAM_CONFIG_DEFAULT_SERIALIZER = ParamConfig.class.getName() + "#serializer";
+
+    /**
+     * <p>CRestConfig property to override the default parameter pre-encoded flag.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * Boolean encoded = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_ENCODED, encoded).buid();
+     * </pre></code>
+     * <p>Default is False</p>
+     * <p>Expects a Boolean</p>
+     */
     String PARAM_CONFIG_DEFAULT_ENCODED = ParamConfig.class.getName() + "#encoded";
+
+    /**
+     * <p>CRestConfig property to override the default parameter name.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * String name = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_NAME, name).buid();
+     * </pre></code>
+     * <p>Default is empty</p>
+     * <p>Expects a String</p>
+     */
     String PARAM_CONFIG_DEFAULT_NAME = ParamConfig.class.getName() + "#name";
+
+    /**
+     * <p>CRestConfig property to specify the default parameter processor to use. This will override the default processor selection process.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * Class&lt;? extends ParamProcessor&gt; processorClass = ...;
+     * CRest crest = CRest.property(ParamConfig.PARAM_CONFIG_DEFAULT_PROCESSOR, processorClass).buid();
+     * </pre></code>
+     * <p>Default is automatically inferred from the context</p>
+     * <p>Expects a {@link Class}&lt;? extends {@link org.codegist.crest.param.ParamProcessor}&gt;</p>
+     */
     String PARAM_CONFIG_DEFAULT_PROCESSOR = ParamConfig.class.getName() + "#processor";
 
+    /**
+     * Indicates the REST interface method's parameter name
+     */
     String getName();
 
+    /**
+     * Indicates the REST interface method's parameter generic type
+     */
     Type getValueGenericType();
 
+    /**
+     * Indicates the REST interface method's parameter class type
+     */
     Class<?> getValueClass();
 
+    /**
+     * Indicates the REST interface method's parameter default value to be used if not passed
+     */
     String getDefaultValue();
 
+    /**
+     * Indicates the REST interface method's parameter type
+     */
     ParamType getType();
 
+    /**
+     * Indicates the REST interface method's parameter metadatas
+     */
     Map<String, Object> getMetaDatas();
 
+    /**
+     * Indicates the REST interface method's parameter serializer
+     */
     Serializer getSerializer();
 
+    /**
+     * Indicates whether the REST interface method's parameter value is pre-encoded
+     */
     boolean isEncoded();
 
+    /**
+     * Indicates the REST interface method's parameter processor
+     */
     ParamProcessor getParamProcessor();
 
 }
