@@ -44,6 +44,7 @@ import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 import static org.codegist.crest.io.http.HttpRequests.toUrl;
 
 /**
+ * RequestExecutor HTTP implementation
  * @author laurent.gilles@codegist.org
  */
 public class HttpRequestExecutor implements RequestExecutor, Disposable {
@@ -53,12 +54,23 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
     private final ResponseDeserializer baseResponseDeserializer;
     private final ResponseDeserializer customTypeResponseDeserializer;
 
+    /**
+     *
+     * @param channelFactory The channel factory to use
+     * @param baseResponseDeserializer the response deserializer to use for the deserialization process
+     * @param customTypeResponseDeserializer the response deserializer to use for custom deserialization process
+     * @see org.codegist.crest.io.Response#deserialize()
+     * @see org.codegist.crest.io.Response#to(Class)
+     */
     public HttpRequestExecutor(HttpChannelFactory channelFactory, ResponseDeserializer baseResponseDeserializer, ResponseDeserializer customTypeResponseDeserializer) {
         this.channelFactory = channelFactory;
         this.baseResponseDeserializer = baseResponseDeserializer;
         this.customTypeResponseDeserializer = customTypeResponseDeserializer;
     }
 
+    /**
+     * @inheritDoc
+     */
     public Response execute(Request request) throws Exception {
         HttpResponse response;
         try {
@@ -136,7 +148,6 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
         HttpChannel.Response response = httpChannel.send();
         return new HttpResponse(baseResponseDeserializer, customTypeResponseDeserializer, request, new HttpChannelResponseHttpResource(response));
     }
-
 
     public void dispose() {
         Disposables.dispose(channelFactory);

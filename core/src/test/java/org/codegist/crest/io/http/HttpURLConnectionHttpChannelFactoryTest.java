@@ -18,10 +18,12 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.platform;
+package org.codegist.crest.io.http;
 
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannel;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -39,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpURLConnectionHttpChannelFactory.class,MethodType.class,URL.class,HttpURLConnectionHttpChannel.class})
+@PrepareForTest({HttpURLConnectionHttpChannelFactory.class,MethodType.class,URL.class, HttpURLConnectionHttpChannel.class})
 public class HttpURLConnectionHttpChannelFactoryTest {
 
     private final HttpURLConnectionHttpChannelFactory toTest = new HttpURLConnectionHttpChannelFactory();

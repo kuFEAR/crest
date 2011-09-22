@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -42,7 +42,7 @@ import java.net.ProxySelector;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public final class HttpClientFactory {
+final class HttpClientFactory {
 
     static final String HTTP_CLIENT = "#user-http-client";
     private static final int HTTP_PORT = 80;
@@ -57,7 +57,6 @@ public final class HttpClientFactory {
         if(httpClient != null){
             return httpClient;
         }
-
 
         int concurrencyLevel = crestConfig.getConcurrencyLevel();
         if (concurrencyLevel > 1) {

@@ -36,7 +36,7 @@ import static org.codegist.crest.param.ParamProcessors.iterate;
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpRequest implements Request {
+class HttpRequest implements Request {
 
     private final MethodConfig methodConfig;
     private final List<Param> headerParams;
@@ -75,7 +75,6 @@ public class HttpRequest implements Request {
     public Iterator<EncodedPair> getEncodedParamsIterator(ParamType type) {
         return iterate(getParams(type), methodConfig.getCharset());
     }
-
 
     @Override
     public String toString() {

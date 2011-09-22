@@ -46,7 +46,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author laurent.gilles@codegist.org
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(HttpResponse.class)
+@PrepareForTest({HttpResponse.class,HttpResourceInputStream.class,HttpResource.class})
 public class HttpResponseTest {
 
     private final Method method = Classes.byName(TestInterface.class, "get");

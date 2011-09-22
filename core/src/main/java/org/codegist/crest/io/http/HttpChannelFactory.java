@@ -26,11 +26,19 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
+ * HTTP Channel's factory
  * @author laurent.gilles@codegist.org
  */
-
 public interface HttpChannelFactory {
 
+    /**
+     * Opens a new HTTP Channel
+     * @param methodType the HTTP method type of the HTTP channel
+     * @param url the URL to point the HTTP channel to
+     * @param charset the charset used to write to the HTTP channel
+     * @return a new HTTP Channel
+     * @throws IOException 
+     */
     HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException;
 
 }

@@ -40,7 +40,6 @@ public class BasicsTest extends IBasicsTest<BasicsTest.Basics> {
     @EndPoint("{crest.server.end-point}")
     @Path("params/multipart/basic")
     @POST
-    @MultiPartEntity
     public static interface Basics extends IBasicsTest.IBasics {
 
         String send(

@@ -35,7 +35,7 @@ import static org.codegist.crest.util.Pairs.join;
 /**
  * @author laurent.gilles@codegist.org
  */
-public final class HttpRequests {
+final class HttpRequests {
 
     private HttpRequests() {
         throw new IllegalStateException();

@@ -32,7 +32,7 @@ import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.HttpChannel;
 import org.codegist.crest.io.http.HttpChannelFactory;
 import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.util.ComponentFactory;

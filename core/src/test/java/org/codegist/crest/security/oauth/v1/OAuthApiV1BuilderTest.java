@@ -24,7 +24,7 @@ import org.codegist.crest.CRest;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
 import org.junit.Before;
 import org.junit.Test;

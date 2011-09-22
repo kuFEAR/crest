@@ -18,17 +18,28 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
-import org.codegist.crest.NonInstanciableClassTest;
+import org.codegist.crest.config.MethodType;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
+ * JDK's {@link java.net.HttpURLConnection}-backed HttpChannelFactory implementation
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpClientHttpChannelFactoriesNonInstantiableTest extends NonInstanciableClassTest {
+public final class HttpURLConnectionHttpChannelFactory implements HttpChannelFactory {
 
-    public HttpClientHttpChannelFactoriesNonInstantiableTest() {
-        super(HttpClientFactory.class);
+    /**
+     * @inheritDoc
+     */
+    public HttpChannel open(MethodType methodType, String url, Charset charset) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+        con.setRequestMethod(methodType.name());
+        return new HttpURLConnectionHttpChannel(con, methodType);
     }
 
 }

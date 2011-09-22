@@ -23,7 +23,7 @@ package org.codegist.crest.security.oauth.v1;
 import org.codegist.crest.CRestBuilder;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannelFactory;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.oauth.OAuthToken;
 
 /**
@@ -121,7 +121,7 @@ public final class OAuthApiV1Builder {
      * Overrides the default http channel factory that will be used during the oauth process
      * @param channelFactory custom channel factory
      * @return current builder
-     * @see org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory
+     * @see org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory
      */
     public OAuthApiV1Builder using(HttpChannelFactory channelFactory){
         this.channelFactory = channelFactory;

@@ -18,12 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.platform;
+package org.codegist.crest.io.http;
 
 import org.codegist.common.log.Logger;
 import org.codegist.crest.config.MethodType;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpEntityWriter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +30,7 @@ import java.net.HttpURLConnection;
 
 import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 
-public final class HttpURLConnectionHttpChannel implements HttpChannel {
+final class HttpURLConnectionHttpChannel implements HttpChannel {
 
     private static final Logger LOG = Logger.getLogger(HttpURLConnectionHttpChannel.class);
     private final HttpURLConnection con;

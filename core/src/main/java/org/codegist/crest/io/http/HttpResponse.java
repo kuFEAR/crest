@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
  *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpResponse implements Response, Disposable {
+class HttpResponse implements Response, Disposable {
 
     private final ResponseDeserializer baseResponseDeserializer;
     private final ResponseDeserializer customTypeResponseDeserializer;

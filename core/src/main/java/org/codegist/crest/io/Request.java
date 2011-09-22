@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Generic <b>CRest</b> request interface that hold informations relatives to a rest interface method call
+ * Generic <b>CRest</b> request interface that hold informations relatives to a REST interface method's call
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public interface Request {

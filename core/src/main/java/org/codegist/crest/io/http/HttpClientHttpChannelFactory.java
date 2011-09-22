@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
@@ -26,28 +26,48 @@ import org.apache.http.params.HttpProtocolParams;
 import org.codegist.common.lang.Disposable;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodType;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpChannelFactory;
 
 import java.nio.charset.Charset;
 
 /**
-* @author Laurent Gilles (laurent.gilles@codegist.org)
-*/
+ * Apache's {@link org.apache.http.client.HttpClient}-backed HttpChannelFactory implementation
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
 public final class HttpClientHttpChannelFactory implements HttpChannelFactory, Disposable {
 
+    /**
+     * <p>CRestConfig property to provide a preconfigured {@link org.apache.http.client.HttpClient} instance.</p>
+     * <p>Can be overridden by setting this property as follow:</p>
+     * <code><pre>
+     * HttpClient httpClient = ...;
+     * CRest crest = CRest.property(HttpClientHttpChannelFactory.HTTP_CLIENT_PROP, httpClient).buid();
+     * </pre></code>
+     * <p>Default is automatically instanciated</p>
+     * <p>Expects an {@link org.apache.http.client.HttpClient} instance</p>
+     */
     public static final String HTTP_CLIENT_PROP = HttpClientHttpChannelFactory.class.getName() + HttpClientFactory.HTTP_CLIENT;
 
     private final HttpClient client;
 
+    /**
+     *
+     * @param client the HTTP client instance to use
+     */
     public HttpClientHttpChannelFactory(HttpClient client) {
         this.client = client;
     }
 
+    /**
+     *
+     * @param crestConfig the crest config
+     */
     public HttpClientHttpChannelFactory(CRestConfig crestConfig) {
         this(HttpClientFactory.create(crestConfig, HttpClientHttpChannelFactory.class));
     }
 
+    /**
+     * @inheritDoc
+     */
     public HttpChannel open(MethodType methodType, String url, Charset charset) {
         HttpUriRequest request;
         switch(methodType) {

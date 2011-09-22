@@ -76,14 +76,12 @@ public interface Posts extends EntityRequests {
 
     @POST
     @Path("entity-writer/multipart")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntity();
 
     @POST
     @Path("entity-writer/multipart/produces")
     @Consumes("application/custom")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntityWithProduces();
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @see HttpResource
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class HttpResourceInputStream extends InputStreamWrapper {
+class HttpResourceInputStream extends InputStreamWrapper {
 
     private static final Logger LOGGER = Logger.getLogger(HttpResourceInputStream.class);
     private final HttpResource resource;

@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
@@ -28,6 +28,9 @@ import org.apache.http.params.HttpParams;
 import org.codegist.crest.CRestConfig;
 import org.codegist.crest.config.MethodType;
 import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.io.http.HttpClientFactory;
+import org.codegist.crest.io.http.HttpClientHttpChannel;
+import org.codegist.crest.io.http.HttpClientHttpChannelFactory;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.test.util.Values;
 import org.junit.Test;

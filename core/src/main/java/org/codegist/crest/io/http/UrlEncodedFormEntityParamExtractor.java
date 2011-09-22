@@ -33,11 +33,14 @@ import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.util.Pairs.fromUrlEncoded;
 
 /**
- *
+ * EntityParamExtractor implementation that extract parameters from an URL-encoded entity
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class UrlEncodedFormEntityParamExtractor implements EntityParamExtractor {
 
+    /**
+     * @inheritDoc
+     */
     public List<EncodedPair> extract(String contentType, Charset charset, InputStream entity) throws IOException {
         String formContent = IOs.toString(entity, charset);
         if(isNotBlank(formContent)) {

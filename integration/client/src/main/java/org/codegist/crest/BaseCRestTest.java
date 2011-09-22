@@ -28,7 +28,7 @@ import org.codegist.crest.config.annotate.JsonEntityAnnotationHandler;
 import org.codegist.crest.config.annotate.XmlEntityAnnotationHandler;
 import org.codegist.crest.entity.JsonEntityWriter;
 import org.codegist.crest.entity.XmlEntityWriter;
-import org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory;
+import org.codegist.crest.io.http.HttpClientHttpChannelFactory;
 import org.codegist.crest.serializer.Serializer;
 import org.codegist.crest.serializer.jackson.JsonEncodedFormJacksonSerializer;
 import org.codegist.crest.serializer.jaxb.XmlEncodedFormJaxbSerializer;

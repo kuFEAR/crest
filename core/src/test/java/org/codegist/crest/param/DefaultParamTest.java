@@ -18,9 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http;
+package org.codegist.crest.param;
 
 import org.codegist.crest.config.ParamConfig;
+import org.codegist.crest.param.DefaultParam;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -34,11 +35,11 @@ import static org.mockito.Mockito.when;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class HttpParamTest {
+public class DefaultParamTest {
 
     private final ParamConfig paramConfig = mock(ParamConfig.class);
     private final Collection<Object> value = (Collection<Object>)(Collection)asList("a","b");
-    private final HttpParam toTest = new HttpParam(paramConfig,value);
+    private final DefaultParam toTest = new DefaultParam(paramConfig,value);
 
     @Test
     public void getValueShouldReturnIt(){
@@ -53,6 +54,6 @@ public class HttpParamTest {
     @Test
     public void toStringShouldReturnSomethingUsefull(){
         when(paramConfig.getName()).thenReturn("name");
-        assertEquals("HttpParam[name=name,value=[a, b]]", toTest.toString());
+        assertEquals("DefaultParam[name=name,value=[a, b]]", toTest.toString());
     }
 }

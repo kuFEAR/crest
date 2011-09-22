@@ -26,15 +26,10 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
- * HttpResource abstraction that provides methods to access resource stream and release network resources.
- *
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public interface HttpResource extends Closeable {
+interface HttpResource extends Closeable {
 
-    /**
-     * @return the underlying http resource data stream
-     */
     InputStream getEntity() throws IOException;
 
     String getContentType() throws IOException;

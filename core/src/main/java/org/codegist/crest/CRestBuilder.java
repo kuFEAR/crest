@@ -31,7 +31,7 @@ import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.*;
-import org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory;
+import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
@@ -276,11 +276,11 @@ public class CRestBuilder {
     }
 
     /**
-     * Overrides the default {@link org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory} channel factory to use initiating http requests.
+     * Overrides the default {@link org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory} channel factory to use initiating http requests.
      * @param httpChannelFactory http channel factory class to use
      * @return current builder
-     * @see org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory
-     * @see org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory
+     * @see org.codegist.crest.io.http.HttpClientHttpChannelFactory
+     * @see org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory
      */
     public CRestBuilder setHttpChannelFactory(Class<? extends HttpChannelFactory> httpChannelFactory) {
         this.httpChannelFactoryClass = httpChannelFactory;
@@ -288,11 +288,11 @@ public class CRestBuilder {
     }
 
     /**
-     * Overrides the default {@link org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory} channel factory to use initiating http requests.
+     * Overrides the default {@link org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory} channel factory to use initiating http requests.
      * @param httpChannelFactory http channel factory to use
      * @return current builder
-     * @see org.codegist.crest.io.http.apache.HttpClientHttpChannelFactory
-     * @see org.codegist.crest.io.http.platform.HttpURLConnectionHttpChannelFactory
+     * @see org.codegist.crest.io.http.HttpClientHttpChannelFactory
+     * @see org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory
      */
     public CRestBuilder setHttpChannelFactory(HttpChannelFactory httpChannelFactory) {
         this.httpChannelFactory = httpChannelFactory;

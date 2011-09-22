@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -30,14 +30,15 @@ import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.params.HttpConnectionParams;
 import org.codegist.common.io.EmptyInputStream;
 import org.codegist.common.log.Logger;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpEntityWriter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public final class HttpClientHttpChannel implements HttpChannel {
+/**
+ * @author Laurent Gilles (laurent.gilles@codegist.org)
+ */
+final class HttpClientHttpChannel implements HttpChannel {
 
     private static final Logger LOGGER = Logger.getLogger(HttpClientHttpChannel.class);
     private final HttpClient client;

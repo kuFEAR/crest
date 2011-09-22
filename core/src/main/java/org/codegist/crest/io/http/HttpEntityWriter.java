@@ -26,7 +26,7 @@ import java.io.OutputStream;
 /**
  * @author laurent.gilles@codegist.org
  */
-public interface HttpEntityWriter {
+interface HttpEntityWriter {
 
     void writeEntityTo(OutputStream out) throws IOException;
 

@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http;
+package org.codegist.crest.param;
 
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
@@ -26,20 +26,34 @@ import org.codegist.crest.param.Param;
 
 import java.util.Collection;
 
-public class HttpParam implements Param {
+/**
+ * Default {@link org.codegist.crest.param.Param} implementation
+ */
+public class DefaultParam implements Param {
 
     private final Collection<Object> value;
     private final ParamConfig config;
 
-    public HttpParam(ParamConfig config, Collection<Object> value) {
+    /**
+     *
+     * @param config the param's config
+     * @param value the param's values
+     */
+    public DefaultParam(ParamConfig config, Collection<Object> value) {
         this.config = config;
         this.value = value;
     }
 
+    /**
+     * @inheritDoc
+     */
     public Collection<Object> getValue() {
         return value;
     }
 
+    /**
+     * @inheritDoc
+     */
     public ParamConfig getParamConfig() {
         return config;
     }

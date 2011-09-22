@@ -76,14 +76,12 @@ public interface Puts extends EntityRequests {
 
     @PUT
     @Path("entity-writer/multipart")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntity();
 
     @PUT
     @Path("entity-writer/multipart/produces")
     @Consumes("application/custom")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntityWithProduces();
 }

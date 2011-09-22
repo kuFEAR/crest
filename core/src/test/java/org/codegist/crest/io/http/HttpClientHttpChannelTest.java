@@ -18,9 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.*;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.message.BasicHeader;
@@ -29,6 +30,7 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.codegist.common.io.EmptyInputStream;
 import org.codegist.crest.io.http.HttpChannel;
+import org.codegist.crest.io.http.HttpClientHttpChannel;
 import org.codegist.crest.io.http.HttpEntityWriter;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;

@@ -44,11 +44,11 @@ import static org.codegist.crest.util.Pairs.fromUrlEncoded;
 /**
  * @author laurent.gilles@codegist.org
  */
-public class AuthorizationHttpChannel implements HttpChannel {
+class AuthorizationHttpChannel implements HttpChannel {
 
     private static final Pattern SEMICOLON = Pattern.compile(";");
-    private final Authorization authenticatorManager;
-    private final Map<String, EntityParamExtractor> httpEntityParamExtrator;
+    private final Authorization authorization;
+    private final Map<String, EntityParamExtractor> entityParamExtrators;
     private final HttpChannel delegate;
     private final List<EncodedPair> parameters = new ArrayList<EncodedPair>();
     private final String url;
@@ -58,13 +58,13 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private String fullContentType = null;
     private HttpEntityWriter httpEntityWriter = null;
 
-    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authenticatorManager, MethodType methodType, String url, Charset charset, Map<String, EntityParamExtractor> httpEntityParamExtrator) {
+    public AuthorizationHttpChannel(HttpChannel delegate, Authorization authorization, MethodType methodType, String url, Charset charset, Map<String, EntityParamExtractor> entityParamExtrators) {
         this.url = url;
         this.methodType = methodType;
         this.charset = charset;
         this.delegate = delegate;
-        this.httpEntityParamExtrator = httpEntityParamExtrator;
-        this.authenticatorManager = authenticatorManager;
+        this.entityParamExtrators = entityParamExtrators;
+        this.authorization = authorization;
         String queryString = getQueryString(url);
         if(queryString != null) {
             this.parameters.addAll(fromUrlEncoded(queryString));
@@ -75,7 +75,7 @@ public class AuthorizationHttpChannel implements HttpChannel {
         if(hasEntityParamExtrator()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             httpEntityWriter.writeEntityTo(out);
-            List<EncodedPair> entityParams = httpEntityParamExtrator.get(contentType).extract(fullContentType, charset, new ByteArrayInputStream(out.toByteArray()));
+            List<EncodedPair> entityParams = entityParamExtrators.get(contentType).extract(fullContentType, charset, new ByteArrayInputStream(out.toByteArray()));
             this.parameters.addAll(entityParams);
         }
         authenticate();
@@ -85,46 +85,67 @@ public class AuthorizationHttpChannel implements HttpChannel {
     private void authenticate() throws IOException {
         AuthorizationToken token;
         try {
-            token = authenticatorManager.authorize(methodType, url, arrify(parameters, EncodedPair.class));
+            token = authorization.authorize(methodType, url, arrify(parameters, EncodedPair.class));
         } catch (Exception e) {
             throw CRestException.handle(e);
         }
         delegate.setHeader("Authorization", token.getName() + " " + token.getValue());
     }
 
+    /**
+     * @inheritDoc
+     */
     public void setContentType(String contentType) throws IOException {
         this.delegate.setContentType(contentType);
         this.contentType = SEMICOLON.split(contentType)[0].trim();
         this.fullContentType = contentType;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
         this.httpEntityWriter = hasEntityParamExtrator() ? new RewritableHttpEntityWriter(httpEntityWriter) : httpEntityWriter;
         this.delegate.writeEntityWith(this.httpEntityWriter);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void addHeader(String name, String value) throws IOException {
         this.delegate.addHeader(name, value);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void setHeader(String name, String value) throws IOException {
         this.delegate.setHeader(name, value);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void setAccept(String value) throws IOException {
         this.delegate.setAccept(value);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void setSocketTimeout(int timeout) throws IOException {
         this.delegate.setSocketTimeout(timeout);
     }
 
+    /**
+     * @inheritDoc
+     */
     public void setConnectionTimeout(int timeout) throws IOException {
         this.delegate.setConnectionTimeout(timeout);
     }
 
     private boolean hasEntityParamExtrator(){
-        return httpEntityParamExtrator.containsKey(contentType);
+        return entityParamExtrators.containsKey(contentType);
     }
 
     private static final class RewritableHttpEntityWriter implements HttpEntityWriter {

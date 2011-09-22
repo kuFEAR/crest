@@ -24,6 +24,7 @@ import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.config.ParamConfig;
 import org.codegist.crest.io.RequestBuilder;
 import org.codegist.crest.io.RequestBuilderFactory;
+import org.codegist.crest.param.DefaultParam;
 import org.codegist.crest.param.Param;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ import java.util.List;
  */
 public class HttpRequestBuilderFactory implements RequestBuilderFactory {
 
+    /**
+     * @inheritDoc
+     */
     public RequestBuilder create() {
         return new Builder();
     }
@@ -78,7 +82,7 @@ public class HttpRequestBuilderFactory implements RequestBuilderFactory {
         }
 
         public Builder addParam(ParamConfig paramConfig, Collection<Object> values) {
-            HttpParam param = new HttpParam(paramConfig, values);
+            DefaultParam param = new DefaultParam(paramConfig, values);
             switch(paramConfig.getType()){
                 case COOKIE:
                     cookieParams.add(param);

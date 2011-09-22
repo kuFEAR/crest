@@ -18,7 +18,7 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io.http.apache;
+package org.codegist.crest.io.http;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -35,6 +35,8 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.codegist.crest.CRestConfig;
+import org.codegist.crest.io.http.HttpClientFactory;
+import org.codegist.crest.io.http.HttpClientHttpChannelFactory;
 import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +54,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HttpClientFactory.class, Scheme.class, PlainSocketFactory.class,SSLSocketFactory.class,ThreadSafeClientConnManager.class, ConnPerRouteBean.class, BasicHttpParams.class, ProxySelector.class,SchemeRegistry.class,HttpClientHttpChannelFactory.class})
+@PrepareForTest({HttpClientFactory.class, Scheme.class, PlainSocketFactory.class,SSLSocketFactory.class,ThreadSafeClientConnManager.class, ConnPerRouteBean.class, BasicHttpParams.class, ProxySelector.class,SchemeRegistry.class, HttpClientHttpChannelFactory.class})
 public class HttpClientFactoryTest {
 
     private final CRestConfig crestConfig = CRestConfigs.mockDefaultBehavior();

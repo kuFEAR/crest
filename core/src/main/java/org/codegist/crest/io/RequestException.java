@@ -24,12 +24,16 @@ import org.codegist.common.lang.Disposable;
 import org.codegist.common.lang.Disposables;
 
 /**
+ * Exception thrown during a request I/O
  * @author laurent.gilles@codegist.org
  */
 public class RequestException extends Exception implements Disposable {
 
     private final Response response;
 
+    /**
+     * @param e original error
+     */
     public RequestException(Throwable e) {
         super(e);
         this.response = null;

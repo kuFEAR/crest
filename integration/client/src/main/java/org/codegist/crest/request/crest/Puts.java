@@ -62,13 +62,11 @@ public interface Puts extends EntityRequests {
     String jsonEntityWithProduces();
 
     @Path("entity-writer/multipart")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntity();
 
     @Path("entity-writer/multipart/produces")
     @Produces("application/custom")
-    @MultiPartEntity
     @MultiPartParam(value="p",defaultValue = "some-val") // jersey doesn't like multipart entity with nothing in it..
     String multipartEntityWithProduces();
 }

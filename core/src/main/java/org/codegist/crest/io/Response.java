@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
- * <b>CRest</b>'s internal rest interface method call execution response
+ * <b>CRest</b>'s internal REST interface method's call execution response
  */
 public interface Response extends Disposable {
 
