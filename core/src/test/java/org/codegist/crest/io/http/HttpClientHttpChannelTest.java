@@ -29,9 +29,6 @@ import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.codegist.common.io.EmptyInputStream;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpClientHttpChannel;
-import org.codegist.crest.io.http.HttpEntityWriter;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 

@@ -22,7 +22,6 @@ package org.codegist.crest.io.http;
 
 import org.codegist.common.io.IOs;
 import org.codegist.common.lang.Disposable;
-import org.codegist.crest.io.DelegatingResponse;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.io.Response;
 import org.codegist.crest.serializer.ResponseDeserializer;

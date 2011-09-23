@@ -27,7 +27,11 @@ import org.codegist.crest.config.ParamConfigBuilder;
 import java.lang.annotation.Annotation;
 
 /**
+ * <b>CRest</b>'s Annotation Handler interface.
+ * <p>All <b>CRest</b>'s specific annotation in {@link org.codegist.crest.annotate} and Jax-rs's annotation in {@link javax.ws.rs} are handled via implementations of this interface</p>
+ * <p>Note that annotation handling is a process that occures only once per REST interface, during build time (see {@link org.codegist.crest.CRest#build(Class)}). The handlers won't be invoked at run-time during REST proxies calls.</p>
  * @author laurent.gilles@codegist.org
+ * @see org.codegist.crest.CRestBuilder#bindAnnotationHandler(Class, Class)
  */
 public interface AnnotationHandler<A extends Annotation> {
 

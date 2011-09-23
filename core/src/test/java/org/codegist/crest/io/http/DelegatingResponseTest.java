@@ -18,8 +18,10 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.io.http;
 
+import org.codegist.crest.io.Request;
+import org.codegist.crest.io.Response;
 import org.junit.Test;
 
 import java.io.InputStream;

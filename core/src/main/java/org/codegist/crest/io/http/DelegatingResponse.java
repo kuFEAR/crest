@@ -18,23 +18,22 @@
  *  More information at http://www.codegist.org.
  */
 
-package org.codegist.crest.io;
+package org.codegist.crest.io.http;
+
+import org.codegist.crest.io.Request;
+import org.codegist.crest.io.Response;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
- * {@link org.codegist.crest.io.Response} implementation that delegates all calls to the another {@link org.codegist.crest.io.Response}.
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
-public class DelegatingResponse implements Response {
+class DelegatingResponse implements Response {
 
     private final Response delegate;
 
-    /**
-     * @param delegate Response to delegate all calls to
-     */
     public DelegatingResponse(Response delegate) {
         this.delegate = delegate;
     }

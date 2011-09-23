@@ -21,9 +21,6 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.crest.config.MethodType;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpURLConnectionHttpChannel;
-import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;

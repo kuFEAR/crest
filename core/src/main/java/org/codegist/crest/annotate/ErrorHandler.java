@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>Binds an error handler for the annotated method. Default behavior will wrap any exception in a {@link org.codegist.crest.CRestException} and delegates it back to the user.</p>
+ * <p>Binds an error handler for the annotated method. Default behavior wrap and rethrow any exception as a runtime {@link org.codegist.crest.CRestException}, expect for IllegalStateException and IllegalArgumentException.</p>
  * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */

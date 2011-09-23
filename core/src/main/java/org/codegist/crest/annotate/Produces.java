@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>Defines the media type that the method will produce, sets the request's Content-Type header, overriding the default behavior</p>
+ * <p>Defines the media type that the method will produce, sets the request's Content-Type header, overriding the default behavior. Default behavior will set it to application/x-www-form-urlencoded for POST/PUT request, and to multipart/form-data for multipart requests</p>
  * <p>Can contain placeholders, see {@link org.codegist.crest.CRestBuilder#placeholder(String, String)}.</p>
  * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author laurent.gilles@codegist.org

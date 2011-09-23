@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * <p>Binds a entity writer for the annotated method entity, overriding the HTTP entity writing behavior.</p>
+ * <p>Default behavior will handle POST/PUT entities as application/x-www-form-urlencoded and MultiPart request as multipart/form-data encoded</p>
  * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */

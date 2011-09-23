@@ -22,7 +22,6 @@ package org.codegist.crest.param;
 
 import org.codegist.common.lang.ToStringBuilder;
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.param.Param;
 
 import java.util.Collection;
 

@@ -4,5 +4,9 @@
 
 Http Url Connection
 
-    bla bla bla
+    <<CRest>> will use the JDK <<<HttpURLConnection>>> as a base HTTP layer by default.
+    
+Dependencies
+
+    No dependencies are required, <<<HttpURLConnection>>> comes with the JDK 
 

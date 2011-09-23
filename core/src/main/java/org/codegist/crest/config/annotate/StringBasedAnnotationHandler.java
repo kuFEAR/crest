@@ -35,10 +35,19 @@ public abstract class StringBasedAnnotationHandler<A extends Annotation> extends
 
     private final Map<Pattern, String> placeholders;
 
+    /**
+     * @param crestConfig the crest config
+     */
     public StringBasedAnnotationHandler(CRestConfig crestConfig) {
         this.placeholders = crestConfig.get(CRestConfig.class.getName() + "#placeholders");
     }
 
+    /**
+     * replace any placeholder from the given strings
+     * @param strs strings to replace the placeholders from
+     * @return same string with the placeholders merged
+     * @see org.codegist.crest.CRest#placeholder(String, String)
+     */
     protected String[] ph(String... strs) {
         String[] res = new String[strs.length];
         for(int i = 0; i < res.length; i++){
@@ -47,6 +56,12 @@ public abstract class StringBasedAnnotationHandler<A extends Annotation> extends
         return res;
     }
 
+    /**
+     * replace any placeholder from the given string
+     * @param str string to replace the placeholders from
+     * @return string with the placeholders merged
+     * @see org.codegist.crest.CRest#placeholder(String, String)
+     */
     protected String ph(String str) {
         return merge(placeholders, str);
     }

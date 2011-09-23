@@ -35,8 +35,6 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.codegist.crest.CRestConfig;
-import org.codegist.crest.io.http.HttpClientFactory;
-import org.codegist.crest.io.http.HttpClientHttpChannelFactory;
 import org.codegist.crest.test.util.CRestConfigs;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -21,7 +21,6 @@
 package org.codegist.crest.param;
 
 import org.codegist.crest.config.ParamConfig;
-import org.codegist.crest.param.DefaultParam;
 import org.junit.Test;
 
 import java.util.Collection;

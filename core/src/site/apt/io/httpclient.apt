@@ -4,5 +4,62 @@
 
 Apache Http Client
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for {{{http://hc.apache.org/}Apache Http Client 4.x}}.
+
+    By default though, <<CRest>> will use the default <<<java.net.HttpURLConnection>>>-based implementation. In order to switch to the {{{http://hc.apache.org/}Apache Http Client 4.x}} one, do as follow:
+
++-----
+CRest crest = new CRestBuilder()
+                    .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                    .build();
++-----
+
+    This will switch to HTTP request layer to use the Http Client implementation. <<CRest>> will automatically instantiate an Apache <<<HttpClient>>> internally.
+
+    In order to provide a pre-configured instance of <<<HttpClient>>>, two mechanism are available:
+
+    First:
+
++-----
+HttpClient httpClient = ...;
+CRest crest = new CRestBuilder()
+                    .setHttpChannelFactory(new HttpClientHttpChannelFactory(httpClient))
+                    .build();
++-----
+
+    or the second:
+
++-----
+HttpClient httpClient = ...;
+CRest crest = CRest.property(HttpClientHttpChannelFactory.HTTP_CLIENT_PROP, httpClient)
+                   .setHttpChannelFactory(HttpClientHttpChannelFactory.class)
+                   .build();
++-----
+    
+Dependencies
+
+    In order to use it, you will at least v4.0.1 of {{{http://hc.apache.org/}Apache Http Client}}. Refer to it to get a list of all Apache Http Client required dependencies.
+
+    If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
+
++-----
+    <project>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>org.codegist.crest</groupId>
+                <artifactId>codegist-crest</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.0.1</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+    </project>
++-----
 

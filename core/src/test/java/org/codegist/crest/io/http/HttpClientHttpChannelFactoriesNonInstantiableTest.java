@@ -21,7 +21,6 @@
 package org.codegist.crest.io.http;
 
 import org.codegist.crest.NonInstanciableClassTest;
-import org.codegist.crest.io.http.HttpClientFactory;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

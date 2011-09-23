@@ -4,5 +4,45 @@
 
 Basic Auth
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for HTTP Basic Auth.
 
+    Here's one way to enable it:
+
++-----
+String username = ...;
+String password = ...;
+CRest crest = CRest.getBasicAuthInstance(username, password);
++-----
+
+    The <<CRest>> above will then set the Authorization header for each request issued by any REST interface build through it.
+
+    Since Basic Auth is quite simple, another way of dealing with it would be as follow.
+
+    Given the following REST interface:
+
++-----
+@EndPoint("http://some-server")
+public interface SomeInterface {
+
+    @Path("/some/resource")
+    @HeaderParam(value="Authorization", defaultValue="Basic {basic.auth.digest}")
+    public String doSomething();
+}
++-----
+
+    And get an instance of it as follow:
+
++-----
+String username = "Aladdin";
+String password = "open sesame";
+String basicAuthDigest = Base64.encode(username + ":" + password);
+
+CRest crest = CRest
+                .placeholder("basic.auth.digest", basicAuthDigest)
+                .build();
+
+SomeInterface someInterface = crest.build(SomeInterface.class);
++-----
+
+    The "someInterface" instance above will then add a default HTTP header "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" for any call made to doSomething().
+    

@@ -4,5 +4,63 @@
 
 OAuth
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for {{{http://oauth.net}OAuth v1.0}} and {{{http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html}OAuth Session 1.0 Draft 1}}.
 
+    Here's one way to enable it:
+
++-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecret = ...;
+CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret);
++-----
+
+    The <<CRest>> above will then authenticate any request issued by any REST interface build through it using OAuth v1.0 mechanism.
+
+OAuth Session 1.0 Draft 1
+
+    If your service provider make use of the {{{http://oauth.googlecode.com/svn/spec/ext/session/1.0/drafts/1/spec.html}OAuth Session 1.0 Draft 1}}, handling Access Token expiration and refreshing mechanism through an <<<oauth_session_handle>>> value, then here's how to get a <<CRest>> instance that will be able to handle it:
+
++-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecret = ...;
+String sessionHandle = ...;
+String accessTokenRefreshUrl = ...;
+CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret, sessionHandle, accessTokenRefreshUrl);
++-----
+
+    The <<CRest>> instance above will behave as the previous one, expect that when it detects an unauthorized server response error, it will try to refresh the internally stored oauth access token using the given <<<oauth_session_handle>>> value, hitting the <<<accessTokenRefreshUrl>>> url, and then try to re-execute the previsouly failed request with the newly refreshed Access Token.  
+
+MultiPart
+
+    OAuth doesn't specify how to deal with multipart entities. The way of dealing with it then varies for each service providers.
+
+    {{{http://www.flickr.com/}Flickr}} for instance will require all parameters of a multipart request to be part of the OAuth authentication mechanism, expect for the binary one (ei: pictures)
+
+    <<CRest>> offers a mechanism to customize the way parameters are extracted from the entity during the authentication mechanism.
+
+    The {{{../sample-flickr.html}Flickr}} sample shows how to do it using the {{{../apidocs/org/codegist/crest/io/http/EntityParamExtractor.html}EntityParamExtractor}} interface.
+
+    In the Multipart use-case, here's how to bind it:
+
++-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecret = ...;
+EntityParamExtractor entityParameterExtractor = ...;
+
+CRest crest = CRest
+                 .oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
+                 .extractsEntityAuthParamsWith("multipart/form-data", entityParameterExtractor)
+                 .build();
++-----
+
+     <<CRest>> will then use the given <<<entityParameterExtractor>>> instance to extract authentication relevant parameters from the entity.
+
+     Note that the <<<entityParameterExtractor>>> is bound to a specific request Content-Type.
+
+    

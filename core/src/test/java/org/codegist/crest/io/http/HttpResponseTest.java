@@ -20,7 +20,6 @@
 
 package org.codegist.crest.io.http;
 
-import org.codegist.crest.io.DelegatingResponse;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.serializer.ResponseDeserializer;
 import org.codegist.crest.test.util.Classes;

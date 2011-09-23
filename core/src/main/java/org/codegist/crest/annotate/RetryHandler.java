@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * <p>Binds a retry handler for the annotated method. Default behavior won't retry on failure.</p>
+ * <p>Binds a retry handler for the annotated method. Default behavior will not retry and will delegate any error to the error handler.</p>
  * <p>When set at interface level, it will applies to all methods where it is not already specified</p>
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */

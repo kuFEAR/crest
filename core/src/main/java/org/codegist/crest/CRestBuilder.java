@@ -31,7 +31,6 @@ import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
 import org.codegist.crest.io.http.*;
-import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
 import org.codegist.crest.security.Authorization;
 import org.codegist.crest.security.basic.BasicAuthorization;
 import org.codegist.crest.security.handler.RefreshAuthorizationRetryHandler;
