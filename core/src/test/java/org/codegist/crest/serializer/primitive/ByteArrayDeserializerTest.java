@@ -40,8 +40,4 @@ public class ByteArrayDeserializerTest extends BaseDeserializerTest {
         assertArrayEquals(s.getBytes(), deserialize(toTest, s));
     }
 
-    @Test
-    public void shouldDeserializeNullToNull() throws Exception {
-        assertNull(deserialize(toTest,null));
-    }
 }

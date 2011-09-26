@@ -4,5 +4,73 @@
 
 Serialization
 
-    bla bla bla
+    <<CRest>> holds an internal registry of per-class serializers for a few common types.
 
+    The table below describe the supporter types and their serialization method.
+
+*---------------------+-----------------------------------------------------------------------------------+
+|| Parameter type     || Serialization method                                                                                  
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.util.Date      | Serialized to yyyy-MM-dd'T'HH:mm:ssZ format. Can be changed through {{{../apidocs/org/codegist/crest/CRestBuilder.html}CRestBuilder.dateFormat(java.lang.String)}}
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.lang.Boolean/boolean      | Serialized to true/false format. Can be changed through {{{../apidocs/org/codegist/crest/CRestBuilder.html}CRestBuilder.booleanFormat(java.lang.String, java.lang.String)}}
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.io.File     | File content dump
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.io.InputStream     | Stream content dump
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.io.ReaderStream     | Reader content dump
+*---------------------+-------------------------------------------------------------------------------------------------------+
+
+    For any other type, the toString() method is used to get it's value.
+
+    Any additional type can be added to the list above by providing a custom implementation of the {{{../apidocs/org/codegist/crest/serializer/Serializer.html}Serializer}} interface, as follow:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindSerializer(SomeTypeSerializer.class, SomeType.class)
+                    .build();
++------
+
+Array/Collection
+
+    <<CRest>> handleS one-level deep array/collection parameters where, by default, each value is serialized using the rules above and assign to a name/value pair following HTTP standard.
+
+    It is common though to interact with service provides that handle array/collection values as a single name/value pair where the value is a character delimited list of values.
+
+    In order to address that, one can use the <<<@ListSeparator>>> annotation on an array/collection parameter to change the default serialization behavior and merge values given a string.
+
+    The following:
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    void doSomething(@QueryParam("values") @ListSeparator(",") String... values);
+
+}
+
+(...)
+
+CRest crest = CRest.getInstance();
+SomeInterface someInterface = crest.build(SomeInterface.class);
+someInterface.doSomething("a", "b", "c");
++------
+
+    <<CRest>> will issue the following request:
+
+    <<<GET http://some.server?values=a,b,c>>>
+
+    Without the @ListSeparator annotation, the same call would have issued the following request:
+    
+    <<<GET http://some.server?values=a&values=b&values=c>>>
+
+HTTP Entity
+
+    <<CRest>> default behavior for HTTP entity writing is to use <<<application/x-www-form-urlencoded>>> encoding format for any entity request (POST/PUT) and <<<multipart/form-data>>> encoding format for multipart requests.
+
+    This behavior can be customized by providing a custom {{{../apidocs/org/codegist/crest/entity/EntityWriter.html}EntityWriter}} interface implementation.
+
+    You can find some example on Xml or Json entity writing on the <<CRest>>'s source repository: {{{https://github.com/codegist/crest/tree/master/entitywriter}Entity writers}}.
+
+    Nota Bene: these entity writer implementations are experimental and are only given as examples.

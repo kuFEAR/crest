@@ -104,6 +104,7 @@ public class CRestBuilder {
                             .register(BooleanPrimitiveDeserializer.class, boolean.class)
                             .register(CharacterWrapperDeserializer.class, Character.class)
                             .register(CharacterPrimitiveDeserializer.class, char.class)
+                            .register(DateDeserializer.class, Date.class)
                             .register(InputStreamDeserializer.class, InputStream.class)
                             .register(ReaderDeserializer.class, Reader.class);
 

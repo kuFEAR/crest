@@ -4,5 +4,40 @@
 
 JAXB
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for {{{http://jaxb.java.net/}Jaxb Xml processor}} for HTTP response deserialization.
+
+    Jaxb is the default Xml deserializer used by <<CRest>>. It can be switched to use {{{./simplexml.html}Simple Xml}} instead, refer to it's page to get more details on how to do so.
+
+    The Jaxb processor is bound by default to the HTTP response Content-Types described in the {{{./deserialization.html}Deserialization Process}} page. Please refer to this page to learn how to bound more Content-Types to be handled by Jaxb.
+
+Dependencies
+
+    No runtime dependency is required on Jaxb as long as no Xml-bound response Content-Type is detected and CRest hasn't been told to use another Xml deserializer.
+
+    Jaxb is now part of the JDK/JRE since version 6+, so if your application runs on a JRE supporting it, you won't need any additional jars.
+
+    However for earlier JRE, in order to use Xml response service providers deserialized with Jaxb, <<<CRest>>> needs at least v2.1 of {{{http://jaxb.java.net/}Jaxb Xml processor}}. Refer to it to get a list of its own required dependencies.
+
+    If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
+
++-----
+    <project>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>org.codegist.crest</groupId>
+                <artifactId>codegist-crest</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.1</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+    </project>
++-----
 

@@ -4,5 +4,171 @@
 
 Deserialization
 
-    bla bla bla
+    <<CRest>>'s deserialization process by default relies on the HTTP response Content-Type to try and deserialize to response to the REST interface method's return type.
 
+    <<CRest>> provides support for deserialization of simple types as primitives, wrappers and dates deserialization. For more complex types, as Xml or Json, <<CRest>> will rely on popular thirdparties libraries such as {{{./jaxb.html}JaxB}}, {{{./simplexml.html}Simple XML}}, or {{{./jackson.html}Jackson}}.
+
+By Response Content-Type
+
+    By default CRest will deserialize the server response by looking at the response's Content-Type if provided.
+
+    The table below describes the supported response's Content-Type, and their respective deserialization method.
+
+*------------------------+-----------------------------------------------------------+
+|| Content-Type          || Deserialization Method                                   |
+*------------------------+-----------------------------------------------------------+
+| application/xml        | {{{./jaxb.html}JaxB}} (default) or {{{./simplexml.html}Simple XML}} |
+*------------------------+-----------------------------------------------------------+
+| text/xml               | {{{./jaxb.html}JaxB}} (default) or {{{./simplexml.html}Simple XML}} |
+*------------------------+-----------------------------------------------------------+
+| application/json       | {{{./jackson.html}Jackson}}                               |
+*------------------------+-----------------------------------------------------------+
+| application/javascript | {{{./jackson.html}Jackson}}                               |
+*------------------------+-----------------------------------------------------------+
+| text/json              | {{{./jackson.html}Jackson}}                               |
+*------------------------+-----------------------------------------------------------+
+| text/javascript        | {{{./jackson.html}Jackson}}                               |
+*------------------------+-----------------------------------------------------------+
+| plain/text             | Return a string representation of the response            |
+*------------------------+-----------------------------------------------------------+
+
+    If the server returns a different mime-type from the list above, then it will have to be bounded to a custom or existing deserializer as follow:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindDeserializer(MyDeserializer.class, "some/mimetype")
+                    .build();
++------
+
+    or if the mime type needs to be added to the list of mime types being handled by the default Xml deserializer:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindXmlDeserializerWith("some/mimetype")
+                    .build();
++------
+
+    or to the Json deserializer:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindJsonDeserializerWith("some/mimetype")
+                    .build();
++------
+
+    or to the Plain text deserializer:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindPlainTextDeserializerWith("some/mimetype")
+                    .build();
++------
+
+    Further more, you can change the deserializers used for the default supported formats (xml/json) as follow:
+
++------
+CRest crest = new CRestBuilder()
+                    .deserializeXmlWith(CustomXmlDeserializer.class)
+                    .build();
++------
+
+    or for the Json deserializser
+
++------
+CRest crest = new CRestBuilder()
+                    .deserializeJsonWith(CustomJsonDeserializer.class)
+                    .build();
++------
+
+By REST method's return type
+
+    If <<CRest>> can't find any deserializer bound to the response Content-Type, then it will try to look-up for a deserializer based on the method's return type.
+
+    The table below describes the supported method's return types.
+
+*---------------------+-------------------------------------------------------------------------------------------------------+
+|| Return type        || Note                                                                                                 |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| Primitives          | Returns the response as a primitive value. If response is blank, returns the primitive default value  |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| Primitives wrappers | Returns the response as a wrapper value. If response is blank, returns null                           |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| void                |                                                                                                       |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.lang.Void      | Returns null                                                                                          |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.lang.String    | Returns the response as a string                                                                      |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| byte[]              | Returns the response as byte array. If response is blank, returns an empty array                      |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.util.Date      | Deserialized using yyyy-MM-dd'T'HH:mm:ssZ format. Can be changed through {{{../apidocs/org/codegist/crest/CRestBuilder.html}CRestBuilder.dateFormat(java.lang.String)}}                                                     |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.lang.Boolean/boolean | Deserialized to true/false using "true"/"false" format. Can be changed through {{{../apidocs/org/codegist/crest/CRestBuilder.html}CRestBuilder.booleanFormat(java.lang.String, java.lang.String)}} |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.io.InputStream | Returns the response as an InputStream                                                                |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+| java.io.Reader      | Returns the response as an Reader                                                                     |
+*---------------------+-------------------------------------------------------------------------------------------------------+
+
+    For custom class deserialization, a deserializer can be bound either through annotating the REST method interface as follow:
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    @Path("/some/resource")
+    @Deserializer(SomeTypeDeserializer.class)
+    SomeType doSomething();
+
+}
++------
+
+    Doing so, <<CRest>> will skip the response Content-Type deserializer lookup and instead directly use the deserializer provided for the method.
+
+    Otherwise, to add a type deserializer to the deserializer registry <<CRest>> maintains, do as follow:
+
++------
+CRest crest = new CRestBuilder()
+                    .bindDeserializer(SomeTypeDeserializer.class, SomeType.class)
+                    .build();
++------
+
+    Doing so will make <<CRest>> deserialize any method return's type matching <<<SomeType>>> with the given deserializer, after the deserialization by server Content-Type look-up attempt, removing the need to annotate all method with this method type to use the specified deserializer.
+
+Request "Accept" Header
+
+    By specifying the <<<@Consumes>>> annotation on a REST interface's method, <<CRest>> will look-up a deserializer bound to that mime-type at interface build time and use it for the method's return type response deserialization.
+
+    Doing so will also set the request Accept HTTP header <<CRest>> will be using for the request.
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    @Path("/some/resource")
+    @Consumes("some/mimetype")
+    SomeType doSomething();
+
+}
++------
+
+    Note that if the mime type specified in the <<<@Consumes>>> is not part of the supported response Content-Type, you'll need to bind a deserializer to it as stated above.
+
+Request "Content-Type" Header
+
+    Request's Content-Type HTTP header doesn't play any role in the <<CRest>> deserialization process, but in order to add it to any request, this is done by specifying the <<<@Produces>>> method annotation as follow:
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    @Path("/some/resource")
+    @Produces("some/mimetype")
+    SomeType doSomething();
+
+}
++------
+
+    Doing so will override the default request's Content-Type HTTP header <<CRest>> will use.
+
+    By default, <<CRest>> will use <<<application/x-www-form-urlencoded>>> Content-Type header for any POST or PUT request, and <<<multipart/form-data>>> for any multipart request. 

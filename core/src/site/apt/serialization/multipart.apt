@@ -4,5 +4,21 @@
 
 Multipart
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for multipart requests, extending the default JAX-RS API.
+
+    In order to do so, {{{../apidocs/org/codegist/crest/annotate/MultiPartParam.html}@MultiPartParam}} annotation has been introduced, and can be used as any other param annotation.
+
+    Though, it offers a bit more than the other annotations:
+
+    * <<<contentType>>>: attribute to override the default content type used for the multipart part.
+
+    By default, <<<application/octet-stream>>> content type is used for any <<<java.io.File>>> and <<<java.io.InputStream>>> parameter types and <<<text/plain>>> for any other types.
+
+    * <<<fileName>>>: attribute to provide a file name for the multipart part.
+
+    Won't be added by default to the multipart part unless the method's parameter is a <<<java.io.File>>>, in which case the file name will be used, unless the attribute has been set.
+
+    []
+
+    Also note that as soon as a method's parameter is annotated with <<<@MultiPartParam>>>, any other <<<@FormParam>>> of the same method will be handled as a multipart parameter.
 

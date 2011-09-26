@@ -38,7 +38,7 @@ CRest crest = CRest.property(HttpClientHttpChannelFactory.HTTP_CLIENT_PROP, http
     
 Dependencies
 
-    In order to use it, you will at least v4.0.1 of {{{http://hc.apache.org/}Apache Http Client}}. Refer to it to get a list of all Apache Http Client required dependencies.
+    In order to use it, <<<CRest>>> needs at least v4.0.1 of {{{http://hc.apache.org/}Apache Http Client}}. Refer to it to get a list of all Apache Http Client required dependencies.
 
     If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
 

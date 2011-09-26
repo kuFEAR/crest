@@ -4,5 +4,36 @@
 
 Jackson
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for {{{http://jackson.codehaus.org/}Jackson Json processor}} for HTTP response deserialization.
+
+    The Jackson processor is bound by default to the HTTP response Content-Types described in the {{{./deserialization.html}Deserialization Process}} page. Please refer to this page to learn how to bound more Content-Types to be handled by Jackson.
+
+Dependencies
+
+    No runtime dependency is required on Jackson as long as no Json-bound response Content-Type is detected.
+
+    In order to use Json response service providers, <<<CRest>>> needs at least v1.6.0 of {{{http://jackson.codehaus.org/}Jackson Json processor}}. Refer to it to get a list of its own required dependencies.
+
+    If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
+
++-----
+    <project>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>org.codegist.crest</groupId>
+                <artifactId>codegist-crest</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>1.6.0</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+    </project>
++-----
 
