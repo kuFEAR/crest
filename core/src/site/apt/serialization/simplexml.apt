@@ -4,7 +4,7 @@
 
 Simple Xml
 
-    <<CRest>> offers out-of-the-box support for {{{http://simple.sourceforge.net/}Simple Xml Xml processor}} for HTTP response deserialization.
+    <<CRest>> offers out-of-the-box support for {{{http://simple.sourceforge.net/}Simple Xml processor}} for HTTP response deserialization.
 
     Since Jaxb is the default Xml deserializer used by <<CRest>>, you'll need to manually switch to it as follow in order to use it:
 
@@ -20,7 +20,7 @@ Dependencies
 
     No runtime dependency is required on Simple Xml as long as no Xml-bound response Content-Type is detected and <<CRest>> hasn't been told to use it instead of Jaxb.
 
-    In order to use Xml response service providers deserialized with Simple Xml, <<<CRest>>> needs at least v2.5.3 of {{{http://simple.sourceforge.net/}Simple Xml Xml processor}}. Refer to it to get a list of its own required dependencies.
+    In order to use Xml response service providers deserialized with Simple Xml, <<<CRest>>> needs at least v2.5.3 of {{{http://simple.sourceforge.net/}Simple Xml processor}}. Refer to it to get a list of its own required dependencies.
 
     If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
 

@@ -32,6 +32,17 @@ CRest crest = new CRestBuilder()
                     .build();
 +------
 
+    Or if this apply only to one specific parameter, by using the {{{../apidocs/org/codegist/crest/annotate/Serializer.html}@Serializer}} annotation, as follow:
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    void doSomething(@QueryParam("value") @Serializer(SomeTypeSerializer.class) SomeType someType);
+
+}
++------
+
 Array/Collection
 
     <<CRest>> handleS one-level deep array/collection parameters where, by default, each value is serialized using the rules above and assign to a name/value pair following HTTP standard.

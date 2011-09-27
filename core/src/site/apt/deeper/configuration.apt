@@ -2,7 +2,32 @@
     Deeper | Configuration
     ----
 
-Configuration
+End Point
 
-    bla bla bla
+     <<CRest>> REST interface's methods require to be annotated with the <<<@EndPoint>>> to specify the server to hit.
 
+     This can be avoided by building a <<CRest>> instance that will default any method end-points to a predefined one. Here is one way of providing it:
+
++------
+String endpoint = ...;
+CRest crest = CRest.getInstance(endpoint);
++------
+
+    The <<CRest>> instance above will default all methods of any REST interface build through it to use the given endpoint, removing the need to use the <<<@EndPoint>>> annotation.
+
+Default Values
+
+    Most of the <<CRest>>'s annotation are optional and <<CRest>> will switch to it's default behavior when they are not provided.
+
+    Refer to the {{{../apidocs/org/codegist/crest/config/MethodConfig.html}MethodConfig}} and {{{../apidocs/org/codegist/crest/config/ParamConfig.html}ParamConfig}} constants for the default values used when non are provided.
+
+    These default values are customizable, and back to the end-point problem, here is the equivalent using the defaut value overriding method:
+
++------
+String endpoint = ...;
+CRest crest = CRest
+                .property(MethodConfig.METHOD_CONFIG_DEFAULT_ENDPOINT, endpoint)
+                .build();
++------
+
+     The <<CRest>> instance above will behave exactly as the one one step above. In fact, the other method is really just a shortcut to the later.

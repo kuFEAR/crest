@@ -4,5 +4,13 @@
 
 Android
 
-    bla bla bla
+    <<CRest>> provides out-of-the-box support for the Android platform.
+
+    Since the Android platform comes with the Apache Http Client, recommended configuration is to switch to use it, in order to do so, refer to the {{{../io/httpclient.html}Http Client}} support page.
+
+Deserialization
+
+    Jackson Json Processor is also Android compatible and will provide the Json deserialization feature <<CRest>> relies on, refer to the {{{../io/jackson.html}Jackson}} support page for more details on the required dependencies.
+
+    As for Xml deserialization, <<CRest>> default deserializer is Jaxb. As of Today though, Jaxb is not part the Android JDK/JRE. One can add it as a dependencies but the required dependencies are quite heavy. In order to address that you can choose to switch the {{{http://simple.sourceforge.net/}Simple Xml processor}}, refer to the {{{../io/simplexml.html}Simple Xml}} support page for more details on the required dependencies.
 

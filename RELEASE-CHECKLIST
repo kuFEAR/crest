@@ -1,0 +1,10 @@
+* unit/intergration test to run (also on android)
+* run sonar
+* source xref on maven site for crest ?
+* site links to external javadoc
+* deprecated pages should 302 somewhere!
+* sample code update / make them work or remove them
+* new logo(s)
+* google analytics, keywords etc..
+* changes.xml
+* AND: spelling... TRY to make it better...

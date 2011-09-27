@@ -1,0 +1,57 @@
+    ----
+    Deeper | User State
+    ----
+
+User State
+
+    Most <<CRest>>'s components (Serializer, Deserializer, EntityWriter etc...) are being passed by class and not by instance reference.
+
+    Custom implementation might rely on some state injected externally and since <<CRest>> automatically instanciates these components, constructor injection is not possible, and getting a reference to one of them is not easily possible.
+
+    <<CRest>> offer a mean to pass custom state to any component, and this is done by holding a map of key (String) and value (Object) pairs.
+
+    Here is how to pass any custom state:
+
++------
+String someCustomValue = ...;
+SomeCustomObject someCustomObject = ...;
+CRest crest = CRest
+                .property("some.custom.value", someCustomValue)
+                .property("some.custom.object", someCustomObject)
+                .build();
++------
+
+    Then if one have the following REST interface with, let's say, a custom Serializer:
+
++------
+@EndPoint("http://some.server")
+public interface SomeInterface {
+
+    void doSomething(@QueryParam("value") @Serializer(SomeTypeSerializer.class) SomeType someType);
+
+}
++------
+
+    And if that <<<SomeTypeSerializer>>> implementation relies on the state above, then here's what it's implementation would look like:
+
++------
+public class SomeTypeSerializer implements Serializer<SomeType> {
+
+    private final String someCustomValue;
+    private final SomeCustomObject someCustomObject;
+
+    public SomeTypeSerializer(CRestConfig crestConfig){
+        this.someCustomValue = crestConfig.get("some.custom.value");
+        this.someCustomObject = crestConfig.get("some.custom.object");
+    }
+
+    public void serialize(SomeType value, Charset charset, OutputStream out) throws Exception {
+        (...)
+    }
+
+}
++------
+
+    <<CRest>> will detect the <<<CRestConfig>>>-aware constructor and use it when it will instanciate the custom serializer. If no <<<CRestConfig>>>-aware constructor if found, <<CRest>> will use the default empty constructor.
+
+    On a side note, the {{{../apidocs/org/codegist/crest/serializer/Serializer.html}Serializer}} interface has been annotated with {{{../apidocs/org/codegist/crest/annotate/CRestComponent.html}@CRestComponent}}. <<<CRestComponent>>> annotation is a purely documentational annotation and is not look-up by <<CRest>>, it's only purpose is to mark any interface that are part of the <<CRest>> API as offering the behavior stated above for any of their implementation.

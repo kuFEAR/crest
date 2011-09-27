@@ -4,5 +4,42 @@
 
 Logging
 
-    bla bla bla
+    <<CRest>> offer out-of-the-box support for the following frameworks:
 
+    * {{{http://download.oracle.com/javase/1,5.0/docs/guide/logging/index.html}Jdk Logger}} <<<(v1.5+)>>>
+
+    * {{{http://logging.apache.org/log4j/}Log4J}} <<<(v1.2.16+)>>>
+
+    * {{{http://commons.apache.org/}Apache Common Logging}} <<<(v1.0+)>>>
+
+    * {{{http://www.slf4j.org}Slf4J}} <<<(v1.6.0+)>>>
+
+    * {{{http://developer.android.com/guide/developing/tools/logcat.html}Android LogCat}}  <<<(v2.3.3+)>>>
+
+    []
+
+    <<CRest>> will automatically select the logging system available on the classpath.
+
+    To switch to another logging system you will need to provide an implementation of the {{{http://common.codegist.org/apidocs/org/codegist/common/log/Logger.html}Logger}} (or of the handy {{{http://common.codegist.org/apidocs/org/codegist/common/log/AbstractLogger.html}AbstractLogger}}) class and set the system property "<<<org.codegist.common.log.class>>>" to hold the custom logger implementation full qualified class name.
+
+IO
+
+    To turn on <<CRest>>'s HTTP requests/response logging, set your logging system to turn maximum logging level on the following loggers:
+
+    * <<<org.codegist.crest.io.Response>>> for any incoming server responses
+
+    * <<<org.codegist.crest.io.Request>>> for any outgoing requests
+
+    []
+
+    Please be aware that turning on these loggers can have a great impact on memory/performance as in order to log the response, <<CRest>> will dump it into memory, loosing the benefit of the streaming deserialization. As for the request, the impact on memory will be lighter but should be avoided on production setup.
+
+    Nota Bene: these logger names does not apply to the Android platform, see below.
+
+Android
+
+    Android's logger uses TAGS to filter logging event.
+
+    <<CRest>> uses the accepted convention of logging event based on full qualified class name, which are likely to break the 23 characters limit imposed on Android's TAGs Strings (cf: {{{http://developer.android.com/reference/android/util/Log.html}LogCat}} javadoc).
+
+    For the sake of prodiving a predictable logging event filter name (which can't easily be obtained by simply truncrating the class name), <<CRest>> will log all it's events using the "<<<CodeGist>>>" default tag name. This can be changed by providig a custom TAG name in the system property "<<<org.codegist.common.log.LogCatLogger.TAG>>>".

@@ -1,8 +1,43 @@
     ----
-    Android | CGLIB
+    Deeper | CGLIB
     ----
 
 CGLIB
 
-    bla bla bla
+    <<CRest>> offers out-of-the-box support for {{{http://cglib.sourceforge.net/}CGLib}}.
+
+    By default though, <<CRest>> will use the default JDK Proxies. In order to switch to the {{{http://cglib.sourceforge.net/}CGLib}} implementation, do as follow:
+
++-----
+CRest crest = new CRestBuilder()
+                    .setProxyFactory(CglibProxyFactory.class)
+                    .build();
++-----
+
+Dependencies
+
+    In order to use it, <<CRest>> needs at least v2.2 of {{{http://cglib.sourceforge.net/}CGLib}}. Refer to it to get a list of all CGLib required dependencies.
+
+    If you use Maven, <<CRest>>'s POM contains an optional dependency for it that will need to be activated by the user if necessary, as follow:
+
++-----
+    <project>
+        ...
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>org.codegist.crest</groupId>
+                <artifactId>codegist-crest</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>2.2</version>
+            </dependency>
+            ...
+        </dependencies>
+        ...
+    </project>
++-----
 
