@@ -1,5 +1,5 @@
     ----
-    Contact
+    Support
     ----
 
 Contact
@@ -9,3 +9,8 @@ Contact
 Contribute
 
     You can contribute to <<CRest>> in a number of ways. The most obvious way is to report bugs or request new features that would make <<CRest>> a better library through the {{{./issue-tracking.html}Issue Tracking}} system.
+
+Support
+
+    For any queries, or general support questions, checkout the CodeGist CRest {{{http://groups.google.com/group/codegist-crest/topics}Google Group}}.
+
