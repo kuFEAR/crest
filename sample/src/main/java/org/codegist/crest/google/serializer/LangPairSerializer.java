@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
  * @author laurent.gilles@codegist.org
  */
 public class LangPairSerializer extends StringSerializer<LangPair> {
+
     private static final String FORMAT = "%s|%s";
 
     public String serialize(LangPair value, Charset charset) {

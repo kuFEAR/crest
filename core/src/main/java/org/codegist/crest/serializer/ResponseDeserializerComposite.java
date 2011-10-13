@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -50,10 +50,11 @@ public class ResponseDeserializerComposite implements ResponseDeserializer {
             try {
                 return deserializer.<T>deserialize(response);
             } catch (IllegalArgumentException e) {
-                LOG.debug(e);
+                LOG.trace("Deserializer %s can't handle response, trying with next one", deserializer);
                 deserializationException = e;
             }
         }
+        LOG.debug(deserializationException, "Cannot deserialize response with given deserialize list: %s. Last exception: %s", delegates, deserializationException.getMessage());
         throw new CRestException(deserializationException.getMessage(), deserializationException);
     }
 }

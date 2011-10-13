@@ -16,8 +16,9 @@ Twitter Samples
 
 +-----
 @EndPoint("http://api.twitter.com")
-@ContextPath("/1/statuses")
+@Path("/1/statuses")
 @HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
+@Consumes("application/json")
 public interface StatusService {
 
     @POST
@@ -31,13 +32,7 @@ public interface StatusService {
             @QueryParam("lat") float lat,
             @QueryParam("long") float longitude);
 
-    @POST
-    @Path("/destroy/{id}.json")
-    Status removeStatus(@PathParam("id") long id);
-
-    @POST
-    @Path("/retweet/{id}.json")
-    Status retweetStatus(@PathParam("id") long id);
+    (...)
 
     @Path("/show/{id}.json")
     Status getStatus(@PathParam("id") long id);
@@ -53,8 +48,24 @@ public interface StatusService {
             @QueryParam("screen_name") String screenName);
 
     @Path("/friends.json")
+    User[] getFriends(@QueryParam("user_id") long userId);
+
+    @Path("/friends.json")
+    User[] getFriends(@QueryParam("screen_name") String screenName);
+
+    @Path("/friends.json")
     Cursor.User getFriends(
             @QueryParam("user_id") long userId,
+            @QueryParam("screen_name") String screenName,
+            @QueryParam("cursor") long cursor);
+
+    @Path("/friends.json")
+    Cursor.User getFriends(
+            @QueryParam("user_id") long userId,
+            @QueryParam("cursor") long cursor);
+
+    @Path("/friends.json")
+    Cursor.User getFriends(
             @QueryParam("screen_name") String screenName,
             @QueryParam("cursor") long cursor);
 
@@ -66,11 +77,13 @@ public interface StatusService {
     And here's how to get an instance of the <<<StatusService>>>:
 
 +-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecre = ...;
+
 // Get a CRest instance. Should be done once.
-CRest crest = new CRestBuilder()
-                        .expectsJson()
-                        .usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-                        .build();
+CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
 // get a service instance
 StatusService service = crest.build(StatusService.class);
@@ -88,11 +101,12 @@ Status status = service.updateStatus("Status updated!");
 
 +-----
 @EndPoint("http://api.twitter.com")
-@ContextPath("/1/direct_messages")
+@Path("/1")
 @HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
+@Consumes("application/json")
 public interface DirectMessageService {
 
-    @Path(".json")
+    @Path("direct_messages.json")
     Message[] getReceived(
             @QueryParam("count") long count,
             @QueryParam("page") long page,
@@ -100,38 +114,38 @@ public interface DirectMessageService {
             @QueryParam("max_id") long maxId
             );
 
-    @Path(".json")
+    @Path("direct_messages.json")
     Message[] getReceived(
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
-    @Path("/sent.json")
+    @Path("direct_messages/sent.json")
     Message[] getSent(
             @QueryParam("count") long count,
             @QueryParam("page") long page,
             @QueryParam("since_id") long sinceId,
             @QueryParam("max_id") long maxId);
 
-    @Path("/sent.json")
+    @Path("direct_messages/sent.json")
     Message[] getSent(
             @QueryParam("count") long count,
             @QueryParam("page") long page);
 
     @POST
-    @Path("/new.json")
+    @Path("direct_messages/new.json")
     Message send(
             @QueryParam("user_id") long userId,
             @QueryParam("text") String msg);
 
     @POST
-    @Path("/new.json")
+    @Path("direct_messages/new.json")
     Message send(
             @QueryParam("user_id") long userId,
             @QueryParam("text") String msg,
             @QueryParam("screen_name") String screenName);
 
     @DELETE
-    @Path("/destroy/{msgid}.json")
+    @Path("direct_messages/destroy/{msgid}.json")
     Message destroy(@PathParam("msgid") long msgId);
 
 }
@@ -140,11 +154,13 @@ public interface DirectMessageService {
     And here's how to get an instance of the <<<DirectMessageService>>>:
 
 +-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecre = ...;
+
 // Get a CRest instance. Should be done once.
-CRest crest = new CRestBuilder()
-                            .expectsJson()
-                            .usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-                            .build();
+CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
 // get a service instance
 DirectMessageService service = crest.build(DirectMessageService.class);
@@ -162,8 +178,9 @@ Message msg = service.send(userId, "Hi mate, what's up!");
 
 +-----
 @EndPoint("http://api.twitter.com")
-@ContextPath("/1/users")
+@Path("/1/users")
 @HeaderParam(value = "Accept-Encoding", defaultValue = "gzip")
+@Consumes("application/json")
 public interface UserService {
 
     @Path("/search.json")
@@ -190,17 +207,18 @@ public interface UserService {
     @Path("/lookup.json")
     User[] lookup(@QueryParam("screen_name") String[] screenName);
 }
-
 +-----
 
     And here's how to get an instance of the <<<DirectMessageService>>>:
 
 +-----
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecre = ...;
+
 // Get a CRest instance. Should be done once.
-CRest crest = new CRestBuilder()
-                            .expectsJson()
-                            .usePreauthentifiedOAuth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
-                            .build();
+CRest crest = CRest.getOAuthInstance(consumerKey, consumerSecret, accessToken, accessTokenSecret);
 
 // get a service instance
 UserService service = crest.build(UserService.class);

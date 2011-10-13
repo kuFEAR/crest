@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  */
 
 /**
- * Contains <b>CRest</b>'s REST binding annotations to be used to configure user REST interfaces.
+ * Contains <b>CRest</b>'s REST binding annotations to be used to configure user's REST interfaces.
  * An annotated user interface could look like the following:
  * <code>
  * <pre>

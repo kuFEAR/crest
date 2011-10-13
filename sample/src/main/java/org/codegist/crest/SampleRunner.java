@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  *
- *  ==================================================================
+ *  ===================================================================
  *
  *  More information at http://www.codegist.org.
  */
@@ -21,7 +21,6 @@
 package org.codegist.crest;
 
 import org.codegist.common.log.Logger;
-import org.codegist.crest.delicious.DeliciousSample;
 import org.codegist.crest.flickr.FlickrSample;
 import org.codegist.crest.google.GoogleServicesSample;
 import org.codegist.crest.twitter.TwitterSample;
@@ -42,12 +41,11 @@ public class SampleRunner {
     public static void main(String[] args) throws Exception {
         int i = 0;
         Runnable[] samples = {
-                new DeliciousSample(args[i++], args[i++], args[i++], args[i++], args[i++]),
                 new FlickrSample(args[i++], args[i++], args[i++], args[i++]),
                 new TwitterSample(args[i++], args[i++], args[i++], args[i++]),
                 new GoogleServicesSample()
         };
-//        samples[0].run();
+
         for (Runnable sample : samples) {
             LOG.info("Running " + sample.getClass().getSimpleName());
             try {

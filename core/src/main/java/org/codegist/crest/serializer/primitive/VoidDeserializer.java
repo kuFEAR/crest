@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 /**
- * @inheritDoc
- * @author laurent.gilles@codegist.org
+  * @author laurent.gilles@codegist.org
  */
 public class VoidDeserializer implements Deserializer {
 

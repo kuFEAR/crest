@@ -6,217 +6,70 @@ Quick Start
 
 * Interface
 
-    <<<CRest>>> instance automatically build instances of any given user java interfaces, as long as the interface is properly annotated.
+    <<<CRest>>> instance returns proxies over any given user java REST interfaces, as long as the interface is properly annotated.
 
     The interface's methods can contains any kind of arguments and any kind of result type, with some specials cases:
 
-    <<<java.io.InputStream>>> and <<<java.io.Reader>>> when used as return types, are both always returning the server raw response. It is of the client responsability to always call the <<<close()>>> method on them to release network resources.
+    <<<java.io.InputStream>>> and <<<java.io.Reader>>> when used as return types, are both always returning the server raw response. It is the client responsability to always call the <<<close()>>> method on them to release network resources.
 
-    <<<java.io.InputStream>>> and <<<java.io.File>>> when used as arguments, are always written into the request body, as long as the method is configured to use POST or PUT Http method.
+    Response can also be returned as <<<byte[]>>> or <<<java.lang.String>>> when used as return types.
 
-    Finally, if the <<<CRestBuilder.returnRawResults()>>> is invoked during the <<<CRest>>> creation, then even <<<java.lang.String>>> used as a return type will then be the server raw response.
+    <<<java.io.InputStream>>>, <<<java.io.Reader>>>, <<<java.io.File>>> can be used as arguments for any REST parameter type.
 
 * CRest
 
-    <<<CRest>>> will return the working instances of any interface to bind to a REST service.
+    To get a <<<CRest>>> instance, you can do as follow:
 
-    The <<<CRest>>> default implementation requires a few information reguarding the way the interfaces that will be passed to it should be build, how the mapping is done, the way to handle response data formats etc..
++-----
+CRest crest = CRest.getInstance();
++-----
 
-    To get a pre-configured instance of a <<<CRest>>>, you should use the <<<CRestBuilder>>>, eg:
+    <<<CRest>>> class has more static method to get a customized <<<CRest>>> instance. Another way of getting a <<<CRest>>> instance is to do as follow:
 
 +-----
 CRest crest = new CRestBuilder().build();
 +-----
 
-    This <<<CRest>>> instance is thread-safe, and should be created only once. The builder allows you to easily customize the resulting <<<CRest>>> instance, please refer to its java-doc to see all the possible options available.
+    <<<CRest>>> instances are thread-safe, and should be created only once and reused when building REST interface proxies.
+
+    The builder allows you to easily customize the resulting <<<CRest>>> instance, please refer to its java-doc to see all the possible options available.
 
     Current implementation requires all user provided interface method's parameter to be annotated with any of the following:
 
        * @FormParam
 
-       * @QueryParam
-
        * @PathParam
+
+       * @MatrixParam
+
+       * @QueryParam
 
        * @HeaderParam
 
-    Once you have a <<<CRest>>> instance, you can pass it any java Interface that should be bind to any REST service, as follow:
+       * @CookieParam
+
+       * @MultiPartParam
+
+    Once you have a <<<CRest>>> instance, you can pass it any java Interface that should be bind to any REST service, as follow.
+
+    Given a simple REST interface:
 
 +-----
-MyInterface interfaze = crest.build(MyInterface.class);
-+-----
+@EndPoint("http://ajax.googleapis.com")
+@Path("ajax/services/search")
+@QueryParam(value = "v", defaultValue = "1.0")
+@ResponseHandler(GoogleResponseHandler.class)
+public interface SearchService {
 
-* Configuration
-
-    In order for the <<<CRest>>> to properly bind a user interface to its remote REST service destination, the user should give some information reguarding how the mapping between the java interface method calls and the remote REST service are done, how to handle the response etc...
-
-    Currently <<CRest>> offers two approach, annotation driven and properties driven.
-
-** Annotations
-
-    The aim of <<CRest>> is to make the binding of a remote REST service and its relative java interface as simple and readable as possible. The prefered approach for the user to provide the required mapping information then is through annotation put on the interface itself.
-
-    Currently <<CRest>> offer a set of annotations to configure your interfaces, see org.codegist.crest.annotate package documentation for more information.
-
-    Here how a <<CRest>> annotated interface might look like:
-
-+-----
-@EndPoint("http://api.twitter.com")
-@ContextPath("/1/statuses")
-public interface StatusService {
-
-    @Path("/retweets/{id}.json")
-    @ConnectionTimeout(10000)
-    Status[] getRetweets(@PathParam("id") long id);
-
-    @POST
-    @Path("/update.json")
-    Status updateStatus(
-            @FormParam("status") String status,
-            @QueryParam("lat") float lat,
-            @QueryParam("long") float longitude);
+    @Path("web")
+    SearchResult<Address> search(@QueryParam("q") String text);
 
 }
+
+(...)
+CRest crest = CRest.getInstance();
+SearchService searchService = crest.build(SearchService.class);
 +-----
 
-    Annotation driven configuration is the prefered one for its conciseness and readability. But annotation information are set in stone, unless defining somekind of placeholders convention.
-
-    In the day to day development process, you may want to be able to switch <<<EndPoint>>> to point to different server dependending on which environment you are running your application on.
-
-    In order to do so, you can use the Properties driven configuration in addition to the annotation driven one in order to override some information, or use the placeholder approach:
-
-    With the following interface:
-
-+-----
-@EndPoint("http://{my.server}:{my.port}")
-@ContextPath("/1/statuses")
-public interface StatusService {
-
-    @Path("/retweets/{id}.json")
-    @ConnectionTimeout(10000)
-    Status[] getRetweets(@PathParam("id") long id);
-
-    @POST
-    @Path("/update.json")
-    Status updateStatus(
-            @FormParam("status") String status,
-            @QueryParam("lat") float lat,
-            @QueryParam("long") float longitude);
-
-}
-+-----
-
-    You can create a <<CRest>> instance as follow:
-
-+-----
-CRest crest = new CRestBuilder()
-                .setConfigPlaceholder("my.server", "127.0.0.1")
-                .setConfigPlaceholder("my.port", "8080")
-                .build();
-+-----
-
-    Any occurrences of either {my.server} or {my.port} in any string-value based annotation will be replaced by the provided placeholder.
-
-    Properties and Xml configuration files can also use placeholders, that will be then replaced as well.
-
-
-** Xml
-
-    Xml driven configuration can be used to make the <<<CRest>>> looks for interface mapping configuration from a xml document instead than interface annotations.
-    This approach should be used only on top of the annotation driven configuration in order to override some configuration options rather than expects the xml driven configuration to handle everything.
-
-    Here what the <<CRest>> configuration xml file would looks like for the previous <<<StatusService>>> interface:
-
-+-----
-<?xml version="1.0" encoding="UTF-8"?>
-<crest-config>
-    <service class="my.project.StatusService">
-        <end-point>http://api.twitter.com</end-point>
-        <context-path>/1/statuses</context-path>
-        <global-interceptor>org.codegist.crest.Stubs$RequestInterceptor1</global-interceptor>
-        <methods>
-            <method match="getRetweets\(.*\)" connection-timeout="10000">
-                <path>/retweets/{id}.json</path>
-                <params>
-                    <path index="0" name="id"/>
-                </params>
-            </method>
-            <method match="changeStatus\(.*\)">
-                <path>/update.json</path>
-                <params>
-                    <form index="0" name="status"/>
-                    <query index="1" name="lat"/>
-                    <query index="2" name="long"/>
-                </params>
-            </method>
-        </methods>
-    </service>
-</crest-config>
-+-----
-
-    Be aware that by prefering the xml driven configuration over the annotation one, the <<<CRest>>> will need to have a preconfigured properties set able to configure any possible interface given to it.
-
-    In a real world use case scenario, one will use the xml configuration approach on top of the annotated approach, as the following:
-
-    Given a xml document :
-
-+-----
-<?xml version="1.0" encoding="UTF-8"?>
-<crest-config end-point="http://127.0.0.1:8080">(...)</crest-config>
-+-----
-
-+-----
-Document doc = ...;
-
-CRest crest = new CRestBuilder()
-                        .overrideDefaultConfigWith(doc)
-                        .build();
-+-----
-
-    Note that the property "end-point" can be set at the crest-config element level will be apply the given end-point to any interface given to the xml driven configurator.
-
-** Properties
-
-    Properties driven configuration can be used to make the <<<CRest>>> looks for interface mapping configuration from a Map instead than interface annotations.
-    This approach should be used only on top of the annotation driven configuration in order to override some configuration options rather than expects the property driven configuration to handle everything.
-
-    Here what the <<CRest>> configuration properties file would looks like for the previous <<<StatusService>>> interface:
-
-+-----
-service.langservice.class=my.project.StatusService
-service.langservice.end-point=http://api.twitter.com
-service.langservice.context-path=/1/statuses
-
-service.langservice.method.m1.pattern=getRetweets\\(.*\\)
-service.langservice.method.m1.connection-timeout=10000
-service.langservice.method.m1.path=/retweets/{id}.json
-service.langservice.method.m1.params.0.name=id
-
-service.langservice.method.m2.pattern=changeStatus\\(.*\\)
-service.langservice.method.m2.path=/update.json
-service.langservice.method.m2.params.0.name=status
-service.langservice.method.m2.params.0.type=form
-service.langservice.method.m2.params.1.name=lat
-service.langservice.method.m2.params.1.type=query
-service.langservice.method.m2.params.2.name=long
-service.langservice.method.m2.params.2.type=query
-+-----
-
-    Be aware that by prefering the properties driven configuration over the annotation one, the <<<CRest>>> will need to have a preconfigured properties set able to configure any possible interface given to it.
-
-    In a real world use case scenario, one will use the properties configuration approach on top of the annotated approach, as the following:
-
-+-----
-Properties props = new Properties();
-props.setProperty("service.end-point", "http://127.0.0.1:8080");
-
-CRest crest = new CRestBuilder()
-                        .overrideDefaultConfigWith(props)
-                        .build();
-+-----
-
-    Note that the property "service.end-point" is a special one that will apply the given end-point to any interface given to the property driven configurator.
-
-    The previous code is creating a <<<CRest>>> expecting JSON response format, using Annotation Driven configuration. The mapping configuration deduced from the annotation will then be overriden with the given properties, in this case the end-point will be the one coming from the properties rather than from the annotations.
-
+    
 

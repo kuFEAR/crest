@@ -1,5 +1,7 @@
 * unit/intergration test to run (also on android)
 * run sonar
+* check *-all jar do not contain more than needed
+* clean up maven dependencies
 * source xref on maven site for crest ?
 * site links to external javadoc
 * deprecated pages should 302 somewhere!

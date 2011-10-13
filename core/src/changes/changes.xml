@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2010 CodeGist.org
+  ~ Copyright 2011 CodeGist.org
   ~
   ~     Licensed under the Apache License, Version 2.0 (the "License");
   ~     you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
   ~     See the License for the specific language governing permissions and
   ~     limitations under the License.
   ~
-  ~  ==================================================================
+  ~  ===================================================================
   ~
   ~  More information at http://www.codegist.org.
   -->
@@ -26,36 +26,37 @@
         <author email="laurent.gilles@codegist.org">Laurent Gilles</author>
     </properties>
     <body>
-        <release version="2.0.0-RC1" date="2011-02-10" description="Major release">
+        <release version="2.0.0-RC1" date="2011-02-10" description="Major release - Complete rewrite">
             <action dev="lgilles" type="add">
                 Added SimpleXml (http://simple.sourceforge.net) support.
             </action>
             <action dev="lgilles" type="add">
-                Added few methods to CRestBuilder in order to add default parameter to all requests fired by any interface build with it, and to set a user custom response jaxb.
+                Added HTTP Basic Auth support.
             </action>
-            <action dev="lgilles" type="fix" issue="3">
-                CRestBuilder.expectsJson() and expectsXml() now add a Accept=application/json or Accept=application/xml header to all request fired.
-                This behavior can be customized with their relative method overload
-            </action>
-            <action dev="lgilles" type="fix" issue="4">
-                @ContextPath annotation has been removed and @Path annotation now partially behaves as JAX-RS one:
-                Full service path is now the concatenation of Interface.endpoint + / + Interface.path + / + Method.path.
-                CRest add by default the slashes in-between, this behavior can be changed with a new CRest property, CRestProperty.CREST_URL_ADD_SLASHES.
+            <action dev="lgilles" type="add">
+                Added JAX-RS partial support.
             </action>
             <action dev="lgilles" type="update">
-                String value based annotation can now contain value placeholders that are merged with any given value. See CRestBuilder.setConfigPlaceholder
+                CRest is now an abstract class that exposes some utility static method to get an instance of it.
+                Uses CRestBuilder in the background.
+            </action>
+            <action dev="lgilles" type="update">
+                Complete rewrite of De/serialization mechanisms.
+            </action>
+            <action dev="lgilles" type="update">
+                Complete rewrite of multipart mechanisms.
+            </action>
+            <action dev="lgilles" type="update">
+                String value based annotation can now contain value placeholders that are merged with any given value. See CRest.placeholder(String, String)
             </action>
             <action dev="lgilles" type="update">
                 User interface method arguments must now always be annotated.
             </action>
             <action dev="lgilles" type="update">
-                Changed the way @Path value is parsed and how placeholder are handled.
+                @Path now behaves as the JAX-RS specification states.
             </action>
-            <action dev="lgilles" type="add">
-                Added following annotations: @Param, @FormParam(s), @QueryParam(s), @PathParam(s), @HeaderParam(s), @GET, @POST, @PUT, @DELETE, @HEAD, @OPTIONS.
-            </action>
-            <action dev="lgilles" type="remove">
-                Removed following annotations: @ContextPath, @Param, @Name, @Destination, @HttpMethod.
+            <action dev="lgilles" type="update">
+                Complete review of the annotation API to mirror it on the JAX-RS one.
             </action>
         </release>
 

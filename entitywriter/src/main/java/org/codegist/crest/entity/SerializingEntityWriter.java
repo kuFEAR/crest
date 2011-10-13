@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 CodeGist.org
+ * Copyright 2011 CodeGist.org
  *
  *     Licensed under the Apache License, Version 2.0 (the "License");
  *     you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 package org.codegist.crest.entity;
 
-import org.codegist.common.lang.Validate;
 import org.codegist.crest.io.Request;
 import org.codegist.crest.param.Param;
 import org.codegist.crest.serializer.Serializer;
@@ -39,8 +38,6 @@ public class SerializingEntityWriter implements EntityWriter {
     private final String contentType;
 
     public SerializingEntityWriter(Serializer<List<Param>> serializer, String contentType) {
-        Validate.notNull(serializer, "Serializer can't be null");
-        Validate.notNull(contentType, "ContentType can't be null");
         this.serializer = serializer;
         this.contentType = contentType;
     }

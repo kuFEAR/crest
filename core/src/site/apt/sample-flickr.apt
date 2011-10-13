@@ -8,7 +8,9 @@ Flickr Samples
 
     This example is more complex than the Google or Twitter ones as it requires a bit of implementation for :
 
-        * Flickr specific authentification method.
+        * Flickr uses OAuth to sign authenticated calls.
+
+        * Flickr uses multipart to upload the photos, and does implemented the oauth mechanism by ignoring the binary (the photo) from the oauth signature generation.
 
         * Response handling : Flickr error-specific checking and payload extraction from generic response format, similar process as the google sample.
 
@@ -24,13 +26,11 @@ Flickr Samples
 
 +-----
 @EndPoint("http://flickr.com")
-@ContextPath("/services")
-@GlobalInterceptor(FlickrAuthInterceptor.class) /* Global request interceptor : generates and adds flickr's specific authentification parameter in the request */
-@ResponseHandler(FlickrResponseHandler.class)   /* Custom response handler for flickr-specific error checking and payload extraction */
-@POST                                           /* Shortcut to set all method to use POST instead of default GET */
+@Path("/services")
+@ResponseHandler(FlickrResponseHandler.class)
+@POST
+@ListSeparator(" ")
 public interface Flickr {
-
-    (...)
 
     @Path("/rest")
     @QueryParam(value = "method", defaultValue = "flickr.galleries.create")
@@ -45,57 +45,34 @@ public interface Flickr {
             @QueryParam("comment_text") String comment);
 
     @Path("/rest")
-    @QueryParam(value = "method", defaultValue = "flickr.photos.comments.editComment")
-    void editComment(
-            @QueryParam("comment_id") String commentId,
-            @QueryParam("comment_text") String comment);
-
-    @Path("/rest")
     @QueryParam(value = "method", defaultValue = "flickr.photos.comments.getList")
     Comment[] getComments(@QueryParam("photo_id") long photoId);
 
-    @Path("/rest")
-    @QueryParam(value = "method", defaultValue = "flickr.photos.comments.getList")
-    Comment[] getComments(
-            @QueryParam("photo_id") long photoId,
-            @QueryParam("min_comment_date") Date from,
-            @QueryParam("max_comment_date") Date to);
-
-    @Path("/rest")
-    @QueryParam(value = "method", defaultValue = "flickr.photos.comments.deleteComment")
-    void deleteComment(@QueryParam("comment_id") String commentId);
-
-
-    @Path("/upload") @Destination(BODY)
-    long uploadPhoto(@Name("photo") File photo);
+    @Path("/upload")
+    long uploadPhoto(@MultiPartParam(value="photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo);
 
     @Path("/upload")
-    @Param(name="async", value="1", dest = BODY) /* adds a default parameter async=1 in the body */
-    @Destination(BODY)
-    String asyncUploadPhoto(@Name("photo") File photo);
+    long uploadPhoto(
+            @MultiPartParam(value = "photo", contentType = "image/jpeg", fileName = "my-photo.jpeg") InputStream photo,
+            @MultiPartParam("title") String title,
+            @MultiPartParam("description") String description,
+            @MultiPartParam("tags") String[] tags,
+            @MultiPartParam("is_public") boolean isPublic,
+            @MultiPartParam("is_friend") boolean isFriend,
+            @MultiPartParam("is_family") boolean isFamily,
+            @MultiPartParam("safety_level") SafetyLevel safetyLevel,
+            @MultiPartParam("content_type") ContentType contentLype,
+            @MultiPartParam("hidden") Visibility searchVisibility
+    );
+
 
     @Path("/upload")
-    long uploadPhoto(@FormParam("photo") File photo);
-
-    @Path("/upload")
-    long uploadPhoto(@FormParam("photo") InputStream photo);
-
-    @Path("/upload")
-    @FormParam(value = "async", defaultValue = "1")
-    String asyncUploadPhoto(@FormParam("photo") File photo);
-
-    @Path("/upload")
-    @FormParam(value = "async", defaultValue = "1")
-    String asyncUploadPhoto(@FormParam("photo") InputStream photo);
+    @MultiPartParam(value = "async", defaultValue = "1")
+    String asyncUploadPhoto(@MultiPartParam(value = "photo", contentType = "image/jpeg") File photo);
 
     @Path("/rest")
     @QueryParam(value = "method", defaultValue = "flickr.photos.upload.checkTickets")
     Uploader checkUploads(@QueryParam("tickets") String... tickets);
-
-
-    @Path("/rest")
-    @QueryParam(value = "method", defaultValue = "flickr.photos.delete")
-    void deletePhoto(@FormParam("photo_id") long photoId);
 
     (...)
 }
@@ -105,16 +82,18 @@ public interface Flickr {
 
 +-----
 // Get a CRest instance. Should be done once.
+String consumerKey = ...;
+String consumerSecret = ...;
+String accessToken = ...;
+String accessTokenSecret = ...;
+
 /* Get the factory */
-CRest crest = new CRestBuilder()
-                     .useHttpClientRestService()
-                     .expectsXml(FlickrModelFactory.class)
-                     .setDateSerializerFormat("Seconds")
-                     .setBooleanSerializer("1", "0")
-                     .setProperty(FlickrAuthInterceptor.API_KEY_PROP, apiKey)
-                     .setProperty(FlickrAuthInterceptor.APP_SECRET_PROP, appSecret)
-                     .setProperty(FlickrAuthInterceptor.AUTH_TOKEN_PROP, authToken)
-                     .build();
+CRest crest = CRest.oauth(consumerKey, consumerSecret, accessToken, accessTokenSecret)
+                   .extractsEntityAuthParamsWith("multipart/form-data", new MultiPartEntityParamExtractor())
+                   .deserializeXmlWith(JaxbDeserializer.class, Collections.<String,Object>singletonMap(MODEL_FACTORY_CLASS_PROP, FlickrModelFactory.class))
+                   .bindSerializer(FlickrDateSerializer.class, Date.class)
+                   .booleanFormat("1", "0")
+                   .build();
 
 // get a service instance
 Flickr flickr = crest.build(Flickr.class);
@@ -133,16 +112,10 @@ Uploader upload = flickr.checkUploads(ticket);
 +-----
 public class FlickrResponseHandler implements ResponseHandler {
 
-    private final Marshaller marshaller;
-
-    public FlickrResponseHandler(Map<String, Object> properties) {
-        this.marshaller = (Marshaller) properties.get(Marshaller.class.getName());
-        Validate.notNull(this.marshaller, "No marshaller set, please construct CRest using either JSON or XML expected return type.");
-    }
-
-    public final Object handle(ResponseContext context) {
+    public final Object handle(Response context) throws Exception {
         /* Marshall the response */
-        Response res = marshaller.marshall(context.getResponse().asReader(), Types.newType(Response.class, context.getExpectedGenericType()));
+        org.codegist.crest.flickr.model.Response res = context.to(org.codegist.crest.flickr.model.Response.class, Types.newType(org.codegist.crest.flickr.model.Response.class, Types.newType(SimplePayload.class, context.getExpectedGenericType())));
+
         /* Check for flickr OK status */
         if ("ok".equals(res.getStatus())) {
             /* Get the nested payload and returns it */
@@ -163,14 +136,10 @@ public class FlickrResponseHandler implements ResponseHandler {
             }
         }
     }
+
+
 }
 +-----
-
-* Authenticator
-
-     The FlickrAuthInterceptor implements the signing logic part of {{{http://www.flickr.com/services/api/auth.howto.desktop.html} Flickr's authentification mechanism}}, assuming we already have a authentified token available.
-
-     For more details, checkout the {{{./sample/index.html} sample project page}} or browse directly the {{{./sample/xref/index.html} source code}}.
 
 * Model & Sources
 

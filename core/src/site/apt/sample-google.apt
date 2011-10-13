@@ -18,12 +18,12 @@ Google Samples
 
 +-----
 @EndPoint("http://ajax.googleapis.com")
-@ContextPath("/ajax/services/search")
+@Path("ajax/services/search")
 @QueryParam(value = "v", defaultValue = "1.0")
 @ResponseHandler(GoogleResponseHandler.class)
 public interface SearchService {
 
-    @Path("/web")
+    @Path("web")
     SearchResult<Address> search(@QueryParam("q") String text);
 
 }
@@ -33,7 +33,7 @@ public interface SearchService {
 
 +-----
 // Get a CRest instance. Should be done once.
-CRest crest = new CRestBuilder().expectsJson().build();
+CRest crest = CRest.getInstance();
 
 // get a service instance
 SearchService service = crest.build(SearchService.class);
@@ -50,15 +50,15 @@ SearchResult<Address> results = service.search("codegist crest");
 
 +-----
 @EndPoint("http://ajax.googleapis.com")
-@ContextPath("/ajax/services/language")
+@Path("ajax/services/language")
 @QueryParam(value = "v", defaultValue = "1.0")
 @ResponseHandler(GoogleResponseHandler.class)
 public interface LanguageService {
 
-    @Path("/detect")
+    @Path("detect")
     LanguageGuess detectLanguage(@QueryParam("q") String text);
 
-    @Path("/translate")
+    @Path("translate")
     Translation translate(
             @QueryParam("q") String text,
             @QueryParam("langpair") @Serializer(LangPairSerializer.class) LangPair langPair);
@@ -70,7 +70,7 @@ public interface LanguageService {
 
 +-----
 // Get a CRest instance. Should be done once.
-CRest crest = new CRestBuilder().expectsJson().build();
+CRest crest = CRest.getInstance();
 
 // get a service instance
 SearchService service = crest.build(SearchService.class);
@@ -87,18 +87,11 @@ Translation translation = service.translate("Translate me if you can!", new Lang
 +-----
 public class GoogleResponseHandler implements ResponseHandler {
 
-    private final Marshaller marshaller;
-
-    public GoogleResponseHandler(Map<String, Object> parameters) {
-        this.marshaller = (Marshaller) parameters.get(Marshaller.class.getName());
-        Validate.notNull(this.marshaller, "No marshaller set, please construct CRest using either JSON or XML expected return type.");
-    }
-
-    public final Object handle(ResponseContext context) {
+    public final Object handle(org.codegist.crest.io.Response context) throws Exception {
         /* Marshall the response */
-        Response<?> res = marshaller.marshall(context.getResponse().asReader(), Types.newType(Response.class, context.getExpectedGenericType()));
+        Response res = context.to(Response.class, Types.newType(Response.class, context.getExpectedGenericType()));
         /* Check for google OK status */
-        if (res.status == 200) {
+        if (res.status == null || res.status == 200) {
             return res.data; /* Returns the nested payload */
         } else {
             throw new CRestException(res.details + " (status=" + res.status + ")"); /* Throw exception with google error details */
@@ -114,12 +107,14 @@ public class GoogleResponseHandler implements ResponseHandler {
     Here is the code needed to write a custom LangPair objects serializer
     
 +-----
-public class LangPairSerializer implements Serializer<LangPair> {
+public class LangPairSerializer extends StringSerializer<LangPair> {
+
     private static final String FORMAT = "%s|%s";
 
-    public String serialize(LangPair value) {
+    public String serialize(LangPair value, Charset charset) {
         return String.format(FORMAT, value.getFrom(), value.getTo());
     }
+
 }
 +-----
 

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-  ~ Copyright 2010 CodeGist.org
+  ~ Copyright 2011 CodeGist.org
   ~
-  ~    Licensed under the Apache License, Version 2.0 (the "License");
-  ~    you may not use this file except in compliance with the License.
-  ~    You may obtain a copy of the License at
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
   ~
-  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~         http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~    Unless required by applicable law or agreed to in writing, software
-  ~    distributed under the License is distributed on an "AS IS" BASIS,
-  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~    See the License for the specific language governing permissions and
-  ~    limitations under the License.
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
   ~
-  ~ ===================================================================
+  ~  ===================================================================
   ~
-  ~ More information at http://www.codegist.org.
+  ~  More information at http://www.codegist.org.
   -->
 
 <project name="${project.name}">
@@ -28,6 +28,7 @@
 
         <menu name="About CRest">
             <item name="What is CRest" href="./index.html"/>
+            <item name="News" href="./news.html"/>
             <item name="Quick Start" href="./quick-start.html"/>
             <item name="Resources" href="./resources.html"/>
             <item name="Contact" href="./contact.html"/>
@@ -66,7 +67,6 @@
             <item name="Google" href="./sample-google.html"/>
             <item name="Twitter" href="./sample-twitter.html"/>
             <item name="Flickr" href="./sample-flickr.html"/>
-            <item name="Delicious" href="./sample-delicious.html"/>
             <item name="More" href="./sample/index.html"/>
         </menu>
 
