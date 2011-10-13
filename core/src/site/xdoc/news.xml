@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2011 CodeGist.org
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~  ===================================================================
+  ~
+  ~  More information at http://www.codegist.org.
+  -->
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>News</title>
+    </properties>
+
+    <body>
+
+        <section name="News">
+            <table border="0">
+                <tr>
+                    <th width="50">2011-10-13</th>
+                    <th>CRest v2.0.0 Release Candidate 1 is out!</th>
+                </tr>
+
+                <tr>
+                    <td bgcolor="#F5F5F5">
+                        <img src="./images/badge-crest2.png" alt="CRest v2.0.0" width="110" height="110"/>
+                    </td>
+                    <td bgcolor="#F5F5F5">
+                        <p><strong>CRest</strong> v2.0.0 RC1 has been released! Changes include new features, general API improvements and more popular libraries support.</p>
+                        <p>This release candidate is supposed to be production ready, but can be subject to changes/fixes in function of the users feedback, and should be quickly followed either by a RC2 or a final v2.0.0 release.</p>
+                        <p>The major change in this release is the partial support for the <a href="http://jsr311.java.net">JAX-RS v1.1</a> annotation API, which means you can now feed <strong>CRest</strong> with a REST interface annotated with the <a href="./annotations/jaxrs.html">supported JAX-RS annotations</a>.</p>
+                        <p>Unfortunately this release is not retro-compatible with the previous one, but the migration from the old to the new API is quite straightforward.</p>
+                        <p>Please refer to the <a href="./changes-report.html">change report</a> page for a more detailed list of the changes this release comes with.</p>
+
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </body>
+
+</document>
