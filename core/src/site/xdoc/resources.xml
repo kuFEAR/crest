@@ -71,29 +71,29 @@
                 <td><a href="https://github.com/downloads/codegist/crest/codegist-crest-2.0.0-RC1.jar">codegist-crest-2.0.0-RC1.jar</a><i>(requires <a href="https://github.com/downloads/codegist/common/codegist-common-2.0.0-RC1.jar">codegist-common-2.0.0-RC1.jar</a>)</i></td>
                 <td>Binaries</td>
                 <td>2.0.0-RC1</td>
-                <td>2011-01-07</td>
-                <td>~131kb</td>
+                <td>2011-10-13</td>
+                <td>~273kb</td>
               </tr>
               <tr>
                 <td><a href="https://github.com/downloads/codegist/crest/codegist-crest-2.0.0-RC1-all.jar">codegist-crest-2.0.0-RC1-all.jar</a></td>
                 <td>Binaries with required dependencies</td>
                 <td>2.0.0-RC1</td>
-                <td>2011-01-07</td>
-                <td>~131kb</td>
+                <td>2011-10-13</td>
+                <td>~337kb</td>
               </tr>
               <tr>
                 <td><a href="https://github.com/downloads/codegist/crest/codegist-crest-2.0.0-RC1-sources.jar">codegist-crest-2.0.0-RC1-sources.jar</a></td>
                 <td>Sources</td>
                 <td>2.0.0-RC1</td>
-                <td>2011-01-07</td>
-                <td>~131kb</td>
+                <td>2011-10-13</td>
+                <td>~288kb</td>
               </tr>
               <tr>
                 <td><a href="https://github.com/downloads/codegist/crest/codegist-crest-2.0.0-RC1-javadoc.jar">codegist-crest-2.0.0-RC1-javadoc.jar</a></td>
                 <td>JavaDoc</td>
                 <td>2.0.0-RC1</td>
                 <td>2011-01-07</td>
-                <td>~131kb</td>
+                <td>~901kb</td>
               </tr>
             </table>
         </subsection>
