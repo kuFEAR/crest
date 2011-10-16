@@ -40,6 +40,7 @@
             <item name="JAX-RS" href="./annotations/jaxrs.html"/>
             <item name="User annotations" href="./annotations/custom.html"/>
         </menu>
+
         <menu name="De/Serialization">
             <item name="Deserialization" href="./serialization/deserialization.html"/>
             <item name="Serialization" href="./serialization/serialization.html"/>
@@ -48,14 +49,17 @@
             <item name="SimpleXml" href="./serialization/simplexml.html"/>
             <item name="Multipart" href="./serialization/multipart.html"/>
         </menu>
+
         <menu name="IO">
             <item name="Apache Http Client" href="./io/httpclient.html"/>
             <item name="Http URL Connection" href="./io/platform.html"/>
         </menu>
+
         <menu name="Authentication">
             <item name="Basic Auth" href="./authentication/basic.html"/>
             <item name="OAuth 1.0" href="./authentication/oauth.html"/>
         </menu>
+
         <menu name="Deeper">
             <item name="Configuration" href="./deeper/configuration.html"/>
             <item name="User State" href="./deeper/state.html"/>
@@ -63,6 +67,7 @@
             <item name="Android" href="./deeper/android.html"/>
             <item name="CGLib" href="./deeper/cglib.html"/>
         </menu>
+        
         <menu name="Examples"><!-- make them android samples! -->
             <item name="Google" href="./sample-google.html"/>
             <item name="Twitter" href="./sample-twitter.html"/>
