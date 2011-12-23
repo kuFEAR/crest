@@ -28,7 +28,8 @@ import org.codegist.crest.io.RequestBuilder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)

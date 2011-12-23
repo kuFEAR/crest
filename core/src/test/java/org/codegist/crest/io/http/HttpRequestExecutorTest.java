@@ -72,79 +72,13 @@ public class HttpRequestExecutorTest {
 
         try {
             toTest.execute(request);
+            fail();
         }catch(RequestException e){
             assertNull(e.getResponse());
             assertSame(expected, e.getCause());
         }
     }
 
-
-    @Test
-    public void executeShouldThrowRequestExceptionIfStatusCodeGreaterOrEqualsToBadRequest() throws Exception {
-        Request request = mock(Request.class);
-        HttpResponse httpResponse= mock(HttpResponse.class);
-        HttpChannel.Response response= mock(HttpChannel.Response.class);
-        HttpChannelResponseHttpResource httpChannelResponseHttpResource = mock(HttpChannelResponseHttpResource.class);
-        EntityWriter entityWriter = mock(EntityWriter.class);
-        MethodConfig methodConfig = mock(MethodConfig.class);
-        RequestEntityWriter requestEntityWriter = mock(RequestEntityWriter.class);
-
-        Iterator<EncodedPair> headers = asList(
-                Pairs.toPreEncodedPair("h1", "v1"),
-                Pairs.toPreEncodedPair("h2", "v2")
-        ).iterator();
-        Iterator<EncodedPair> cookies = asList(
-                Pairs.toPreEncodedPair("Cookie", "c1=v1"),
-                Pairs.toPreEncodedPair("Cookie", "c2=v2")
-        ).iterator();
-
-        mockStatic(HttpRequests.class);
-        when(HttpRequests.toUrl(request)).thenReturn("some-url");
-        when(request.getMethodConfig()).thenReturn(methodConfig);
-        when(methodConfig.getCharset()).thenReturn(UTF8);
-        when(methodConfig.getType()).thenReturn(MethodType.POST);
-        when(methodConfig.getConnectionTimeout()).thenReturn(10);
-        when(methodConfig.getSocketTimeout()).thenReturn(11);
-        when(methodConfig.getProduces()).thenReturn("produces");
-        when(methodConfig.getConsumes()).thenReturn(new String[]{"consumes1","consumes2"});
-        when(methodConfig.getEntityWriter()).thenReturn(entityWriter);
-        when(mockChannelFactory.open(MethodType.POST, "some-url", UTF8)).thenReturn(mockChannel);
-        when(request.getEncodedParamsIterator(ParamType.HEADER)).thenReturn(headers);
-        when(request.getEncodedParamsIterator(ParamType.COOKIE)).thenReturn(cookies);
-        when(entityWriter.getContentType(request)).thenReturn("content-type");
-        whenNew(RequestEntityWriter.class).withArguments(request).thenReturn(requestEntityWriter);
-        when(mockChannel.send()).thenReturn(response);
-        whenNew(HttpChannelResponseHttpResource.class).withArguments(response).thenReturn(httpChannelResponseHttpResource);
-        whenNew(HttpResponse.class).withArguments(
-                mockBaseResponseDeserializer,
-                mockCustomTypeResponseDeserializer,
-                request,
-                httpChannelResponseHttpResource
-        ).thenReturn(httpResponse);
-        when(httpResponse.getStatusCode()).thenReturn(400);
-        when(httpResponse.getStatusMessage()).thenReturn("some message");
-
-
-        try {
-            toTest.execute(request);
-        }catch(RequestException e){
-            assertSame(httpResponse, e.getResponse());
-            assertEquals("some message", e.getMessage());
-        }
-
-        InOrder inOrder = inOrder(mockChannel);
-        inOrder.verify(mockChannel).setConnectionTimeout(10);
-        inOrder.verify(mockChannel).setSocketTimeout(11);
-        inOrder.verify(mockChannel).setContentType("produces");
-        inOrder.verify(mockChannel).setAccept("consumes1,consumes2");
-        inOrder.verify(mockChannel).addHeader("h1", "v1");
-        inOrder.verify(mockChannel).addHeader("h2", "v2");
-        inOrder.verify(mockChannel).addHeader("Cookie", "c1=v1");
-        inOrder.verify(mockChannel).addHeader("Cookie", "c2=v2");
-        inOrder.verify(mockChannel).writeEntityWith(requestEntityWriter);
-        inOrder.verify(mockChannel).send();
-        verifyNoMoreInteractions(mockChannel);
-    }
 
     @Test
     public void executeShouldOrchestrateCallsToChannelFactoryWithValuesFromGivenEntityRequest() throws Exception {

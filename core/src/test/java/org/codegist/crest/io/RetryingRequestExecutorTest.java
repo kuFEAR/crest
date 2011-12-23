@@ -23,7 +23,9 @@ package org.codegist.crest.io;
 import org.codegist.crest.config.MethodConfig;
 import org.codegist.crest.handler.RetryHandler;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +39,7 @@ public class RetryingRequestExecutorTest {
     private final MethodConfig methodConfig = mock(MethodConfig.class);
     private final RetryHandler retryHandler = mock(RetryHandler.class);
     private final RequestExecutor mockRequestExecutor = mock(RequestExecutor.class);
-    private final RetryingRequestExecutor toTest = new RetryingRequestExecutor(mockRequestExecutor);
+    private final RetryingRequestExecutor toTest = new RetryingRequestExecutor(mockRequestExecutor, 123);
 
     {
         when(request.getMethodConfig()).thenReturn(methodConfig);
@@ -74,6 +76,43 @@ public class RetryingRequestExecutorTest {
             verify(requestException1).dispose();
             verifyNoMoreInteractions(requestException2);
         }
+    }
+
+    @Test
+    public void executeShouldRetryAndFailIfStatusCodeIsGreaterThan400() throws Exception {
+        RequestException requestException1 = mock(RequestException.class);
+        ArgumentCaptor<RequestException> requestException2 = ArgumentCaptor.forClass(RequestException.class);
+        Response badResponse = mock(Response.class);
+        when(badResponse.getStatusCode()).thenReturn(123);
+        when(retryHandler.retry(requestException1, 2)).thenReturn(true);
+        when(retryHandler.retry(requestException2.capture(), eq(3))).thenReturn(false);
+        when(mockRequestExecutor.execute(request)).thenThrow(requestException1).thenReturn(badResponse);
+
+        try {
+            toTest.execute(request);
+        } catch (Exception e) {
+            assertSame(requestException2.getValue(), e);
+            assertSame(badResponse, requestException2.getValue().getResponse());
+            assertEquals("", requestException2.getValue().getMessage());
+            verify(requestException1).dispose();
+            verifyNoMoreInteractions(requestException2);
+        }
+    }
+
+    @Test
+    public void executeShouldRetryIfStatusCodeIsGreaterThan400AndReturnResponseIsRetryIsSuccess() throws Exception {
+        RequestException requestException1 = mock(RequestException.class);
+        ArgumentCaptor<RequestException> requestException2 = ArgumentCaptor.forClass(RequestException.class);
+        Response badResponse = mock(Response.class);
+        when(badResponse.getStatusCode()).thenReturn(123);
+        when(retryHandler.retry(requestException1, 2)).thenReturn(true);
+        when(retryHandler.retry(requestException2.capture(), eq(3))).thenReturn(true);
+        when(mockRequestExecutor.execute(request)).thenThrow(requestException1).thenReturn(badResponse, expected);
+
+        Response actual = toTest.execute(request);
+        assertSame(expected, actual);
+
+        verify(requestException1).dispose();
     }
 
     @Test

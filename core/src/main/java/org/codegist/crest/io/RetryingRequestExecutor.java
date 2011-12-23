@@ -31,12 +31,14 @@ import org.codegist.crest.handler.RetryHandler;
 public class RetryingRequestExecutor implements RequestExecutor {
 
     private final RequestExecutor delegate;
+    private final int minErrorStatusCode;
 
     /**
      * @param delegate request executor to delegate the requests execution to
      */
-    public RetryingRequestExecutor(RequestExecutor delegate) {
+    public RetryingRequestExecutor(RequestExecutor delegate, int minErrorStatusCode) {
         this.delegate = delegate;
+        this.minErrorStatusCode = minErrorStatusCode;
     }
 
     /**
@@ -45,15 +47,27 @@ public class RetryingRequestExecutor implements RequestExecutor {
     public Response execute(Request request) throws Exception {
         RetryHandler retryHandler = request.getMethodConfig().getRetryHandler();
         RequestException exception = null;
+        Response response;
         int attemptCount = 1;
         do {
             Disposables.dispose(exception);
+            response = null;
             try {
-                return delegate.execute(request);
+                response = delegate.execute(request);
+                if(response.getStatusCode() >= minErrorStatusCode) {
+                    exception = new RequestException("Request failed - status code: " + response.getStatusCode(), response);
+                }else{
+                    return response;
+                }
             } catch (RequestException e) {
                 exception = e;
             }
         }while(retryHandler.retry(exception, ++attemptCount));
+
+        // if response is not null after all retries attempts have been exhausted (status code >= 400), then return the response
+        if(response != null) {
+            return response;
+        }
 
         throw exception;
     }

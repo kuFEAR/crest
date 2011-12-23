@@ -20,6 +20,8 @@
 
 package org.codegist.crest.handler;
 
+import org.codegist.crest.CRestConfig;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 
 /**
@@ -27,10 +29,20 @@ import org.codegist.crest.io.Response;
  */
 public class DefaultResponseHandler implements ResponseHandler {
 
+    public static final String MIN_ERROR_STATUS_CODE_PROP = DefaultResponseHandler.class.getName() + "#min-error-status-code";
+    private final int minErrorStatusCode;
+
+    public DefaultResponseHandler(CRestConfig crestConfig) {
+        this.minErrorStatusCode = crestConfig.get(MIN_ERROR_STATUS_CODE_PROP, Integer.MAX_VALUE);
+    }
+
     /**
      * @inheritDoc
      */
     public Object handle(Response response) throws Exception {
+        if(response.getStatusCode() >= minErrorStatusCode) {
+            throw new CRestException("Response Status Code:" + response.getStatusCode() + "\nResponse: " + response.to(String.class));
+        }
         return response.deserialize();
     }
 }

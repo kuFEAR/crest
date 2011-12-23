@@ -27,6 +27,7 @@ import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.NoOpAnnotationHandler;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.handler.DefaultResponseHandler;
 import org.codegist.crest.io.RequestBuilderFactory;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
@@ -65,6 +66,8 @@ import static org.codegist.crest.util.Placeholders.compile;
  * @author Laurent Gilles (laurent.gilles@codegist.org)
  */
 public class CRestBuilder {
+
+    private static final int MIN_ERROR_STATUS_CODE = HttpConstants.HTTP_BAD_REQUEST;
 
     private final Map<String, Object> crestProperties = new HashMap<String, Object>();
     private final RequestBuilderFactory requestBuilderFactory = new HttpRequestBuilderFactory();
@@ -136,6 +139,7 @@ public class CRestBuilder {
      * @return a <b>CRest</b> instance
      */
     public CRest build() {
+        putIfAbsentAndNotNull(crestProperties, DefaultResponseHandler.MIN_ERROR_STATUS_CODE_PROP, MIN_ERROR_STATUS_CODE);
         putIfAbsentAndNotNull(crestProperties, CRestConfig.class.getName() + "#placeholders", compile(placeholders));
         CRestConfig crestConfig = new DefaultCRestConfig(crestProperties);
 
@@ -196,7 +200,7 @@ public class CRestBuilder {
         if(authorization != null) {
             channelFactory = new AuthorizationHttpChannelFactory(plainChannelFactory, authorization, httpEntityParamExtrators);
         }
-        return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, baseResponseDeserializer, customTypeResponseDeserializer));
+        return new RetryingRequestExecutor(new HttpRequestExecutor(channelFactory, baseResponseDeserializer, customTypeResponseDeserializer), MIN_ERROR_STATUS_CODE);
     }
 
     private ComponentRegistry<String,Deserializer> buildDeserializerRegistry(CRestConfig crestConfig) {

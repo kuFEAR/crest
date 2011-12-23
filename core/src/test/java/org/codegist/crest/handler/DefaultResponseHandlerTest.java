@@ -20,10 +20,13 @@
 
 package org.codegist.crest.handler;
 
+import org.codegist.crest.CRestConfig;
+import org.codegist.crest.CRestException;
 import org.codegist.crest.io.Response;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -32,13 +35,31 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class DefaultResponseHandlerTest {
 
-    private final DefaultResponseHandler toTest = new DefaultResponseHandler();
+    private final CRestConfig crestConfig = mock(CRestConfig.class);
+    {
+        when(crestConfig.<Object>get(DefaultResponseHandler.MIN_ERROR_STATUS_CODE_PROP, Integer.MAX_VALUE)).thenReturn(123);
+    }
+    private final DefaultResponseHandler toTest = new DefaultResponseHandler(crestConfig);
 
     @Test
-    public void shouldUseResponseDeserilize() throws Exception {
+    public void shouldUseResponseDeserialize() throws Exception {
         Response response = mock(Response.class);
         when(response.deserialize()).thenReturn("hello");
         Object actual = toTest.handle(response);
         assertEquals("hello", actual);
+    }
+
+    @Test
+    public void shouldThrowExceptionFor400PlusResponseStatus() throws Exception {
+        Response response = mock(Response.class);
+        when(response.getStatusCode()).thenReturn(123);
+        when(response.to(String.class)).thenReturn("hello");
+        try {
+            toTest.handle(response);
+            fail();
+        } catch (CRestException e) {
+            assertEquals("Response Status Code:123\nResponse: hello", e.getMessage());
+        }
+
     }
 }

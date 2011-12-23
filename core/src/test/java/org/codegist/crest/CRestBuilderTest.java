@@ -27,12 +27,10 @@ import org.codegist.crest.config.*;
 import org.codegist.crest.config.annotate.AnnotationHandler;
 import org.codegist.crest.config.annotate.CRestAnnotations;
 import org.codegist.crest.config.annotate.jaxrs.JaxRsAnnotations;
+import org.codegist.crest.handler.DefaultResponseHandler;
 import org.codegist.crest.io.RequestExecutor;
 import org.codegist.crest.io.RetryingRequestExecutor;
-import org.codegist.crest.io.http.HttpChannel;
-import org.codegist.crest.io.http.HttpChannelFactory;
-import org.codegist.crest.io.http.HttpRequestExecutor;
-import org.codegist.crest.io.http.HttpURLConnectionHttpChannelFactory;
+import org.codegist.crest.io.http.*;
 import org.codegist.crest.serializer.Deserializer;
 import org.codegist.crest.test.util.Classes;
 import org.codegist.crest.util.ComponentFactory;
@@ -260,7 +258,7 @@ public class CRestBuilderTest {
     @Test
     public void setPropertyShouldSetAPropertiesToCRestConfig() throws Exception {
         Object o = new Object();
-        Map<String,Object> expected = new HashMap();
+        Map<String,Object> expected = baseCRestProperties();
         expected.put(CRestConfig.class.getName() + "#placeholders", o);
         expected.put(ParamConfigBuilderFactory.class.getName(), mockDefaultParamConfigBuilderFactory);
 
@@ -319,6 +317,7 @@ public class CRestBuilderTest {
     }
     private Map<String,Object> baseCRestProperties(boolean withParamConfigBuilder){
         Map<String,Object> map = new HashMap<String, Object>();
+        map.put(DefaultResponseHandler.MIN_ERROR_STATUS_CODE_PROP, HttpConstants.HTTP_BAD_REQUEST);
         map.put(CRestConfig.class.getName() + "#placeholders", new HashMap<String,String>());
         if(withParamConfigBuilder) {
             map.put(ParamConfigBuilderFactory.class.getName(), mockDefaultParamConfigBuilderFactory);

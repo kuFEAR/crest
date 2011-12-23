@@ -40,7 +40,6 @@ import java.util.Iterator;
 import static org.codegist.common.lang.Strings.isNotBlank;
 import static org.codegist.crest.config.ParamType.COOKIE;
 import static org.codegist.crest.config.ParamType.HEADER;
-import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 import static org.codegist.crest.io.http.HttpRequests.toUrl;
 
 /**
@@ -72,13 +71,8 @@ public class HttpRequestExecutor implements RequestExecutor, Disposable {
      * @inheritDoc
      */
     public Response execute(Request request) throws Exception {
-        HttpResponse response;
         try {
-            response = doExecute(request);
-            if(response.getStatusCode() >= HTTP_BAD_REQUEST) {
-                throw new RequestException(response.getStatusMessage(), response);
-            }
-            return response;
+            return doExecute(request);
         }catch(IOException e){
             throw new RequestException(e);
         }
