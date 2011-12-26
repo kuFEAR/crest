@@ -38,7 +38,7 @@
     <description>CRest - Client Representational State Transfer</description>
 
     <properties>
-        <site.analytics.account>UA-19826844-2</site.analytics.account>
+        <account.google-analytics>UA-19826844-2</account.google-analytics>
     </properties>
 
     <scm>
