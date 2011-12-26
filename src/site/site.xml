@@ -26,7 +26,7 @@
     </bannerLeft>
 
     <custom>
-        <analytics>${site.analytics.account}</analytics>
+        <analytics>${account.google-analytics}</analytics>
         <project.image>/images/logo_white_255x255.png</project.image>
     </custom>
 
