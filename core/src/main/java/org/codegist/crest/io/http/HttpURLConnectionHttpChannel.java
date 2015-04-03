@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.List;
+import java.util.Map;
 
 import static org.codegist.crest.io.http.HttpConstants.HTTP_BAD_REQUEST;
 
@@ -38,7 +40,7 @@ final class HttpURLConnectionHttpChannel implements HttpChannel {
     private HttpEntityWriter httpEntityWriter;
 
 
-    public HttpURLConnectionHttpChannel(HttpURLConnection con, MethodType methodType){
+    public HttpURLConnectionHttpChannel(HttpURLConnection con, MethodType methodType) {
         this.methodType = methodType;
         this.con = con;
         this.con.setRequestProperty("Connection", "Keep-Alive");
@@ -74,9 +76,9 @@ final class HttpURLConnectionHttpChannel implements HttpChannel {
     }
 
     public Response send() throws IOException {
-        if(methodType.hasEntity()) {
-            if(httpEntityWriter.getContentLength() >= 0) {
-               con.setRequestProperty("Content-Length", String.valueOf(httpEntityWriter.getContentLength()));
+        if (methodType.hasEntity()) {
+            if (httpEntityWriter.getContentLength() >= 0) {
+                con.setRequestProperty("Content-Length", String.valueOf(httpEntityWriter.getContentLength()));
             }
             con.setDoOutput(true);
             OutputStream os = con.getOutputStream();
@@ -104,11 +106,19 @@ final class HttpURLConnectionHttpChannel implements HttpChannel {
         }
 
         public InputStream getEntity() throws IOException {
-            if(getStatusCode() >= HTTP_BAD_REQUEST) {
+            if (getStatusCode() >= HTTP_BAD_REQUEST) {
                 return con.getErrorStream();
-            }else{
+            } else {
                 return con.getInputStream();
             }
+        }
+
+        public String getHeaderField(String field) {
+            return con.getHeaderField(field);
+        }
+
+        public Map<String, List<String>> getHeaderFields() {
+            return con.getHeaderFields();
         }
 
         public String getContentType() {

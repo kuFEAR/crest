@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Http response for the a HttpRequest.
@@ -73,6 +75,14 @@ class HttpResponse implements Response, Disposable {
 
     public String getContentEncoding() throws IOException {
         return resource.getContentEncoding();
+    }
+
+    public String getHeaderField(String field) throws IOException {
+        return resource.getHeaderField(field);
+    }
+
+    public Map<String, List<String>> getHeaderFields() throws IOException {
+        return resource.getHeaderFields();
     }
 
     public Type getExpectedGenericType() {

@@ -28,6 +28,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
@@ -42,13 +45,15 @@ class HttpChannelResponseHttpResource implements HttpResource {
     private final String contentEncoding;
     private final Charset charset;
     private final String contentType;
+    private final Map<String, List<String>> headerFields;
 
     HttpChannelResponseHttpResource(HttpChannel.Response response) throws IOException {
         this.response = response;
         ContentType ct = new ContentType(response.getContentType());
         this.contentType = ct.mimeType;
+        this.headerFields = response.getHeaderFields();
         this.charset = ct.charset;
-        this.contentEncoding =  response.getContentEncoding();
+        this.contentEncoding = response.getContentEncoding();
         this.inputStream = getEntity(response, charset);
     }
 
@@ -58,6 +63,22 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
     public Charset getCharset() {
         return charset;
+    }
+
+    public String getHeaderField(String field) throws IOException {
+        StringBuilder header = new StringBuilder();
+        for (String headerValue : headerFields.get(field)) {
+            try {
+                header.append(headerValue).append("\n");
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
+            }
+        }
+        return String.valueOf(header);
+    }
+
+    public Map<String, List<String>> getHeaderFields() {
+        return headerFields;
     }
 
     public String getContentEncoding() {
@@ -83,7 +104,7 @@ class HttpChannelResponseHttpResource implements HttpResource {
 
     private static InputStream getEntity(HttpChannel.Response response, Charset charset) throws IOException {
         InputStream stream = "gzip".equals(response.getContentEncoding()) ? new GZIPInputStream(response.getEntity()) : response.getEntity();
-        if(!RESPONSE_LOGGER.isTraceOn()) {
+        if (!RESPONSE_LOGGER.isTraceOn()) {
             return stream;
         } else {
             byte[] dump = IOs.toByteArray(stream, true);
@@ -106,7 +127,7 @@ class HttpChannelResponseHttpResource implements HttpResource {
         private ContentType(String contentType) {
             String pMimeType = DEFAULT_MIME_TYPE;
             Charset pCharset = DEFAULT_CHARSET;
-            if(contentType != null) {
+            if (contentType != null) {
                 String[] contentTypes = SEMICOLON.split(contentType);
 
                 if (contentTypes.length >= 1) {

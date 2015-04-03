@@ -25,6 +25,8 @@ import org.codegist.common.lang.Disposable;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <b>CRest</b>'s internal REST interface method's call execution response
@@ -41,6 +43,10 @@ public interface Response extends Disposable {
     String getContentType() throws Exception;
 
     Charset getCharset() throws Exception;
+
+    String getHeaderField(String field) throws Exception;
+
+    Map<String, List<String>> getHeaderFields() throws Exception;
 
     String getContentEncoding() throws Exception;
 

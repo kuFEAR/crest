@@ -24,6 +24,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -35,6 +37,10 @@ interface HttpResource extends Closeable {
     String getContentType() throws IOException;
 
     Charset getCharset() throws IOException;
+
+    String getHeaderField(String field) throws IOException;
+
+    Map<String, List<String>> getHeaderFields() throws IOException;
 
     String getContentEncoding() throws IOException;
 

@@ -34,6 +34,10 @@ import org.codegist.common.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -53,7 +57,7 @@ final class HttpClientHttpChannel implements HttpChannel {
         HttpConnectionParams.setConnectionTimeout(request.getParams(), timeout);
     }
 
-    public void setSocketTimeout(int timeout) throws IOException  {
+    public void setSocketTimeout(int timeout) throws IOException {
         HttpConnectionParams.setSoTimeout(request.getParams(), timeout);
     }
 
@@ -61,7 +65,7 @@ final class HttpClientHttpChannel implements HttpChannel {
         request.setHeader(name, value);
     }
 
-    public void addHeader(String name, String value) throws IOException  {
+    public void addHeader(String name, String value) throws IOException {
         request.addHeader(name, value);
     }
 
@@ -73,7 +77,7 @@ final class HttpClientHttpChannel implements HttpChannel {
         setHeader("Accept", value);
     }
 
-    public void writeEntityWith(HttpEntityWriter httpEntityWriter)  throws IOException {
+    public void writeEntityWith(HttpEntityWriter httpEntityWriter) throws IOException {
         ((HttpEntityEnclosingRequest) request).setEntity(new HttpEntityWriterHttpEntity(httpEntityWriter));
     }
 
@@ -91,25 +95,25 @@ final class HttpClientHttpChannel implements HttpChannel {
             this.response = response;
         }
 
-        public InputStream getEntity() throws IOException  {
+        public InputStream getEntity() throws IOException {
             HttpEntity entity = response.getEntity();
             return entity != null ? entity.getContent() : EmptyInputStream.INSTANCE;
         }
 
         public String getContentType() {
             Header header = response.getFirstHeader("Content-Type");
-            if(header != null) {
+            if (header != null) {
                 return header.getValue();
-            }else{
+            } else {
                 return null;
             }
         }
 
         public String getContentEncoding() {
             Header header = response.getFirstHeader("Content-Encoding");
-            if(header != null) {
+            if (header != null) {
                 return header.getValue();
-            }else{
+            } else {
                 return null;
             }
         }
@@ -118,13 +122,30 @@ final class HttpClientHttpChannel implements HttpChannel {
             return response.getStatusLine().getStatusCode();
         }
 
+        @Override
+        public String getHeaderField(String field) throws IOException {
+            return response.getHeaders(field)[0].getName();
+        }
+
+        @Override
+        public Map<String, List<String>> getHeaderFields() throws IOException {
+            Map<String, List<String>> headerFields = new HashMap<String, List<String>>();
+            Header[] header = response.getAllHeaders();
+            for (Header aHeader : header) {
+                List<String> values = new ArrayList<String>();
+                values.add(aHeader.getValue());
+                headerFields.put(aHeader.getName(), values);
+            }
+            return headerFields;
+        }
+
         public String getStatusMessage() throws IOException {
             return response.getStatusLine().getReasonPhrase();
         }
 
         public void close() {
             try {
-                if(response != null && response.getEntity() != null) {
+                if (response != null && response.getEntity() != null) {
                     LOGGER.trace("Consuming Response Content...");
                     response.getEntity().consumeContent();
                 }

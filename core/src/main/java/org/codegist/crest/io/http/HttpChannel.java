@@ -23,6 +23,8 @@ package org.codegist.crest.io.http;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HTTP abstraction layer
@@ -99,6 +101,20 @@ public interface HttpChannel {
          * @throws IOException
          */
         int getStatusCode() throws IOException;
+
+        /**
+         * Returns the HTTP response's header field
+         * @return the HTTP response's header field
+         * @throws IOException
+         */
+        String getHeaderField(String field) throws IOException;
+
+        /**
+         * Returns the HTTP response's header map field
+         * @return the HTTP response's header map field
+         * @throws IOException
+         */
+        Map<String, List<String>> getHeaderFields() throws IOException;
 
         /**
          * Returns the HTTP response's status message

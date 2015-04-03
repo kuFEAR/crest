@@ -26,6 +26,8 @@ import org.codegist.crest.io.Response;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
@@ -49,6 +51,10 @@ class DelegatingResponse implements Response {
     public String getContentType() throws Exception {
         return delegate.getContentType();
     }
+
+    public String getHeaderField(String field) throws Exception {return delegate.getHeaderField(field);}
+
+    public Map<String, List<String>> getHeaderFields() throws Exception {return delegate.getHeaderFields();}
 
     public Charset getCharset() throws Exception {
         return delegate.getCharset();
