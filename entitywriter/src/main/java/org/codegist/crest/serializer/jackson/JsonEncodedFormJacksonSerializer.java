@@ -27,12 +27,37 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * @author Laurent Gilles (laurent.gilles@codegist.org)
+ * @author Nikita Karnaukh
+ * This code is taken from google group:
+ * https://groups.google.com/forum/#!msg/codegist-crest/YWHtkjkR4xs/gbCkivpmVq8J
  */
 public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>> {
+
+    private final ObjectMapper jackson;
+
+    public JsonEncodedFormJacksonSerializer(CRestConfig crestConfig) {
+        this.jackson = JacksonFactory.createObjectMapper(crestConfig, getClass());
+    }
+
+    public void serialize(List<Param> value, Charset charset, OutputStream out)
+            throws Exception {
+        if (!value.isEmpty()) {
+            Collection<Object> objects = value.get(0).getValue();
+            Object[] list = objects.toArray(new Object[objects.size()]);
+            jackson.writeValue(out, list[0]);
+        }
+    }
+}
+
+/*
+* Original crest jackson serializer
+* @author Laurent Gilles (laurent.gilles@codegist.org)
+* */
+/*public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>> {
 
     private final ObjectMapper jackson;
 
@@ -86,4 +111,4 @@ public class JsonEncodedFormJacksonSerializer implements Serializer<List<Param>>
         }
     }
 
-}
+}*/
