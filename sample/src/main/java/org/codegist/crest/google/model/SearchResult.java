@@ -22,7 +22,7 @@ package org.codegist.crest.google.model;
 
 import org.codegist.common.lang.ToStringBuilder;
 import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Laurent Gilles (laurent.gilles@codegist.org)
